@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="nodes">
+      <UniqueIdentifier>{8e014e4d-7270-47da-8f6e-56826ef21831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset">
+      <UniqueIdentifier>{119faea4-0286-4ed1-aad3-25958867e376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{d2a6f069-4272-41df-abc7-ae5a4eed982d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\primitive">
+      <UniqueIdentifier>{f58c101e-a98e-40ca-8f5e-b8266404484b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\everything\Node.h">
+      <Filter>dataset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Variable.h">
+      <Filter>dataset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\VariableType.h">
+      <Filter>dataset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Curve.h">
+      <Filter>nodes\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Box.h">
+      <Filter>nodes\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Evaluator.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Sphere.h">
+      <Filter>nodes\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\typedef.h" />
+    <ClInclude Include="..\..\..\include\everything\Everything.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\source\Node.cpp">
+      <Filter>dataset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\RegistRTTR.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Evaluator.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Box.cpp">
+      <Filter>nodes\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Sphere.cpp">
+      <Filter>nodes\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Everything.cpp" />
+  </ItemGroup>
+</Project>

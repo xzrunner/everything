@@ -1,0 +1,5 @@
+everything/
+projects/*
+
+!projects/everything.vcxproj
+!projects/everything.vcxproj.filters
