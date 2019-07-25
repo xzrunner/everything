@@ -19,16 +19,14 @@ public:
     Box()
     {
         m_imports = {
-            {{ VariableType::Port, "prev" }}
+            {{ VariableType::Any, "in" }}
         };
         m_exports = {
-            {{ VariableType::Port,      "next" }},
-//            {{ VariableType::Primitive, "prim" }}
+            {{ VariableType::Any, "out" }},
         };
     }
 
-    virtual void Execute() override;
-    virtual void Traverse(std::function<bool(const n0::SceneNodePtr&)> func) const override;
+    virtual void ExecuteSelf() override;
 
     void SetSize(const sm::vec3& size);
     void SetCenter(const sm::vec3& center);
@@ -41,8 +39,6 @@ private:
 
 private:
     gs::Box m_box;
-
-    n0::SceneNodePtr m_node = nullptr;
 
     sm::vec3 m_size   = sm::vec3(1, 1, 1);
     sm::vec3 m_center = sm::vec3(0, 0, 0);

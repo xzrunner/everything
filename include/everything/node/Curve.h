@@ -15,15 +15,14 @@ public:
     Curve()
     {
         m_imports = {
-            {{ VariableType::Port, "prev" }}
+            {{ VariableType::Any, "in" }}
         };
         m_exports = {
-            {{ VariableType::Port, "next" }}
+            {{ VariableType::Any, "out" }},
         };
     }
 
-    //virtual void Execute() override;
-    //virtual void Traverse(std::function<bool(const n0::SceneNodePtr&)> func) const override {}
+    virtual void ExecuteSelf() override {}
 
     void SetClosed(bool is_closed) { m_polyline.SetClosed(is_closed); }
     bool GetClosed() const { return m_polyline.GetClosed(); }

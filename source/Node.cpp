@@ -24,6 +24,24 @@ namespace evt
 //{
 //}
 
+void Node::Execute()
+{
+    ExecuteSelf();
+    ExecuteExports();
+}
+
+void Node::ExecuteExports()
+{
+    for (auto& o : m_exports) {
+        for (auto& c : o.conns) {
+            auto n = c.node.lock();
+            if (n) {
+                n->ExecuteSelf();
+            }
+        }
+    }
+}
+
 void make_connecting(const Node::PortAddr& from, const Node::PortAddr& to)
 {
 	{

@@ -14,40 +14,35 @@ namespace evt
 namespace node
 {
 
-void Sphere::Execute()
+void Sphere::ExecuteSelf()
 {
-    if (!m_node)
+    if (!m_scene_node)
     {
-        m_node = ns::NodeFactory::Create3D();
+        m_scene_node = ns::NodeFactory::Create3D();
 
-        auto& cmesh = m_node->AddUniqueComp<n3::CompMeshFilter>();
+        auto& cmesh = m_scene_node->AddUniqueComp<n3::CompMeshFilter>();
         cmesh.SetMesh(model::Sphere::TYPE_NAME);
 
-        m_node->GetUniqueComp<n3::CompAABB>().SetAABB(cmesh.GetAABB());
+        m_scene_node->GetUniqueComp<n3::CompAABB>().SetAABB(cmesh.GetAABB());
+
+        // CompMaterial
+        auto& cmaterial = m_scene_node->AddUniqueComp<n0::CompMaterial>();
+        auto mat = std::make_unique<pt0::Material>();
+        typedef pt3::MaterialMgr::PhongUniforms UNIFORMS;
+        mat->AddVar(UNIFORMS::ambient.name, pt0::RenderVariant(sm::vec3(0.04f, 0.04f, 0.04f)));
+        mat->AddVar(UNIFORMS::diffuse.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
+        mat->AddVar(UNIFORMS::specular.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
+        mat->AddVar(UNIFORMS::shininess.name, pt0::RenderVariant(50.0f));
+        cmaterial.SetMaterial(mat);
     }
 
     // CompTransform
-    auto& ctrans = m_node->GetUniqueComp<n3::CompTransform>();
+    auto& ctrans = m_scene_node->GetUniqueComp<n3::CompTransform>();
 
     ctrans.SetPosition(m_sphere.GetCenter());
 
     const float s = m_sphere.GetRadius();
     ctrans.SetScale(sm::vec3(s, s, s));
-
-    // CompMaterial
-    auto& cmaterial = m_node->AddUniqueComp<n0::CompMaterial>();
-    auto mat = std::make_unique<pt0::Material>();
-    typedef pt3::MaterialMgr::PhongUniforms UNIFORMS;
-    mat->AddVar(UNIFORMS::ambient.name,     pt0::RenderVariant(sm::vec3(0.04f, 0.04f, 0.04f)));
-    mat->AddVar(UNIFORMS::diffuse.name,     pt0::RenderVariant(sm::vec3(1, 1, 1)));
-    mat->AddVar(UNIFORMS::specular.name,    pt0::RenderVariant(sm::vec3(1, 1, 1)));
-    mat->AddVar(UNIFORMS::shininess.name,   pt0::RenderVariant(50.0f));
-    cmaterial.SetMaterial(mat);
-}
-
-void Sphere::Traverse(std::function<bool(const n0::SceneNodePtr&)> func) const
-{
-    func(m_node);
 }
 
 }

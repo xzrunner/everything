@@ -16,20 +16,17 @@ public:
     Sphere()
     {
         m_imports = {
-            {{ VariableType::Port, "prev" }}
+            {{ VariableType::Any, "in" }}
         };
         m_exports = {
-            {{ VariableType::Port, "next" }},
+            {{ VariableType::Any, "out" }},
         };
     }
 
-    virtual void Execute() override;
-    virtual void Traverse(std::function<bool(const n0::SceneNodePtr&)> func) const override;
+    virtual void ExecuteSelf() override;
 
 private:
     gs::Sphere m_sphere;
-
-    n0::SceneNodePtr m_node = nullptr;
 
     RTTR_ENABLE(Node)
 

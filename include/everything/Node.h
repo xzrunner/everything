@@ -17,8 +17,7 @@ public:
     Node() {}
 //    Node(const std::string& name);
 
-    virtual void Execute() {}
-    virtual void Traverse(std::function<bool(const n0::SceneNodePtr&)> func) const {}
+    void Execute();
 
     struct Port;
     void SetImports(const std::vector<Port>& imports) { m_imports = imports; }
@@ -26,6 +25,8 @@ public:
 
     auto& GetImports() const { return m_imports; }
     auto& GetExports() const { return m_exports; }
+
+    n0::SceneNodePtr GetSceneNode() { return m_scene_node; }
 
 public:
     struct PortAddr
@@ -51,7 +52,15 @@ public:
     };
 
 protected:
+    virtual void ExecuteSelf() = 0;
+
+private:
+    void ExecuteExports();
+
+protected:
     std::vector<Port> m_imports, m_exports;
+
+    n0::SceneNodePtr m_scene_node = nullptr;
 
 private:
 //    std::string m_name;
