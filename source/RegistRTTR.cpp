@@ -1,3 +1,6 @@
+// manipulate
+#include "everything/node/Transform.h"
+// primitive
 #include "everything/node/Box.h"
 #include "everything/node/Sphere.h"
 #include "everything/node/Curve.h"
@@ -9,6 +12,9 @@
 
 RTTR_REGISTRATION
 {
+
+// manipulate
+REGIST_NODE_TYPE(Transform)
 
 // primitive
 REGIST_NODE_TYPE(Box)

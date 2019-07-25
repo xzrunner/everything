@@ -10,8 +10,14 @@
     <Filter Include="system">
       <UniqueIdentifier>{d2a6f069-4272-41df-abc7-ae5a4eed982d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="nodes\primitive">
+    <Filter Include="nodes\geometry">
+      <UniqueIdentifier>{5d1a28a3-62c5-46d1-8a46-57a4ae60d491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\primitive">
       <UniqueIdentifier>{f58c101e-a98e-40ca-8f5e-b8266404484b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\manipulate">
+      <UniqueIdentifier>{f030ff3f-7877-44cd-9c75-8aeb1dacfa3f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -25,19 +31,22 @@
       <Filter>dataset</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Curve.h">
-      <Filter>nodes\primitive</Filter>
+      <Filter>nodes\geometry\primitive</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Box.h">
-      <Filter>nodes\primitive</Filter>
+      <Filter>nodes\geometry\primitive</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\Evaluator.h">
       <Filter>system</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Sphere.h">
-      <Filter>nodes\primitive</Filter>
+      <Filter>nodes\geometry\primitive</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\typedef.h" />
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Transform.h">
+      <Filter>nodes\geometry\manipulate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Node.cpp">
@@ -50,11 +59,14 @@
       <Filter>system</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Box.cpp">
-      <Filter>nodes\primitive</Filter>
+      <Filter>nodes\geometry\primitive</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Sphere.cpp">
-      <Filter>nodes\primitive</Filter>
+      <Filter>nodes\geometry\primitive</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\Everything.cpp" />
+    <ClCompile Include="..\..\..\source\node\Transform.cpp">
+      <Filter>nodes\geometry\manipulate</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@
     <ClInclude Include="..\..\..\include\everything\node\Box.h" />
     <ClInclude Include="..\..\..\include\everything\node\Curve.h" />
     <ClInclude Include="..\..\..\include\everything\node\Sphere.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Transform.h" />
     <ClInclude Include="..\..\..\include\everything\typedef.h" />
     <ClInclude Include="..\..\..\include\everything\Variable.h" />
     <ClInclude Include="..\..\..\include\everything\VariableType.h" />
@@ -27,6 +28,7 @@
     <ClCompile Include="..\..\..\source\Node.cpp" />
     <ClCompile Include="..\..\..\source\node\Box.cpp" />
     <ClCompile Include="..\..\..\source\node\Sphere.cpp" />
+    <ClCompile Include="..\..\..\source\node\Transform.cpp" />
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
