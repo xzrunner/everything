@@ -24,10 +24,12 @@ namespace evt
 //{
 //}
 
-void Node::Execute()
+void Node::Execute(bool only_self)
 {
     ExecuteSelf();
-    ExecuteExports();
+    if (!only_self) {
+        ExecuteExports();
+    }
 }
 
 void Node::ExecuteExports()
@@ -36,7 +38,7 @@ void Node::ExecuteExports()
         for (auto& c : o.conns) {
             auto n = c.node.lock();
             if (n) {
-                n->ExecuteSelf();
+                n->Execute(false);
             }
         }
     }

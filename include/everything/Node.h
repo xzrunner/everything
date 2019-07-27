@@ -17,7 +17,7 @@ public:
     Node() {}
 //    Node(const std::string& name);
 
-    void Execute();
+    void Execute(bool only_self);
 
     struct Port;
     void SetImports(const std::vector<Port>& imports) { m_imports = imports; }
