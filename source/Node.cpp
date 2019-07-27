@@ -63,4 +63,33 @@ void make_connecting(const Node::PortAddr& from, const Node::PortAddr& to)
 	}
 }
 
+void disconnect(const Node::PortAddr& from, const Node::PortAddr& to)
+{
+    auto f_node = from.node.lock();
+    auto t_node = to.node.lock();
+    if (!f_node || !t_node) {
+        return;
+    }
+
+    auto& f_port = f_node->GetExports()[from.idx];
+    bool finded = false;
+    for (auto itr = f_port.conns.begin(); itr != f_port.conns.end(); ++itr) {
+        if (itr->node.lock() == t_node && itr->idx == to.idx) {
+            const_cast<Node::Port&>(f_port).conns.erase(itr);
+            finded = true;
+        }
+    }
+    assert(finded);
+
+    auto& t_port = t_node->GetImports()[to.idx];
+    finded = false;
+    for (auto itr = t_port.conns.begin(); itr != t_port.conns.end(); ++itr) {
+        if (itr->node.lock() == f_node && itr->idx == from.idx) {
+            const_cast<Node::Port&>(t_port).conns.erase(itr);
+            finded = true;
+        }
+    }
+    assert(finded);
+}
+
 }

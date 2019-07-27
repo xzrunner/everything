@@ -70,5 +70,6 @@ private:
 }; // Node
 
 void make_connecting(const Node::PortAddr& from, const Node::PortAddr& to);
+void disconnect(const Node::PortAddr& from, const Node::PortAddr& to);
 
 }
