@@ -27,6 +27,10 @@ NodeHelper::ClonePrevSceneObj(const Node& node, int prev_idx)
     }
 
     auto sn = src_obj->GetSceneNode();
+    if (!sn) {
+        return nullptr;
+    }
+
     return sn->Clone();
 }
 
