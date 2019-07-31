@@ -19,6 +19,15 @@
     <Filter Include="nodes\geometry\manipulate">
       <UniqueIdentifier>{f030ff3f-7877-44cd-9c75-8aeb1dacfa3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nodes\geometry\utility">
+      <UniqueIdentifier>{ba93cdbb-5854-41c6-83f2-0b62189eef29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\polygon">
+      <UniqueIdentifier>{77594dd1-c4b6-4143-b93d-fa1d822447ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{a096378f-4acc-4503-8077-6cbce22d85de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\Node.h">
@@ -47,6 +56,18 @@
     <ClInclude Include="..\..\..\include\everything\node\Transform.h">
       <Filter>nodes\geometry\manipulate</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\PolyExtrude.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\typedef.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\GroupCreate.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\NodeHelper.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Node.cpp">
@@ -67,6 +88,15 @@
     <ClCompile Include="..\..\..\source\Everything.cpp" />
     <ClCompile Include="..\..\..\source\node\Transform.cpp">
       <Filter>nodes\geometry\manipulate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\GroupCreate.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\PolyExtrude.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\NodeHelper.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

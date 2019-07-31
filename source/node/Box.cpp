@@ -1,5 +1,7 @@
 #include "everything/node/Box.h"
+#include "everything/NodeHelper.h"
 
+#include <polymesh3/Brush.h>
 #include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
 #include <ns/NodeFactory.h>
@@ -88,27 +90,26 @@ void Box::UpdateModel()
     }
 
     auto brush_model = BuildBrush();
-    std::shared_ptr<model::Model> model =
-        model::BrushBuilder::PolymeshFromBrush(*brush_model);
+    NodeHelper::UpdateModelFromBrush(*m_scene_node, *brush_model);
 
-    auto& cmodel = m_scene_node->GetSharedComp<n3::CompModel>();
-    cmodel.SetModel(model);
-
+    std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
     auto& cmodel_inst = m_scene_node->GetUniqueComp<n3::CompModelInst>();
-    cmodel_inst.SetModel(model, 0);
+    cmodel_inst.GetModel()->SetModelExt(ext);
 }
 
 std::unique_ptr<model::BrushModel>
 Box::BuildBrush() const
 {
-    model::BrushModel::BrushData brush;
+    model::BrushModel::BrushSingle brush;
 
     brush.desc.mesh_begin = 0;
     brush.desc.mesh_end = 1;
     const int face_num = 6;
     brush.desc.meshes.push_back({ 0, 0, 0, face_num });
 
-    auto& faces = brush.impl.faces;
+    brush.impl = std::make_shared<pm3::Brush>();
+
+    auto& faces = brush.impl->faces;
     faces.reserve(face_num);
 
     const sm::vec3 s = m_scale / model::BrushBuilder::VERTEX_SCALE;
@@ -155,11 +156,11 @@ Box::BuildBrush() const
     back->plane = sm::Plane(top_right_back, top_left_back, btm_left_back);
     faces.push_back(back);
 
-    brush.impl.BuildVertices();
-    brush.impl.BuildGeometry();
+    brush.impl->BuildVertices();
+    brush.impl->BuildGeometry();
 
     auto model_model = std::make_unique<model::BrushModel>();
-    std::vector<model::BrushModel::BrushData> brushes;
+    std::vector<model::BrushModel::BrushSingle> brushes;
     brushes.push_back(brush);
     model_model->SetBrushes(brushes);
 

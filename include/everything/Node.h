@@ -26,7 +26,7 @@ public:
     auto& GetImports() const { return m_imports; }
     auto& GetExports() const { return m_exports; }
 
-    n0::SceneNodePtr GetSceneNode() { return m_scene_node; }
+    n0::SceneNodePtr GetSceneNode() const { return m_scene_node; }
 
 public:
     struct PortAddr
