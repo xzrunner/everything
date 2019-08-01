@@ -87,20 +87,26 @@ void disconnect(const Node::PortAddr& from, const Node::PortAddr& to)
 
     auto& f_port = f_node->GetExports()[from.idx];
     bool finded = false;
-    for (auto itr = f_port.conns.begin(); itr != f_port.conns.end(); ++itr) {
+    for (auto itr = f_port.conns.begin(); itr != f_port.conns.end(); )
+    {
         if (itr->node.lock() == t_node && itr->idx == to.idx) {
-            const_cast<Node::Port&>(f_port).conns.erase(itr);
+            itr = const_cast<Node::Port&>(f_port).conns.erase(itr);
             finded = true;
+        } else {
+            ++itr;
         }
     }
     assert(finded);
 
     auto& t_port = t_node->GetImports()[to.idx];
     finded = false;
-    for (auto itr = t_port.conns.begin(); itr != t_port.conns.end(); ++itr) {
+    for (auto itr = t_port.conns.begin(); itr != t_port.conns.end(); )
+    {
         if (itr->node.lock() == f_node && itr->idx == from.idx) {
-            const_cast<Node::Port&>(t_port).conns.erase(itr);
+            itr = const_cast<Node::Port&>(t_port).conns.erase(itr);
             finded = true;
+        } else {
+            ++itr;
         }
     }
     assert(finded);
