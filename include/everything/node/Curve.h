@@ -22,10 +22,11 @@ public:
         };
     }
 
-    virtual void ExecuteSelf() override {}
-
     void SetClosed(bool is_closed) { m_polyline.SetClosed(is_closed); }
     bool GetClosed() const { return m_polyline.GetClosed(); }
+
+protected:
+    virtual void ExecuteSelf() override {}
 
 private:
     gs::Polyline m_polyline;

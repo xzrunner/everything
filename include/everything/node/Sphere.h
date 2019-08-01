@@ -23,6 +23,7 @@ public:
         };
     }
 
+protected:
     virtual void ExecuteSelf() override;
 
 private:

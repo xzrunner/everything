@@ -24,6 +24,20 @@ namespace evt
 //{
 //}
 
+void Node::UpdateContext(TreeContext& ctx)
+{
+    UpdateCtxSelf(ctx);
+
+    for (auto& o : m_exports) {
+        for (auto& c : o.conns) {
+            auto n = c.node.lock();
+            if (n) {
+                n->UpdateContext(ctx);
+            }
+        }
+    }
+}
+
 void Node::Execute(bool only_self)
 {
     ExecuteSelf();

@@ -3,14 +3,13 @@
 #include "everything/Node.h"
 #include "everything/node/typedef.h"
 
-#include <model/BrushModel.h>
-
 #include <SM_Vector.h>
-
-namespace pm3 { struct BrushPart; }
 
 namespace evt
 {
+
+struct BrushGroup;
+
 namespace node
 {
 
@@ -45,6 +44,7 @@ public:
 
 protected:
     virtual void ExecuteSelf() override;
+    virtual void UpdateCtxSelf(TreeContext& ctx) override;
 
 private:
     void SelectByNormals();
@@ -54,7 +54,7 @@ private:
 
     GroupType m_type = GroupType::Primitives;
 
-    std::shared_ptr<model::BrushModel::BrushGroup> m_group = nullptr;
+    std::shared_ptr<BrushGroup> m_group = nullptr;
 
     // keep by normals
     bool     m_keep_by_normals = false;

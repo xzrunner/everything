@@ -2,10 +2,13 @@
 
 #include "everything/Node.h"
 
-#include <model/BrushModel.h>
+namespace pm3 { struct Brush; }
 
 namespace evt
 {
+
+struct BrushGroup;
+
 namespace node
 {
 
@@ -22,16 +25,24 @@ public:
         };
     }
 
-    virtual void ExecuteSelf() override;
+    virtual void BeforeUpdateContext() override;
 
-    void SetGroup(const std::shared_ptr<model::BrushModel::BrushGroup>& group);
-
+    void SetGroupName(const std::string& name) { m_group_name = name; }
     void SetDistance(float dist);
 
 private:
-    std::shared_ptr<model::BrushModel::BrushGroup> m_group = nullptr;
+    virtual void ExecuteSelf() override;
+    virtual void UpdateCtxSelf(TreeContext& ctx) override;
+
+private:
+    static void ExtrudeFace(pm3::Brush& brush, size_t face_idx, float dist);
+
+private:
+    std::string m_group_name;
 
     float m_distance = 0;
+
+    std::shared_ptr<BrushGroup> m_group = nullptr;
 
     RTTR_ENABLE(Node)
 

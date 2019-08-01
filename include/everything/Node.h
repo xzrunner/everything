@@ -6,16 +6,19 @@
 
 #include <rttr/registration>
 
-//#include <string>
-
 namespace evt
 {
+
+class TreeContext;
 
 class Node
 {
 public:
     Node() {}
 //    Node(const std::string& name);
+
+    virtual void BeforeUpdateContext() {}
+    void UpdateContext(TreeContext& ctx);
 
     void Execute(bool only_self);
 
@@ -53,6 +56,7 @@ public:
 
 protected:
     virtual void ExecuteSelf() = 0;
+    virtual void UpdateCtxSelf(TreeContext& ctx) {}
 
 private:
     void ExecuteExports();

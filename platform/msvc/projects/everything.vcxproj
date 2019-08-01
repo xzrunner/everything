@@ -11,8 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\everything\BrushGroup.h" />
     <ClInclude Include="..\..\..\include\everything\Evaluator.h" />
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
+    <ClInclude Include="..\..\..\include\everything\TreeContext.h" />
     <ClInclude Include="..\..\..\include\everything\Node.h" />
     <ClInclude Include="..\..\..\include\everything\NodeHelper.h" />
     <ClInclude Include="..\..\..\include\everything\node\Box.h" />
@@ -37,6 +39,7 @@
     <ClCompile Include="..\..\..\source\node\Sphere.cpp" />
     <ClCompile Include="..\..\..\source\node\Transform.cpp" />
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />
+    <ClCompile Include="..\..\..\source\TreeContext.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>5.everything</ProjectName>

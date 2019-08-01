@@ -26,11 +26,12 @@ public:
         };
     }
 
-    virtual void ExecuteSelf() override;
-
     void SetSize(const sm::vec3& size);
     void SetCenter(const sm::vec3& center);
     void SetScale(const sm::vec3& scale);
+
+protected:
+    virtual void ExecuteSelf() override;
 
 private:
     void UpdateModel();

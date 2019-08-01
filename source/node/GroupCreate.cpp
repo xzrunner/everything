@@ -1,7 +1,10 @@
 #include "everything/node/GroupCreate.h"
 #include "everything/NodeHelper.h"
+#include "everything/BrushGroup.h"
+#include "everything/TreeContext.h"
 
 #include <SM_Calc.h>
+#include <model/BrushModel.h>
 #include <polymesh3/Brush.h>
 
 namespace evt
@@ -17,7 +20,7 @@ void GroupCreate::SetName(const std::string& name)
 
     m_name = name;
     if (m_group) {
-        m_group->name = name;
+        m_group->name = m_name;
     }
 }
 
@@ -58,6 +61,13 @@ void GroupCreate::DisableKeepByNormals()
     Execute(false);
 }
 
+void GroupCreate::UpdateCtxSelf(TreeContext& ctx)
+{
+    if (m_group) {
+        ctx.AddGroup(m_group);
+    }
+}
+
 void GroupCreate::ExecuteSelf()
 {
     m_scene_node = NodeHelper::ClonePrevSceneObj(*this, SOURCE_OBJ_IDX);
@@ -66,45 +76,39 @@ void GroupCreate::ExecuteSelf()
     }
 
     if (!m_group) {
-        m_group = std::make_shared<model::BrushModel::BrushGroup>();
+        m_group = std::make_shared<BrushGroup>();
+        m_group->name = m_name;
+    } else {
+        if (m_name != m_group->name) {
+            m_name = m_group->name;
+        }
     }
 
-    m_group->name = m_name;
-
-    // parent
-    auto brush_model = NodeHelper::GetBrushModel(m_scene_node);
-    assert(brush_model);
-    auto& brushes = brush_model->GetBrushes();
-    assert(brushes.size() == 1);
-    m_group->part.parent = brushes[0].impl;
-
     // clear
-    m_group->part.vertices.clear();
-    m_group->part.edges.clear();
-    m_group->part.faces.clear();
+    m_group->vertices.clear();
+    m_group->edges.clear();
+    m_group->faces.clear();
 
     // insert selected to brush part
     if (m_keep_by_normals) {
         SelectByNormals();
     }
-
-    //// update scene node
-    //assert(m_scene_node->HasSharedComp<n3::CompModel>());
-    //auto& dst_cmodel = m_scene_node->GetSharedComp<n3::CompModel>();
-    //assert(dst_cmodel.GetModel()->ext && dst_cmodel.GetModel()->ext->Type() == model::EXT_BRUSH);
-    //brush_model->SetBrushes(brushes);
-    //brush_model->SetBrushGroups({ m_group });
 }
 
 void GroupCreate::SelectByNormals()
 {
-    assert(m_group->part.parent);
+    auto brush = NodeHelper::GetBrush(m_scene_node);
+    assert(brush);
+
     switch (m_type)
     {
     case GroupType::Primitives:
-        for (auto& f : m_group->part.parent->faces) {
-            if (sm::get_angle(sm::vec3(0, 0, 0), m_direction, f->plane.normal) <= m_spread_angle * SM_DEG_TO_RAD) {
-                m_group->part.faces.push_back(f);
+        for (size_t i = 0, n = brush->faces.size(); i < n; ++i)
+        {
+            auto& face = brush->faces[i];
+            auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
+            if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
+                m_group->faces.push_back(i);
             }
         }
         break;

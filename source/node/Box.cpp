@@ -18,6 +18,36 @@ namespace evt
 namespace node
 {
 
+void Box::SetSize(const sm::vec3& size)
+{
+    if (m_size == size) {
+        return;
+    }
+
+    m_size = size;
+    UpdateModel();
+}
+
+void Box::SetCenter(const sm::vec3& center)
+{
+    if (m_center == center) {
+        return;
+    }
+
+    m_center = center;
+    UpdateModel();
+}
+
+void Box::SetScale(const sm::vec3& scale)
+{
+    if (m_scale == scale) {
+        return;
+    }
+
+    m_scale = scale;
+    UpdateModel();
+}
+
 void Box::ExecuteSelf()
 {
     if (!m_scene_node)
@@ -51,36 +81,6 @@ void Box::ExecuteSelf()
     scale.y = cube.ymax - cube.ymin;
     scale.z = cube.zmax - cube.zmin;
     ctrans.SetScale(scale);
-}
-
-void Box::SetSize(const sm::vec3& size)
-{
-    if (m_size == size) {
-        return;
-    }
-
-    m_size = size;
-    UpdateModel();
-}
-
-void Box::SetCenter(const sm::vec3& center)
-{
-    if (m_center == center) {
-        return;
-    }
-
-    m_center = center;
-    UpdateModel();
-}
-
-void Box::SetScale(const sm::vec3& scale)
-{
-    if (m_scale == scale) {
-        return;
-    }
-
-    m_scale = scale;
-    UpdateModel();
 }
 
 void Box::UpdateModel()
