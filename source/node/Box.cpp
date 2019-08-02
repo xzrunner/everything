@@ -100,7 +100,7 @@ void Box::UpdateModel()
 std::unique_ptr<model::BrushModel>
 Box::BuildBrush() const
 {
-    model::BrushModel::BrushSingle brush;
+    model::BrushModel::Brush brush;
 
     brush.desc.mesh_begin = 0;
     brush.desc.mesh_end = 1;
@@ -160,7 +160,7 @@ Box::BuildBrush() const
     brush.impl->BuildGeometry();
 
     auto model_model = std::make_unique<model::BrushModel>();
-    std::vector<model::BrushModel::BrushSingle> brushes;
+    std::vector<model::BrushModel::Brush> brushes;
     brushes.push_back(brush);
     model_model->SetBrushes(brushes);
 
