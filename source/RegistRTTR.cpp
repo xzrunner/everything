@@ -7,6 +7,7 @@
 #include "everything/node/Sphere.h"
 #include "everything/node/Curve.h"
 // utility
+#include "everything/node/Blast.h"
 #include "everything/node/GroupCreate.h"
 
 #define REGIST_NODE_TYPE(name)                                 \
@@ -29,6 +30,7 @@ REGIST_NODE_TYPE(Sphere)
 REGIST_NODE_TYPE(Curve)
 
 // utility
+REGIST_NODE_TYPE(Blast)
 REGIST_NODE_TYPE(GroupCreate)
 
 }
