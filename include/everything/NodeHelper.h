@@ -21,6 +21,7 @@ public:
 
     static void UpdateModelFromBrush(n0::SceneNode& node, const model::BrushModel& brush_model);
 
+    static void AddMaterialComp(n0::SceneNode& node);
 
 }; // NodeHelper
 

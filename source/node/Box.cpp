@@ -6,12 +6,10 @@
 #include <model/BrushModel.h>
 #include <ns/NodeFactory.h>
 #include <node0/SceneNode.h>
-#include <node0/CompMaterial.h>
 #include <node3/CompModel.h>
 #include <node3/CompModelInst.h>
 #include <node3/CompTransform.h>
 #include <node3/CompAABB.h>
-#include <painting3/MaterialMgr.h>
 
 namespace evt
 {
@@ -53,18 +51,11 @@ void Box::ExecuteSelf()
     if (!m_scene_node)
     {
         m_scene_node = ns::NodeFactory::Create3D();
+
         m_scene_node->AddSharedComp<n3::CompModel>();
         m_scene_node->AddUniqueComp<n3::CompModelInst>();
 
-        // CompMaterial
-        auto& cmaterial = m_scene_node->AddUniqueComp<n0::CompMaterial>();
-        auto mat = std::make_unique<pt0::Material>();
-        typedef pt3::MaterialMgr::PhongUniforms UNIFORMS;
-        mat->AddVar(UNIFORMS::ambient.name, pt0::RenderVariant(sm::vec3(0.04f, 0.04f, 0.04f)));
-        mat->AddVar(UNIFORMS::diffuse.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
-        mat->AddVar(UNIFORMS::specular.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
-        mat->AddVar(UNIFORMS::shininess.name, pt0::RenderVariant(50.0f));
-        cmaterial.SetMaterial(mat);
+        NodeHelper::AddMaterialComp(*m_scene_node);
 
         UpdateModel();
     }

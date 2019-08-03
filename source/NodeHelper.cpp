@@ -58,18 +58,16 @@ void NodeHelper::UpdateModelFromBrush(n0::SceneNode& node, const model::BrushMod
     cmodel_inst.SetModel(model, 0);
 }
 
-void NodeHelper::UpdateModelFromBrush(n0::SceneNode& node, const std::shared_ptr<pm3::Brush>& brush)
+void NodeHelper::AddMaterialComp(n0::SceneNode& node)
 {
-    std::vector<std::shared_ptr<pm3::Brush>> brushes;
-    brushes.push_back(brush);
-    std::shared_ptr<model::Model> model =
-        model::BrushBuilder::PolymeshFromBrush(brushes);
-
-    auto& cmodel = node.GetSharedComp<n3::CompModel>();
-    cmodel.SetModel(model);
-
-    auto& cmodel_inst = node.GetUniqueComp<n3::CompModelInst>();
-    cmodel_inst.SetModel(model, 0);
+    auto& cmaterial = node.AddUniqueComp<n0::CompMaterial>();
+    auto mat = std::make_unique<pt0::Material>();
+    typedef pt3::MaterialMgr::PhongUniforms UNIFORMS;
+    mat->AddVar(UNIFORMS::ambient.name, pt0::RenderVariant(sm::vec3(0.04f, 0.04f, 0.04f)));
+    mat->AddVar(UNIFORMS::diffuse.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
+    mat->AddVar(UNIFORMS::specular.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
+    mat->AddVar(UNIFORMS::shininess.name, pt0::RenderVariant(50.0f));
+    cmaterial.SetMaterial(mat);
 }
 
 }
