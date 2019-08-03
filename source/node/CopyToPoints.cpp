@@ -3,10 +3,12 @@
 
 #include <polymesh3/Brush.h>
 #include <model/BrushModel.h>
+#include <model/BrushBuilder.h>
 #include <ns/NodeFactory.h>
 #include <node0/SceneNode.h>
 #include <node3/CompModel.h>
 #include <node3/CompModelInst.h>
+#include <node3/CompTransform.h>
 
 namespace evt
 {
@@ -43,12 +45,6 @@ void CopyToPoints::ExecuteSelf()
         return;
     }
 
-    auto src_brush_model = NodeHelper::GetBrushModel(src_obj);
-    auto dst_brush_model = NodeHelper::GetBrushModel(dst_obj);
-    if (!src_brush_model || !dst_brush_model) {
-        return;
-    }
-
     if (!m_scene_node)
     {
         m_scene_node = ns::NodeFactory::Create3D();
@@ -59,25 +55,52 @@ void CopyToPoints::ExecuteSelf()
         NodeHelper::AddMaterialComp(*m_scene_node);
     }
 
-    // build brush
+    auto brush_model = BuildBrush(*src_obj, *dst_obj);
+    if (brush_model) {
+        BuildPolymesh(brush_model);
+    }
+}
+
+std::unique_ptr<model::BrushModel>
+CopyToPoints::BuildBrush(const n0::SceneNode& src, const n0::SceneNode& dst) const
+{
+    auto src_brush_model = NodeHelper::GetBrushModel(src);
+    auto dst_brush_model = NodeHelper::GetBrushModel(dst);
+    if (!src_brush_model || !dst_brush_model) {
+        return nullptr;
+    }
+
+    auto& dst_ctrans = dst.GetUniqueComp<n3::CompTransform>();
+    const float s = 1.0f / model::BrushBuilder::VERTEX_SCALE;
+    n3::CompTransform scaled_ctrans;
+    scaled_ctrans.SetScale(dst_ctrans.GetScale());
+    scaled_ctrans.SetAngle(dst_ctrans.GetAngle());
+    scaled_ctrans.SetPosition(dst_ctrans.GetPosition() * s);
+    auto dst_mat = scaled_ctrans.GetTransformMat();
+
     auto brush_model = std::make_unique<model::BrushModel>();
     std::vector<model::BrushModel::Brush> brushes;
     for (auto& dst_brush : dst_brush_model->GetBrushes())
     {
         for (auto& pos : dst_brush.impl->vertices)
         {
+            auto target_pos = dst_mat * pos;
             for (auto& src_brush : src_brush_model->GetBrushes())
             {
                 model::BrushModel::Brush dst;
                 dst.desc = src_brush.desc;
-                dst.impl = CloneToPoint(*src_brush.impl, pos);
+                dst.impl = CloneToPoint(*src_brush.impl, target_pos);
                 brushes.push_back(dst);
             }
         }
     }
     brush_model->SetBrushes(brushes);
 
-    // build model
+    return brush_model;
+}
+
+void CopyToPoints::BuildPolymesh(std::unique_ptr<model::BrushModel>& brush_model)
+{
     NodeHelper::UpdateModelFromBrush(*m_scene_node, *brush_model);
 
     std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
