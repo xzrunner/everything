@@ -75,19 +75,24 @@ void GroupCreate::ExecuteSelf()
         return;
     }
 
-    if (!m_group) {
+    if (!m_group)
+    {
         m_group = std::make_shared<BrushGroup>();
+
         m_group->name = m_name;
-    } else {
+
+        auto brush_model = NodeHelper::GetBrushModel(m_scene_node);
+        m_group->parts.resize(brush_model->GetBrushes().size());
+    }
+    else
+    {
         if (m_name != m_group->name) {
             m_name = m_group->name;
         }
     }
 
     // clear
-    m_group->vertices.clear();
-    m_group->edges.clear();
-    m_group->faces.clear();
+    m_group->Clear();
 
     // insert selected to brush part
     if (m_keep_by_normals) {
@@ -97,18 +102,24 @@ void GroupCreate::ExecuteSelf()
 
 void GroupCreate::SelectByNormals()
 {
-    auto brush = NodeHelper::GetBrush(m_scene_node);
-    assert(brush);
+    auto brush_model = NodeHelper::GetBrushModel(m_scene_node);
+    assert(brush_model);
+    auto& brushes = brush_model->GetBrushes();
 
     switch (m_type)
     {
     case GroupType::Primitives:
-        for (size_t i = 0, n = brush->faces.size(); i < n; ++i)
+        for (int i = 0, n = brushes.size(); i < n; ++i)
         {
-            auto& face = brush->faces[i];
-            auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
-            if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
-                m_group->faces.push_back(i);
+            auto& brush = brushes[i];
+            auto& part = m_group->parts[i];
+            for (size_t j = 0, m = brush.impl->faces.size(); j < m; ++j)
+            {
+                auto& face = brush.impl->faces[j];
+                auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
+                if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
+                    part.faces.push_back(j);
+                }
             }
         }
         break;

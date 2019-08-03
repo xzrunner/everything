@@ -41,36 +41,42 @@ void PolyExtrude::ExecuteSelf()
     auto brush_model = NodeHelper::GetBrushModel(m_scene_node);
     assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
-    assert(brushes.size() == 1);
-    auto& brush = brushes[0];
 
     if (m_group)
     {
         bool dirty = false;
 
-        if (!m_group->faces.empty())
+        assert(brushes.size() == m_group->parts.size());
+        for (int i = 0, n = m_group->parts.size(); i < n; ++i)
         {
-            for (auto& f : m_group->faces) {
-                ExtrudeFace(*brush.impl, f, m_distance);
+            auto& part = m_group->parts[i];
+            if (part.faces.empty()) {
+                continue;
             }
+
             dirty = true;
+            for (auto& f : part.faces) {
+                ExtrudeFace(*brushes[i].impl, f, m_distance);
+            }
         }
 
         if (dirty)
         {
-            NodeHelper::UpdateModelFromBrush(*m_scene_node, brush.impl);
+            NodeHelper::UpdateModelFromBrush(*m_scene_node, *brush_model);
 
             assert(m_scene_node && m_scene_node->HasSharedComp<n3::CompModel>());
             auto& src_cmodel = m_scene_node->GetSharedComp<n3::CompModel>();
             auto model = src_cmodel.GetModel();
 
-            model::BrushBuilder::UpdateVBO(*model, brush);
+            model::BrushBuilder::UpdateVBO(*model, *brush_model);
         }
     }
     else
     {
-        for (size_t i = 0; i < brush.impl->faces.size(); ++i) {
-            ExtrudeFace(*brush.impl, i, m_distance);
+        for (auto& brush : brushes) {
+            for (size_t i = 0; i < brush.impl->faces.size(); ++i) {
+                ExtrudeFace(*brush.impl, i, m_distance);
+            }
         }
 
         NodeHelper::UpdateModelFromBrush(*m_scene_node, *brush_model);
@@ -79,7 +85,7 @@ void PolyExtrude::ExecuteSelf()
         auto& src_cmodel = m_scene_node->GetSharedComp<n3::CompModel>();
         auto model = src_cmodel.GetModel();
 
-        model::BrushBuilder::UpdateVBO(*model, brush);
+        model::BrushBuilder::UpdateVBO(*model, *brush_model);
     }
 }
 

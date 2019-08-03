@@ -9,6 +9,7 @@
 // utility
 #include "everything/node/Blast.h"
 #include "everything/node/GroupCreate.h"
+#include "everything/node/Merge.h"
 
 #define REGIST_NODE_TYPE(name)                                 \
 	rttr::registration::class_<evt::node::name>("evt::"#name)  \
@@ -32,6 +33,7 @@ REGIST_NODE_TYPE(Curve)
 // utility
 REGIST_NODE_TYPE(Blast)
 REGIST_NODE_TYPE(GroupCreate)
+REGIST_NODE_TYPE(Merge)
 
 }
 
