@@ -17,7 +17,7 @@ class NodeHelper
 public:
     static n0::SceneNodePtr ClonePrevSceneObj(const Node& node, int prev_idx);
 
-    static const model::BrushModel* GetBrushModel(const n0::SceneNodePtr& node);
+    static const model::BrushModel* GetBrushModel(const n0::SceneNode& node);
 
     static void UpdateModelFromBrush(n0::SceneNode& node, const model::BrushModel& brush_model);
 

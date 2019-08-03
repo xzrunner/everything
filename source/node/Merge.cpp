@@ -46,7 +46,8 @@ void Merge::ExecuteSelf()
     std::vector<model::BrushModel::Brush> brushes;
     for (auto& c : children)
     {
-        auto brush_model = NodeHelper::GetBrushModel(c);
+        assert(c);
+        auto brush_model = NodeHelper::GetBrushModel(*c);
         if (!brush_model) {
             continue;
         }

@@ -81,7 +81,7 @@ void GroupCreate::ExecuteSelf()
 
         m_group->name = m_name;
 
-        auto brush_model = NodeHelper::GetBrushModel(m_scene_node);
+        auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
         m_group->parts.resize(brush_model->GetBrushes().size());
     }
     else
@@ -102,7 +102,7 @@ void GroupCreate::ExecuteSelf()
 
 void GroupCreate::SelectByNormals()
 {
-    auto brush_model = NodeHelper::GetBrushModel(m_scene_node);
+    auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
     assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
 

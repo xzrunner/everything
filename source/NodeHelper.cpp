@@ -36,10 +36,10 @@ NodeHelper::ClonePrevSceneObj(const Node& node, int prev_idx)
 }
 
 const model::BrushModel*
-NodeHelper::GetBrushModel(const n0::SceneNodePtr& node)
+NodeHelper::GetBrushModel(const n0::SceneNode& node)
 {
-    assert(node && node->HasUniqueComp<n3::CompModelInst>());
-    auto& src_cmodel = node->GetUniqueComp<n3::CompModelInst>();
+    assert(node.HasUniqueComp<n3::CompModelInst>());
+    auto& src_cmodel = node.GetUniqueComp<n3::CompModelInst>();
     auto& model = src_cmodel.GetModel();
     auto& ext = model->GetModelExt();
     assert(ext && ext->Type() == model::EXT_BRUSH);
