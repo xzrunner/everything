@@ -8,6 +8,7 @@
 #include "everything/node/Curve.h"
 // utility
 #include "everything/node/Blast.h"
+#include "everything/node/CopyToPoints.h"
 #include "everything/node/GroupCreate.h"
 #include "everything/node/Merge.h"
 
@@ -32,6 +33,7 @@ REGIST_NODE_TYPE(Curve)
 
 // utility
 REGIST_NODE_TYPE(Blast)
+REGIST_NODE_TYPE(CopyToPoints)
 REGIST_NODE_TYPE(GroupCreate)
 REGIST_NODE_TYPE(Merge)
 

@@ -4,7 +4,6 @@
 #include <polymesh3/Brush.h>
 #include <model/BrushModel.h>
 #include <ns/NodeFactory.h>
-#include <node0/CompComplex.h>
 #include <node0/SceneNode.h>
 #include <node3/CompModel.h>
 #include <node3/CompModelInst.h>
