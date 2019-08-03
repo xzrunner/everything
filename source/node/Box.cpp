@@ -150,12 +150,12 @@ Box::BuildBrush() const
     brush.impl->BuildVertices();
     brush.impl->BuildGeometry();
 
-    auto model_model = std::make_unique<model::BrushModel>();
+    auto brush_model = std::make_unique<model::BrushModel>();
     std::vector<model::BrushModel::Brush> brushes;
     brushes.push_back(brush);
-    model_model->SetBrushes(brushes);
+    brush_model->SetBrushes(brushes);
 
-    return model_model;
+    return brush_model;
 }
 
 }
