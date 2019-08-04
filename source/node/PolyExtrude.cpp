@@ -7,7 +7,6 @@
 #include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
 #include <node0/SceneNode.h>
-#include <node3/CompModel.h>
 
 namespace evt
 {
@@ -37,7 +36,7 @@ void PolyExtrude::ExecuteSelf()
         return;
     }
 
-    assert(m_scene_node && m_scene_node->HasSharedComp<n3::CompModel>());
+    assert(m_scene_node);
     auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
     assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
