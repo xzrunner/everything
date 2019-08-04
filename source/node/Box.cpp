@@ -81,11 +81,10 @@ void Box::BuildModel()
     }
 
     auto brush_model = BuildBrush();
-    NodeHelper::UpdateModelFromBrush(*m_scene_node, *brush_model);
-
-    std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
-    auto& cmodel_inst = m_scene_node->GetUniqueComp<n3::CompModelInst>();
-    cmodel_inst.GetModel()->SetModelExt(ext);
+    if (brush_model) {
+        NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
+        NodeHelper::StoreBrush(*m_scene_node, brush_model);
+    }
 }
 
 std::unique_ptr<model::BrushModel>

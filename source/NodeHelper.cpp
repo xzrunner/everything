@@ -46,18 +46,6 @@ NodeHelper::GetBrushModel(const n0::SceneNode& node)
     return static_cast<model::BrushModel*>(ext.get());
 }
 
-void NodeHelper::UpdateModelFromBrush(n0::SceneNode& node, const model::BrushModel& brush_model)
-{
-    std::shared_ptr<model::Model> model =
-        model::BrushBuilder::PolymeshFromBrush(brush_model);
-
-    auto& cmodel = node.GetSharedComp<n3::CompModel>();
-    cmodel.SetModel(model);
-
-    auto& cmodel_inst = node.GetUniqueComp<n3::CompModelInst>();
-    cmodel_inst.SetModel(model, 0);
-}
-
 void NodeHelper::AddMaterialComp(n0::SceneNode& node)
 {
     auto& cmaterial = node.AddUniqueComp<n0::CompMaterial>();
@@ -69,5 +57,38 @@ void NodeHelper::AddMaterialComp(n0::SceneNode& node)
     mat->AddVar(UNIFORMS::shininess.name, pt0::RenderVariant(50.0f));
     cmaterial.SetMaterial(mat);
 }
+
+void NodeHelper::StoreBrush(n0::SceneNode& node, std::unique_ptr<model::BrushModel>& brush_model)
+{
+    std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
+    auto& cmodel_inst = node.GetUniqueComp<n3::CompModelInst>();
+    cmodel_inst.GetModel()->SetModelExt(ext);
+}
+
+void NodeHelper::BuildPolymesh(n0::SceneNode& node, const model::BrushModel& brush_model)
+{
+    std::shared_ptr<model::Model> model =
+        model::BrushBuilder::PolymeshFromBrush(brush_model);
+
+    auto& cmodel = node.GetSharedComp<n3::CompModel>();
+    cmodel.SetModel(model);
+
+    auto& cmodel_inst = node.GetUniqueComp<n3::CompModelInst>();
+    cmodel_inst.SetModel(model, 0);
+}
+
+// fixme: CompModel and CompModelInst shared same Model
+//        should call BuildPolymesh()
+//        Clone() only clone brush as ext, not clone Model
+//void NodeHelper::UpdatePolymesh(n0::SceneNode& node, const model::BrushModel& brush_model)
+//{
+//    assert(node.HasUniqueComp<n3::CompModelInst>());
+//    auto& src_cmodel_inst = node.GetUniqueComp<n3::CompModelInst>();
+//    auto& model_inst = src_cmodel_inst.GetModel();
+//    assert(model_inst);
+//    auto model = model_inst->GetModel();
+//
+//    model::BrushBuilder::UpdateVBO(*model, brush_model);
+//}
 
 }

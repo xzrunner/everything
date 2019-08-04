@@ -58,11 +58,8 @@ void Merge::ExecuteSelf()
     brush_model->SetBrushes(brushes);
 
     // build model
-    NodeHelper::UpdateModelFromBrush(*m_scene_node, *brush_model);
-
-    std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
-    auto& cmodel_inst = m_scene_node->GetUniqueComp<n3::CompModelInst>();
-    cmodel_inst.GetModel()->SetModelExt(ext);
+    NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
+    NodeHelper::StoreBrush(*m_scene_node, brush_model);
 }
 
 }

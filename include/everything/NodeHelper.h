@@ -19,9 +19,11 @@ public:
 
     static const model::BrushModel* GetBrushModel(const n0::SceneNode& node);
 
-    static void UpdateModelFromBrush(n0::SceneNode& node, const model::BrushModel& brush_model);
-
     static void AddMaterialComp(n0::SceneNode& node);
+
+    static void StoreBrush(n0::SceneNode& node, std::unique_ptr<model::BrushModel>& brush_model);
+    static void BuildPolymesh(n0::SceneNode& node, const model::BrushModel& brush_model);
+    static void UpdatePolymesh(n0::SceneNode& node, const model::BrushModel& brush_model);
 
 }; // NodeHelper
 

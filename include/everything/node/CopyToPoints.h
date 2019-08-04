@@ -41,7 +41,6 @@ protected:
 private:
     std::unique_ptr<model::BrushModel>
         BuildBrush(const n0::SceneNode& src, const n0::SceneNode& dst) const;
-    void BuildPolymesh(std::unique_ptr<model::BrushModel>& brush_model);
 
     static std::unique_ptr<pm3::Brush>
         CloneToPoint(const pm3::Brush& src, const sm::vec3& target);

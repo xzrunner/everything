@@ -60,15 +60,8 @@ void PolyExtrude::ExecuteSelf()
             }
         }
 
-        if (dirty)
-        {
-            NodeHelper::UpdateModelFromBrush(*m_scene_node, *brush_model);
-
-            assert(m_scene_node && m_scene_node->HasSharedComp<n3::CompModel>());
-            auto& src_cmodel = m_scene_node->GetSharedComp<n3::CompModel>();
-            auto model = src_cmodel.GetModel();
-
-            model::BrushBuilder::UpdateVBO(*model, *brush_model);
+        if (dirty) {
+            NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
         }
     }
     else
@@ -79,13 +72,7 @@ void PolyExtrude::ExecuteSelf()
             }
         }
 
-        NodeHelper::UpdateModelFromBrush(*m_scene_node, *brush_model);
-
-        assert(m_scene_node && m_scene_node->HasSharedComp<n3::CompModel>());
-        auto& src_cmodel = m_scene_node->GetSharedComp<n3::CompModel>();
-        auto model = src_cmodel.GetModel();
-
-        model::BrushBuilder::UpdateVBO(*model, *brush_model);
+        NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
     }
 }
 
