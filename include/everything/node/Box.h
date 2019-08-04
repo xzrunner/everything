@@ -34,7 +34,7 @@ protected:
     virtual void ExecuteSelf() override;
 
 private:
-    void UpdateModel();
+    void BuildModel();
 
     std::unique_ptr<model::BrushModel> BuildBrush() const;
 

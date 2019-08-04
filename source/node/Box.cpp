@@ -23,7 +23,7 @@ void Box::SetSize(const sm::vec3& size)
     }
 
     m_size = size;
-    UpdateModel();
+    BuildModel();
 }
 
 void Box::SetCenter(const sm::vec3& center)
@@ -33,7 +33,7 @@ void Box::SetCenter(const sm::vec3& center)
     }
 
     m_center = center;
-    UpdateModel();
+    BuildModel();
 }
 
 void Box::SetScale(const sm::vec3& scale)
@@ -43,7 +43,7 @@ void Box::SetScale(const sm::vec3& scale)
     }
 
     m_scale = scale;
-    UpdateModel();
+    BuildModel();
 }
 
 void Box::ExecuteSelf()
@@ -57,7 +57,7 @@ void Box::ExecuteSelf()
 
         NodeHelper::AddMaterialComp(*m_scene_node);
 
-        UpdateModel();
+        BuildModel();
     }
 
     // CompTransform
@@ -74,7 +74,7 @@ void Box::ExecuteSelf()
     ctrans.SetScale(scale);
 }
 
-void Box::UpdateModel()
+void Box::BuildModel()
 {
     if (!m_scene_node) {
         return;
