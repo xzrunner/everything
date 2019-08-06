@@ -13,7 +13,7 @@ namespace evt
 namespace node
 {
 
-void Sphere::ExecuteSelf()
+void Sphere::Execute(TreeContext& ctx)
 {
     if (!m_scene_node)
     {

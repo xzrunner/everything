@@ -24,40 +24,6 @@ namespace evt
 //{
 //}
 
-void Node::UpdateContext(TreeContext& ctx)
-{
-    UpdateCtxSelf(ctx);
-
-    for (auto& o : m_exports) {
-        for (auto& c : o.conns) {
-            auto n = c.node.lock();
-            if (n) {
-                n->UpdateContext(ctx);
-            }
-        }
-    }
-}
-
-void Node::Execute(bool only_self)
-{
-    ExecuteSelf();
-    if (!only_self) {
-        ExecuteExports();
-    }
-}
-
-void Node::ExecuteExports()
-{
-    for (auto& o : m_exports) {
-        for (auto& c : o.conns) {
-            auto n = c.node.lock();
-            if (n) {
-                n->Execute(false);
-            }
-        }
-    }
-}
-
 void make_connecting(const Node::PortAddr& from, const Node::PortAddr& to)
 {
 	{

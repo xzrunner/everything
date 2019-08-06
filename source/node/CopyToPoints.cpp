@@ -15,18 +15,7 @@ namespace evt
 namespace node
 {
 
-void CopyToPoints::SetTransformUsingPointOrientations(bool enable)
-{
-    if (m_trans_with_point_dir == enable) {
-        return;
-    }
-
-    m_trans_with_point_dir = enable;
-
-    Execute(false);
-}
-
-void CopyToPoints::ExecuteSelf()
+void CopyToPoints::Execute(TreeContext& ctx)
 {
     if (m_imports[IDX_SRC_PRIM].conns.empty() ||
         m_imports[IDX_TARGET_POS].conns.empty()) {
@@ -60,6 +49,17 @@ void CopyToPoints::ExecuteSelf()
         NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
         NodeHelper::StoreBrush(*m_scene_node, brush_model);
     }
+}
+
+void CopyToPoints::SetTransformUsingPointOrientations(bool enable)
+{
+    if (m_trans_with_point_dir == enable) {
+        return;
+    }
+
+    m_trans_with_point_dir = enable;
+
+    SetDirty(true);
 }
 
 std::unique_ptr<model::BrushModel>

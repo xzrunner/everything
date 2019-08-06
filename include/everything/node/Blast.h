@@ -6,8 +6,6 @@
 namespace evt
 {
 
-struct BrushGroup;
-
 namespace node
 {
 
@@ -24,7 +22,7 @@ public:
         };
     }
 
-    virtual void BeforeUpdateContext() override;
+    virtual void Execute(TreeContext& ctx) override;
 
     void SetGroupName(const std::string& name) { m_group_name = name; }
 
@@ -32,14 +30,8 @@ public:
 
     void SetDeleteNonSelected(bool del_non_selected);
 
-protected:
-    virtual void ExecuteSelf() override;
-    virtual void UpdateCtxSelf(TreeContext& ctx) override;
-
 private:
     std::string m_group_name;
-
-    std::shared_ptr<BrushGroup> m_group = nullptr;
 
     GroupType m_group_type = GroupType::Points;
 

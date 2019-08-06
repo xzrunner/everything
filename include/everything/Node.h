@@ -17,10 +17,8 @@ public:
     Node() {}
 //    Node(const std::string& name);
 
-    virtual void BeforeUpdateContext() {}
-    void UpdateContext(TreeContext& ctx);
-
-    void Execute(bool only_self);
+    virtual void Execute(TreeContext& ctx) = 0;
+    virtual void UpdateContext(TreeContext& ctx) {}
 
     struct Port;
     void SetImports(const std::vector<Port>& imports) { m_imports = imports; }
@@ -30,6 +28,9 @@ public:
     auto& GetExports() const { return m_exports; }
 
     n0::SceneNodePtr GetSceneNode() const { return m_scene_node; }
+
+    bool IsDirty() const { return m_dirty; }
+    void SetDirty(bool dirty) const { m_dirty = dirty; }
 
 public:
     struct PortAddr
@@ -55,19 +56,14 @@ public:
     };
 
 protected:
-    virtual void ExecuteSelf() = 0;
-    virtual void UpdateCtxSelf(TreeContext& ctx) {}
-
-private:
-    void ExecuteExports();
-
-protected:
     std::vector<Port> m_imports, m_exports;
 
     n0::SceneNodePtr m_scene_node = nullptr;
 
 private:
 //    std::string m_name;
+
+    mutable bool m_dirty = true;
 
     RTTR_ENABLE()
 

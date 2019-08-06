@@ -13,46 +13,21 @@ namespace evt
 namespace node
 {
 
-void Blast::BeforeUpdateContext()
-{
-    m_group = nullptr;
-}
-
-void Blast::SetGroupType(GroupType type)
-{
-    if (m_group_type == type) {
-        return;
-    }
-
-    m_group_type = type;
-
-    Execute(false);
-}
-
-void Blast::SetDeleteNonSelected(bool del_non_selected)
-{
-    if (m_delete_non_selected == del_non_selected) {
-        return;
-    }
-
-    m_delete_non_selected = del_non_selected;
-
-    Execute(false);
-}
-
-void Blast::ExecuteSelf()
+void Blast::Execute(TreeContext& ctx)
 {
     m_scene_node = NodeHelper::ClonePrevSceneObj(*this, 0);
     if (!m_scene_node) {
         return;
     }
 
+    auto group = ctx.QueryGroup(m_group_name);
+
     assert(m_scene_node);
     auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
     assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
 
-    if (m_group)
+    if (group)
     {
         switch (m_group_type)
         {
@@ -60,10 +35,10 @@ void Blast::ExecuteSelf()
         {
             bool dirty = false;
 
-            assert(brushes.size() == m_group->parts.size());
+            assert(brushes.size() == group->parts.size());
             for (int i = 0, n = brushes.size(); i < n; ++i)
             {
-                auto& part = m_group->parts[i];
+                auto& part = group->parts[i];
                 if (part.faces.empty()) {
                     continue;
                 }
@@ -97,12 +72,26 @@ void Blast::ExecuteSelf()
     }
 }
 
-void Blast::UpdateCtxSelf(TreeContext& ctx)
+void Blast::SetGroupType(GroupType type)
 {
-    auto group = ctx.QueryGroup(m_group_name);
-    if (group) {
-        m_group = group;
+    if (m_group_type == type) {
+        return;
     }
+
+    m_group_type = type;
+
+    SetDirty(false);
+}
+
+void Blast::SetDeleteNonSelected(bool del_non_selected)
+{
+    if (m_delete_non_selected == del_non_selected) {
+        return;
+    }
+
+    m_delete_non_selected = del_non_selected;
+
+    SetDirty(false);
 }
 
 }

@@ -23,8 +23,7 @@ public:
         };
     }
 
-protected:
-    virtual void ExecuteSelf() override;
+    virtual void Execute(TreeContext& ctx) override;
 
 private:
     gs::Sphere m_sphere;

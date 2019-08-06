@@ -13,7 +13,7 @@ namespace evt
 namespace node
 {
 
-void Merge::ExecuteSelf()
+void Merge::Execute(TreeContext& ctx)
 {
     if (!m_scene_node)
     {

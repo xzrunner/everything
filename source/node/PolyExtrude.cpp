@@ -13,42 +13,28 @@ namespace evt
 namespace node
 {
 
-void PolyExtrude::BeforeUpdateContext()
-{
-    m_group = nullptr;
-}
-
-void PolyExtrude::SetDistance(float dist)
-{
-    if (m_distance == dist) {
-        return;
-    }
-
-    m_distance = dist;
-
-    Execute(false);
-}
-
-void PolyExtrude::ExecuteSelf()
+void PolyExtrude::Execute(TreeContext& ctx)
 {
     m_scene_node = NodeHelper::ClonePrevSceneObj(*this, 0);
     if (!m_scene_node) {
         return;
     }
 
+    auto group = ctx.QueryGroup(m_group_name);
+
     assert(m_scene_node);
     auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
     assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
 
-    if (m_group)
+    if (group)
     {
         bool dirty = false;
 
-        assert(brushes.size() == m_group->parts.size());
-        for (int i = 0, n = m_group->parts.size(); i < n; ++i)
+        assert(brushes.size() == group->parts.size());
+        for (int i = 0, n = group->parts.size(); i < n; ++i)
         {
-            auto& part = m_group->parts[i];
+            auto& part = group->parts[i];
             if (part.faces.empty()) {
                 continue;
             }
@@ -75,12 +61,15 @@ void PolyExtrude::ExecuteSelf()
     }
 }
 
-void PolyExtrude::UpdateCtxSelf(TreeContext& ctx)
+void PolyExtrude::SetDistance(float dist)
 {
-    auto group = ctx.QueryGroup(m_group_name);
-    if (group) {
-        m_group = group;
+    if (m_distance == dist) {
+        return;
     }
+
+    m_distance = dist;
+
+    SetDirty(true);
 }
 
 void PolyExtrude::ExtrudeFace(pm3::Brush& brush, size_t face_idx, float dist)

@@ -22,13 +22,12 @@ public:
         };
     }
 
-    void SetTranslate(const sm::vec3& t) { m_translate = t; }
-    void SetRotate(const sm::vec3& r) { m_rotate = r; }
-    void SetScale(const sm::vec3& s) { m_scale = s; }
-    void SetShear(const sm::vec3& s) { m_shear = s; }
+    virtual void Execute(TreeContext& ctx) override;
 
-protected:
-    virtual void ExecuteSelf() override;
+    void SetTranslate(const sm::vec3& t);
+    void SetRotate(const sm::vec3& r);
+    void SetScale(const sm::vec3& s);
+    void SetShear(const sm::vec3& s);
 
 private:
     sm::vec3 m_translate = sm::vec3(0, 0, 0);

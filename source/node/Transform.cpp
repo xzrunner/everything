@@ -8,7 +8,7 @@ namespace evt
 namespace node
 {
 
-void Transform::ExecuteSelf()
+void Transform::Execute(TreeContext& ctx)
 {
     assert(m_imports.size() == 1);
     if (m_imports[0].conns.empty()) {
@@ -46,6 +46,50 @@ void Transform::ExecuteSelf()
         s.z *= m_scale.z;
         t.SetScale(s);
     }
+}
+
+void Transform::SetTranslate(const sm::vec3& t)
+{
+    if (m_translate == t) {
+        return;
+    }
+
+    m_translate = t;
+
+    SetDirty(true);
+}
+
+void Transform::SetRotate(const sm::vec3& r)
+{
+    if (m_rotate == r) {
+        return;
+    }
+
+    m_rotate = r;
+
+    SetDirty(true);
+}
+
+void Transform::SetScale(const sm::vec3& s)
+{
+    if (m_scale == s) {
+        return;
+    }
+
+    m_scale = s;
+
+    SetDirty(true);
+}
+
+void Transform::SetShear(const sm::vec3& s)
+{
+    if (m_shear == s) {
+        return;
+    }
+
+    m_shear = s;
+
+    SetDirty(true);
 }
 
 }

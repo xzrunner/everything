@@ -33,10 +33,9 @@ public:
         };
     }
 
-    void SetTransformUsingPointOrientations(bool enable);
+    virtual void Execute(TreeContext& ctx) override;
 
-protected:
-    virtual void ExecuteSelf() override;
+    void SetTransformUsingPointOrientations(bool enable);
 
 private:
     std::unique_ptr<model::BrushModel>

@@ -34,6 +34,9 @@ public:
         };
     }
 
+    virtual void Execute(TreeContext& ctx) override;
+    virtual void UpdateContext(TreeContext& ctx) override;
+
     void SetName(const std::string& name);
     void SetType(GroupType type);
 
@@ -41,10 +44,6 @@ public:
     void DisableKeepByNormals();
 
     auto GetGroup() const { return m_group; }
-
-protected:
-    virtual void ExecuteSelf() override;
-    virtual void UpdateCtxSelf(TreeContext& ctx) override;
 
 private:
     void SelectByNormals();

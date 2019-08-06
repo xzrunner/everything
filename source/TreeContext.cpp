@@ -6,7 +6,11 @@ namespace evt
 
 void TreeContext::AddGroup(const std::shared_ptr<BrushGroup>& group)
 {
-    m_groups.push_back(group);
+    if (group->name.empty()) {
+        return;
+    }
+
+    m_groups.insert({ group->name, group });
 }
 
 std::shared_ptr<BrushGroup>
@@ -16,13 +20,15 @@ TreeContext::QueryGroup(const std::string& name) const
         return nullptr;
     }
 
-    for (auto& g : m_groups) {
-        if (g->name == name) {
-            return g;
-        }
-    }
+    auto itr = m_groups.find(name);
+    return itr == m_groups.end() ? nullptr : itr->second;
+}
 
-    return nullptr;
+void TreeContext::Combine(const TreeContext& ctx)
+{
+    for (auto& pair : ctx.m_groups) {
+        m_groups.insert({ pair.first, pair.second });
+    }
 }
 
 }
