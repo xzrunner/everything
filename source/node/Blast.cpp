@@ -83,7 +83,7 @@ void Blast::SetGroupType(GroupType type)
 
     m_group_type = type;
 
-    SetDirty(false);
+    SetDirty(true);
 }
 
 void Blast::SetDeleteNonSelected(bool del_non_selected)
@@ -94,7 +94,7 @@ void Blast::SetDeleteNonSelected(bool del_non_selected)
 
     m_delete_non_selected = del_non_selected;
 
-    SetDirty(false);
+    SetDirty(true);
 }
 
 }
