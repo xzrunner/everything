@@ -48,12 +48,25 @@ void Blast::Execute(TreeContext& ctx)
                 dirty = true;
 
                 auto& faces = brushes[i].impl->faces;
-                for (auto& f : part.faces) {
-                    faces[f] = nullptr;
-                }
-                for (auto itr = faces.begin(); itr != faces.end(); )
+                std::vector<bool> del_flags;
+                if (m_delete_non_selected)
                 {
-                    if (!*itr) {
+                    del_flags.resize(faces.size(), true);
+                    for (auto& f : part.faces) {
+                        del_flags[f] = false;
+                    }
+                }
+                else
+                {
+                    del_flags.resize(faces.size(), false);
+                    for (auto& f : part.faces) {
+                        del_flags[f] = true;
+                    }
+                }
+                int idx = 0;
+                for (auto itr = faces.begin(); itr != faces.end(); ++idx)
+                {
+                    if (del_flags[idx]) {
                         itr = faces.erase(itr);
                     } else {
                         ++itr;
