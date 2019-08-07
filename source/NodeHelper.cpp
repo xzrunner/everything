@@ -59,11 +59,10 @@ void NodeHelper::AddMaterialComp(n0::SceneNode& node)
     cmaterial.SetMaterial(mat);
 }
 
-void NodeHelper::StoreBrush(n0::SceneNode& node, std::unique_ptr<model::BrushModel>& brush_model)
+void NodeHelper::StoreBrush(n0::SceneNode& node, std::unique_ptr<model::ModelExtend>& model_ext)
 {
-    std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
     auto& cmodel_inst = node.GetUniqueComp<n3::CompModelInst>();
-    cmodel_inst.GetModel()->SetModelExt(ext);
+    cmodel_inst.GetModel()->SetModelExt(model_ext);
 }
 
 void NodeHelper::BuildPolymesh(n0::SceneNode& node, const model::BrushModel& brush_model)

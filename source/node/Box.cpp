@@ -85,7 +85,8 @@ void Box::BuildModel()
     auto brush_model = BuildBrush();
     if (brush_model) {
         NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
-        NodeHelper::StoreBrush(*m_scene_node, brush_model);
+        std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
+        NodeHelper::StoreBrush(*m_scene_node, ext);
     }
 }
 

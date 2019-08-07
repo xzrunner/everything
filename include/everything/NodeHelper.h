@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace model { class BrushModel; }
+namespace model { class BrushModel; class ModelExtend; }
 namespace pm3 { struct Brush; }
 
 namespace evt
@@ -21,7 +21,7 @@ public:
 
     static void AddMaterialComp(n0::SceneNode& node);
 
-    static void StoreBrush(n0::SceneNode& node, std::unique_ptr<model::BrushModel>& brush_model);
+    static void StoreBrush(n0::SceneNode& node, std::unique_ptr<model::ModelExtend>& model_ext);
     static void BuildPolymesh(n0::SceneNode& node, const model::BrushModel& brush_model);
     static void UpdatePolymesh(n0::SceneNode& node, const model::BrushModel& brush_model);
 

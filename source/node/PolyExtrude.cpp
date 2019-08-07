@@ -23,8 +23,10 @@ void PolyExtrude::Execute(TreeContext& ctx)
     auto group = ctx.QueryGroup(m_group_name);
 
     assert(m_scene_node);
-    auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
-    assert(brush_model);
+    auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
+    assert(old_brush_model);
+    auto model_ext = old_brush_model->Clone();
+    auto brush_model = static_cast<model::BrushModel*>(model_ext.get());
     auto& brushes = brush_model->GetBrushes();
 
     if (group)
@@ -47,6 +49,7 @@ void PolyExtrude::Execute(TreeContext& ctx)
 
         if (dirty) {
             NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
+            NodeHelper::StoreBrush(*m_scene_node, model_ext);
         }
     }
     else
@@ -58,6 +61,7 @@ void PolyExtrude::Execute(TreeContext& ctx)
         }
 
         NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
+        NodeHelper::StoreBrush(*m_scene_node, model_ext);
     }
 }
 
