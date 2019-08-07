@@ -8,6 +8,7 @@
 #include <node3/CompModelInst.h>
 #include <node3/CompModel.h>
 #include <node3/CompModelInst.h>
+#include <node3/CompAABB.h>
 #include <painting3/MaterialMgr.h>
 
 #include <assert.h>
@@ -75,6 +76,9 @@ void NodeHelper::BuildPolymesh(n0::SceneNode& node, const model::BrushModel& bru
 
     auto& cmodel_inst = node.GetUniqueComp<n3::CompModelInst>();
     cmodel_inst.SetModel(model, 0);
+
+    auto& caabb = node.GetUniqueComp<n3::CompAABB>();
+    caabb.SetAABB(model->aabb);
 }
 
 // fixme: CompModel and CompModelInst shared same Model
