@@ -1,5 +1,8 @@
 everything/
+everything_test/
 projects/*
 
 !projects/everything.vcxproj
 !projects/everything.vcxproj.filters
+!projects/everything_test.vcxproj
+!projects/everything_test.vcxproj.filters
