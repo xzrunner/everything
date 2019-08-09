@@ -106,8 +106,7 @@ sm::mat4 Transform::CalcTransformMat() const
     auto rot = m_rotate * SM_DEG_TO_RAD;
     auto r_mat = sm::mat4::Rotated(rot.x, rot.y, rot.z);
 
-    auto off = m_translate / he::Polyhedron::VERTEX_SCALE;
-    auto t_mat = sm::mat4::Translated(off.x, off.y, off.z);
+    auto t_mat = sm::mat4::Translated(m_translate.x, m_translate.y, m_translate.z);
 
     return s_mat * r_mat * t_mat;
 }

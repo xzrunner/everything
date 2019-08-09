@@ -105,9 +105,9 @@ Box::BuildBrush() const
     auto& faces = brush.impl->faces;
     faces.reserve(face_num);
 
-    const sm::vec3 s = m_scale / model::BrushBuilder::VERTEX_SCALE;
+    const sm::vec3 s = m_scale;
     const sm::vec3 h_sz = m_size * 0.5f;
-    const sm::vec3 c = m_center / model::BrushBuilder::VERTEX_SCALE;
+    const sm::vec3 c = m_center;
 
     const float xmin = -h_sz.x * s.x + c.x;
     const float xmax =  h_sz.x * s.x + c.x;

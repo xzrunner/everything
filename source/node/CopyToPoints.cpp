@@ -73,11 +73,10 @@ CopyToPoints::BuildBrush(const n0::SceneNode& src, const n0::SceneNode& dst) con
     }
 
     auto& dst_ctrans = dst.GetUniqueComp<n3::CompTransform>();
-    const float s = 1.0f / model::BrushBuilder::VERTEX_SCALE;
     n3::CompTransform scaled_ctrans;
     scaled_ctrans.SetScale(dst_ctrans.GetScale());
     scaled_ctrans.SetAngle(dst_ctrans.GetAngle());
-    scaled_ctrans.SetPosition(dst_ctrans.GetPosition() * s);
+    scaled_ctrans.SetPosition(dst_ctrans.GetPosition());
     auto dst_mat = scaled_ctrans.GetTransformMat();
 
     auto brush_model = std::make_unique<model::BrushModel>();

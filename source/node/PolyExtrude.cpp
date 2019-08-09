@@ -79,7 +79,7 @@ void PolyExtrude::SetDistance(float dist)
 void PolyExtrude::ExtrudeFace(pm3::Brush& brush, size_t face_idx, float dist)
 {
     auto face = brush.faces[face_idx];
-    auto offset = face->plane.normal * dist / model::BrushBuilder::VERTEX_SCALE;
+    auto offset = face->plane.normal * dist;
     for (auto& v : face->vertices) {
         brush.vertices[v] += offset;
     }
