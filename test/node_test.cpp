@@ -42,6 +42,16 @@ model::BrushModel* GetBrushModel(const n0::SceneNodePtr& node)
     return brush_model;
 }
 
+void CheckAABB(const pt3::AABB& aabb, const sm::vec3& min, const sm::vec3& max)
+{
+    REQUIRE(aabb.Min()[0] == Approx(min.x));
+    REQUIRE(aabb.Min()[1] == Approx(min.y));
+    REQUIRE(aabb.Min()[2] == Approx(min.z));
+    REQUIRE(aabb.Max()[0] == Approx(max.x));
+    REQUIRE(aabb.Max()[1] == Approx(max.y));
+    REQUIRE(aabb.Max()[2] == Approx(max.z));
+}
+
 }
 
 // manipulate
@@ -113,32 +123,17 @@ TEST_CASE("box")
 
     auto& caabb = node->GetUniqueComp<n3::CompAABB>();
     auto& aabb = caabb.GetAABB();
-    REQUIRE(aabb.Min()[0] == -h_sz.x);
-    REQUIRE(aabb.Min()[1] == -h_sz.y);
-    REQUIRE(aabb.Min()[2] == -h_sz.z);
-    REQUIRE(aabb.Max()[0] == h_sz.x);
-    REQUIRE(aabb.Max()[1] == h_sz.y);
-    REQUIRE(aabb.Max()[2] == h_sz.z);
+    CheckAABB(aabb, -h_sz, h_sz);
 
     const sm::vec3 off(10, 11, 12);
     box->SetCenter(off);
     box->Execute(evt::TreeContext());
-    REQUIRE(aabb.Min()[0] == -h_sz.x + off.x);
-    REQUIRE(aabb.Min()[1] == -h_sz.y + off.y);
-    REQUIRE(aabb.Min()[2] == -h_sz.z + off.z);
-    REQUIRE(aabb.Max()[0] == h_sz.x + off.x);
-    REQUIRE(aabb.Max()[1] == h_sz.y + off.y);
-    REQUIRE(aabb.Max()[2] == h_sz.z + off.z);
+    CheckAABB(aabb, -h_sz + off, h_sz + off);
 
     const sm::vec3 scale(5, 6, 7);
     box->SetScale(scale);
     box->Execute(evt::TreeContext());
-    REQUIRE(aabb.Min()[0] == -h_sz.x * scale.x + off.x);
-    REQUIRE(aabb.Min()[1] == -h_sz.y * scale.y + off.y);
-    REQUIRE(aabb.Min()[2] == -h_sz.z * scale.z + off.z);
-    REQUIRE(aabb.Max()[0] == h_sz.x * scale.x + off.x);
-    REQUIRE(aabb.Max()[1] == h_sz.y * scale.y + off.y);
-    REQUIRE(aabb.Max()[2] == h_sz.z * scale.z + off.z);
+    CheckAABB(aabb, -h_sz * scale + off, h_sz * scale + off);
 }
 
 TEST_CASE("poly extrude")
@@ -166,12 +161,7 @@ TEST_CASE("poly extrude")
         auto& caabb = extrude->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
         auto& aabb = caabb.GetAABB();
         auto h_sz = size * 0.5f;
-        REQUIRE(aabb.Min()[0] == Approx(-h_sz.x - dist));
-        REQUIRE(aabb.Min()[1] == Approx(-h_sz.y - dist));
-        REQUIRE(aabb.Min()[2] == Approx(-h_sz.z - dist));
-        REQUIRE(aabb.Max()[0] == Approx(h_sz.x + dist));
-        REQUIRE(aabb.Max()[1] == Approx(h_sz.y + dist));
-        REQUIRE(aabb.Max()[2] == Approx(h_sz.z + dist));
+        CheckAABB(aabb, -h_sz - sm::vec3(dist, dist, dist), h_sz + sm::vec3(dist, dist, dist));
     }
 
     SECTION("extrude one face")
@@ -197,12 +187,7 @@ TEST_CASE("poly extrude")
         auto& caabb = extrude->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
         auto& aabb = caabb.GetAABB();
         auto h_sz = size * 0.5f;
-        REQUIRE(aabb.Min()[0] == Approx(-h_sz.x));
-        REQUIRE(aabb.Min()[1] == Approx(-h_sz.y));
-        REQUIRE(aabb.Min()[2] == Approx(-h_sz.z));
-        REQUIRE(aabb.Max()[0] == Approx(h_sz.x));
-        REQUIRE(aabb.Max()[1] == Approx(h_sz.y + dist));
-        REQUIRE(aabb.Max()[2] == Approx(h_sz.z));
+        CheckAABB(aabb, -h_sz, sm::vec3(h_sz.x, h_sz.y + dist, h_sz.z));
     }
 }
 
@@ -291,12 +276,7 @@ TEST_CASE("copy to points")
     auto& aabb = caabb.GetAABB();
     auto h_src_sz = src_size * 0.5f;
     auto h_tar_sz = target_size * 0.5f;
-    REQUIRE(aabb.Min()[0] == Approx(src_pos.x + target_pos.x - h_src_sz.x - h_tar_sz.x));
-    REQUIRE(aabb.Min()[1] == Approx(src_pos.y + target_pos.y - h_src_sz.y - h_tar_sz.y));
-    REQUIRE(aabb.Min()[2] == Approx(src_pos.z + target_pos.z - h_src_sz.z - h_tar_sz.z));
-    REQUIRE(aabb.Max()[0] == Approx(src_pos.x + target_pos.x + h_src_sz.x + h_tar_sz.x));
-    REQUIRE(aabb.Max()[1] == Approx(src_pos.y + target_pos.y + h_src_sz.y + h_tar_sz.y));
-    REQUIRE(aabb.Max()[2] == Approx(src_pos.z + target_pos.z + h_src_sz.z + h_tar_sz.z));
+    CheckAABB(aabb, src_pos + target_pos - h_src_sz - h_tar_sz, src_pos + target_pos + h_src_sz + h_tar_sz);
 }
 
 TEST_CASE("merge")
