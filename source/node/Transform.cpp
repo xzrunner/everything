@@ -1,5 +1,9 @@
 #include "everything/node/Transform.h"
+#include "everything/NodeHelper.h"
 
+#include <halfedge/Polyhedron.h>
+#include <polymesh3/Brush.h>
+#include <model/BrushModel.h>
 #include <node0/SceneNode.h>
 #include <node3/CompTransform.h>
 
@@ -33,18 +37,21 @@ void Transform::Execute(TreeContext& ctx)
             m_scene_node = prev_node->Clone();
         }
 
-        auto& pt = prev_node->GetUniqueComp<n3::CompTransform>();
-        auto& t = m_scene_node->GetUniqueComp<n3::CompTransform>();
+        assert(m_scene_node);
+        auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
+        assert(old_brush_model);
+        auto model_ext = old_brush_model->Clone();
+        auto brush_model = static_cast<model::BrushModel*>(model_ext.get());
+        auto& brushes = brush_model->GetBrushes();
+        assert(brushes.size() == 1);
+        auto& brush = brushes[0];
 
-        t.SetPosition(pt.GetPosition() + m_translate);
-
-        t.SetAngle(pt.GetAngle().Rotated(sm::Quaternion::CreateFromEulerAngle(m_rotate.z, m_rotate.x, m_rotate.y)));
-
-        auto s = pt.GetScale();
-        s.x *= m_scale.x;
-        s.y *= m_scale.y;
-        s.z *= m_scale.z;
-        t.SetScale(s);
+        auto mat = CalcTransformMat();
+        for (auto& v : brush.impl->vertices) {
+            v = mat * v;
+        }
+        NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
+        NodeHelper::StoreBrush(*m_scene_node, model_ext);
     }
 }
 
@@ -90,6 +97,19 @@ void Transform::SetShear(const sm::vec3& s)
     m_shear = s;
 
     SetDirty(true);
+}
+
+sm::mat4 Transform::CalcTransformMat() const
+{
+    auto s_mat = sm::mat4::Scaled(m_scale.x, m_scale.y, m_scale.z);
+
+    auto rot = m_rotate * SM_DEG_TO_RAD;
+    auto r_mat = sm::mat4::Rotated(rot.x, rot.y, rot.z);
+
+    auto off = m_translate / he::Polyhedron::VERTEX_SCALE;
+    auto t_mat = sm::mat4::Translated(off.x, off.y, off.z);
+
+    return s_mat * r_mat * t_mat;
 }
 
 }

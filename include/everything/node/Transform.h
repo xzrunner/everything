@@ -3,6 +3,7 @@
 #include "everything/Node.h"
 
 #include <SM_Vector.h>
+#include <SM_Matrix.h>
 
 namespace evt
 {
@@ -28,6 +29,9 @@ public:
     void SetRotate(const sm::vec3& r);
     void SetScale(const sm::vec3& s);
     void SetShear(const sm::vec3& s);
+
+private:
+    sm::mat4 CalcTransformMat() const;
 
 private:
     sm::vec3 m_translate = sm::vec3(0, 0, 0);
