@@ -1,3 +1,5 @@
+#include "utility.h"
+
 #include "everything/TreeContext.h"
 #include "everything/Evaluator.h"
 
@@ -22,74 +24,11 @@
 #include <node3/CompModelInst.h>
 #include <node3/CompAABB.h>
 #include <node3/CompTransform.h>
-#include <unirender/gl/RenderContext.h>
-#include <unirender/Blackboard.h>
-#include <painting3/AABB.h>
-#include <renderpipeline/RenderMgr.h>
 
 #include <catch/catch.hpp>
-#include <gl/glew.h>
-#include <glfw3.h>
 
 namespace
 {
-
-void error_callback(int error, const char* description)
-{
-	fputs(description, stderr);
-}
-
-bool InitGL()
-{
-	glfwSetErrorCallback(error_callback);
-	if (!glfwInit()) {
-		exit(EXIT_FAILURE);
-		return false;
-	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-	GLFWwindow* window = glfwCreateWindow(100, 100, "rotate-crop", nullptr, nullptr);
-	if (!window)
-	{
-		glfwTerminate();
-		return false;
-	}
-	glfwMakeContextCurrent(window);
-
-	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
-	glewExperimental = GL_TRUE;
-	//// Initialize GLEW to setup the OpenGL Function pointers
-	//if (glewInit() != GLEW_OK) {
-	//	return -1;
-	//}
-
-	return true;
-}
-
-void InitRender()
-{
-    auto ur_rc = std::make_shared<ur::gl::RenderContext>(4096, [&](ur::RenderContext& ctx) {
-        ctx.EnableFlushCB(false);
-        rp::RenderMgr::Instance()->Flush();
-        ctx.EnableFlushCB(true);
-    });
-    ur::Blackboard::Instance()->SetRenderContext(ur_rc);
-}
-
-void init()
-{
-    static bool inited = false;
-    if (!inited) {
-        InitGL();
-        InitRender();
-        inited = true;
-    }
-}
 
 model::BrushModel* GetBrushModel(const n0::SceneNodePtr& node)
 {
@@ -109,7 +48,7 @@ model::BrushModel* GetBrushModel(const n0::SceneNodePtr& node)
 
 TEST_CASE("transform")
 {
-    init();
+    test::init();
 
     evt::Evaluator eval;
 
@@ -155,7 +94,7 @@ TEST_CASE("transform")
 
 TEST_CASE("box")
 {
-    init();
+    test::init();
 
     auto box = std::make_shared<evt::node::Box>();
 
@@ -204,7 +143,7 @@ TEST_CASE("box")
 
 TEST_CASE("poly extrude")
 {
-    init();
+    test::init();
 
     evt::Evaluator eval;
 
@@ -271,7 +210,7 @@ TEST_CASE("poly extrude")
 
 TEST_CASE("blast")
 {
-    init();
+    test::init();
 
     evt::Evaluator eval;
 
@@ -322,7 +261,7 @@ TEST_CASE("blast")
 
 TEST_CASE("copy to points")
 {
-    init();
+    test::init();
 
     evt::Evaluator eval;
 
@@ -362,7 +301,7 @@ TEST_CASE("copy to points")
 
 TEST_CASE("merge")
 {
-    init();
+    test::init();
 
     evt::Evaluator eval;
 
