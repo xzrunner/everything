@@ -1,11 +1,11 @@
 #pragma once
 
 #include "everything/Node.h"
-#include "everything/node/typedef.h"
+
+#include <polymesh3/Geometry.h>
 
 namespace evt
 {
-
 namespace node
 {
 
@@ -26,14 +26,14 @@ public:
 
     void SetGroupName(const std::string& name) { m_group_name = name; }
 
-    void SetGroupType(GroupType type);
+    void SetGroupType(pm3::GroupType type);
 
     void SetDeleteNonSelected(bool del_non_selected);
 
 private:
     std::string m_group_name;
 
-    GroupType m_group_type = GroupType::Points;
+    pm3::GroupType m_group_type = pm3::GroupType::Points;
 
     bool m_delete_non_selected = false;
 

@@ -42,8 +42,8 @@ void Merge::Execute(TreeContext& ctx)
     }
 
     // build brush
-    auto brush_model = std::make_unique<model::BrushModel>();
-    std::vector<model::BrushModel::Brush> brushes;
+    model::BrushModel::Brush brush;
+    brush.impl = std::make_shared<pm3::Polytope>();
     for (auto& c : children)
     {
         assert(c);
@@ -52,9 +52,13 @@ void Merge::Execute(TreeContext& ctx)
             continue;
         }
         for (auto& b : brush_model->GetBrushes()) {
-            brushes.push_back({ b.desc, std::make_shared<pm3::Polytope>(*b.impl) });
+            brush.impl->Combine(*b.impl);
         }
     }
+
+    auto brush_model = std::make_unique<model::BrushModel>();
+    std::vector<model::BrushModel::Brush> brushes;
+    brushes.push_back(brush);
     brush_model->SetBrushes(brushes);
 
     // build model

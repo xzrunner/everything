@@ -1,10 +1,8 @@
 #include "everything/node/GroupCreate.h"
 #include "everything/NodeHelper.h"
-#include "everything/BrushGroup.h"
 #include "everything/TreeContext.h"
 
 #include <SM_Calc.h>
-#include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 
 namespace evt
@@ -19,36 +17,27 @@ void GroupCreate::Execute(TreeContext& ctx)
         return;
     }
 
-    if (!m_group)
-    {
-        m_group = std::make_shared<BrushGroup>();
+    auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
+    assert(brush_model);
+    auto& brushes = brush_model->GetBrushes();
+    assert(brushes.size() == 1);
+    auto& brush = brushes[0];
 
-        m_group->name = m_name;
-
-        auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
-        m_group->parts.resize(brush_model->GetBrushes().size());
-    }
-    else
-    {
-        if (m_name != m_group->name) {
-            m_name = m_group->name;
-        }
-    }
-
-    // clear
-    m_group->Clear();
+    auto group = std::make_shared<pm3::Group>();
+    group->name = m_name;
+    brush.impl->AddGroup(group);
 
     // insert selected to brush part
     if (m_keep_by_normals) {
-        SelectByNormals();
+        SelectByNormals(*group);
     }
 }
 
 void GroupCreate::UpdateContext(TreeContext& ctx)
 {
-    if (m_group) {
-        ctx.AddGroup(m_group);
-    }
+    //if (m_group) {
+    //    ctx.AddGroup(m_group);
+    //}
 }
 
 void GroupCreate::SetName(const std::string& name)
@@ -58,12 +47,9 @@ void GroupCreate::SetName(const std::string& name)
     }
 
     m_name = name;
-    if (m_group) {
-        m_group->name = m_name;
-    }
 }
 
-void GroupCreate::SetType(GroupType type)
+void GroupCreate::SetType(pm3::GroupType type)
 {
     if (m_type == type) {
         return;
@@ -100,35 +86,34 @@ void GroupCreate::DisableKeepByNormals()
     SetDirty(true);
 }
 
-void GroupCreate::SelectByNormals()
+void GroupCreate::SelectByNormals(pm3::Group& group)
 {
     auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
     assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
+    assert(brushes.size() == 1);
+    auto& brush = brushes[0];
 
     switch (m_type)
     {
-    case GroupType::Primitives:
-        for (int i = 0, n = brushes.size(); i < n; ++i)
+    case pm3::GroupType::Face:
+    {
+        auto& faces = brush.impl->Faces();
+        for (size_t i = 0, n = faces.size(); i < n; ++i)
         {
-            auto& brush = brushes[i];
-            auto& part = m_group->parts[i];
-            auto& faces = brush.impl->Faces();
-            for (size_t j = 0, m = faces.size(); j < m; ++j)
-            {
-                auto& face = faces[j];
-                auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
-                if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
-                    part.faces.push_back(j);
-                }
+            auto& face = faces[i];
+            auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
+            if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
+                group.items.push_back(i);
             }
         }
+    }
         break;
-    case GroupType::Points:
+    case pm3::GroupType::Points:
         break;
-    case GroupType::Edges:
+    case pm3::GroupType::Edges:
         break;
-    case GroupType::Vertices:
+    case pm3::GroupType::Vertices:
         break;
     }
 }

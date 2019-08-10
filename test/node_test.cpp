@@ -253,7 +253,7 @@ TEST_CASE("blast")
 
     auto blast = std::make_shared<evt::node::Blast>();
     blast->SetGroupName(name);
-    blast->SetGroupType(evt::node::GroupType::Primitives);
+    blast->SetGroupType(pm3::GroupType::Face);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -318,6 +318,54 @@ TEST_CASE("copy to points")
     CheckAABB(aabb, src_pos + target_pos - h_src_sz - h_tar_sz, src_pos + target_pos + h_src_sz + h_tar_sz);
 }
 
+TEST_CASE("group_create")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box0 = std::make_shared<evt::node::Box>();
+    const sm::vec3 pos0(5, 0, 0);
+    box0->SetCenter(pos0);
+    eval.AddNode(box0);
+
+    auto group = std::make_shared<evt::node::GroupCreate>();
+    group->SetName("test");
+    group->EnableKeepByNormals(sm::vec3(0, 0, 1), 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box0, 0 }, { group, 0 });
+
+    auto box1 = std::make_shared<evt::node::Box>();
+    const sm::vec3 pos1(-5, 0, 0);
+    box1->SetCenter(pos1);
+    eval.AddNode(box1);
+
+    auto merge = std::make_shared<evt::node::Merge>();
+    eval.AddNode(merge);
+    eval.Connect({ group, 0 }, { merge, 0 });
+    eval.Connect({ box1, 0 }, { merge, 1 });
+
+    auto extrude = std::make_shared<evt::node::PolyExtrude>();
+    extrude->SetGroupName("test");
+    extrude->SetDistance(5);
+    eval.AddNode(extrude);
+    eval.Connect({ merge, 0 }, { extrude, 0 });
+
+    eval.Update();
+
+    auto brush_model = GetBrushModel(merge->GetSceneNode());
+    auto& brushes = brush_model->GetBrushes();
+    REQUIRE(brushes.size() == 1);
+    auto& brush = brushes[0];
+    REQUIRE(brush.impl->Faces().size() == 12);
+    REQUIRE(brush.impl->Points().size() == 16);
+
+    auto& caabb = extrude->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
+    auto& aabb = caabb.GetAABB();
+    CheckAABB(aabb, sm::vec3(-5.5f, -0.5f, -0.5f), sm::vec3(5.5f, 0.5f, 5.5f));
+}
+
 TEST_CASE("merge")
 {
     test::init();
@@ -356,7 +404,10 @@ TEST_CASE("merge")
 
     auto brush_model = GetBrushModel(merge->GetSceneNode());
     auto& brushes = brush_model->GetBrushes();
-    REQUIRE(brushes.size() == 3);
+    REQUIRE(brushes.size() == 1);
+    auto& brush = brushes[0];
+    REQUIRE(brush.impl->Faces().size() == 18);
+    REQUIRE(brush.impl->Points().size() == 24);
 
     auto& caabb = merge->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
     auto& aabb = caabb.GetAABB();

@@ -68,17 +68,11 @@
     <ClInclude Include="..\..\..\include\everything\node\Blast.h">
       <Filter>nodes\geometry\utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\node\typedef.h">
-      <Filter>nodes</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\GroupCreate.h">
       <Filter>nodes\geometry\utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\NodeHelper.h">
       <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\BrushGroup.h">
-      <Filter>dataset</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\TreeContext.h">
       <Filter>dataset</Filter>

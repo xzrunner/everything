@@ -1,6 +1,5 @@
 #include "everything/node/PolyExtrude.h"
 #include "everything/NodeHelper.h"
-#include "everything/BrushGroup.h"
 #include "everything/TreeContext.h"
 
 #include <polymesh3/Geometry.h>
@@ -20,34 +19,26 @@ void PolyExtrude::Execute(TreeContext& ctx)
         return;
     }
 
-    auto group = ctx.QueryGroup(m_group_name);
-
     assert(m_scene_node);
     auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
     assert(old_brush_model);
     auto model_ext = old_brush_model->Clone();
     auto brush_model = static_cast<model::BrushModel*>(model_ext.get());
     auto& brushes = brush_model->GetBrushes();
+    assert(brushes.size() == 1);
+    auto& brush = brushes[0];
 
+    auto group = brush.impl->QueryGroup(m_group_name);
     if (group)
     {
-        bool dirty = false;
+        assert(group->type == pm3::GroupType::Face);
 
-        assert(brushes.size() == group->parts.size());
-        for (int i = 0, n = group->parts.size(); i < n; ++i)
+        if (!group->items.empty())
         {
-            auto& part = group->parts[i];
-            if (part.faces.empty()) {
-                continue;
+            for (auto& i : group->items) {
+                ExtrudeFace(*brush.impl, i, m_distance);
             }
 
-            dirty = true;
-            for (auto& f : part.faces) {
-                ExtrudeFace(*brushes[i].impl, f, m_distance);
-            }
-        }
-
-        if (dirty) {
             NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
             NodeHelper::StoreBrush(*m_scene_node, model_ext);
         }
