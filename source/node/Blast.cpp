@@ -3,7 +3,7 @@
 #include "everything/BrushGroup.h"
 #include "everything/TreeContext.h"
 
-#include <polymesh3/Brush.h>
+#include <polymesh3/Geometry.h>
 #include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
 #include <node0/SceneNode.h>
@@ -47,7 +47,7 @@ void Blast::Execute(TreeContext& ctx)
 
                 dirty = true;
 
-                auto& faces = brushes[i].impl->faces;
+                auto faces = brushes[i].impl->Faces();
                 std::vector<bool> del_flags;
                 if (m_delete_non_selected)
                 {
@@ -64,13 +64,18 @@ void Blast::Execute(TreeContext& ctx)
                     }
                 }
                 int idx = 0;
+                bool dirty = false;
                 for (auto itr = faces.begin(); itr != faces.end(); ++idx)
                 {
                     if (del_flags[idx]) {
                         itr = faces.erase(itr);
+                        dirty = true;
                     } else {
                         ++itr;
                     }
+                }
+                if (dirty) {
+                    brushes[i].impl->SetFaces(faces);
                 }
             }
 

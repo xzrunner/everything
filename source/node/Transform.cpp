@@ -2,7 +2,7 @@
 #include "everything/NodeHelper.h"
 
 #include <halfedge/Polyhedron.h>
-#include <polymesh3/Brush.h>
+#include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 #include <node0/SceneNode.h>
 #include <node3/CompTransform.h>
@@ -47,7 +47,7 @@ void Transform::Execute(TreeContext& ctx)
         auto& brush = brushes[0];
 
         auto mat = CalcTransformMat();
-        for (auto& v : brush.impl->vertices) {
+        for (auto& v : brush.impl->Points()) {
             v = mat * v;
         }
         NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);

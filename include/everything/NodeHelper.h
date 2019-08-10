@@ -5,7 +5,7 @@
 #include <memory>
 
 namespace model { class BrushModel; class ModelExtend; }
-namespace pm3 { struct Brush; }
+namespace pm3 { class Polytope; }
 
 namespace evt
 {

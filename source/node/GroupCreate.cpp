@@ -4,8 +4,8 @@
 #include "everything/TreeContext.h"
 
 #include <SM_Calc.h>
+#include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
-#include <polymesh3/Brush.h>
 
 namespace evt
 {
@@ -113,9 +113,10 @@ void GroupCreate::SelectByNormals()
         {
             auto& brush = brushes[i];
             auto& part = m_group->parts[i];
-            for (size_t j = 0, m = brush.impl->faces.size(); j < m; ++j)
+            auto& faces = brush.impl->Faces();
+            for (size_t j = 0, m = faces.size(); j < m; ++j)
             {
-                auto& face = brush.impl->faces[j];
+                auto& face = faces[j];
                 auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
                 if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
                     part.faces.push_back(j);

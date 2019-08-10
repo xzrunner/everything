@@ -4,7 +4,7 @@
 
 #include <SM_Vector.h>
 
-namespace pm3 { struct Brush; }
+namespace pm3 { class Polytope; }
 namespace model { class BrushModel; }
 
 namespace evt
@@ -41,8 +41,8 @@ private:
     std::unique_ptr<model::BrushModel>
         BuildBrush(const n0::SceneNode& src, const n0::SceneNode& dst) const;
 
-    static std::unique_ptr<pm3::Brush>
-        CloneToPoint(const pm3::Brush& src, const sm::vec3& target);
+    static std::unique_ptr<pm3::Polytope>
+        CloneToPoint(const pm3::Polytope& src, const sm::vec3& target);
 
 private:
     bool m_trans_with_point_dir = false;

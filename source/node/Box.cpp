@@ -1,7 +1,7 @@
 #include "everything/node/Box.h"
 #include "everything/NodeHelper.h"
 
-#include <polymesh3/Brush.h>
+#include <polymesh3/Geometry.h>
 #include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
 #include <ns/NodeFactory.h>
@@ -100,9 +100,7 @@ Box::BuildBrush() const
     const int face_num = 6;
     brush.desc.meshes.push_back({ 0, 0, 0, face_num });
 
-    brush.impl = std::make_shared<pm3::Brush>();
-
-    auto& faces = brush.impl->faces;
+    std::vector<pm3::FacePtr> faces;
     faces.reserve(face_num);
 
     const sm::vec3 s = m_scale;
@@ -125,32 +123,31 @@ Box::BuildBrush() const
     const sm::vec3 btm_right_front(xmax, ymin, zmin);
     const sm::vec3 btm_right_back (xmax, ymin, zmax);
 
-    auto top = std::make_shared<pm3::BrushFace>();
+    auto top = std::make_shared<pm3::Face>();
     top->plane = sm::Plane(top_left_front, top_left_back, top_right_back);
     faces.push_back(top);
 
-    auto bottom = std::make_shared<pm3::BrushFace>();
+    auto bottom = std::make_shared<pm3::Face>();
     bottom->plane = sm::Plane(btm_left_front, btm_right_front, btm_right_back);
     faces.push_back(bottom);
 
-    auto left = std::make_shared<pm3::BrushFace>();
+    auto left = std::make_shared<pm3::Face>();
     left->plane = sm::Plane(top_left_back, top_left_front, btm_left_front);
     faces.push_back(left);
 
-    auto right = std::make_shared<pm3::BrushFace>();
+    auto right = std::make_shared<pm3::Face>();
     right->plane = sm::Plane(top_right_front, top_right_back, btm_right_back);
     faces.push_back(right);
 
-    auto front = std::make_shared<pm3::BrushFace>();
+    auto front = std::make_shared<pm3::Face>();
     front->plane = sm::Plane(top_left_front, top_right_front, btm_right_front);
     faces.push_back(front);
 
-    auto back = std::make_shared<pm3::BrushFace>();
+    auto back = std::make_shared<pm3::Face>();
     back->plane = sm::Plane(top_right_back, top_left_back, btm_left_back);
     faces.push_back(back);
 
-    brush.impl->BuildVertices();
-    brush.impl->BuildGeometry();
+    brush.impl = std::make_shared<pm3::Polytope>(faces);
 
     auto brush_model = std::make_unique<model::BrushModel>();
     std::vector<model::BrushModel::Brush> brushes;

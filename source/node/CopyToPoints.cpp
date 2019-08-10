@@ -1,7 +1,7 @@
 #include "everything/node/CopyToPoints.h"
 #include "everything/NodeHelper.h"
 
-#include <polymesh3/Brush.h>
+#include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 #include <model/BrushBuilder.h>
 #include <ns/NodeFactory.h>
@@ -83,7 +83,7 @@ CopyToPoints::BuildBrush(const n0::SceneNode& src, const n0::SceneNode& dst) con
     std::vector<model::BrushModel::Brush> brushes;
     for (auto& dst_brush : dst_brush_model->GetBrushes())
     {
-        for (auto& pos : dst_brush.impl->vertices)
+        for (auto& pos : dst_brush.impl->Points())
         {
             auto target_pos = dst_mat * pos;
             for (auto& src_brush : src_brush_model->GetBrushes())
@@ -100,11 +100,11 @@ CopyToPoints::BuildBrush(const n0::SceneNode& src, const n0::SceneNode& dst) con
     return brush_model;
 }
 
-std::unique_ptr<pm3::Brush>
-CopyToPoints::CloneToPoint(const pm3::Brush& src, const sm::vec3& target)
+std::unique_ptr<pm3::Polytope>
+CopyToPoints::CloneToPoint(const pm3::Polytope& src, const sm::vec3& target)
 {
-    auto ret = std::make_unique<pm3::Brush>(src);
-    for (auto& v : ret->vertices) {
+    auto ret = std::make_unique<pm3::Polytope>(src);
+    for (auto& v : ret->Points()) {
         v += target;
     }
     return ret;

@@ -2,7 +2,7 @@
 
 #include "everything/Node.h"
 
-namespace pm3 { struct Brush; }
+namespace pm3 { class Polytope; }
 
 namespace evt
 {
@@ -29,7 +29,7 @@ public:
     void SetDistance(float dist);
 
 private:
-    static void ExtrudeFace(pm3::Brush& brush, size_t face_idx, float dist);
+    static void ExtrudeFace(pm3::Polytope& poly, size_t face_idx, float dist);
 
 private:
     std::string m_group_name;

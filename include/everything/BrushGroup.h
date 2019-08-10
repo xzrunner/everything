@@ -9,9 +9,9 @@ namespace evt
 
 struct BrushPart
 {
-    std::vector<pm3::BrushVertex> vertices;
-    std::vector<pm3::BrushEdge>   edges;
-    std::vector<size_t>           faces;
+    std::vector<pm3::PointIndex> vertices;
+    std::vector<pm3::EdgeIndex>  edges;
+    std::vector<size_t>          faces;
 
     void Clear() {
         vertices.clear();

@@ -3,7 +3,7 @@
 #include "everything/BrushGroup.h"
 #include "everything/TreeContext.h"
 
-#include <polymesh3/Brush.h>
+#include <polymesh3/Geometry.h>
 #include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
 #include <node0/SceneNode.h>
@@ -55,7 +55,7 @@ void PolyExtrude::Execute(TreeContext& ctx)
     else
     {
         for (auto& brush : brushes) {
-            for (size_t i = 0; i < brush.impl->faces.size(); ++i) {
+            for (size_t i = 0; i < brush.impl->Faces().size(); ++i) {
                 ExtrudeFace(*brush.impl, i, m_distance);
             }
         }
@@ -76,12 +76,12 @@ void PolyExtrude::SetDistance(float dist)
     SetDirty(true);
 }
 
-void PolyExtrude::ExtrudeFace(pm3::Brush& brush, size_t face_idx, float dist)
+void PolyExtrude::ExtrudeFace(pm3::Polytope& poly, size_t face_idx, float dist)
 {
-    auto face = brush.faces[face_idx];
+    auto face = poly.Faces()[face_idx];
     auto offset = face->plane.normal * dist;
-    for (auto& v : face->vertices) {
-        brush.vertices[v] += offset;
+    for (auto& v : face->points) {
+        poly.Points()[v] += offset;
     }
 }
 

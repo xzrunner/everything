@@ -16,7 +16,7 @@
 #include "everything/node/Merge.h"
 
 #include <SM_Vector.h>
-#include <polymesh3/Brush.h>
+#include <polymesh3/Geometry.h>
 #include <model/Model.h>
 #include <model/ModelExtend.h>
 #include <model/BrushModel.h>
@@ -157,8 +157,8 @@ TEST_CASE("box")
     auto& brushes = brush_model->GetBrushes();
     REQUIRE(brushes.size() == 1);
     auto& brush = brushes[0];
-    REQUIRE(brush.impl->faces.size() == 6);
-    REQUIRE(brush.impl->vertices.size() == 8);
+    REQUIRE(brush.impl->Faces().size() == 6);
+    REQUIRE(brush.impl->Points().size() == 8);
 
     auto& caabb = node->GetUniqueComp<n3::CompAABB>();
     auto& aabb = caabb.GetAABB();
@@ -266,7 +266,7 @@ TEST_CASE("blast")
         auto& brushes = brush_model->GetBrushes();
         REQUIRE(brushes.size() == 1);
         auto& brush = brushes[0].impl;
-        REQUIRE(brush->faces.size() == 5);
+        REQUIRE(brush->Faces().size() == 5);
     }
 
     SECTION("del non selected")
@@ -279,7 +279,7 @@ TEST_CASE("blast")
         auto& brushes = brush_model->GetBrushes();
         REQUIRE(brushes.size() == 1);
         auto& brush = brushes[0].impl;
-        REQUIRE(brush->faces.size() == 1);
+        REQUIRE(brush->Faces().size() == 1);
     }
 }
 

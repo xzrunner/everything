@@ -1,7 +1,7 @@
 #include "everything/node/Merge.h"
 #include "everything/NodeHelper.h"
 
-#include <polymesh3/Brush.h>
+#include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 #include <ns/NodeFactory.h>
 #include <node0/SceneNode.h>
@@ -52,7 +52,7 @@ void Merge::Execute(TreeContext& ctx)
             continue;
         }
         for (auto& b : brush_model->GetBrushes()) {
-            brushes.push_back({ b.desc, std::make_shared<pm3::Brush>(*b.impl) });
+            brushes.push_back({ b.desc, std::make_shared<pm3::Polytope>(*b.impl) });
         }
     }
     brush_model->SetBrushes(brushes);
