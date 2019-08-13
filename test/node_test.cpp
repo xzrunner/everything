@@ -6,6 +6,8 @@
 // manipulate
 #include "everything/node/Transform.h"
 // polygon
+#include "everything/node/Boolean.h"
+#include "everything/node/Knife.h"
 #include "everything/node/PolyExtrude.h"
 // primitive
 #include "everything/node/Box.h"
@@ -16,6 +18,7 @@
 #include "everything/node/Merge.h"
 
 #include <SM_Vector.h>
+#include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
 #include <model/Model.h>
 #include <model/ModelExtend.h>
@@ -417,4 +420,126 @@ TEST_CASE("merge")
     REQUIRE(aabb.Max()[0] == Approx(std::max(pos0.x + size0.x * 0.5f, std::max(pos1.x + size1.x * 0.5f, pos2.x + size2.x * 0.5f))));
     REQUIRE(aabb.Max()[1] == Approx(std::max(pos0.y + size0.y * 0.5f, std::max(pos1.y + size1.y * 0.5f, pos2.y + size2.y * 0.5f))));
     REQUIRE(aabb.Max()[2] == Approx(std::max(pos0.z + size0.z * 0.5f, std::max(pos1.z + size1.z * 0.5f, pos2.z + size2.z * 0.5f))));
+}
+
+TEST_CASE("knife")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto knife = std::make_shared<evt::node::Knife>();
+    eval.AddNode(knife);
+
+    eval.Connect({ box, 0 }, { knife, 0 });
+
+    SECTION("keep all")
+    {
+        knife->SetKeepType(evt::node::Knife::KeepType::KeepAll);
+
+        eval.Update();
+
+        auto brush_model = GetBrushModel(knife->GetSceneNode());
+        auto& brushes = brush_model->GetBrushes();
+        REQUIRE(brushes.size() == 1);
+        auto& brush = brushes[0];
+        REQUIRE(brush.impl->Points().size() == 12);
+        REQUIRE(brush.impl->Faces().size() == 10);
+        REQUIRE(brush.impl->GetHalfedge()->GetEdges().Size() == 40);
+
+        auto& caabb = knife->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
+        auto& aabb = caabb.GetAABB();
+        CheckAABB(aabb, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
+    }
+
+    SECTION("keep above")
+    {
+        knife->SetKeepType(evt::node::Knife::KeepType::KeepAbove);
+
+        eval.Update();
+
+        auto brush_model = GetBrushModel(knife->GetSceneNode());
+        auto& brushes = brush_model->GetBrushes();
+        REQUIRE(brushes.size() == 1);
+        auto& brush = brushes[0];
+        REQUIRE(brush.impl->Points().size() == 8);
+        REQUIRE(brush.impl->Faces().size() == 5);
+        REQUIRE(brush.impl->GetHalfedge()->GetEdges().Size() == 20);
+
+        auto& caabb = knife->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
+        auto& aabb = caabb.GetAABB();
+        CheckAABB(aabb, sm::vec3(-0.5f, 0, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
+    }
+
+    SECTION("keep below")
+    {
+        knife->SetKeepType(evt::node::Knife::KeepType::KeepBelow);
+
+        eval.Update();
+
+        auto brush_model = GetBrushModel(knife->GetSceneNode());
+        auto& brushes = brush_model->GetBrushes();
+        REQUIRE(brushes.size() == 1);
+        auto& brush = brushes[0];
+        REQUIRE(brush.impl->Points().size() == 8);
+        REQUIRE(brush.impl->Faces().size() == 5);
+        REQUIRE(brush.impl->GetHalfedge()->GetEdges().Size() == 20);
+
+        auto& caabb = knife->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
+        auto& aabb = caabb.GetAABB();
+        CheckAABB(aabb, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0, 0.5f));
+    }
+}
+
+TEST_CASE("boolean")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box0 = std::make_shared<evt::node::Box>();
+    const sm::vec3 size0(4, 1, 4);
+    box0->SetSize(size0);
+    eval.AddNode(box0);
+
+    auto box1 = std::make_shared<evt::node::Box>();
+    const sm::vec3 size1(1, 2, 1);
+    box1->SetSize(size1);
+    eval.AddNode(box1);
+
+    auto boolean = std::make_shared<evt::node::Boolean>();
+    eval.AddNode(boolean);
+
+    eval.Connect({ box0, 0 }, { boolean, evt::node::Boolean::IDX_A });
+    eval.Connect({ box1, 0 }, { boolean, evt::node::Boolean::IDX_B });
+
+    SECTION("union")
+    {
+    }
+
+    SECTION("intersect")
+    {
+        boolean->SetOperator(evt::node::Boolean::Operator::Intersect);
+
+        eval.Update();
+
+        auto brush_model = GetBrushModel(boolean->GetSceneNode());
+        auto& brushes = brush_model->GetBrushes();
+        REQUIRE(brushes.size() == 1);
+        auto& brush = brushes[0];
+        REQUIRE(brush.impl->Points().size() == 8);
+        REQUIRE(brush.impl->Faces().size() == 6);
+        REQUIRE(brush.impl->GetHalfedge()->GetEdges().Size() == 24);
+
+        auto& caabb = boolean->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
+        auto& aabb = caabb.GetAABB();
+        CheckAABB(aabb, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
+    }
+
+    SECTION("subtract")
+    {
+    }
 }

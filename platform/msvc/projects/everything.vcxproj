@@ -13,10 +13,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\Evaluator.h" />
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Knife.h" />
     <ClInclude Include="..\..\..\include\everything\TreeContext.h" />
     <ClInclude Include="..\..\..\include\everything\Node.h" />
     <ClInclude Include="..\..\..\include\everything\NodeHelper.h" />
     <ClInclude Include="..\..\..\include\everything\node\Blast.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Boolean.h" />
     <ClInclude Include="..\..\..\include\everything\node\Box.h" />
     <ClInclude Include="..\..\..\include\everything\node\CopyToPoints.h" />
     <ClInclude Include="..\..\..\include\everything\node\Curve.h" />
@@ -35,9 +37,11 @@
     <ClCompile Include="..\..\..\source\Node.cpp" />
     <ClCompile Include="..\..\..\source\NodeHelper.cpp" />
     <ClCompile Include="..\..\..\source\node\Blast.cpp" />
+    <ClCompile Include="..\..\..\source\node\Boolean.cpp" />
     <ClCompile Include="..\..\..\source\node\Box.cpp" />
     <ClCompile Include="..\..\..\source\node\CopyToPoints.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
+    <ClCompile Include="..\..\..\source\node\Knife.cpp" />
     <ClCompile Include="..\..\..\source\node\Merge.cpp" />
     <ClCompile Include="..\..\..\source\node\PolyExtrude.cpp" />
     <ClCompile Include="..\..\..\source\node\Sphere.cpp" />

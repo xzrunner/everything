@@ -4,6 +4,7 @@
 
 #include <SM_Calc.h>
 #include <model/BrushModel.h>
+#include <node0/SceneNode.h>
 
 namespace evt
 {
@@ -12,20 +13,17 @@ namespace node
 
 void GroupCreate::Execute(TreeContext& ctx)
 {
-    m_scene_node = NodeHelper::ClonePrevSceneObj(*this, SOURCE_OBJ_IDX);
-    if (!m_scene_node) {
+    auto obj = NodeHelper::GetInputSceneNode(*this, 0);
+    if (!obj) {
         return;
     }
-
-    auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
-    assert(brush_model);
-    auto& brushes = brush_model->GetBrushes();
-    assert(brushes.size() == 1);
-    auto& brush = brushes[0];
+    m_scene_node = obj->Clone();
+    auto polytope = NodeHelper::GetPolytope(*m_scene_node);
+    assert(polytope);
 
     auto group = std::make_shared<pm3::Group>();
     group->name = m_name;
-    brush.impl->AddGroup(group);
+    polytope->AddGroup(group);
 
     // insert selected to brush part
     if (m_keep_by_normals) {
@@ -88,17 +86,13 @@ void GroupCreate::DisableKeepByNormals()
 
 void GroupCreate::SelectByNormals(pm3::Group& group)
 {
-    auto brush_model = NodeHelper::GetBrushModel(*m_scene_node);
-    assert(brush_model);
-    auto& brushes = brush_model->GetBrushes();
-    assert(brushes.size() == 1);
-    auto& brush = brushes[0];
-
+    auto polytope = NodeHelper::GetPolytope(*m_scene_node);
+    assert(polytope);
     switch (m_type)
     {
     case pm3::GroupType::Face:
     {
-        auto& faces = brush.impl->Faces();
+        auto& faces = polytope->Faces();
         for (size_t i = 0, n = faces.size(); i < n; ++i)
         {
             auto& face = faces[i];

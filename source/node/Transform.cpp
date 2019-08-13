@@ -37,7 +37,6 @@ void Transform::Execute(TreeContext& ctx)
             m_scene_node = prev_node->Clone();
         }
 
-        assert(m_scene_node);
         auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
         assert(old_brush_model);
         auto model_ext = old_brush_model->Clone();

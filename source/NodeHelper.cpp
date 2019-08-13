@@ -17,23 +17,19 @@ namespace evt
 {
 
 n0::SceneNodePtr
-NodeHelper::ClonePrevSceneObj(const Node& node, int prev_idx)
+NodeHelper::GetInputSceneNode(const Node& node, int input_idx)
 {
-    auto& port = node.GetImports()[prev_idx];
+    auto& port = node.GetImports()[input_idx];
     if (port.conns.empty()) {
         return nullptr;
     }
+    assert(port.conns.size() == 1);
     auto src_obj = port.conns[0].node.lock();
-    if (!src_obj) {
+    if (src_obj) {
+        return src_obj->GetSceneNode();
+    } else {
         return nullptr;
     }
-
-    auto sn = src_obj->GetSceneNode();
-    if (!sn) {
-        return nullptr;
-    }
-
-    return sn->Clone();
 }
 
 const model::BrushModel*
@@ -45,6 +41,16 @@ NodeHelper::GetBrushModel(const n0::SceneNode& node)
     auto& ext = model->GetModelExt();
     assert(ext && ext->Type() == model::EXT_BRUSH);
     return static_cast<model::BrushModel*>(ext.get());
+}
+
+pm3::PolytopePtr NodeHelper::GetPolytope(const n0::SceneNode& node)
+{
+    auto brush_model = NodeHelper::GetBrushModel(node);
+    assert(brush_model);
+    auto& brushes = brush_model->GetBrushes();
+    assert(brushes.size() == 1);
+    auto& brush = brushes[0];
+    return brush.impl;
 }
 
 void NodeHelper::AddMaterialComp(n0::SceneNode& node)

@@ -14,12 +14,11 @@ namespace node
 
 void PolyExtrude::Execute(TreeContext& ctx)
 {
-    m_scene_node = NodeHelper::ClonePrevSceneObj(*this, 0);
-    if (!m_scene_node) {
+    auto obj = NodeHelper::GetInputSceneNode(*this, 0);
+    if (!obj) {
         return;
     }
-
-    assert(m_scene_node);
+    m_scene_node = obj->Clone();
     auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
     assert(old_brush_model);
     auto model_ext = old_brush_model->Clone();

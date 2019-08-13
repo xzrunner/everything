@@ -6,7 +6,6 @@ namespace pm3 { class Polytope; }
 
 namespace evt
 {
-
 namespace node
 {
 
