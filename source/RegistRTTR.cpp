@@ -1,6 +1,8 @@
 // manipulate
 #include "everything/node/Transform.h"
 // polygon
+#include "everything/node/Boolean.h"
+#include "everything/node/Knife.h"
 #include "everything/node/PolyExtrude.h"
 // primitive
 #include "everything/node/Box.h"
@@ -24,6 +26,8 @@ RTTR_REGISTRATION
 REGIST_NODE_TYPE(Transform)
 
 // polygon
+REGIST_NODE_TYPE(Boolean)
+REGIST_NODE_TYPE(Knife)
 REGIST_NODE_TYPE(PolyExtrude)
 
 // primitive
