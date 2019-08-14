@@ -2,17 +2,15 @@
 
 #include "everything/Node.h"
 
-#include <SM_Vector.h>
-
 namespace evt
 {
 namespace node
 {
 
-class Curve : public Node
+class Carve : public Node
 {
 public:
-    Curve()
+    Carve()
     {
         m_imports = {
             {{ VariableType::Any, "in" }}
@@ -24,18 +22,15 @@ public:
 
     virtual void Execute(TreeContext& ctx) override;
 
-    auto& GetVertices() const { return m_vertices; }
-    void  SetVertices(const std::vector<sm::vec3>& vertices);
-
 private:
-    void BuildModel();
-
-private:
-    std::vector<sm::vec3> m_vertices;
+    float m_first_u  = 0;
+    float m_second_u = 1;
+    float m_first_v  = 0;
+    float m_second_v = 1;
 
     RTTR_ENABLE(Node)
 
-}; // Curve
+}; // Carve
 
 }
 }

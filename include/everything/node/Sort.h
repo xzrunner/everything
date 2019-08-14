@@ -2,17 +2,24 @@
 
 #include "everything/Node.h"
 
-#include <SM_Vector.h>
-
 namespace evt
 {
 namespace node
 {
 
-class Curve : public Node
+class Sort : public Node
 {
 public:
-    Curve()
+    enum class Key
+    {
+        NoChange,
+        X,
+        Y,
+        Z
+    };
+
+public:
+    Sort()
     {
         m_imports = {
             {{ VariableType::Any, "in" }}
@@ -24,18 +31,12 @@ public:
 
     virtual void Execute(TreeContext& ctx) override;
 
-    auto& GetVertices() const { return m_vertices; }
-    void  SetVertices(const std::vector<sm::vec3>& vertices);
-
 private:
-    void BuildModel();
-
-private:
-    std::vector<sm::vec3> m_vertices;
+    Key m_key;
 
     RTTR_ENABLE(Node)
 
-}; // Curve
+}; // Sort
 
 }
 }

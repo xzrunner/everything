@@ -2,17 +2,23 @@
 
 #include "everything/Node.h"
 
-#include <SM_Vector.h>
-
 namespace evt
 {
 namespace node
 {
 
-class Curve : public Node
+class Delete : public Node
 {
 public:
-    Curve()
+    enum class EntityType
+    {
+        Points,
+        Edges,
+        Face,
+    };
+
+public:
+    Delete()
     {
         m_imports = {
             {{ VariableType::Any, "in" }}
@@ -24,18 +30,16 @@ public:
 
     virtual void Execute(TreeContext& ctx) override;
 
-    auto& GetVertices() const { return m_vertices; }
-    void  SetVertices(const std::vector<sm::vec3>& vertices);
-
 private:
-    void BuildModel();
+    bool m_delete_non_selected = false;
 
-private:
-    std::vector<sm::vec3> m_vertices;
+    EntityType m_entity_type = EntityType::Points;
+
+    std::string m_filter_exp;
 
     RTTR_ENABLE(Node)
 
-}; // Curve
+}; // Delete
 
 }
 }

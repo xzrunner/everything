@@ -13,7 +13,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\Evaluator.h" />
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Add.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Carve.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Delete.h" />
     <ClInclude Include="..\..\..\include\everything\node\Knife.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Line.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Sort.h" />
     <ClInclude Include="..\..\..\include\everything\TreeContext.h" />
     <ClInclude Include="..\..\..\include\everything\Node.h" />
     <ClInclude Include="..\..\..\include\everything\NodeHelper.h" />
@@ -36,14 +41,20 @@
     <ClCompile Include="..\..\..\source\Everything.cpp" />
     <ClCompile Include="..\..\..\source\Node.cpp" />
     <ClCompile Include="..\..\..\source\NodeHelper.cpp" />
+    <ClCompile Include="..\..\..\source\node\Add.cpp" />
     <ClCompile Include="..\..\..\source\node\Blast.cpp" />
     <ClCompile Include="..\..\..\source\node\Boolean.cpp" />
     <ClCompile Include="..\..\..\source\node\Box.cpp" />
+    <ClCompile Include="..\..\..\source\node\Carve.cpp" />
     <ClCompile Include="..\..\..\source\node\CopyToPoints.cpp" />
+    <ClCompile Include="..\..\..\source\node\Curve.cpp" />
+    <ClCompile Include="..\..\..\source\node\Delete.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
     <ClCompile Include="..\..\..\source\node\Knife.cpp" />
+    <ClCompile Include="..\..\..\source\node\Line.cpp" />
     <ClCompile Include="..\..\..\source\node\Merge.cpp" />
     <ClCompile Include="..\..\..\source\node\PolyExtrude.cpp" />
+    <ClCompile Include="..\..\..\source\node\Sort.cpp" />
     <ClCompile Include="..\..\..\source\node\Sphere.cpp" />
     <ClCompile Include="..\..\..\source\node\Transform.cpp" />
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />

@@ -28,6 +28,12 @@
     <Filter Include="utility">
       <UniqueIdentifier>{a096378f-4acc-4503-8077-6cbce22d85de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nodes\geometry\attribute">
+      <UniqueIdentifier>{053f2cb9-efc0-4bb7-8e90-0d3d8a407ec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\nurbs">
+      <UniqueIdentifier>{0f422275-8213-4e24-bfdd-0562582a20b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\Node.h">
@@ -83,6 +89,21 @@
     <ClInclude Include="..\..\..\include\everything\node\Knife.h">
       <Filter>nodes\geometry\polygon</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Delete.h">
+      <Filter>nodes\geometry\manipulate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Add.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Carve.h">
+      <Filter>nodes\geometry\nurbs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Line.h">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Sort.h">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Node.cpp">
@@ -130,6 +151,24 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Knife.cpp">
       <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Delete.cpp">
+      <Filter>nodes\geometry\manipulate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Add.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Carve.cpp">
+      <Filter>nodes\geometry\nurbs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Line.cpp">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Sort.cpp">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Curve.cpp">
+      <Filter>nodes\geometry\primitive</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

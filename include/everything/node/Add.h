@@ -9,10 +9,10 @@ namespace evt
 namespace node
 {
 
-class Curve : public Node
+class Add : public Node
 {
 public:
-    Curve()
+    Add()
     {
         m_imports = {
             {{ VariableType::Any, "in" }}
@@ -24,18 +24,12 @@ public:
 
     virtual void Execute(TreeContext& ctx) override;
 
-    auto& GetVertices() const { return m_vertices; }
-    void  SetVertices(const std::vector<sm::vec3>& vertices);
-
 private:
-    void BuildModel();
-
-private:
-    std::vector<sm::vec3> m_vertices;
+    std::vector<sm::vec3> m_points;
 
     RTTR_ENABLE(Node)
 
-}; // Curve
+}; // Add
 
 }
 }
