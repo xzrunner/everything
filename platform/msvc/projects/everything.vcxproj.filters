@@ -104,6 +104,9 @@
     <ClInclude Include="..\..\..\include\everything\node\Sort.h">
       <Filter>nodes\geometry\attribute</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Geometry.h">
+      <Filter>dataset</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Node.cpp">
