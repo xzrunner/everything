@@ -29,18 +29,27 @@
 RTTR_REGISTRATION
 {
 
+// attribute
+REGIST_NODE_TYPE(Sort)
+
 // manipulate
+REGIST_NODE_TYPE(Delete)
 REGIST_NODE_TYPE(Transform)
 
+// NURBs
+REGIST_NODE_TYPE(Carve)
+
 // polygon
+REGIST_NODE_TYPE(Add)
 REGIST_NODE_TYPE(Boolean)
 REGIST_NODE_TYPE(Knife)
 REGIST_NODE_TYPE(PolyExtrude)
 
 // primitive
 REGIST_NODE_TYPE(Box)
-REGIST_NODE_TYPE(Sphere)
 REGIST_NODE_TYPE(Curve)
+REGIST_NODE_TYPE(Line)
+REGIST_NODE_TYPE(Sphere)
 
 // utility
 REGIST_NODE_TYPE(Blast)

@@ -14,7 +14,7 @@ public:
     {
         Points,
         Edges,
-        Face,
+        Faces,
     };
 
 public:
@@ -29,6 +29,12 @@ public:
     }
 
     virtual void Execute(TreeContext& ctx) override;
+
+    void SetDelNonSelected(bool del_non_selected);
+
+    void SetEntityType(EntityType type);
+
+    void SetFilterExp(const std::string& exp);
 
 private:
     bool m_delete_non_selected = false;

@@ -101,7 +101,7 @@ void Geometry::TraversePoints(std::function<bool(sm::vec3&)> func,
         {
             auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
             for (auto& v : polyline->GetVertices()) {
-                func(v);
+                func(const_cast<sm::vec3&>(v));
             }
         }
         else

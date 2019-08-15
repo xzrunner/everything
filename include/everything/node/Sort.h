@@ -31,8 +31,10 @@ public:
 
     virtual void Execute(TreeContext& ctx) override;
 
+    void SetKey(Key key);
+
 private:
-    Key m_key;
+    Key m_key = Key::NoChange;
 
     RTTR_ENABLE(Node)
 

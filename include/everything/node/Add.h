@@ -24,6 +24,8 @@ public:
 
     virtual void Execute(TreeContext& ctx) override;
 
+    void SetPoints(const std::vector<sm::vec3>& points);
+
 private:
     std::vector<sm::vec3> m_points;
 

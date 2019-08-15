@@ -22,6 +22,11 @@ public:
 
     virtual void Execute(TreeContext& ctx) override;
 
+    void SetFirstU(float u);
+    void SetSecondU(float u);
+    void SetFirstV(float v);
+    void SetSecondV(float v);
+
 private:
     float m_first_u  = 0;
     float m_second_u = 1;
