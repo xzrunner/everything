@@ -25,9 +25,6 @@
     <Filter Include="nodes\geometry\polygon">
       <UniqueIdentifier>{77594dd1-c4b6-4143-b93d-fa1d822447ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utility">
-      <UniqueIdentifier>{a096378f-4acc-4503-8077-6cbce22d85de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="nodes\geometry\attribute">
       <UniqueIdentifier>{053f2cb9-efc0-4bb7-8e90-0d3d8a407ec7}</UniqueIdentifier>
     </Filter>
@@ -79,9 +76,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Boolean.h">
       <Filter>nodes\geometry\polygon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\NodeHelper.h">
-      <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\TreeContext.h">
       <Filter>dataset</Filter>
@@ -146,9 +140,6 @@
     <ClCompile Include="..\..\..\source\node\Boolean.cpp">
       <Filter>nodes\geometry\polygon</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\NodeHelper.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\TreeContext.cpp">
       <Filter>dataset</Filter>
     </ClCompile>
@@ -172,6 +163,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Curve.cpp">
       <Filter>nodes\geometry\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Geometry.cpp">
+      <Filter>dataset</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

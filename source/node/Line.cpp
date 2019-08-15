@@ -1,7 +1,7 @@
 #include "everything/node/Line.h"
+#include "everything/Geometry.h"
 
 #include <geoshape/Polyline3D.h>
-#include <ns/NodeFactory.h>
 #include <node0/SceneNode.h>
 #include <node3/CompShape.h>
 #include <node3/CompAABB.h>
@@ -13,14 +13,8 @@ namespace node
 
 void Line::Execute(TreeContext& ctx)
 {
-    if (!m_scene_node)
-    {
-        m_scene_node = ns::NodeFactory::Create3D();
-
-        m_scene_node->AddSharedComp<n3::CompShape>();
-
-        BuildModel();
-    }
+    m_geo = std::make_shared<Geometry>(Geometry::DataType::Shape);
+    BuildModel();
 }
 
 void Line::SetOrigin(const sm::vec3& ori)
@@ -73,7 +67,7 @@ void Line::SetPoints(size_t num)
 
 void Line::BuildModel()
 {
-    if (!m_scene_node) {
+    if (!m_geo) {
         return;
     }
     if (m_points < 2) {
@@ -90,10 +84,13 @@ void Line::BuildModel()
     }
     auto shape = std::make_shared<gs::Polyline3D>(vertices, false);
 
-    auto& cshape = m_scene_node->GetSharedComp<n3::CompShape>();
+    auto node = m_geo->GetNode();
+    assert(node);
+
+    auto& cshape = node->GetSharedComp<n3::CompShape>();
     cshape.SetShape(shape);
 
-    auto& caabb = m_scene_node->GetUniqueComp<n3::CompAABB>();
+    auto& caabb = node->GetUniqueComp<n3::CompAABB>();
     caabb.SetAABB(shape->GetBounding());
 }
 

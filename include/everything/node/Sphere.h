@@ -2,8 +2,7 @@
 
 #include "everything/Node.h"
 
-#include <geoshape/Sphere.h>
-#include <node0/typedef.h>
+#include <SM_Vector.h>
 
 namespace evt
 {
@@ -26,7 +25,11 @@ public:
     virtual void Execute(TreeContext& ctx) override;
 
 private:
-    gs::Sphere m_sphere;
+    void BuildModel();
+
+private:
+    sm::vec3 m_center = sm::vec3(0, 0, 0);
+    float    m_radius = 1.0f;
 
     RTTR_ENABLE(Node)
 

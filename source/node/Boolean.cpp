@@ -1,10 +1,9 @@
 #include "everything/node/Boolean.h"
-#include "everything/NodeHelper.h"
+#include "everything/Geometry.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
-#include <node0/SceneNode.h>
 
 namespace evt
 {
@@ -13,34 +12,42 @@ namespace node
 
 void Boolean::Execute(TreeContext& ctx)
 {
-    auto node_a = NodeHelper::GetInputSceneNode(*this, IDX_A);
-    auto node_b = NodeHelper::GetInputSceneNode(*this, IDX_B);
+    if (m_imports[IDX_A].conns.empty() ||
+        m_imports[IDX_B].conns.empty()) {
+        return;
+    }
+    auto node_a = m_imports[IDX_A].conns[0].node.lock();
+    auto node_b = m_imports[IDX_B].conns[0].node.lock();
     if (!node_a || !node_b) {
         return;
     }
-
-    auto poly_a = NodeHelper::GetPolytope(*node_a);
-    auto poly_b = NodeHelper::GetPolytope(*node_b);
-    if (!poly_a || !poly_b) {
+    auto geo_a = node_a->GetGeometry();
+    auto geo_b = node_b->GetGeometry();
+    if (!node_a || !node_b) {
         return;
     }
-
-    auto he_a = poly_a->GetHalfedge();
-    auto he_b = poly_b->GetHalfedge();
+    auto brush_model_a = geo_a->GetBrushModel();
+    auto brush_model_b = geo_b->GetBrushModel();
+    if (!brush_model_a || !brush_model_b) {
+        return;
+    }
+    auto& brushes_a = brush_model_a->GetBrushes();
+    auto& brushes_b = brush_model_b->GetBrushes();
+    assert(brushes_a.size() == 1 && brushes_b.size() == 1);
+    auto brush_a = brushes_a[0].impl;
+    auto brush_b = brushes_b[0].impl;
+    if (!brush_a || !brush_b) {
+        return;
+    }
+    auto he_a = brush_a->GetHalfedge();
+    auto he_b = brush_b->GetHalfedge();
     if (!he_a || !he_b) {
         return;
     }
 
-    m_scene_node = node_a->Clone();
-    auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
-    assert(old_brush_model);
-    auto model_ext = old_brush_model->Clone();
-    auto brush_model = static_cast<model::BrushModel*>(model_ext.get());
-    auto& brushes = brush_model->GetBrushes();
-    assert(brushes.size() == 1);
-    auto& brush = brushes[0];
+    m_geo = std::make_shared<Geometry>(Geometry::DataType::Brush);
 
-    bool dirty = false;
+    std::vector<model::BrushModel::Brush> brushes;
     switch (m_operator)
     {
     case Operator::Union:
@@ -48,10 +55,11 @@ void Boolean::Execute(TreeContext& ctx)
     case Operator::Intersect:
     {
         auto poly = he_a->Intersect(*he_b);
-        if (poly->GetFaces().Size() > 0) {
-            const_cast<model::BrushModel::Brush&>(brush).impl
-                = std::make_shared<pm3::Polytope>(poly);
-            dirty = true;
+        if (poly->GetFaces().Size() > 0) 
+        {
+            model::BrushModel::Brush brush;
+            brush.impl = std::make_shared<pm3::Polytope>(poly);
+            brushes.push_back(brush);
         }
     }
         break;
@@ -61,9 +69,12 @@ void Boolean::Execute(TreeContext& ctx)
         assert(0);
     }
 
-    if (dirty) {
-        NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
-        NodeHelper::StoreBrush(*m_scene_node, model_ext);
+    if (!brushes.empty()) 
+    {
+        auto brush_model = std::make_unique<model::BrushModel>();
+        brush_model->SetBrushes(brushes);
+        m_geo->UpdateModel(*brush_model);
+        m_geo->StoreBrush(brush_model);
     }
 }
 

@@ -1,11 +1,5 @@
 #include "everything/node/Transform.h"
-#include "everything/NodeHelper.h"
-
-#include <halfedge/Polyhedron.h>
-#include <polymesh3/Geometry.h>
-#include <model/BrushModel.h>
-#include <node0/SceneNode.h>
-#include <node3/CompTransform.h>
+#include "everything/Geometry.h"
 
 namespace evt
 {
@@ -20,38 +14,24 @@ void Transform::Execute(TreeContext& ctx)
     }
 
     assert(m_imports[0].conns.size() == 1);
-
     auto prev = m_imports[0].conns[0].node.lock();
     if (!prev) {
         return;
     }
 
-    auto prev_node = prev->GetSceneNode();
-    if (!prev_node)
-    {
-        m_scene_node.reset();
+    auto prev_geo = prev->GetGeometry();
+    if (!prev_geo) {
+        m_geo.reset();
+        return;
     }
-    else
-    {
-        if (!m_scene_node) {
-            m_scene_node = prev_node->Clone();
-        }
 
-        auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
-        assert(old_brush_model);
-        auto model_ext = old_brush_model->Clone();
-        auto brush_model = static_cast<model::BrushModel*>(model_ext.get());
-        auto& brushes = brush_model->GetBrushes();
-        assert(brushes.size() == 1);
-        auto& brush = brushes[0];
+    m_geo = std::make_shared<Geometry>(*prev_geo);
 
-        auto mat = CalcTransformMat();
-        for (auto& v : brush.impl->Points()) {
-            v = mat * v;
-        }
-        NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
-        NodeHelper::StoreBrush(*m_scene_node, model_ext);
-    }
+    auto mat = CalcTransformMat();
+    m_geo->TraversePoints([&mat](sm::vec3& p)->bool {
+        p = mat * p;
+        return true;
+    });
 }
 
 void Transform::SetTranslate(const sm::vec3& t)

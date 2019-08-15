@@ -1,10 +1,10 @@
 #include "everything/node/Blast.h"
-#include "everything/NodeHelper.h"
 #include "everything/TreeContext.h"
 
 #include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
 #include <node0/SceneNode.h>
+#include <polymesh3/Geometry.h>
 
 namespace evt
 {
@@ -13,77 +13,88 @@ namespace node
 
 void Blast::Execute(TreeContext& ctx)
 {
-    auto obj = NodeHelper::GetInputSceneNode(*this, 0);
-    if (!obj) {
+    assert(m_imports.size() == 1);
+    if (m_imports[0].conns.empty()) {
         return;
     }
-    m_scene_node = obj->Clone();
-    auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
-    assert(old_brush_model);
-    auto model_ext = old_brush_model->Clone();
-    auto brush_model = static_cast<model::BrushModel*>(model_ext.get());
+
+    assert(m_imports[0].conns.size() == 1);
+    auto prev = m_imports[0].conns[0].node.lock();
+    if (!prev) {
+        return;
+    }
+
+    auto prev_geo = prev->GetGeometry();
+    if (!prev_geo) {
+        m_geo.reset();
+        return;
+    }
+
+    m_geo = std::make_shared<Geometry>(*prev_geo);
+
+    auto group = m_geo->QueryGroup(m_group_name);
+    if (!group) {
+        return;
+    }
+
+    auto brush_model = m_geo->GetBrushModel();
+    assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
     assert(brushes.size() == 1);
     auto& brush = brushes[0];
+    assert(brush.impl);
 
-    auto group = brush.impl->QueryGroup(m_group_name);
-    if (group)
+    switch (m_group_type)
     {
-        switch (m_group_type)
+    case Geometry::GroupType::Face:
+    {
+        auto faces = brush.impl->Faces();
+        std::vector<bool> del_flags;
+        if (m_delete_non_selected)
         {
-        case pm3::GroupType::Face:
+            del_flags.resize(faces.size(), true);
+            for (auto& f : group->items) {
+                del_flags[f] = false;
+            }
+        }
+        else
         {
-            auto faces = brush.impl->Faces();
-            std::vector<bool> del_flags;
-            if (m_delete_non_selected)
-            {
-                del_flags.resize(faces.size(), true);
-                for (auto& f : group->items) {
-                    del_flags[f] = false;
-                }
+            del_flags.resize(faces.size(), false);
+            for (auto& f : group->items) {
+                del_flags[f] = true;
             }
-            else
-            {
-                del_flags.resize(faces.size(), false);
-                for (auto& f : group->items) {
-                    del_flags[f] = true;
-                }
-            }
-            int idx = 0;
-            for (auto itr = faces.begin(); itr != faces.end(); ++idx)
-            {
-                if (del_flags[idx]) {
-                    itr = faces.erase(itr);
-                } else {
-                    ++itr;
-                }
-            }
-
-            if (faces.size() != brush.impl->Faces().size())
-            {
-                group->items.clear();
-                if (m_delete_non_selected) {
-                    for (int i = 0, n = faces.size(); i < n; ++i) {
-                        group->items.push_back(i);
-                    }
-                }
-
-                brush.impl->SetFaces(faces);
-
-                NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
-                NodeHelper::StoreBrush(*m_scene_node, model_ext);
-            }
-            break;
         }
+        int idx = 0;
+        for (auto itr = faces.begin(); itr != faces.end(); ++idx)
+        {
+            if (del_flags[idx]) {
+                itr = faces.erase(itr);
+            }
+            else {
+                ++itr;
+            }
         }
+
+        if (faces.size() != brush.impl->Faces().size())
+        {
+            group->items.clear();
+            if (m_delete_non_selected) {
+                for (int i = 0, n = faces.size(); i < n; ++i) {
+                    group->items.push_back(i);
+                }
+            }
+
+            brush.impl->SetFaces(faces);
+
+            m_geo->UpdateModel(*brush_model);
+        }
+
+        break;
     }
-    else
-    {
-
     }
 }
 
-void Blast::SetGroupType(pm3::GroupType type)
+void Blast::SetGroupType(Geometry::GroupType type)
 {
     if (m_group_type == type) {
         return;

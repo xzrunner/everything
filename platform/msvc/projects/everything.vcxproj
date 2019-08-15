@@ -22,7 +22,6 @@
     <ClInclude Include="..\..\..\include\everything\node\Sort.h" />
     <ClInclude Include="..\..\..\include\everything\TreeContext.h" />
     <ClInclude Include="..\..\..\include\everything\Node.h" />
-    <ClInclude Include="..\..\..\include\everything\NodeHelper.h" />
     <ClInclude Include="..\..\..\include\everything\node\Blast.h" />
     <ClInclude Include="..\..\..\include\everything\node\Boolean.h" />
     <ClInclude Include="..\..\..\include\everything\node\Box.h" />
@@ -40,8 +39,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
     <ClCompile Include="..\..\..\source\Everything.cpp" />
+    <ClCompile Include="..\..\..\source\Geometry.cpp" />
     <ClCompile Include="..\..\..\source\Node.cpp" />
-    <ClCompile Include="..\..\..\source\NodeHelper.cpp" />
     <ClCompile Include="..\..\..\source\node\Add.cpp" />
     <ClCompile Include="..\..\..\source\node\Blast.cpp" />
     <ClCompile Include="..\..\..\source\node\Boolean.cpp" />

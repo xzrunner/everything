@@ -1,14 +1,8 @@
 #include "everything/node/CopyToPoints.h"
-#include "everything/NodeHelper.h"
+#include "everything/Geometry.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
-#include <model/BrushBuilder.h>
-#include <ns/NodeFactory.h>
-#include <node0/SceneNode.h>
-#include <node3/CompModel.h>
-#include <node3/CompModelInst.h>
-#include <node3/CompTransform.h>
 
 namespace evt
 {
@@ -28,27 +22,18 @@ void CopyToPoints::Execute(TreeContext& ctx)
         return;
     }
 
-    auto src_obj = src_node->GetSceneNode();
-    auto dst_obj = dst_node->GetSceneNode();
-    if (!src_obj || !dst_obj) {
+    auto src_geo = src_node->GetGeometry();
+    auto dst_geo = dst_node->GetGeometry();
+    if (!src_geo || !dst_geo) {
         return;
     }
 
-    if (!m_scene_node)
-    {
-        m_scene_node = ns::NodeFactory::Create3D();
+    m_geo = std::make_shared<Geometry>(Geometry::DataType::Brush);
 
-        m_scene_node->AddSharedComp<n3::CompModel>();
-        m_scene_node->AddUniqueComp<n3::CompModelInst>();
-
-        NodeHelper::AddMaterialComp(*m_scene_node);
-    }
-
-    auto brush_model = BuildBrush(*src_obj, *dst_obj);
+    auto brush_model = BuildBrush(*src_geo, *dst_geo);
     if (brush_model) {
-        NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
-        std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
-        NodeHelper::StoreBrush(*m_scene_node, ext);
+        m_geo->UpdateModel(*brush_model);
+        m_geo->StoreBrush(brush_model);
     }
 }
 
@@ -64,37 +49,31 @@ void CopyToPoints::SetTransformUsingPointOrientations(bool enable)
 }
 
 std::unique_ptr<model::BrushModel>
-CopyToPoints::BuildBrush(const n0::SceneNode& src, const n0::SceneNode& dst) const
+CopyToPoints::BuildBrush(const Geometry& src, const Geometry& dst) const
 {
-    auto src_brush_model = NodeHelper::GetBrushModel(src);
-    auto dst_brush_model = NodeHelper::GetBrushModel(dst);
-    if (!src_brush_model || !dst_brush_model) {
+    auto src_brush_model = src.GetBrushModel();
+    if (!src_brush_model) {
         return nullptr;
     }
 
-    auto& dst_ctrans = dst.GetUniqueComp<n3::CompTransform>();
-    n3::CompTransform scaled_ctrans;
-    scaled_ctrans.SetScale(dst_ctrans.GetScale());
-    scaled_ctrans.SetAngle(dst_ctrans.GetAngle());
-    scaled_ctrans.SetPosition(dst_ctrans.GetPosition());
-    auto dst_mat = scaled_ctrans.GetTransformMat();
-
     auto brush_model = std::make_unique<model::BrushModel>();
     std::vector<model::BrushModel::Brush> brushes;
-    for (auto& dst_brush : dst_brush_model->GetBrushes())
+    dst.TraversePoints([&](sm::vec3& v)->bool 
     {
-        for (auto& pos : dst_brush.impl->Points())
-        {
-            auto target_pos = dst_mat * pos;
-            for (auto& src_brush : src_brush_model->GetBrushes())
-            {
-                model::BrushModel::Brush dst;
-                dst.desc = src_brush.desc;
-                dst.impl = CloneToPoint(*src_brush.impl, target_pos);
-                brushes.push_back(dst);
-            }
+        auto& src_brushes = src_brush_model->GetBrushes();
+        if (src_brushes.empty()) {
+            return false;
         }
-    }
+
+        for (auto& src_brush : src_brushes)
+        {
+            model::BrushModel::Brush dst;
+            dst.desc = src_brush.desc;
+            dst.impl = CloneToPoint(*src_brush.impl, v);
+            brushes.push_back(dst);
+        }
+        return true;
+    });
     brush_model->SetBrushes(brushes);
 
     return brush_model;

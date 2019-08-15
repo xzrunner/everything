@@ -10,6 +10,7 @@ namespace evt
 {
 
 class TreeContext;
+class Geometry;
 
 class Node
 {
@@ -27,7 +28,7 @@ public:
     auto& GetImports() const { return m_imports; }
     auto& GetExports() const { return m_exports; }
 
-    n0::SceneNodePtr GetSceneNode() const { return m_scene_node; }
+    std::shared_ptr<Geometry> GetGeometry() const { return m_geo; }
 
     bool IsDirty() const { return m_dirty; }
     void SetDirty(bool dirty) const { m_dirty = dirty; }
@@ -58,7 +59,7 @@ public:
 protected:
     std::vector<Port> m_imports, m_exports;
 
-    n0::SceneNodePtr m_scene_node = nullptr;
+    std::shared_ptr<Geometry> m_geo = nullptr;
 
 private:
 //    std::string m_name;

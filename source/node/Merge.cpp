@@ -1,12 +1,8 @@
 #include "everything/node/Merge.h"
-#include "everything/NodeHelper.h"
+#include "everything/Geometry.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
-#include <ns/NodeFactory.h>
-#include <node0/SceneNode.h>
-#include <node3/CompModel.h>
-#include <node3/CompModelInst.h>
 
 namespace evt
 {
@@ -15,17 +11,9 @@ namespace node
 
 void Merge::Execute(TreeContext& ctx)
 {
-    if (!m_scene_node)
-    {
-        m_scene_node = ns::NodeFactory::Create3D();
+    m_geo = std::make_shared<Geometry>(Geometry::DataType::Brush);
 
-        m_scene_node->AddSharedComp<n3::CompModel>();
-        m_scene_node->AddUniqueComp<n3::CompModelInst>();
-
-        NodeHelper::AddMaterialComp(*m_scene_node);
-    }
-
-    std::vector<n0::SceneNodePtr> children;
+    std::vector<std::shared_ptr<Geometry>> children;
     for (auto& port : m_imports)
     {
         if (port.conns.empty()) {
@@ -38,7 +26,7 @@ void Merge::Execute(TreeContext& ctx)
             continue;
         }
 
-        children.push_back(src_obj->GetSceneNode());
+        children.push_back(src_obj->GetGeometry());
     }
 
     // build brush
@@ -47,11 +35,8 @@ void Merge::Execute(TreeContext& ctx)
     for (auto& c : children)
     {
         assert(c);
-        auto brush_model = NodeHelper::GetBrushModel(*c);
-        if (!brush_model) {
-            continue;
-        }
-        for (auto& b : brush_model->GetBrushes()) {
+        m_geo->Combine(*c, brush.impl->Faces().size());
+        for (auto& b : c->GetBrushModel()->GetBrushes()) {
             brush.impl->Combine(*b.impl);
         }
     }
@@ -61,10 +46,8 @@ void Merge::Execute(TreeContext& ctx)
     brushes.push_back(brush);
     brush_model->SetBrushes(brushes);
 
-    // build model
-    NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
-    std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
-    NodeHelper::StoreBrush(*m_scene_node, ext);
+    m_geo->UpdateModel(*brush_model);
+    m_geo->StoreBrush(brush_model);
 }
 
 }

@@ -1,15 +1,8 @@
 #include "everything/node/Box.h"
-#include "everything/NodeHelper.h"
+#include "everything/Geometry.h"
 
 #include <polymesh3/Geometry.h>
-#include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
-#include <ns/NodeFactory.h>
-#include <node0/SceneNode.h>
-#include <node3/CompModel.h>
-#include <node3/CompModelInst.h>
-#include <node3/CompTransform.h>
-#include <node3/CompAABB.h>
 
 namespace evt
 {
@@ -18,30 +11,8 @@ namespace node
 
 void Box::Execute(TreeContext& ctx)
 {
-    if (!m_scene_node)
-    {
-        m_scene_node = ns::NodeFactory::Create3D();
-
-        m_scene_node->AddSharedComp<n3::CompModel>();
-        m_scene_node->AddUniqueComp<n3::CompModelInst>();
-
-        NodeHelper::AddMaterialComp(*m_scene_node);
-
-        BuildModel();
-    }
-
-    // CompTransform
-    auto& ctrans = m_scene_node->GetUniqueComp<n3::CompTransform>();
-
-    auto& cube = m_box.GetCube();
-
-    ctrans.SetPosition(cube.Center());
-
-    sm::vec3 scale;
-    scale.x = cube.xmax - cube.xmin;
-    scale.y = cube.ymax - cube.ymin;
-    scale.z = cube.zmax - cube.zmin;
-    ctrans.SetScale(scale);
+    m_geo = std::make_shared<Geometry>(Geometry::DataType::Brush);
+    BuildModel();
 }
 
 void Box::SetSize(const sm::vec3& size)
@@ -78,15 +49,11 @@ void Box::SetScale(const sm::vec3& scale)
 
 void Box::BuildModel()
 {
-    if (!m_scene_node) {
-        return;
-    }
-
-    auto brush_model = BuildBrush();
-    if (brush_model) {
-        NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
-        std::unique_ptr<model::ModelExtend> ext = std::move(brush_model);
-        NodeHelper::StoreBrush(*m_scene_node, ext);
+    if (m_geo) 
+    {
+        auto brush_model = BuildBrush();
+        m_geo->UpdateModel(*brush_model);
+        m_geo->StoreBrush(brush_model);
     }
 }
 

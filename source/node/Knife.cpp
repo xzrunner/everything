@@ -1,10 +1,9 @@
 #include "everything/node/Knife.h"
-#include "everything/NodeHelper.h"
+#include "everything/Geometry.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
-#include <node0/SceneNode.h>
 
 namespace evt
 {
@@ -13,22 +12,32 @@ namespace node
 
 void Knife::Execute(TreeContext& ctx)
 {
-    auto obj = NodeHelper::GetInputSceneNode(*this, 0);
-    if (!obj) {
+    assert(m_imports.size() == 1);
+    if (m_imports[0].conns.empty()) {
         return;
     }
-    m_scene_node = obj->Clone();
-    auto old_brush_model = NodeHelper::GetBrushModel(*m_scene_node);
-    assert(old_brush_model);
-    auto model_ext = old_brush_model->Clone();
-    auto brush_model = static_cast<model::BrushModel*>(model_ext.get());
+
+    assert(m_imports[0].conns.size() == 1);
+    auto prev = m_imports[0].conns[0].node.lock();
+    if (!prev) {
+        return;
+    }
+
+    auto prev_geo = prev->GetGeometry();
+    if (!prev_geo) {
+        m_geo.reset();
+        return;
+    }
+
+    m_geo = std::make_shared<Geometry>(*prev_geo);
+
+    auto brush_model = m_geo->GetBrushModel();
+    assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
     assert(brushes.size() == 1);
     auto& brush = brushes[0];
-
     if (Clip(*brush.impl)) {
-        NodeHelper::BuildPolymesh(*m_scene_node, *brush_model);
-        NodeHelper::StoreBrush(*m_scene_node, model_ext);
+        m_geo->UpdateModel(*brush_model);
     }
 }
 

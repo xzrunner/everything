@@ -1,9 +1,9 @@
 #pragma once
 
 #include "everything/Node.h"
+#include "everything/Geometry.h"
 
 #include <SM_Vector.h>
-#include <polymesh3/Geometry.h>
 
 namespace evt
 {
@@ -15,8 +15,8 @@ class GroupCreate : public Node
 public:
     enum InPortIdx
     {
-        SOURCE_OBJ_IDX = 0,
-        BOUNDING_OBJ_IDX,
+        IDX_SOURCE_OBJ = 0,
+        IDX_BOUNDING_OBJ,
     };
 
 public:
@@ -37,18 +37,18 @@ public:
     void  SetName(const std::string& name);
     auto& GetName() const { return m_name; }
 
-    void SetType(pm3::GroupType type);
+    void SetType(Geometry::GroupType type);
 
     void EnableKeepByNormals(const sm::vec3& direction, float spread_angle);
     void DisableKeepByNormals();
 
 private:
-    void SelectByNormals(pm3::Group& group);
+    void SelectByNormals(Geometry::Group& group);
 
 private:
     std::string m_name;
 
-    pm3::GroupType m_type = pm3::GroupType::Face;
+    Geometry::GroupType m_type = Geometry::GroupType::Face;
 
     // keep by normals
     bool     m_keep_by_normals = false;

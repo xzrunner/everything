@@ -28,9 +28,6 @@ public:
     void SetDistance(float dist);
 
 private:
-    static void ExtrudeFace(pm3::Polytope& poly, size_t face_idx, float dist);
-
-private:
     std::string m_group_name;
 
     float m_distance = 0;

@@ -1,10 +1,10 @@
 #include "everything/node/GroupCreate.h"
-#include "everything/NodeHelper.h"
 #include "everything/TreeContext.h"
 
 #include <SM_Calc.h>
 #include <model/BrushModel.h>
 #include <node0/SceneNode.h>
+#include <polymesh3/Geometry.h>
 
 namespace evt
 {
@@ -13,17 +13,28 @@ namespace node
 
 void GroupCreate::Execute(TreeContext& ctx)
 {
-    auto obj = NodeHelper::GetInputSceneNode(*this, 0);
-    if (!obj) {
+    assert(m_imports.size() == 2);
+    if (m_imports[IDX_SOURCE_OBJ].conns.empty()) {
         return;
     }
-    m_scene_node = obj->Clone();
-    auto polytope = NodeHelper::GetPolytope(*m_scene_node);
-    assert(polytope);
 
-    auto group = std::make_shared<pm3::Group>();
+    assert(m_imports[IDX_SOURCE_OBJ].conns.size() == 1);
+    auto prev = m_imports[IDX_SOURCE_OBJ].conns[IDX_SOURCE_OBJ].node.lock();
+    if (!prev) {
+        return;
+    }
+
+    auto prev_geo = prev->GetGeometry();
+    if (!prev_geo) {
+        m_geo.reset();
+        return;
+    }
+
+    m_geo = std::make_shared<Geometry>(*prev_geo);
+
+    auto group = std::make_shared<Geometry::Group>();
     group->name = m_name;
-    polytope->AddGroup(group);
+    m_geo->AddGroup(group);
 
     // insert selected to brush part
     if (m_keep_by_normals) {
@@ -47,7 +58,7 @@ void GroupCreate::SetName(const std::string& name)
     m_name = name;
 }
 
-void GroupCreate::SetType(pm3::GroupType type)
+void GroupCreate::SetType(Geometry::GroupType type)
 {
     if (m_type == type) {
         return;
@@ -84,30 +95,31 @@ void GroupCreate::DisableKeepByNormals()
     SetDirty(true);
 }
 
-void GroupCreate::SelectByNormals(pm3::Group& group)
+void GroupCreate::SelectByNormals(Geometry::Group& group)
 {
-    auto polytope = NodeHelper::GetPolytope(*m_scene_node);
-    assert(polytope);
     switch (m_type)
     {
-    case pm3::GroupType::Face:
+    case Geometry::GroupType::Face:
     {
-        auto& faces = polytope->Faces();
-        for (size_t i = 0, n = faces.size(); i < n; ++i)
+        m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx)->bool 
         {
-            auto& face = faces[i];
+            auto& faces = poly.Faces();
+            auto& face = faces[face_idx];
             auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
             if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
-                group.items.push_back(i);
+                group.items.push_back(face_idx);
+                return true;
+            } else {
+                return false;
             }
-        }
+        });
     }
         break;
-    case pm3::GroupType::Points:
+    case Geometry::GroupType::Points:
         break;
-    case pm3::GroupType::Edges:
+    case Geometry::GroupType::Edges:
         break;
-    case pm3::GroupType::Vertices:
+    case Geometry::GroupType::Vertices:
         break;
     }
 }

@@ -37,20 +37,12 @@
 namespace
 {
 
-model::BrushModel* GetBrushModel(const n0::SceneNodePtr& node)
+void CheckAABB(const evt::NodePtr& node, const sm::vec3& min, const sm::vec3& max)
 {
-    REQUIRE(node);
-    auto& cmodel_inst = node->GetUniqueComp<n3::CompModelInst>();
-    auto& ext = cmodel_inst.GetModel()->GetModelExt();
-    REQUIRE(ext);
-    REQUIRE(ext->Type() == model::EXT_BRUSH);
-    model::BrushModel* brush_model = static_cast<model::BrushModel*>(ext.get());
-    REQUIRE(brush_model);
-    return brush_model;
-}
+    auto sn = node->GetGeometry()->GetNode();
+    auto& caabb = sn->GetUniqueComp<n3::CompAABB>();
+    auto& aabb = caabb.GetAABB();
 
-void CheckAABB(const pt3::AABB& aabb, const sm::vec3& min, const sm::vec3& max)
-{
     REQUIRE(aabb.Min()[0] == Approx(min.x));
     REQUIRE(aabb.Min()[1] == Approx(min.y));
     REQUIRE(aabb.Min()[2] == Approx(min.z));
@@ -87,10 +79,7 @@ TEST_CASE("transform")
 
         eval.Update();
 
-        auto& caabb = trans->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-
-        CheckAABB(aabb, -h_sz * scale, h_sz * scale);
+        CheckAABB(trans, -h_sz * scale, h_sz * scale);
     }
 
     SECTION("rotate x")
@@ -100,10 +89,7 @@ TEST_CASE("transform")
 
         eval.Update();
 
-        auto& caabb = trans->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-
-        CheckAABB(aabb, sm::vec3(-h_sz.x, -h_sz.z, -h_sz.y), sm::vec3(h_sz.x, h_sz.z, h_sz.y));
+        CheckAABB(trans, sm::vec3(-h_sz.x, -h_sz.z, -h_sz.y), sm::vec3(h_sz.x, h_sz.z, h_sz.y));
     }
 
     SECTION("rotate y")
@@ -113,10 +99,7 @@ TEST_CASE("transform")
 
         eval.Update();
 
-        auto& caabb = trans->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-
-        CheckAABB(aabb, sm::vec3(-h_sz.z, -h_sz.y, -h_sz.x), sm::vec3(h_sz.z, h_sz.y, h_sz.x));
+        CheckAABB(trans, sm::vec3(-h_sz.z, -h_sz.y, -h_sz.x), sm::vec3(h_sz.z, h_sz.y, h_sz.x));
     }
 
     SECTION("rotate z")
@@ -126,10 +109,7 @@ TEST_CASE("transform")
 
         eval.Update();
 
-        auto& caabb = trans->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-
-        CheckAABB(aabb, sm::vec3(-h_sz.y, -h_sz.x, -h_sz.z), sm::vec3(h_sz.y, h_sz.x, h_sz.z));
+        CheckAABB(trans, sm::vec3(-h_sz.y, -h_sz.x, -h_sz.z), sm::vec3(h_sz.y, h_sz.x, h_sz.z));
     }
 
     SECTION("translate")
@@ -139,10 +119,7 @@ TEST_CASE("transform")
 
         eval.Update();
 
-        auto& caabb = trans->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-
-        CheckAABB(aabb, -h_sz + off, h_sz + off);
+        CheckAABB(trans, -h_sz + off, h_sz + off);
     }
 }
 
@@ -158,8 +135,8 @@ TEST_CASE("box")
     auto h_sz = sz * 0.5f;
     box->SetSize(sz);
     box->Execute(evt::TreeContext());
-    auto node = box->GetSceneNode();
-    auto brush_model = GetBrushModel(node);
+    auto brush_model = box->GetGeometry()->GetBrushModel();
+    REQUIRE(brush_model);
 
     auto& brushes = brush_model->GetBrushes();
     REQUIRE(brushes.size() == 1);
@@ -167,19 +144,17 @@ TEST_CASE("box")
     REQUIRE(brush.impl->Faces().size() == 6);
     REQUIRE(brush.impl->Points().size() == 8);
 
-    auto& caabb = node->GetUniqueComp<n3::CompAABB>();
-    auto& aabb = caabb.GetAABB();
-    CheckAABB(aabb, -h_sz, h_sz);
+    CheckAABB(box, -h_sz, h_sz);
 
     const sm::vec3 off(10, 11, 12);
     box->SetCenter(off);
     box->Execute(evt::TreeContext());
-    CheckAABB(aabb, -h_sz + off, h_sz + off);
+    CheckAABB(box, -h_sz + off, h_sz + off);
 
     const sm::vec3 scale(5, 6, 7);
     box->SetScale(scale);
     box->Execute(evt::TreeContext());
-    CheckAABB(aabb, -h_sz * scale + off, h_sz * scale + off);
+    CheckAABB(box, -h_sz * scale + off, h_sz * scale + off);
 }
 
 TEST_CASE("curve")
@@ -199,9 +174,7 @@ TEST_CASE("curve")
 
         curve->Execute(evt::TreeContext());
 
-        auto node = curve->GetSceneNode();
-
-        auto& cshape = node->GetSharedComp<n3::CompShape>();
+        auto& cshape = curve->GetGeometry()->GetNode()->GetSharedComp<n3::CompShape>();
         auto shape = cshape.GetShape();
         REQUIRE(shape->get_type() == rttr::type::get<gs::Polyline3D>());
         auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
@@ -209,9 +182,7 @@ TEST_CASE("curve")
         REQUIRE(polyline->GetVertices().size() == 3);
         REQUIRE(polyline->GetVertices()[1] == sm::vec3(4, 1, 0));
 
-        auto& caabb = node->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-        CheckAABB(aabb, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
+        CheckAABB(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
     }
 
     SECTION("loop")
@@ -226,9 +197,7 @@ TEST_CASE("curve")
 
         curve->Execute(evt::TreeContext());
 
-        auto node = curve->GetSceneNode();
-
-        auto& cshape = node->GetSharedComp<n3::CompShape>();
+        auto& cshape = curve->GetGeometry()->GetNode()->GetSharedComp<n3::CompShape>();
         auto shape = cshape.GetShape();
         REQUIRE(shape->get_type() == rttr::type::get<gs::Polyline3D>());
         auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
@@ -236,9 +205,7 @@ TEST_CASE("curve")
         REQUIRE(polyline->GetVertices().size() == 3);
         REQUIRE(polyline->GetVertices()[1] == sm::vec3(4, 1, 0));
 
-        auto& caabb = node->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-        CheckAABB(aabb, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
+        CheckAABB(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
     }
 }
 
@@ -260,9 +227,7 @@ TEST_CASE("line")
 
     line->Execute(evt::TreeContext());
 
-    auto node = line->GetSceneNode();
-
-    auto& cshape = node->GetSharedComp<n3::CompShape>();
+    auto& cshape = line->GetGeometry()->GetNode()->GetSharedComp<n3::CompShape>();
     auto shape = cshape.GetShape();
     REQUIRE(shape->get_type() == rttr::type::get<gs::Polyline3D>());
     auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
@@ -271,9 +236,7 @@ TEST_CASE("line")
     auto pos4 = ori + dir * len / static_cast<float>(num - 1) * 4;
     REQUIRE(polyline->GetVertices()[4] == pos4);
 
-    auto& caabb = node->GetUniqueComp<n3::CompAABB>();
-    auto& aabb = caabb.GetAABB();
-    CheckAABB(aabb, ori, ori + dir * len);
+    CheckAABB(line, ori, ori + dir * len);
 }
 
 // polygon
@@ -310,7 +273,8 @@ TEST_CASE("boolean")
 
         eval.Update();
 
-        auto brush_model = GetBrushModel(boolean->GetSceneNode());
+        auto brush_model = boolean->GetGeometry()->GetBrushModel();
+        REQUIRE(brush_model);
         auto& brushes = brush_model->GetBrushes();
         REQUIRE(brushes.size() == 1);
         auto& brush = brushes[0];
@@ -318,9 +282,7 @@ TEST_CASE("boolean")
         REQUIRE(brush.impl->Faces().size() == 6);
         REQUIRE(brush.impl->GetHalfedge()->GetEdges().Size() == 24);
 
-        auto& caabb = boolean->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-        CheckAABB(aabb, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
+        CheckAABB(boolean, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
     }
 
     SECTION("subtract")
@@ -348,7 +310,8 @@ TEST_CASE("knife")
 
         eval.Update();
 
-        auto brush_model = GetBrushModel(knife->GetSceneNode());
+        auto brush_model = knife->GetGeometry()->GetBrushModel();
+        REQUIRE(brush_model);
         auto& brushes = brush_model->GetBrushes();
         REQUIRE(brushes.size() == 1);
         auto& brush = brushes[0];
@@ -356,9 +319,7 @@ TEST_CASE("knife")
         REQUIRE(brush.impl->Faces().size() == 10);
         REQUIRE(brush.impl->GetHalfedge()->GetEdges().Size() == 40);
 
-        auto& caabb = knife->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-        CheckAABB(aabb, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
+        CheckAABB(knife, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
     }
 
     SECTION("keep above")
@@ -367,7 +328,8 @@ TEST_CASE("knife")
 
         eval.Update();
 
-        auto brush_model = GetBrushModel(knife->GetSceneNode());
+        auto brush_model = knife->GetGeometry()->GetBrushModel();
+        REQUIRE(brush_model);
         auto& brushes = brush_model->GetBrushes();
         REQUIRE(brushes.size() == 1);
         auto& brush = brushes[0];
@@ -375,9 +337,7 @@ TEST_CASE("knife")
         REQUIRE(brush.impl->Faces().size() == 5);
         REQUIRE(brush.impl->GetHalfedge()->GetEdges().Size() == 20);
 
-        auto& caabb = knife->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-        CheckAABB(aabb, sm::vec3(-0.5f, 0, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
+        CheckAABB(knife, sm::vec3(-0.5f, 0, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
     }
 
     SECTION("keep below")
@@ -386,7 +346,8 @@ TEST_CASE("knife")
 
         eval.Update();
 
-        auto brush_model = GetBrushModel(knife->GetSceneNode());
+        auto brush_model = knife->GetGeometry()->GetBrushModel();
+        REQUIRE(brush_model);
         auto& brushes = brush_model->GetBrushes();
         REQUIRE(brushes.size() == 1);
         auto& brush = brushes[0];
@@ -394,9 +355,7 @@ TEST_CASE("knife")
         REQUIRE(brush.impl->Faces().size() == 5);
         REQUIRE(brush.impl->GetHalfedge()->GetEdges().Size() == 20);
 
-        auto& caabb = knife->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
-        CheckAABB(aabb, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0, 0.5f));
+        CheckAABB(knife, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0, 0.5f));
     }
 }
 
@@ -422,10 +381,8 @@ TEST_CASE("poly extrude")
 
         eval.Update();
 
-        auto& caabb = extrude->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
         auto h_sz = size * 0.5f;
-        CheckAABB(aabb, -h_sz - sm::vec3(dist, dist, dist), h_sz + sm::vec3(dist, dist, dist));
+        CheckAABB(extrude, -h_sz - sm::vec3(dist, dist, dist), h_sz + sm::vec3(dist, dist, dist));
     }
 
     SECTION("extrude one face")
@@ -448,10 +405,8 @@ TEST_CASE("poly extrude")
 
         eval.Update();
 
-        auto& caabb = extrude->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-        auto& aabb = caabb.GetAABB();
         auto h_sz = size * 0.5f;
-        CheckAABB(aabb, -h_sz, sm::vec3(h_sz.x, h_sz.y + dist, h_sz.z));
+        CheckAABB(extrude, -h_sz, sm::vec3(h_sz.x, h_sz.y + dist, h_sz.z));
     }
 }
 
@@ -478,7 +433,7 @@ TEST_CASE("blast")
 
     auto blast = std::make_shared<evt::node::Blast>();
     blast->SetGroupName(name);
-    blast->SetGroupType(pm3::GroupType::Face);
+    blast->SetGroupType(evt::Geometry::GroupType::Face);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -487,7 +442,8 @@ TEST_CASE("blast")
     {
         eval.Update();
 
-        auto brush_model = GetBrushModel(blast->GetSceneNode());
+        auto brush_model = blast->GetGeometry()->GetBrushModel();
+        REQUIRE(brush_model);
         auto& brushes = brush_model->GetBrushes();
         REQUIRE(brushes.size() == 1);
         auto& brush = brushes[0].impl;
@@ -500,7 +456,8 @@ TEST_CASE("blast")
 
         eval.Update();
 
-        auto brush_model = GetBrushModel(blast->GetSceneNode());
+        auto brush_model = blast->GetGeometry()->GetBrushModel();
+        REQUIRE(brush_model);
         auto& brushes = brush_model->GetBrushes();
         REQUIRE(brushes.size() == 1);
         auto& brush = brushes[0].impl;
@@ -536,11 +493,9 @@ TEST_CASE("copy to points")
 
     eval.Update();
 
-    auto& caabb = copy->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-    auto& aabb = caabb.GetAABB();
     auto h_src_sz = src_size * 0.5f;
     auto h_tar_sz = target_size * 0.5f;
-    CheckAABB(aabb, src_pos + target_pos - h_src_sz - h_tar_sz, src_pos + target_pos + h_src_sz + h_tar_sz);
+    CheckAABB(copy, src_pos + target_pos - h_src_sz - h_tar_sz, src_pos + target_pos + h_src_sz + h_tar_sz);
 }
 
 TEST_CASE("group_create")
@@ -579,16 +534,15 @@ TEST_CASE("group_create")
 
     eval.Update();
 
-    auto brush_model = GetBrushModel(merge->GetSceneNode());
+    auto brush_model = merge->GetGeometry()->GetBrushModel();
+    REQUIRE(brush_model);
     auto& brushes = brush_model->GetBrushes();
     REQUIRE(brushes.size() == 1);
     auto& brush = brushes[0];
     REQUIRE(brush.impl->Faces().size() == 12);
     REQUIRE(brush.impl->Points().size() == 16);
 
-    auto& caabb = extrude->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
-    auto& aabb = caabb.GetAABB();
-    CheckAABB(aabb, sm::vec3(-5.5f, -0.5f, -0.5f), sm::vec3(5.5f, 0.5f, 5.5f));
+    CheckAABB(extrude, sm::vec3(-5.5f, -0.5f, -0.5f), sm::vec3(5.5f, 0.5f, 5.5f));
 }
 
 TEST_CASE("merge")
@@ -627,14 +581,15 @@ TEST_CASE("merge")
 
     eval.Update();
 
-    auto brush_model = GetBrushModel(merge->GetSceneNode());
+    auto brush_model = merge->GetGeometry()->GetBrushModel();
+    REQUIRE(brush_model);
     auto& brushes = brush_model->GetBrushes();
     REQUIRE(brushes.size() == 1);
     auto& brush = brushes[0];
     REQUIRE(brush.impl->Faces().size() == 18);
     REQUIRE(brush.impl->Points().size() == 24);
 
-    auto& caabb = merge->GetSceneNode()->GetUniqueComp<n3::CompAABB>();
+    auto& caabb = merge->GetGeometry()->GetNode()->GetUniqueComp<n3::CompAABB>();
     auto& aabb = caabb.GetAABB();
     REQUIRE(aabb.Min()[0] == Approx(std::min(pos0.x - size0.x * 0.5f, std::min(pos1.x - size1.x * 0.5f, pos2.x - size2.x * 0.5f))));
     REQUIRE(aabb.Min()[1] == Approx(std::min(pos0.y - size0.y * 0.5f, std::min(pos1.y - size1.y * 0.5f, pos2.y - size2.y * 0.5f))));
