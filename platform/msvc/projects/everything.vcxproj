@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\Evaluator.h" />
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
+    <ClInclude Include="..\..\..\include\everything\Expression.h" />
     <ClInclude Include="..\..\..\include\everything\Geometry.h" />
     <ClInclude Include="..\..\..\include\everything\node\Add.h" />
     <ClInclude Include="..\..\..\include\everything\node\Carve.h" />
@@ -39,6 +40,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
     <ClCompile Include="..\..\..\source\Everything.cpp" />
+    <ClCompile Include="..\..\..\source\Expression.cpp" />
     <ClCompile Include="..\..\..\source\Geometry.cpp" />
     <ClCompile Include="..\..\..\source\Node.cpp" />
     <ClCompile Include="..\..\..\source\node\Add.cpp" />

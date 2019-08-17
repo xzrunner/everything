@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\..\test\main.cpp" />
+    <ClCompile Include="..\..\..\test\utility.cpp" />
+    <ClCompile Include="..\..\..\test\attribute_nodes.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\manipulate_nodes.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\nurbs_nodes.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\polygon_nodes.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\primitive_nodes.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\utility_nodes.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\test\utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="nodes">
+      <UniqueIdentifier>{c618578f-6d7c-4274-af2e-2181a3bfba41}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

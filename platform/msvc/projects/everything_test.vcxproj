@@ -121,10 +121,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\test\context_test.cpp" />
+    <ClCompile Include="..\..\..\test\attribute_nodes.cpp" />
+    <ClCompile Include="..\..\..\test\manipulate_nodes.cpp" />
+    <ClCompile Include="..\..\..\test\nurbs_nodes.cpp" />
     <ClCompile Include="..\..\..\test\main.cpp" />
-    <ClCompile Include="..\..\..\test\node_test.cpp" />
+    <ClCompile Include="..\..\..\test\polygon_nodes.cpp" />
+    <ClCompile Include="..\..\..\test\primitive_nodes.cpp" />
     <ClCompile Include="..\..\..\test\utility.cpp" />
+    <ClCompile Include="..\..\..\test\utility_nodes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\test\utility.h" />

@@ -11,19 +11,10 @@ namespace node
 
 void CopyToPoints::Execute(TreeContext& ctx)
 {
-    if (m_imports[IDX_SRC_PRIM].conns.empty() ||
-        m_imports[IDX_TARGET_POS].conns.empty()) {
-        return;
-    }
+    m_geo.reset();
 
-    auto src_node = m_imports[IDX_SRC_PRIM].conns[0].node.lock();
-    auto dst_node = m_imports[IDX_TARGET_POS].conns[0].node.lock();
-    if (!src_node || !dst_node) {
-        return;
-    }
-
-    auto src_geo = src_node->GetGeometry();
-    auto dst_geo = dst_node->GetGeometry();
+    auto src_geo = GetInputGeo(IDX_SRC_PRIM);
+    auto dst_geo = GetInputGeo(IDX_TARGET_POS);
     if (!src_geo || !dst_geo) {
         return;
     }
@@ -55,16 +46,15 @@ CopyToPoints::BuildBrush(const Geometry& src, const Geometry& dst) const
     if (!src_brush_model) {
         return nullptr;
     }
+    auto& src_brushes = src_brush_model->GetBrushes();
+    if (src_brushes.empty()) {
+        return nullptr;
+    }
 
     auto brush_model = std::make_unique<model::BrushModel>();
     std::vector<model::BrushModel::Brush> brushes;
-    dst.TraversePoints([&](sm::vec3& v)->bool 
+    dst.TraversePoints([&](sm::vec3& v, bool& dirty)->bool
     {
-        auto& src_brushes = src_brush_model->GetBrushes();
-        if (src_brushes.empty()) {
-            return false;
-        }
-
         for (auto& src_brush : src_brushes)
         {
             model::BrushModel::Brush dst;
@@ -72,6 +62,7 @@ CopyToPoints::BuildBrush(const Geometry& src, const Geometry& dst) const
             dst.impl = CloneToPoint(*src_brush.impl, v);
             brushes.push_back(dst);
         }
+        dirty = false;
         return true;
     });
     brush_model->SetBrushes(brushes);

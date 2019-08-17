@@ -2,6 +2,8 @@
 
 #include "everything/Node.h"
 
+#include <SM_Vector.h>
+
 namespace evt
 {
 namespace node
@@ -26,6 +28,9 @@ public:
     void SetSecondU(float u);
     void SetFirstV(float v);
     void SetSecondV(float v);
+
+private:
+    void BuildModel(const std::vector<sm::vec3>& vertices);
 
 private:
     float m_first_u  = 0;

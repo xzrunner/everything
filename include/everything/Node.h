@@ -57,6 +57,9 @@ public:
     };
 
 protected:
+    std::shared_ptr<Geometry> GetInputGeo(size_t idx) const;
+
+protected:
     std::vector<Port> m_imports, m_exports;
 
     std::shared_ptr<Geometry> m_geo = nullptr;

@@ -24,6 +24,20 @@ namespace evt
 //{
 //}
 
+std::shared_ptr<Geometry> Node::GetInputGeo(size_t idx) const
+{
+    if (idx >= 0 && idx < m_imports.size()) {
+        if (!m_imports[idx].conns.empty()) {
+            assert(m_imports[idx].conns.size() == 1);
+            auto node = m_imports[idx].conns[0].node.lock();
+            if (node) {
+                return node->GetGeometry();
+            }
+        }
+    }
+    return nullptr;
+}
+
 void make_connecting(const Node::PortAddr& from, const Node::PortAddr& to)
 {
 	{

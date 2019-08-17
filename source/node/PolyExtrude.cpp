@@ -10,26 +10,16 @@ namespace node
 
 void PolyExtrude::Execute(TreeContext& ctx)
 {
-    assert(m_imports.size() == 1);
-    if (m_imports[0].conns.empty()) {
-        return;
-    }
+    m_geo.reset();
 
-    assert(m_imports[0].conns.size() == 1);
-    auto prev = m_imports[0].conns[0].node.lock();
-    if (!prev) {
-        return;
-    }
-
-    auto prev_geo = prev->GetGeometry();
+    auto prev_geo = GetInputGeo(0);
     if (!prev_geo) {
-        m_geo.reset();
         return;
     }
 
     m_geo = std::make_shared<Geometry>(*prev_geo);
 
-    m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx)->bool
+    m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx, bool& dirty)->bool
     {
         auto& faces = poly.Faces();
         assert(face_idx >= 0 && face_idx < faces.size());
@@ -39,6 +29,7 @@ void PolyExtrude::Execute(TreeContext& ctx)
         for (auto& v : face->points) {
             poly.Points()[v] += offset;
         }
+        dirty = true;
         return true;
     }, m_group_name);
 }

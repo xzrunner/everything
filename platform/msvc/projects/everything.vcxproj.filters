@@ -101,6 +101,9 @@
     <ClInclude Include="..\..\..\include\everything\Geometry.h">
       <Filter>dataset</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Expression.h">
+      <Filter>system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Node.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\Geometry.cpp">
       <Filter>dataset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Expression.cpp">
+      <Filter>system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

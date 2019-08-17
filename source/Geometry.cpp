@@ -1,11 +1,14 @@
 #include "everything/Geometry.h"
 
+#include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
 #include <model/ModelExtend.h>
 #include <model/BrushModel.h>
 #include <model/BrushBuilder.h>
 #include <painting3/MaterialMgr.h>
 #include <geoshape/Shape3D.h>
+#include <geoshape/Point3D.h>
+#include <geoshape/PointSet3D.h>
 #include <geoshape/Polyline3D.h>
 #include <ns/NodeFactory.h>
 #include <node0/SceneNode.h>
@@ -67,7 +70,7 @@ Geometry& Geometry::operator = (const Geometry& geo)
     return *this;
 }
 
-void Geometry::TraversePoints(std::function<bool(sm::vec3&)> func,
+void Geometry::TraversePoints(std::function<bool(sm::vec3&, bool& dirty)> func,
                               const std::string& group_name) const
 {
     if (!m_node) {
@@ -81,11 +84,25 @@ void Geometry::TraversePoints(std::function<bool(sm::vec3&)> func,
         auto brush_model = GetBrushModel();
         assert(brush_model);
         auto& brushes = brush_model->GetBrushes();
-        for (auto& brush : brushes) {
-            for (auto& v : brush.impl->Points()) {
-                if (func(v)) {
+        bool stop = false;
+        for (auto& brush : brushes)
+        {
+            for (auto& v : brush.impl->Points())
+            {
+                bool d;
+                if (!func(v, d)) {
+                    stop = true;
+                }
+                if (d) {
                     dirty = true;
                 }
+
+                if (stop) {
+                    break;
+                }
+            }
+            if (stop) {
+                break;
             }
         }
 
@@ -95,13 +112,31 @@ void Geometry::TraversePoints(std::function<bool(sm::vec3&)> func,
     }
     else if (m_node->HasSharedComp<n3::CompShape>())
     {
+        bool dirty;
+
         auto shape = GetShape();
         auto type = shape->get_type();
-        if (type == rttr::type::get<gs::Polyline3D>())
+        if (type == rttr::type::get<gs::Point3D>())
+        {
+            auto point = std::static_pointer_cast<gs::Point3D>(shape);
+            func(const_cast<sm::vec3&>(point->GetPos()), dirty);
+        }
+        else if (type == rttr::type::get<gs::PointSet3D>())
+        {
+            auto pos_set = std::static_pointer_cast<gs::PointSet3D>(shape);
+            for (auto& v : pos_set->GetVertices()) {
+                if (!func(const_cast<sm::vec3&>(v), dirty)) {
+                    break;
+                }
+            }
+        }
+        else if (type == rttr::type::get<gs::Polyline3D>())
         {
             auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
             for (auto& v : polyline->GetVertices()) {
-                func(const_cast<sm::vec3&>(v));
+                if (!func(const_cast<sm::vec3&>(v), dirty)) {
+                    break;
+                }
             }
         }
         else
@@ -111,7 +146,54 @@ void Geometry::TraversePoints(std::function<bool(sm::vec3&)> func,
     }
 }
 
-void Geometry::TraverseFaces(std::function<bool(pm3::Polytope& poly, size_t face_idx)> func,
+void Geometry::TraverseEdges(std::function<bool(const sm::vec3& begin, const sm::vec3& end)> func, const std::string& group_name) const
+{
+    if (!m_node) {
+        return;
+    }
+
+    if (m_node->HasSharedComp<n3::CompModel>())
+    {
+        auto brush_model = GetBrushModel();
+        assert(brush_model);
+        auto& brushes = brush_model->GetBrushes();
+        bool stop = false;
+        for (auto& brush : brushes)
+        {
+            auto& polyhedron = brush.impl->GetHalfedge();
+            auto first_edge = polyhedron->GetEdges().Head();
+            auto curr_edge = first_edge;
+            do {
+                if (!func(curr_edge->vert->position, curr_edge->next->vert->position)) {
+                    stop = true;
+                }
+                curr_edge = curr_edge->linked_next;
+            } while (!stop && curr_edge != first_edge);
+            if (stop) {
+                break;
+            }
+        }
+    }
+    else if (m_node->HasSharedComp<n3::CompShape>())
+    {
+        bool stop = false;
+
+        auto shape = GetShape();
+        auto type = shape->get_type();
+        if (type == rttr::type::get<gs::Polyline3D>())
+        {
+            auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
+            auto& vertices = polyline->GetVertices();
+            for (int i = 0, n = vertices.size() - 1; i < n && !stop; ++i) {
+                if (!func(vertices[i], vertices[i + 1])) {
+                    stop = true;
+                }
+            }
+        }
+    }
+}
+
+void Geometry::TraverseFaces(std::function<bool(pm3::Polytope& poly, size_t face_idx, bool& dirty)> func,
                              const std::string& group_name) const
 {
     if (!m_node) {
@@ -136,19 +218,41 @@ void Geometry::TraverseFaces(std::function<bool(pm3::Polytope& poly, size_t face
         assert(group->type == GroupType::Face);
         assert(brushes.size() == 1);
         auto& brush = brushes[0];
-        for (auto& i : group->items) {
-            if (func(*brush.impl, i)) {
+        bool stop = false;
+        for (auto& i : group->items)
+        {
+            bool d;
+            if (!func(*brush.impl, i, d)) {
+                stop = true;
+            }
+            if (d) {
                 dirty = true;
+            }
+            if (stop) {
+                break;
             }
         }
     }
     else
     {
-        for (auto& brush : brushes) {
-            for (size_t i = 0, n = brush.impl->Faces().size(); i < n; ++i) {
-                if (func(*brush.impl, i)) {
+        bool stop = false;
+        for (auto& brush : brushes)
+        {
+            for (size_t i = 0, n = brush.impl->Faces().size(); i < n; ++i)
+            {
+                bool d;
+                if (!func(*brush.impl, i, d)) {
+                    stop = true;
+                }
+                if (d) {
                     dirty = true;
                 }
+                if (stop) {
+                    break;
+                }
+            }
+            if (stop) {
+                break;
             }
         }
     }
@@ -243,8 +347,8 @@ Geometry::GetShape() const
         return nullptr;
     }
 
-    assert(m_node->HasUniqueComp<n3::CompShape>());
-    auto& cshape = m_node->GetUniqueComp<n3::CompShape>();
+    assert(m_node->HasSharedComp<n3::CompShape>());
+    auto& cshape = m_node->GetSharedComp<n3::CompShape>();
     return cshape.GetShape();
 }
 

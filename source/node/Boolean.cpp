@@ -12,18 +12,11 @@ namespace node
 
 void Boolean::Execute(TreeContext& ctx)
 {
-    if (m_imports[IDX_A].conns.empty() ||
-        m_imports[IDX_B].conns.empty()) {
-        return;
-    }
-    auto node_a = m_imports[IDX_A].conns[0].node.lock();
-    auto node_b = m_imports[IDX_B].conns[0].node.lock();
-    if (!node_a || !node_b) {
-        return;
-    }
-    auto geo_a = node_a->GetGeometry();
-    auto geo_b = node_b->GetGeometry();
-    if (!node_a || !node_b) {
+    m_geo.reset();
+
+    auto geo_a = GetInputGeo(IDX_A);
+    auto geo_b = GetInputGeo(IDX_B);
+    if (!geo_a || !geo_b) {
         return;
     }
     auto brush_model_a = geo_a->GetBrushModel();
@@ -55,7 +48,7 @@ void Boolean::Execute(TreeContext& ctx)
     case Operator::Intersect:
     {
         auto poly = he_a->Intersect(*he_b);
-        if (poly->GetFaces().Size() > 0) 
+        if (poly->GetFaces().Size() > 0)
         {
             model::BrushModel::Brush brush;
             brush.impl = std::make_shared<pm3::Polytope>(poly);
@@ -69,7 +62,7 @@ void Boolean::Execute(TreeContext& ctx)
         assert(0);
     }
 
-    if (!brushes.empty()) 
+    if (!brushes.empty())
     {
         auto brush_model = std::make_unique<model::BrushModel>();
         brush_model->SetBrushes(brushes);

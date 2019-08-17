@@ -13,20 +13,10 @@ namespace node
 
 void GroupCreate::Execute(TreeContext& ctx)
 {
-    assert(m_imports.size() == 2);
-    if (m_imports[IDX_SOURCE_OBJ].conns.empty()) {
-        return;
-    }
+    m_geo.reset();
 
-    assert(m_imports[IDX_SOURCE_OBJ].conns.size() == 1);
-    auto prev = m_imports[IDX_SOURCE_OBJ].conns[IDX_SOURCE_OBJ].node.lock();
-    if (!prev) {
-        return;
-    }
-
-    auto prev_geo = prev->GetGeometry();
+    auto prev_geo = GetInputGeo(IDX_SOURCE_OBJ);
     if (!prev_geo) {
-        m_geo.reset();
         return;
     }
 
@@ -101,17 +91,16 @@ void GroupCreate::SelectByNormals(Geometry::Group& group)
     {
     case Geometry::GroupType::Face:
     {
-        m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx)->bool 
+        m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx, bool& dirty)->bool
         {
             auto& faces = poly.Faces();
             auto& face = faces[face_idx];
             auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
             if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
                 group.items.push_back(face_idx);
-                return true;
-            } else {
-                return false;
             }
+            dirty = false;
+            return true;
         });
     }
         break;

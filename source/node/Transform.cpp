@@ -8,28 +8,20 @@ namespace node
 
 void Transform::Execute(TreeContext& ctx)
 {
-    assert(m_imports.size() == 1);
-    if (m_imports[0].conns.empty()) {
-        return;
-    }
+    m_geo.reset();
 
-    assert(m_imports[0].conns.size() == 1);
-    auto prev = m_imports[0].conns[0].node.lock();
-    if (!prev) {
-        return;
-    }
-
-    auto prev_geo = prev->GetGeometry();
+    auto prev_geo = GetInputGeo(0);
     if (!prev_geo) {
-        m_geo.reset();
         return;
     }
 
     m_geo = std::make_shared<Geometry>(*prev_geo);
 
     auto mat = CalcTransformMat();
-    m_geo->TraversePoints([&mat](sm::vec3& p)->bool {
+    m_geo->TraversePoints([&mat](sm::vec3& p, bool& dirty)->bool
+    {
         p = mat * p;
+        dirty = true;
         return true;
     });
 }
