@@ -13,13 +13,13 @@ public:
     Merge()
     {
         m_imports = {
-            {{ VariableType::Any, "in0" }},
-            {{ VariableType::Any, "in1" }},
-            {{ VariableType::Any, "in2" }},
-            {{ VariableType::Any, "in3" }},
+            {{ NodeVarType::Any, "in0" }},
+            {{ NodeVarType::Any, "in1" }},
+            {{ NodeVarType::Any, "in2" }},
+            {{ NodeVarType::Any, "in3" }},
         };
         m_exports = {
-            {{ VariableType::Any, "out" }},
+            {{ NodeVarType::Any, "out" }},
         };
     }
 

@@ -1,5 +1,6 @@
 #include "everything/node/GroupCreate.h"
 #include "everything/TreeContext.h"
+#include "everything/GeometryNode.h"
 
 #include <SM_Calc.h>
 #include <model/BrushModel.h>
@@ -20,9 +21,9 @@ void GroupCreate::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(*prev_geo);
+    m_geo = std::make_shared<GeometryNode>(*prev_geo);
 
-    auto group = std::make_shared<Geometry::Group>();
+    auto group = std::make_shared<Group>();
     group->name = m_name;
     m_geo->AddGroup(group);
 
@@ -48,7 +49,7 @@ void GroupCreate::SetName(const std::string& name)
     m_name = name;
 }
 
-void GroupCreate::SetType(Geometry::GroupType type)
+void GroupCreate::SetType(GroupType type)
 {
     if (m_type == type) {
         return;
@@ -85,11 +86,11 @@ void GroupCreate::DisableKeepByNormals()
     SetDirty(true);
 }
 
-void GroupCreate::SelectByNormals(Geometry::Group& group)
+void GroupCreate::SelectByNormals(Group& group)
 {
     switch (m_type)
     {
-    case Geometry::GroupType::Face:
+    case GroupType::Primitives:
     {
         m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx, bool& dirty)->bool
         {
@@ -104,11 +105,11 @@ void GroupCreate::SelectByNormals(Geometry::Group& group)
         });
     }
         break;
-    case Geometry::GroupType::Points:
+    case GroupType::Points:
         break;
-    case Geometry::GroupType::Edges:
+    case GroupType::Edges:
         break;
-    case Geometry::GroupType::Vertices:
+    case GroupType::Vertices:
         break;
     }
 }

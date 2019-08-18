@@ -1,5 +1,5 @@
 #include "everything/node/Delete.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <geoshape/PointSet3D.h>
 #include <node0/SceneNode.h>
@@ -40,7 +40,7 @@ void Delete::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(Geometry::DataType::Shape);
+    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Shape);
     BuildModel(vertices);
 }
 

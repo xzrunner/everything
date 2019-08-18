@@ -1,5 +1,5 @@
 #include "everything/node/Box.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
@@ -11,7 +11,7 @@ namespace node
 
 void Box::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(Geometry::DataType::Brush);
+    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Brush);
     BuildModel();
 }
 

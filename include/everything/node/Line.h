@@ -15,7 +15,7 @@ public:
     Line()
     {
         m_exports = {
-            {{ VariableType::Any, "out" }},
+            {{ NodeVarType::Any, "out" }},
         };
     }
 

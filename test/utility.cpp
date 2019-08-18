@@ -1,7 +1,7 @@
 #include "utility.h"
 
 #include <everything/Node.h>
-#include <everything/Geometry.h>
+#include <everything/GeometryNode.h>
 
 #include <unirender/gl/RenderContext.h>
 #include <unirender/Blackboard.h>

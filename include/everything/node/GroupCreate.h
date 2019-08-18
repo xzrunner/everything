@@ -1,7 +1,7 @@
 #pragma once
 
 #include "everything/Node.h"
-#include "everything/Geometry.h"
+#include "everything/Group.h"
 
 #include <SM_Vector.h>
 
@@ -23,11 +23,11 @@ public:
     GroupCreate()
     {
         m_imports = {
-            {{ VariableType::Any, "src" }},
-            {{ VariableType::Any, "bounding" }},
+            {{ NodeVarType::Any, "src" }},
+            {{ NodeVarType::Any, "bounding" }},
         };
         m_exports = {
-            {{ VariableType::Any, "out" }},
+            {{ NodeVarType::Any, "out" }},
         };
     }
 
@@ -37,18 +37,18 @@ public:
     void  SetName(const std::string& name);
     auto& GetName() const { return m_name; }
 
-    void SetType(Geometry::GroupType type);
+    void SetType(GroupType type);
 
     void EnableKeepByNormals(const sm::vec3& direction, float spread_angle);
     void DisableKeepByNormals();
 
 private:
-    void SelectByNormals(Geometry::Group& group);
+    void SelectByNormals(Group& group);
 
 private:
     std::string m_name;
 
-    Geometry::GroupType m_type = Geometry::GroupType::Face;
+    GroupType m_type = GroupType::Primitives;
 
     // keep by normals
     bool     m_keep_by_normals = false;

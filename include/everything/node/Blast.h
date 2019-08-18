@@ -1,7 +1,7 @@
 #pragma once
 
 #include "everything/Node.h"
-#include "everything/Geometry.h"
+#include "everything/Group.h"
 
 namespace evt
 {
@@ -14,10 +14,10 @@ public:
     Blast()
     {
         m_imports = {
-            {{ VariableType::Any, "in" }}
+            {{ NodeVarType::Any, "in" }}
         };
         m_exports = {
-            {{ VariableType::Any, "out" }},
+            {{ NodeVarType::Any, "out" }},
         };
     }
 
@@ -25,14 +25,14 @@ public:
 
     void SetGroupName(const std::string& name) { m_group_name = name; }
 
-    void SetGroupType(Geometry::GroupType type);
+    void SetGroupType(GroupType type);
 
     void SetDeleteNonSelected(bool del_non_selected);
 
 private:
     std::string m_group_name;
 
-    Geometry::GroupType m_group_type = Geometry::GroupType::Points;
+    GroupType m_group_type = GroupType::Points;
 
     bool m_delete_non_selected = false;
 

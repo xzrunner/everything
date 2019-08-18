@@ -15,12 +15,17 @@
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
     <ClInclude Include="..\..\..\include\everything\Expression.h" />
     <ClInclude Include="..\..\..\include\everything\Geometry.h" />
+    <ClInclude Include="..\..\..\include\everything\GeometryNode.h" />
+    <ClInclude Include="..\..\..\include\everything\Group.h" />
+    <ClInclude Include="..\..\..\include\everything\GroupMgr.h" />
     <ClInclude Include="..\..\..\include\everything\node\Add.h" />
     <ClInclude Include="..\..\..\include\everything\node\Carve.h" />
     <ClInclude Include="..\..\..\include\everything\node\Delete.h" />
+    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimitive.h" />
     <ClInclude Include="..\..\..\include\everything\node\Knife.h" />
     <ClInclude Include="..\..\..\include\everything\node\Line.h" />
     <ClInclude Include="..\..\..\include\everything\node\Sort.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Switch.h" />
     <ClInclude Include="..\..\..\include\everything\TreeContext.h" />
     <ClInclude Include="..\..\..\include\everything\Node.h" />
     <ClInclude Include="..\..\..\include\everything\node\Blast.h" />
@@ -34,14 +39,18 @@
     <ClInclude Include="..\..\..\include\everything\node\Sphere.h" />
     <ClInclude Include="..\..\..\include\everything\node\Transform.h" />
     <ClInclude Include="..\..\..\include\everything\typedef.h" />
+    <ClInclude Include="..\..\..\include\everything\NodeVar.h" />
+    <ClInclude Include="..\..\..\include\everything\NodeVarType.h" />
     <ClInclude Include="..\..\..\include\everything\Variable.h" />
-    <ClInclude Include="..\..\..\include\everything\VariableType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
     <ClCompile Include="..\..\..\source\Everything.cpp" />
     <ClCompile Include="..\..\..\source\Expression.cpp" />
     <ClCompile Include="..\..\..\source\Geometry.cpp" />
+    <ClCompile Include="..\..\..\source\GeometryNode.cpp" />
+    <ClCompile Include="..\..\..\source\Group.cpp" />
+    <ClCompile Include="..\..\..\source\GroupMgr.cpp" />
     <ClCompile Include="..\..\..\source\Node.cpp" />
     <ClCompile Include="..\..\..\source\node\Add.cpp" />
     <ClCompile Include="..\..\..\source\node\Blast.cpp" />
@@ -51,6 +60,7 @@
     <ClCompile Include="..\..\..\source\node\CopyToPoints.cpp" />
     <ClCompile Include="..\..\..\source\node\Curve.cpp" />
     <ClCompile Include="..\..\..\source\node\Delete.cpp" />
+    <ClCompile Include="..\..\..\source\node\ForeachPrimitive.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
     <ClCompile Include="..\..\..\source\node\Knife.cpp" />
     <ClCompile Include="..\..\..\source\node\Line.cpp" />
@@ -58,9 +68,11 @@
     <ClCompile Include="..\..\..\source\node\PolyExtrude.cpp" />
     <ClCompile Include="..\..\..\source\node\Sort.cpp" />
     <ClCompile Include="..\..\..\source\node\Sphere.cpp" />
+    <ClCompile Include="..\..\..\source\node\Switch.cpp" />
     <ClCompile Include="..\..\..\source\node\Transform.cpp" />
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />
     <ClCompile Include="..\..\..\source\TreeContext.cpp" />
+    <ClCompile Include="..\..\..\source\Variable.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>5.everything</ProjectName>

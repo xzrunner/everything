@@ -1,5 +1,5 @@
 #include "everything/node/Merge.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
@@ -11,9 +11,9 @@ namespace node
 
 void Merge::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(Geometry::DataType::Brush);
+    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Brush);
 
-    std::vector<std::shared_ptr<Geometry>> children;
+    std::vector<std::shared_ptr<GeometryNode>> children;
     for (auto& port : m_imports)
     {
         if (port.conns.empty()) {

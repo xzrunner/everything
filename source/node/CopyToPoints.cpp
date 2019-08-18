@@ -1,5 +1,5 @@
 #include "everything/node/CopyToPoints.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
@@ -19,7 +19,7 @@ void CopyToPoints::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(Geometry::DataType::Brush);
+    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Brush);
 
     auto brush_model = BuildBrush(*src_geo, *dst_geo);
     if (brush_model) {
@@ -40,7 +40,7 @@ void CopyToPoints::SetTransformUsingPointOrientations(bool enable)
 }
 
 std::unique_ptr<model::BrushModel>
-CopyToPoints::BuildBrush(const Geometry& src, const Geometry& dst) const
+CopyToPoints::BuildBrush(const GeometryNode& src, const GeometryNode& dst) const
 {
     auto src_brush_model = src.GetBrushModel();
     if (!src_brush_model) {

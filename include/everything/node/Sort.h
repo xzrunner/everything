@@ -22,10 +22,10 @@ public:
     Sort()
     {
         m_imports = {
-            {{ VariableType::Any, "in" }}
+            {{ NodeVarType::Any, "in" }}
         };
         m_exports = {
-            {{ VariableType::Any, "out" }},
+            {{ NodeVarType::Any, "out" }},
         };
     }
 

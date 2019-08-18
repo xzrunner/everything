@@ -1,5 +1,5 @@
 #include "everything/node/Curve.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <geoshape/Polyline3D.h>
 #include <node0/SceneNode.h>
@@ -13,7 +13,7 @@ namespace node
 
 void Curve::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(Geometry::DataType::Shape);
+    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Shape);
     BuildModel();
 }
 

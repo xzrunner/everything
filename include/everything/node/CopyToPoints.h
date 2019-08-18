@@ -25,11 +25,11 @@ public:
     CopyToPoints()
     {
         m_imports = {
-            {{ VariableType::Any, "in" }},
-            {{ VariableType::Any, "pos" }}
+            {{ NodeVarType::Any, "in" }},
+            {{ NodeVarType::Any, "pos" }}
         };
         m_exports = {
-            {{ VariableType::Any, "out" }},
+            {{ NodeVarType::Any, "out" }},
         };
     }
 
@@ -39,7 +39,7 @@ public:
 
 private:
     std::unique_ptr<model::BrushModel>
-        BuildBrush(const Geometry& src, const Geometry& dst) const;
+        BuildBrush(const GeometryNode& src, const GeometryNode& dst) const;
 
     static std::unique_ptr<pm3::Polytope>
         CloneToPoint(const pm3::Polytope& src, const sm::vec3& target);

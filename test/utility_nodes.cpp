@@ -1,7 +1,7 @@
 #include "utility.h"
 
 #include <everything/Evaluator.h>
-#include <everything/Geometry.h>
+#include <everything/GeometryNode.h>
 
 #include <everything/node/Blast.h>
 #include <everything/node/CopyToPoints.h>
@@ -34,7 +34,7 @@ TEST_CASE("blast")
 
     auto blast = std::make_shared<evt::node::Blast>();
     blast->SetGroupName(name);
-    blast->SetGroupType(evt::Geometry::GroupType::Face);
+    blast->SetGroupType(evt::GroupType::Primitives);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });

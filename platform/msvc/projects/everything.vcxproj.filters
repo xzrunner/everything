@@ -31,17 +31,14 @@
     <Filter Include="nodes\geometry\nurbs">
       <UniqueIdentifier>{0f422275-8213-4e24-bfdd-0562582a20b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dataset\geo">
+      <UniqueIdentifier>{3703ebce-0a43-46bf-aeb7-78836f68201a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\node">
+      <UniqueIdentifier>{dd04b857-ea2f-4c23-b7b1-883a61f5a1d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\everything\Node.h">
-      <Filter>dataset</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\Variable.h">
-      <Filter>dataset</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\VariableType.h">
-      <Filter>dataset</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Curve.h">
       <Filter>nodes\geometry\primitive</Filter>
     </ClInclude>
@@ -77,9 +74,6 @@
     <ClInclude Include="..\..\..\include\everything\node\Boolean.h">
       <Filter>nodes\geometry\polygon</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\TreeContext.h">
-      <Filter>dataset</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Knife.h">
       <Filter>nodes\geometry\polygon</Filter>
     </ClInclude>
@@ -98,17 +92,44 @@
     <ClInclude Include="..\..\..\include\everything\node\Sort.h">
       <Filter>nodes\geometry\attribute</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\Geometry.h">
-      <Filter>dataset</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\Expression.h">
       <Filter>system</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimitive.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Switch.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Node.h">
+      <Filter>dataset\node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\TreeContext.h">
+      <Filter>dataset\node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\NodeVar.h">
+      <Filter>dataset\node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\NodeVarType.h">
+      <Filter>dataset\node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Variable.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeometryNode.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Geometry.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Group.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GroupMgr.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\source\Node.cpp">
-      <Filter>dataset</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp">
       <Filter>system</Filter>
     </ClCompile>
@@ -143,9 +164,6 @@
     <ClCompile Include="..\..\..\source\node\Boolean.cpp">
       <Filter>nodes\geometry\polygon</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\TreeContext.cpp">
-      <Filter>dataset</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\node\Knife.cpp">
       <Filter>nodes\geometry\polygon</Filter>
     </ClCompile>
@@ -167,11 +185,35 @@
     <ClCompile Include="..\..\..\source\node\Curve.cpp">
       <Filter>nodes\geometry\primitive</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\Geometry.cpp">
-      <Filter>dataset</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\Expression.cpp">
       <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\ForeachPrimitive.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Switch.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Node.cpp">
+      <Filter>dataset\node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\TreeContext.cpp">
+      <Filter>dataset\node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Variable.cpp">
+      <Filter>dataset\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeometryNode.cpp">
+      <Filter>dataset\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Geometry.cpp">
+      <Filter>dataset\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Group.cpp">
+      <Filter>dataset\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GroupMgr.cpp">
+      <Filter>dataset\geo</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

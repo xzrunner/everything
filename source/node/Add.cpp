@@ -1,5 +1,5 @@
 #include "everything/node/Add.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <geoshape/Polyline3D.h>
 #include <node0/SceneNode.h>
@@ -31,7 +31,7 @@ void Add::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(Geometry::DataType::Shape);
+    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Shape);
 
     std::copy(m_points.begin(), m_points.end(), std::back_inserter(vertices));
     BuildModel(vertices);

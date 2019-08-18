@@ -1,5 +1,5 @@
 #include "everything/node/PolyExtrude.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <polymesh3/Geometry.h>
 
@@ -17,7 +17,7 @@ void PolyExtrude::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(*prev_geo);
+    m_geo = std::make_shared<GeometryNode>(*prev_geo);
 
     m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx, bool& dirty)->bool
     {

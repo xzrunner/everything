@@ -1,7 +1,7 @@
 #include "utility.h"
 
 #include <everything/Evaluator.h>
-#include <everything/Geometry.h>
+#include <everything/GeometryNode.h>
 
 #include <everything/node/Add.h>
 #include <everything/node/Boolean.h>

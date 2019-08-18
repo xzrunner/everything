@@ -1,5 +1,5 @@
 #include "everything/node/Carve.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <SM_Calc.h>
 #include <geoshape/Polyline3D.h>
@@ -89,7 +89,7 @@ void Carve::Execute(TreeContext& ctx)
         dst_vertices.push_back(end);
     }
 
-    m_geo = std::make_shared<Geometry>(Geometry::DataType::Shape);
+    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Shape);
     BuildModel(dst_vertices);
 }
 

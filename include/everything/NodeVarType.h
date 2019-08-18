@@ -3,7 +3,7 @@
 namespace evt
 {
 
-enum class VariableType
+enum class NodeVarType
 {
     Any,
 

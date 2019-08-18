@@ -1,5 +1,6 @@
 #include "everything/node/Blast.h"
 #include "everything/TreeContext.h"
+#include "everything/GeometryNode.h"
 
 #include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
@@ -20,7 +21,7 @@ void Blast::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(*prev_geo);
+    m_geo = std::make_shared<GeometryNode>(*prev_geo);
 
     auto group = m_geo->QueryGroup(m_group_name);
     if (!group) {
@@ -36,7 +37,7 @@ void Blast::Execute(TreeContext& ctx)
 
     switch (m_group_type)
     {
-    case Geometry::GroupType::Face:
+    case GroupType::Primitives:
     {
         auto faces = brush.impl->Faces();
         std::vector<bool> del_flags;
@@ -84,7 +85,7 @@ void Blast::Execute(TreeContext& ctx)
     }
 }
 
-void Blast::SetGroupType(Geometry::GroupType type)
+void Blast::SetGroupType(GroupType type)
 {
     if (m_group_type == type) {
         return;

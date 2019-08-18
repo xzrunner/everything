@@ -27,11 +27,11 @@ public:
     Boolean()
     {
         m_imports = {
-            {{ VariableType::Any, "a" }},
-            {{ VariableType::Any, "b" }}
+            {{ NodeVarType::Any, "a" }},
+            {{ NodeVarType::Any, "b" }}
         };
         m_exports = {
-            {{ VariableType::Any, "out" }},
+            {{ NodeVarType::Any, "out" }},
         };
     }
 

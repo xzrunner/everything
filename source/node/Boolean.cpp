@@ -1,5 +1,5 @@
 #include "everything/node/Boolean.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryNode.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -38,7 +38,7 @@ void Boolean::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(Geometry::DataType::Brush);
+    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Brush);
 
     std::vector<model::BrushModel::Brush> brushes;
     switch (m_operator)
