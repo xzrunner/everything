@@ -32,8 +32,8 @@ void Boolean::Execute(TreeContext& ctx)
     if (!brush_a || !brush_b) {
         return;
     }
-    auto he_a = brush_a->GetHalfedge();
-    auto he_b = brush_b->GetHalfedge();
+    auto he_a = brush_a->GetGeometry();
+    auto he_b = brush_b->GetGeometry();
     if (!he_a || !he_b) {
         return;
     }

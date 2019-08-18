@@ -160,7 +160,7 @@ void Geometry::TraverseEdges(std::function<bool(const sm::vec3& begin, const sm:
         bool stop = false;
         for (auto& brush : brushes)
         {
-            auto& polyhedron = brush.impl->GetHalfedge();
+            auto& polyhedron = brush.impl->GetGeometry();
             auto first_edge = polyhedron->GetEdges().Head();
             auto curr_edge = first_edge;
             do {

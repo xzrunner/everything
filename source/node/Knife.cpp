@@ -83,8 +83,8 @@ bool Knife::Clip(pm3::Polytope& poly) const
     }
 
     sm::Plane plane(m_direction, m_origin);
-    if (poly.GetHalfedge()->Clip(plane, keep)) {
-        poly.BuildFromHalfedge();
+    if (poly.GetGeometry()->Clip(plane, keep)) {
+        poly.BuildFromGeo();
         return true;
     } else {
         return false;
