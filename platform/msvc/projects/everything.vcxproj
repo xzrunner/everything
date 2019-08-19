@@ -14,8 +14,10 @@
     <ClInclude Include="..\..\..\include\everything\Evaluator.h" />
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
     <ClInclude Include="..\..\..\include\everything\Expression.h" />
+    <ClInclude Include="..\..\..\include\everything\GeoAdaptor.h" />
+    <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h" />
+    <ClInclude Include="..\..\..\include\everything\GeoAttribute.h" />
     <ClInclude Include="..\..\..\include\everything\Geometry.h" />
-    <ClInclude Include="..\..\..\include\everything\GeometryNode.h" />
     <ClInclude Include="..\..\..\include\everything\Group.h" />
     <ClInclude Include="..\..\..\include\everything\GroupMgr.h" />
     <ClInclude Include="..\..\..\include\everything\node\Add.h" />
@@ -47,9 +49,10 @@
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
     <ClCompile Include="..\..\..\source\Everything.cpp" />
     <ClCompile Include="..\..\..\source\Expression.cpp" />
+    <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
+    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp" />
+    <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
     <ClCompile Include="..\..\..\source\Geometry.cpp" />
-    <ClCompile Include="..\..\..\source\GeometryNode.cpp" />
-    <ClCompile Include="..\..\..\source\Group.cpp" />
     <ClCompile Include="..\..\..\source\GroupMgr.cpp" />
     <ClCompile Include="..\..\..\source\Node.cpp" />
     <ClCompile Include="..\..\..\source\node\Add.cpp" />

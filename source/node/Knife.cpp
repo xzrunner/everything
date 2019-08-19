@@ -1,5 +1,5 @@
 #include "everything/node/Knife.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -19,7 +19,7 @@ void Knife::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<GeometryNode>(*prev_geo);
+    m_geo = std::make_shared<Geometry>(*prev_geo);
 
     auto brush_model = m_geo->GetBrushModel();
     assert(brush_model);
@@ -27,7 +27,7 @@ void Knife::Execute(TreeContext& ctx)
     assert(brushes.size() == 1);
     auto& brush = brushes[0];
     if (Clip(*brush.impl)) {
-        m_geo->UpdateModel(*brush_model);
+        m_geo->UpdateByBrush(*brush_model);
     }
 }
 

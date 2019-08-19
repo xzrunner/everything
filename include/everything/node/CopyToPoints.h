@@ -39,7 +39,7 @@ public:
 
 private:
     std::unique_ptr<model::BrushModel>
-        BuildBrush(const GeometryNode& src, const GeometryNode& dst) const;
+        BuildBrush(const Geometry& src, const Geometry& dst) const;
 
     static std::unique_ptr<pm3::Polytope>
         CloneToPoint(const pm3::Polytope& src, const sm::vec3& target);

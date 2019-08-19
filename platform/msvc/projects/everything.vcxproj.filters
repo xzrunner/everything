@@ -116,16 +116,22 @@
     <ClInclude Include="..\..\..\include\everything\Variable.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\GeometryNode.h">
+    <ClInclude Include="..\..\..\include\everything\Group.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GroupMgr.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\Geometry.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\Group.h">
+    <ClInclude Include="..\..\..\include\everything\GeoAdaptor.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\GroupMgr.h">
+    <ClInclude Include="..\..\..\include\everything\GeoAttribute.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
   </ItemGroup>
@@ -203,16 +209,19 @@
     <ClCompile Include="..\..\..\source\Variable.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\GeometryNode.cpp">
+    <ClCompile Include="..\..\..\source\GroupMgr.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\Geometry.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\Group.cpp">
+    <ClCompile Include="..\..\..\source\GeoAdaptor.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\GroupMgr.cpp">
+    <ClCompile Include="..\..\..\source\GeoAttribute.cpp">
+      <Filter>dataset\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
   </ItemGroup>

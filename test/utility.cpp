@@ -1,7 +1,7 @@
 #include "utility.h"
 
 #include <everything/Node.h>
-#include <everything/GeometryNode.h>
+#include <everything/Geometry.h>
 
 #include <unirender/gl/RenderContext.h>
 #include <unirender/Blackboard.h>
@@ -101,16 +101,12 @@ void check_pos(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
     size_t i = 0;
     sm::vec3 src;
     src.MakeInvalid();
-    geo->TraversePoints([&](const sm::vec3& p, bool& dirty)->bool
+    for (auto& p : geo->GetAttr().GetPoints())
     {
-        dirty = false;
         if (i++ == idx) {
-            src = p;
-            return false;
-        } else {
-            return true;
+            src = p->pos;
         }
-    });
+    }
 
     REQUIRE(src.x == Approx(pos.x));
     REQUIRE(src.y == Approx(pos.y));
@@ -121,25 +117,16 @@ void check_points_num(const evt::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
-
-    size_t n = 0;
-    geo->TraversePoints([&](const sm::vec3& p, bool& dirty)->bool {
-        ++n;
-        return true;
-    });
-    REQUIRE(num == n);
+    REQUIRE(num == geo->GetAttr().GetPoints().size());
 }
 
+// todo
 void check_edges_num(const evt::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
     size_t n = 0;
-    geo->TraverseEdges([&](const sm::vec3& begin, const sm::vec3& end)->bool {
-        ++n;
-        return true;
-    });
     REQUIRE(num == n);
 }
 
@@ -147,13 +134,7 @@ void check_faces_num(const evt::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
-
-    size_t n = 0;
-    geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx, bool& dirty)->bool {
-        ++n;
-        return true;
-    });
-    REQUIRE(num == n);
+    REQUIRE(num == geo->GetAttr().GetPrimtives().size());
 }
 
 }

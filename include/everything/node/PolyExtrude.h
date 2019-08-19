@@ -1,6 +1,7 @@
 #pragma once
 
 #include "everything/Node.h"
+#include "everything/GeoAttribute.h"
 
 namespace pm3 { class Polytope; }
 
@@ -26,6 +27,9 @@ public:
 
     void SetGroupName(const std::string& name) { m_group_name = name; }
     void SetDistance(float dist);
+
+private:
+    void ExtrudeFace(GeoAttribute::Primitive& prim) const;
 
 private:
     std::string m_group_name;

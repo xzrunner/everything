@@ -1,5 +1,6 @@
 #include "everything/node/PolyExtrude.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
+#include "everything/GeoAttrHelper.h"
 
 #include <polymesh3/Geometry.h>
 
@@ -17,21 +18,29 @@ void PolyExtrude::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<GeometryNode>(*prev_geo);
+    m_geo = std::make_shared<Geometry>(*prev_geo);
 
-    m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx, bool& dirty)->bool
+    bool dirty = false;
+    auto& prims = m_geo->GetAttr().GetPrimtives();
+    auto group = m_geo->QueryGroup(m_group_name);
+    if (group)
     {
-        auto& faces = poly.Faces();
-        assert(face_idx >= 0 && face_idx < faces.size());
-        auto& face = faces[face_idx];
-        assert(face);
-        auto offset = face->plane.normal * m_distance;
-        for (auto& v : face->points) {
-            poly.Points()[v] += offset;
+        assert(group->type == GroupType::Primitives);
+        for (auto& i : group->items) {
+            ExtrudeFace(*prims[i]);
+            dirty = true;
         }
-        dirty = true;
-        return true;
-    }, m_group_name);
+    }
+    else
+    {
+        for (auto& p : prims) {
+            ExtrudeFace(*p);
+            dirty = true;
+        }
+    }
+    if (dirty) {
+        m_geo->UpdateByAttr();
+    }
 }
 
 void PolyExtrude::SetDistance(float dist)
@@ -43,6 +52,15 @@ void PolyExtrude::SetDistance(float dist)
     m_distance = dist;
 
     SetDirty(true);
+}
+
+void PolyExtrude::ExtrudeFace(GeoAttribute::Primitive& prim) const
+{
+    auto normal = GeoAttrHelper::CalcFaceNormal(prim);
+    auto offset = normal * m_distance;
+    for (auto& v : prim.vertices) {
+        v->point->pos += offset;
+    }
 }
 
 }

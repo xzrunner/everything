@@ -1,5 +1,5 @@
 #include "everything/node/Sort.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
 
 namespace evt
 {
@@ -15,7 +15,7 @@ void Sort::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<GeometryNode>(*prev_geo);
+    m_geo = std::make_shared<Geometry>(*prev_geo);
 }
 
 void Sort::SetKey(Key key)

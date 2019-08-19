@@ -1,8 +1,10 @@
 #pragma once
 
-#include "everything/Variable.h"
+#include "everything/GeoAdaptor.h"
+#include "everything/GroupMgr.h"
+#include "everything/GeoAttribute.h"
 
-#include <vector>
+#include <functional>
 
 namespace evt
 {
@@ -11,41 +13,37 @@ class Geometry
 {
 public:
 
-private:
-    struct Point
-    {
-        sm::vec3 pos;
+public:
+    Geometry(GeoAdaptor::DataType type);
 
-        std::vector<std::unique_ptr<Variable>> vars;
+    void Combine(const Geometry& geo, size_t prim_off);
 
-    }; // Point
+    void AddGroup(const std::shared_ptr<Group>& group);
+    std::shared_ptr<Group> QueryGroup(const std::string& name) const;
 
-    struct Vertex
-    {
-        size_t primitive;
-        size_t point;
+    void UpdateByBrush(const model::BrushModel& brush_model) const;
+    void StoreBrush(std::unique_ptr<model::BrushModel>& brush_model);
 
-        std::vector<std::unique_ptr<Variable>> vars;
+    void UpdateByShape(const std::shared_ptr<gs::Shape3D>& shape);
 
-    }; // Vertex
+    void UpdateByAttr();
 
-    struct Primitive
-    {
-        std::vector<std::unique_ptr<Variable>> vars;
+    auto GetNode() const { return m_adaptor.GetNode(); }
 
-    }; // Primitive
+    auto& GetAttr() { return m_attr; }
+    auto& GetAttr() const { return m_attr; }
 
-    struct Detail
-    {
-        std::vector<std::unique_ptr<Variable>> vars;
-
-    }; // Detail
+    // fixme: move to private
+public:
+    model::BrushModel* GetBrushModel() const;
+    std::shared_ptr<gs::Shape3D> GetShape() const;
 
 private:
-    std::vector<Point>     m_points;
-    std::vector<Vertex>    m_vertices;
-    std::vector<Primitive> m_primtives;
-    Detail                 m_detail;
+    GeoAdaptor   m_adaptor;
+
+    GroupMgr     m_groups;
+
+    GeoAttribute m_attr;
 
 }; // Geometry
 

@@ -1,10 +1,7 @@
 #include "everything/node/Delete.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
 
 #include <geoshape/PointSet3D.h>
-#include <node0/SceneNode.h>
-#include <node3/CompShape.h>
-#include <node3/CompAABB.h>
 
 #include <assert.h>
 
@@ -28,19 +25,16 @@ void Delete::Execute(TreeContext& ctx)
     }
 
     std::vector<sm::vec3> vertices;
-    prev_geo->TraversePoints([&](sm::vec3& p, bool& dirty)->bool
-    {
-        if (m_exp.Calc(p)) {
-            vertices.push_back(p);
+    for (auto& p : prev_geo->GetAttr().GetPoints()) {
+        if (m_exp.Calc(p->pos)) {
+            vertices.push_back(p->pos);
         }
-        dirty = false;
-        return true;
-    });
+    }
     if (vertices.empty()) {
         return;
     }
 
-    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Shape);
+    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Shape);
     BuildModel(vertices);
 }
 
@@ -80,23 +74,10 @@ void Delete::SetFilterExp(const std::string& exp)
 
 void Delete::BuildModel(const std::vector<sm::vec3>& vertices)
 {
-    if (!m_geo) {
-        return;
+    if (m_geo && !vertices.empty()) {
+        auto shape = std::make_shared<gs::PointSet3D>(vertices);
+        m_geo->UpdateByShape(shape);
     }
-    if (vertices.empty()) {
-        return;
-    }
-
-    auto shape = std::make_shared<gs::PointSet3D>(vertices);
-
-    auto node = m_geo->GetNode();
-    assert(node);
-
-    auto& cshape = node->GetSharedComp<n3::CompShape>();
-    cshape.SetShape(shape);
-
-    auto& caabb = node->GetUniqueComp<n3::CompAABB>();
-    caabb.SetAABB(shape->GetBounding());
 }
 
 }

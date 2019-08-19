@@ -1,10 +1,8 @@
 #include "everything/node/Line.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
+#include "everything/GeoAdaptor.h"
 
 #include <geoshape/Polyline3D.h>
-#include <node0/SceneNode.h>
-#include <node3/CompShape.h>
-#include <node3/CompAABB.h>
 
 namespace evt
 {
@@ -13,7 +11,7 @@ namespace node
 
 void Line::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Shape);
+    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Shape);
     BuildModel();
 }
 
@@ -83,15 +81,7 @@ void Line::BuildModel()
         v += dt;
     }
     auto shape = std::make_shared<gs::Polyline3D>(vertices, false);
-
-    auto node = m_geo->GetNode();
-    assert(node);
-
-    auto& cshape = node->GetSharedComp<n3::CompShape>();
-    cshape.SetShape(shape);
-
-    auto& caabb = node->GetUniqueComp<n3::CompAABB>();
-    caabb.SetAABB(shape->GetBounding());
+    m_geo->UpdateByShape(shape);
 }
 
 }

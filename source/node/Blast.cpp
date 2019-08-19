@@ -1,6 +1,6 @@
 #include "everything/node/Blast.h"
 #include "everything/TreeContext.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
 
 #include <model/BrushBuilder.h>
 #include <model/BrushModel.h>
@@ -21,7 +21,7 @@ void Blast::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<GeometryNode>(*prev_geo);
+    m_geo = std::make_shared<Geometry>(*prev_geo);
 
     auto group = m_geo->QueryGroup(m_group_name);
     if (!group) {
@@ -77,7 +77,7 @@ void Blast::Execute(TreeContext& ctx)
 
             brush.impl->SetFaces(faces);
 
-            m_geo->UpdateModel(*brush_model);
+            m_geo->UpdateByBrush(*brush_model);
         }
 
         break;

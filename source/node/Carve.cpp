@@ -1,11 +1,8 @@
 #include "everything/node/Carve.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
 
 #include <SM_Calc.h>
 #include <geoshape/Polyline3D.h>
-#include <node0/SceneNode.h>
-#include <node3/CompShape.h>
-#include <node3/CompAABB.h>
 
 namespace evt
 {
@@ -89,7 +86,7 @@ void Carve::Execute(TreeContext& ctx)
         dst_vertices.push_back(end);
     }
 
-    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Shape);
+    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Shape);
     BuildModel(dst_vertices);
 }
 
@@ -143,23 +140,10 @@ void Carve::SetSecondV(float v)
 
 void Carve::BuildModel(const std::vector<sm::vec3>& vertices)
 {
-    if (!m_geo) {
-        return;
+    if (m_geo && !vertices.empty()) {
+        auto shape = std::make_shared<gs::Polyline3D>(vertices);
+        m_geo->UpdateByShape(shape);
     }
-    if (vertices.empty()) {
-        return;
-    }
-
-    auto shape = std::make_shared<gs::Polyline3D>(vertices);
-
-    auto node = m_geo->GetNode();
-    assert(node);
-
-    auto& cshape = node->GetSharedComp<n3::CompShape>();
-    cshape.SetShape(shape);
-
-    auto& caabb = node->GetUniqueComp<n3::CompAABB>();
-    caabb.SetAABB(shape->GetBounding());
 }
 
 }

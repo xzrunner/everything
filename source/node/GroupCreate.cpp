@@ -1,6 +1,7 @@
 #include "everything/node/GroupCreate.h"
 #include "everything/TreeContext.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
+#include "everything/GeoAttrHelper.h"
 
 #include <SM_Calc.h>
 #include <model/BrushModel.h>
@@ -21,7 +22,7 @@ void GroupCreate::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<GeometryNode>(*prev_geo);
+    m_geo = std::make_shared<Geometry>(*prev_geo);
 
     auto group = std::make_shared<Group>();
     group->name = m_name;
@@ -92,17 +93,16 @@ void GroupCreate::SelectByNormals(Group& group)
     {
     case GroupType::Primitives:
     {
-        m_geo->TraverseFaces([&](pm3::Polytope& poly, size_t face_idx, bool& dirty)->bool
+        auto& prims = m_geo->GetAttr().GetPrimtives();
+        for (size_t i = 0, n = prims.size(); i < n; ++i)
         {
-            auto& faces = poly.Faces();
-            auto& face = faces[face_idx];
-            auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, face->plane.normal);
+            auto& prim = prims[i];
+            auto normal = GeoAttrHelper::CalcFaceNormal(*prim);
+            auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, normal);
             if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
-                group.items.push_back(face_idx);
+                group.items.push_back(i);
             }
-            dirty = false;
-            return true;
-        });
+        }
     }
         break;
     case GroupType::Points:

@@ -2,7 +2,7 @@
 
 #include <everything/TreeContext.h>
 #include <everything/Evaluator.h>
-#include <everything/GeometryNode.h>
+#include <everything/Geometry.h>
 
 #include <everything/node/Carve.h>
 

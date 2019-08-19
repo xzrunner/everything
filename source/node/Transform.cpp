@@ -1,5 +1,5 @@
 #include "everything/node/Transform.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
 
 namespace evt
 {
@@ -15,15 +15,14 @@ void Transform::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<GeometryNode>(*prev_geo);
+    m_geo = std::make_shared<Geometry>(*prev_geo);
 
     auto mat = CalcTransformMat();
-    m_geo->TraversePoints([&mat](sm::vec3& p, bool& dirty)->bool
-    {
-        p = mat * p;
-        dirty = true;
-        return true;
-    });
+    auto& attr = m_geo->GetAttr();
+    for (auto& p : attr.GetPoints()) {
+        p->pos = mat * p->pos;
+    }
+    m_geo->UpdateByAttr();
 }
 
 void Transform::SetTranslate(const sm::vec3& t)

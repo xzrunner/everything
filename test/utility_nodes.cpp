@@ -1,7 +1,7 @@
 #include "utility.h"
 
 #include <everything/Evaluator.h>
-#include <everything/GeometryNode.h>
+#include <everything/Geometry.h>
 
 #include <everything/node/Blast.h>
 #include <everything/node/CopyToPoints.h>

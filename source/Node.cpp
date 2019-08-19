@@ -24,7 +24,7 @@ namespace evt
 //{
 //}
 
-std::shared_ptr<GeometryNode> Node::GetInputGeo(size_t idx) const
+std::shared_ptr<Geometry> Node::GetInputGeo(size_t idx) const
 {
     if (idx >= 0 && idx < m_imports.size()) {
         if (!m_imports[idx].conns.empty()) {

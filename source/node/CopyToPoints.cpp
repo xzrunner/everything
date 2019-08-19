@@ -1,5 +1,5 @@
 #include "everything/node/CopyToPoints.h"
-#include "everything/GeometryNode.h"
+#include "everything/Geometry.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
@@ -19,11 +19,11 @@ void CopyToPoints::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<GeometryNode>(GeometryNode::DataType::Brush);
+    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Brush);
 
     auto brush_model = BuildBrush(*src_geo, *dst_geo);
     if (brush_model) {
-        m_geo->UpdateModel(*brush_model);
+        m_geo->UpdateByBrush(*brush_model);
         m_geo->StoreBrush(brush_model);
     }
 }
@@ -40,7 +40,7 @@ void CopyToPoints::SetTransformUsingPointOrientations(bool enable)
 }
 
 std::unique_ptr<model::BrushModel>
-CopyToPoints::BuildBrush(const GeometryNode& src, const GeometryNode& dst) const
+CopyToPoints::BuildBrush(const Geometry& src, const Geometry& dst) const
 {
     auto src_brush_model = src.GetBrushModel();
     if (!src_brush_model) {
@@ -53,18 +53,16 @@ CopyToPoints::BuildBrush(const GeometryNode& src, const GeometryNode& dst) const
 
     auto brush_model = std::make_unique<model::BrushModel>();
     std::vector<model::BrushModel::Brush> brushes;
-    dst.TraversePoints([&](sm::vec3& v, bool& dirty)->bool
+    for (auto& p : dst.GetAttr().GetPoints())
     {
         for (auto& src_brush : src_brushes)
         {
             model::BrushModel::Brush dst;
             dst.desc = src_brush.desc;
-            dst.impl = CloneToPoint(*src_brush.impl, v);
+            dst.impl = CloneToPoint(*src_brush.impl, p->pos);
             brushes.push_back(dst);
         }
-        dirty = false;
-        return true;
-    });
+    }
     brush_model->SetBrushes(brushes);
 
     return brush_model;
