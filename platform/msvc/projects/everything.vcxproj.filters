@@ -134,6 +134,9 @@
     <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoShape.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp">

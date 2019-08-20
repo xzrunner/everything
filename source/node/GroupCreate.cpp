@@ -1,12 +1,8 @@
 #include "everything/node/GroupCreate.h"
-#include "everything/TreeContext.h"
 #include "everything/Geometry.h"
 #include "everything/GeoAttrHelper.h"
 
 #include <SM_Calc.h>
-#include <model/BrushModel.h>
-#include <node0/SceneNode.h>
-#include <polymesh3/Geometry.h>
 
 namespace evt
 {

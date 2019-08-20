@@ -12,19 +12,16 @@ namespace evt
 class Geometry
 {
 public:
-
-public:
-    Geometry(GeoAdaptor::DataType type);
+    Geometry(GeoShapeType type);
+    Geometry(const GeoShape& shape);
 
     void Combine(const Geometry& geo, size_t prim_off);
 
     void AddGroup(const std::shared_ptr<Group>& group);
     std::shared_ptr<Group> QueryGroup(const std::string& name) const;
 
-    void UpdateByBrush(const model::BrushModel& brush_model) const;
+    void UpdateByBrush(const model::BrushModel& brush_model);
     void StoreBrush(std::unique_ptr<model::BrushModel>& brush_model);
-
-    void UpdateByShape(const std::shared_ptr<gs::Shape3D>& shape);
 
     void UpdateByAttr();
 
@@ -33,10 +30,12 @@ public:
     auto& GetAttr() { return m_attr; }
     auto& GetAttr() const { return m_attr; }
 
+    std::unique_ptr<GeoShape> ToGeoShape() const;
+    void FromGeoShape(const GeoShape& shape);
+
     // fixme: move to private
 public:
     model::BrushModel* GetBrushModel() const;
-    std::shared_ptr<gs::Shape3D> GetShape() const;
 
 private:
     GeoAdaptor   m_adaptor;

@@ -4,27 +4,20 @@
 
 #include <vector>
 
+#include <boost/noncopyable.hpp>
+
 namespace evt
 {
 
-class GeoAttribute
+class GeoShape;
+
+class GeoAttribute : boost::noncopyable
 {
-public:
-    void Clear();
-
-    void Update();
-
-    auto& GetPoints() { return m_points; }
-    auto& GetPoints() const { return m_points; }
-
-    auto& GetPrimtives() const { return m_primtives; }
-
-private:
-    void UpdatePointIndices();
-
 public:
     struct Point
     {
+        Point(const sm::vec3& pos) : pos(pos) {}
+
         sm::vec3 pos;
 
         size_t point_idx = 0;
@@ -57,6 +50,32 @@ public:
         std::vector<Variable>    vars;
 
     }; // AttrList
+
+public:
+    GeoAttribute() {}
+    GeoAttribute(const GeoShape& shape);
+    GeoAttribute(const GeoAttribute& attr);
+    GeoAttribute& operator = (const GeoAttribute& attr);
+
+    void Clear();
+
+    auto& GetPoints() { return m_points; }
+    auto& GetPoints() const { return m_points; }
+    void  SetPoints(const std::vector<std::shared_ptr<Point>>& points);
+
+    auto& GetVertices() { return m_vertices; }
+    auto& GetVertices() const { return m_vertices; }
+    void  SetVertices(const std::vector<std::shared_ptr<Vertex>>& vertices);
+
+    auto& GetPrimtives() { return m_primtives; }
+    auto& GetPrimtives() const { return m_primtives; }
+    void  SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& prims);
+
+    void Combine(const GeoAttribute& attr);
+
+    void UpdatePointIndices();
+
+    void FromGeoShape(const GeoShape& shape);
 
 private:
     std::vector<std::shared_ptr<Point>>     m_points;

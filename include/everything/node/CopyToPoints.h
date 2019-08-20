@@ -4,9 +4,6 @@
 
 #include <SM_Vector.h>
 
-namespace pm3 { class Polytope; }
-namespace model { class BrushModel; }
-
 namespace evt
 {
 namespace node
@@ -36,13 +33,6 @@ public:
     virtual void Execute(TreeContext& ctx) override;
 
     void SetTransformUsingPointOrientations(bool enable);
-
-private:
-    std::unique_ptr<model::BrushModel>
-        BuildBrush(const Geometry& src, const Geometry& dst) const;
-
-    static std::unique_ptr<pm3::Polytope>
-        CloneToPoint(const pm3::Polytope& src, const sm::vec3& target);
 
 private:
     bool m_trans_with_point_dir = false;

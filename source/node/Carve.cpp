@@ -1,8 +1,8 @@
 #include "everything/node/Carve.h"
 #include "everything/Geometry.h"
+#include "everything/GeoShape.h"
 
 #include <SM_Calc.h>
-#include <geoshape/Polyline3D.h>
 
 namespace evt
 {
@@ -18,14 +18,13 @@ void Carve::Execute(TreeContext& ctx)
         return;
     }
 
-    // only support polyline3d now
-    auto shape = prev_geo->GetShape();
-    if (shape->get_type() != rttr::type::get<gs::Polyline3D>()) {
+    // only support polyline now
+    auto prev_shape = prev_geo->ToGeoShape();
+    if (prev_shape->Type() != GeoShapeType::Polyline) {
         return;
     }
 
-    auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
-    auto& vertices = polyline->GetVertices();
+    auto& vertices = static_cast<GeoPolyline*>(prev_shape.get())->GetVertices();
     if (vertices.size() < 2) {
         return;
     }
@@ -85,9 +84,9 @@ void Carve::Execute(TreeContext& ctx)
     if (end != vertices[e_idx]) {
         dst_vertices.push_back(end);
     }
-
-    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Shape);
-    BuildModel(dst_vertices);
+    if (!dst_vertices.empty()) {
+        m_geo = std::make_shared<Geometry>(GeoPolyline(dst_vertices));
+    }
 }
 
 void Carve::SetFirstU(float u)
@@ -136,14 +135,6 @@ void Carve::SetSecondV(float v)
     m_second_v = v;
 
     SetDirty(true);
-}
-
-void Carve::BuildModel(const std::vector<sm::vec3>& vertices)
-{
-    if (m_geo && !vertices.empty()) {
-        auto shape = std::make_shared<gs::Polyline3D>(vertices);
-        m_geo->UpdateByShape(shape);
-    }
 }
 
 }

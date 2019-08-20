@@ -27,9 +27,6 @@ public:
     void SetPoints(const std::vector<sm::vec3>& points);
 
 private:
-    void BuildModel(const std::vector<sm::vec3>& vertices);
-
-private:
     std::vector<sm::vec3> m_points;
 
     RTTR_ENABLE(Node)

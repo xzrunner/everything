@@ -1,8 +1,6 @@
 #include "everything/node/Curve.h"
 #include "everything/Geometry.h"
 
-#include <geoshape/Polyline3D.h>
-
 namespace evt
 {
 namespace node
@@ -10,7 +8,7 @@ namespace node
 
 void Curve::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Shape);
+    m_geo = std::make_shared<Geometry>(GeoShapeType::Polyline);
     BuildModel();
 }
 
@@ -26,24 +24,12 @@ void Curve::SetVertices(const std::vector<sm::vec3>& vertices)
     SetDirty(true);
 }
 
+// todo: test close
 void Curve::BuildModel()
 {
-    if (!m_geo) {
-        return;
+    if (m_geo && m_vertices.size() >= 2) {
+        m_geo->FromGeoShape(GeoPolyline(m_vertices));
     }
-    if (m_vertices.size() < 2) {
-        return;
-    }
-
-    std::shared_ptr<gs::Shape3D> shape = nullptr;
-    if (m_vertices.front() == m_vertices.back()) {
-        auto vertices(m_vertices);
-        vertices.pop_back();
-        shape = std::make_shared<gs::Polyline3D>(vertices, true);
-    } else {
-        shape = std::make_shared<gs::Polyline3D>(m_vertices, false);
-    }
-    m_geo->UpdateByShape(shape);
 }
 
 }

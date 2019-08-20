@@ -4,7 +4,6 @@
 
 #include <SM_Vector.h>
 
-namespace n3 { class CompTransform; }
 namespace model { class BrushModel; }
 
 namespace evt

@@ -30,9 +30,6 @@ public:
     void SetSecondV(float v);
 
 private:
-    void BuildModel(const std::vector<sm::vec3>& vertices);
-
-private:
     float m_first_u  = 0;
     float m_second_u = 1;
     float m_first_v  = 0;

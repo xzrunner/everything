@@ -3,8 +3,6 @@
 #include "everything/Node.h"
 #include "everything/GeoAttribute.h"
 
-namespace pm3 { class Polytope; }
-
 namespace evt
 {
 namespace node

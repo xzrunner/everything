@@ -1,9 +1,6 @@
 #include "everything/node/CopyToPoints.h"
 #include "everything/Geometry.h"
 
-#include <polymesh3/Geometry.h>
-#include <model/BrushModel.h>
-
 namespace evt
 {
 namespace node
@@ -19,13 +16,20 @@ void CopyToPoints::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Brush);
+    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
 
-    auto brush_model = BuildBrush(*src_geo, *dst_geo);
-    if (brush_model) {
-        m_geo->UpdateByBrush(*brush_model);
-        m_geo->StoreBrush(brush_model);
+    auto& attr = m_geo->GetAttr();
+    for (auto& move_to : dst_geo->GetAttr().GetPoints())
+    {
+        GeoAttribute src_attr(src_geo->GetAttr());
+        for (auto& p : src_attr.GetPoints()) {
+            p->pos += move_to->pos;
+        }
+        attr.Combine(src_attr);
     }
+    attr.UpdatePointIndices();
+
+    m_geo->UpdateByAttr();
 }
 
 void CopyToPoints::SetTransformUsingPointOrientations(bool enable)
@@ -37,45 +41,6 @@ void CopyToPoints::SetTransformUsingPointOrientations(bool enable)
     m_trans_with_point_dir = enable;
 
     SetDirty(true);
-}
-
-std::unique_ptr<model::BrushModel>
-CopyToPoints::BuildBrush(const Geometry& src, const Geometry& dst) const
-{
-    auto src_brush_model = src.GetBrushModel();
-    if (!src_brush_model) {
-        return nullptr;
-    }
-    auto& src_brushes = src_brush_model->GetBrushes();
-    if (src_brushes.empty()) {
-        return nullptr;
-    }
-
-    auto brush_model = std::make_unique<model::BrushModel>();
-    std::vector<model::BrushModel::Brush> brushes;
-    for (auto& p : dst.GetAttr().GetPoints())
-    {
-        for (auto& src_brush : src_brushes)
-        {
-            model::BrushModel::Brush dst;
-            dst.desc = src_brush.desc;
-            dst.impl = CloneToPoint(*src_brush.impl, p->pos);
-            brushes.push_back(dst);
-        }
-    }
-    brush_model->SetBrushes(brushes);
-
-    return brush_model;
-}
-
-std::unique_ptr<pm3::Polytope>
-CopyToPoints::CloneToPoint(const pm3::Polytope& src, const sm::vec3& target)
-{
-    auto ret = std::make_unique<pm3::Polytope>(src);
-    for (auto& v : ret->Points()) {
-        v += target;
-    }
-    return ret;
 }
 
 }

@@ -1,11 +1,6 @@
 #include "everything/node/Add.h"
 #include "everything/Geometry.h"
 
-#include <geoshape/Polyline3D.h>
-#include <node0/SceneNode.h>
-#include <node3/CompShape.h>
-#include <node3/CompAABB.h>
-
 namespace evt
 {
 namespace node
@@ -30,10 +25,8 @@ void Add::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Shape);
-
     std::copy(m_points.begin(), m_points.end(), std::back_inserter(vertices));
-    BuildModel(vertices);
+    m_geo = std::make_shared<Geometry>(GeoPolyline(vertices));
 }
 
 void Add::SetPoints(const std::vector<sm::vec3>& points)
@@ -45,14 +38,6 @@ void Add::SetPoints(const std::vector<sm::vec3>& points)
     m_points = points;
 
     SetDirty(true);
-}
-
-void Add::BuildModel(const std::vector<sm::vec3>& vertices)
-{
-    if (m_geo && !vertices.empty()) {
-        auto shape = std::make_shared<gs::Polyline3D>(vertices);
-        m_geo->UpdateByShape(shape);
-    }
 }
 
 }

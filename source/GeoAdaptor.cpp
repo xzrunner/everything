@@ -1,6 +1,7 @@
 #include "everything/GeoAdaptor.h"
 #include "everything/GroupMgr.h"
 #include "everything/GeoAttribute.h"
+#include "everything/GeoShape.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -19,38 +20,41 @@
 #include <ns/NodeFactory.h>
 #include <painting3/MaterialMgr.h>
 
+namespace
+{
+
+std::shared_ptr<gs::Shape3D> get_shape(const evt::GeoAdaptor& adaptor)
+{
+    switch (adaptor.GetType())
+    {
+    case evt::GeoShapeType::Points:
+    case evt::GeoShapeType::Polyline:
+    {
+        auto node = adaptor.GetNode();
+        assert(node->HasSharedComp<n3::CompShape>());
+        auto& cshape = node->GetSharedComp<n3::CompShape>();
+        return cshape.GetShape();
+    }
+        break;
+    default:
+        return nullptr;
+    }
+}
+
+}
+
 namespace evt
 {
 
-GeoAdaptor::GeoAdaptor(DataType type)
-    : m_type(type)
+GeoAdaptor::GeoAdaptor(const GeoShapeType& type)
 {
-    switch (type)
-    {
-    case DataType::Brush:
-    {
-        m_node = ns::NodeFactory::Create3D();
+    Init(type);
+}
 
-        m_node->AddSharedComp<n3::CompModel>();
-        m_node->AddUniqueComp<n3::CompModelInst>();
-
-        auto& cmaterial = m_node->AddUniqueComp<n0::CompMaterial>();
-        auto mat = std::make_unique<pt0::Material>();
-        typedef pt3::MaterialMgr::PhongUniforms UNIFORMS;
-        mat->AddVar(UNIFORMS::ambient.name, pt0::RenderVariant(sm::vec3(0.04f, 0.04f, 0.04f)));
-        mat->AddVar(UNIFORMS::diffuse.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
-        mat->AddVar(UNIFORMS::specular.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
-        mat->AddVar(UNIFORMS::shininess.name, pt0::RenderVariant(50.0f));
-        cmaterial.SetMaterial(mat);
-    }
-        break;
-    case DataType::Shape:
-    {
-        m_node = ns::NodeFactory::Create3D();
-        m_node->AddSharedComp<n3::CompShape>();
-    }
-        break;
-    }
+GeoAdaptor::GeoAdaptor(const GeoShape& shape)
+{
+    Init(shape.Type());
+    FromGeoShape(shape);
 }
 
 GeoAdaptor::GeoAdaptor(const GeoAdaptor& adaptor)
@@ -61,7 +65,7 @@ GeoAdaptor::GeoAdaptor(const GeoAdaptor& adaptor)
 
 void GeoAdaptor::UpdateByBrush(GeoAttribute& attr, const model::BrushModel& brush_model)
 {
-    assert(m_type == DataType::Brush);
+    assert(m_type == GeoShapeType::Faces);
 
     std::shared_ptr<model::Model> model =
         model::BrushBuilder::PolymeshFromBrush(brush_model);
@@ -77,32 +81,102 @@ void GeoAdaptor::StoreBrush(std::unique_ptr<model::BrushModel>& brush_model)
     cmodel_inst.GetModel()->SetModelExt(model_ext);
 }
 
-void GeoAdaptor::UpdateByShape(GeoAttribute& attr, const std::shared_ptr<gs::Shape3D>& shape)
-{
-    auto& cshape = m_node->GetSharedComp<n3::CompShape>();
-    cshape.SetShape(shape);
-
-    auto& caabb = m_node->GetUniqueComp<n3::CompAABB>();
-    caabb.SetAABB(shape->GetBounding());
-
-    StoreToAttr(attr, *shape);
-}
-
 void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
 {
     auto brush_model = GetBrushModel();
     assert(brush_model);
     LoadFromAttr(*brush_model, attr);
 
-    assert(m_type == DataType::Brush);
+    assert(m_type == GeoShapeType::Faces);
     std::shared_ptr<model::Model> model =
         model::BrushBuilder::PolymeshFromBrush(*brush_model);
     UpdateModel(model);
 }
 
+std::unique_ptr<GeoShape> GeoAdaptor::ToGeoShape() const
+{
+    std::unique_ptr<GeoShape> ret = nullptr;
+    switch (m_type)
+    {
+    case GeoShapeType::Points:
+    {
+        auto shape = get_shape(*this);
+        assert(shape->get_type() == rttr::type::get<gs::PointSet3D>());
+        auto points = std::static_pointer_cast<gs::PointSet3D>(shape);
+        ret = std::make_unique<GeoPoints>(points->GetVertices());
+    }
+        break;
+    case GeoShapeType::Polyline:
+    {
+        auto shape = get_shape(*this);
+        assert(shape->get_type() == rttr::type::get<gs::Polyline3D>());
+        auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
+        if (polyline->GetClosed()) {
+            auto vertices = polyline->GetVertices();
+            vertices.push_back(vertices.front());
+            ret = std::make_unique<GeoPolyline>(vertices);
+        } else {
+            ret = std::make_unique<GeoPolyline>(polyline->GetVertices());
+        }
+    }
+        break;
+    case GeoShapeType::Faces:
+        // todo
+        break;
+    }
+    return ret;
+}
+
+void GeoAdaptor::FromGeoShape(const GeoShape& shape)
+{
+    m_type = shape.Type();
+    switch (m_type)
+    {
+    case GeoShapeType::Points:
+    {
+        auto& vertices = static_cast<const GeoPoints&>(shape).GetVertices();
+        auto shape = std::make_shared<gs::PointSet3D>(vertices);
+
+        auto& cshape = m_node->GetSharedComp<n3::CompShape>();
+        cshape.SetShape(shape);
+
+        auto& caabb = m_node->GetUniqueComp<n3::CompAABB>();
+        caabb.SetAABB(shape->GetBounding());
+    }
+        break;
+    case GeoShapeType::Polyline:
+    {
+        auto& vertices = static_cast<const GeoPolyline&>(shape).GetVertices();
+        if (vertices.size() < 2) {
+            return;
+        }
+
+        std::shared_ptr<gs::Shape3D> shape = nullptr;
+        if (vertices.front() == vertices.back()) {
+            auto del_end = vertices;
+            del_end.pop_back();
+            shape = std::make_shared<gs::Polyline3D>(del_end, true);
+        } else {
+            shape = std::make_shared<gs::Polyline3D>(vertices, false);
+        }
+
+        auto& cshape = m_node->GetSharedComp<n3::CompShape>();
+        cshape.SetShape(shape);
+
+        auto& caabb = m_node->GetUniqueComp<n3::CompAABB>();
+        caabb.SetAABB(shape->GetBounding());
+    }
+        break;
+    case GeoShapeType::Faces:
+        break;
+    default:
+        assert(0);
+    }
+}
+
 model::BrushModel* GeoAdaptor::GetBrushModel() const
 {
-    if (m_type != DataType::Brush) {
+    if (m_type != GeoShapeType::Faces) {
         return nullptr;
     }
 
@@ -116,16 +190,43 @@ model::BrushModel* GeoAdaptor::GetBrushModel() const
     return brush_model;
 }
 
-std::shared_ptr<gs::Shape3D>
-GeoAdaptor::GetShape() const
+void GeoAdaptor::Init(const GeoShapeType& type)
 {
-    if (m_type != DataType::Shape) {
-        return nullptr;
-    }
+    m_type = type;
+    switch (m_type)
+    {
+    case GeoShapeType::Points:
+    case GeoShapeType::Polyline:
+        m_node = ns::NodeFactory::Create3D();
+        m_node->AddSharedComp<n3::CompShape>();
+        break;
+    case GeoShapeType::Faces:
+    {
+        m_node = ns::NodeFactory::Create3D();
 
-    assert(m_node->HasSharedComp<n3::CompShape>());
-    auto& cshape = m_node->GetSharedComp<n3::CompShape>();
-    return cshape.GetShape();
+        m_node->AddSharedComp<n3::CompModel>();
+        m_node->AddUniqueComp<n3::CompModelInst>();
+
+        auto& cmaterial = m_node->AddUniqueComp<n0::CompMaterial>();
+        auto mat = std::make_unique<pt0::Material>();
+        typedef pt3::MaterialMgr::PhongUniforms UNIFORMS;
+        mat->AddVar(UNIFORMS::ambient.name, pt0::RenderVariant(sm::vec3(0.04f, 0.04f, 0.04f)));
+        mat->AddVar(UNIFORMS::diffuse.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
+        mat->AddVar(UNIFORMS::specular.name, pt0::RenderVariant(sm::vec3(1, 1, 1)));
+        mat->AddVar(UNIFORMS::shininess.name, pt0::RenderVariant(50.0f));
+        cmaterial.SetMaterial(mat);
+
+        auto model = std::make_shared<model::Model>();
+        UpdateModel(model);
+
+        auto& cmodel_inst = m_node->GetUniqueComp<n3::CompModelInst>();
+        std::unique_ptr<model::ModelExtend> model_ext = std::make_unique<model::BrushModel>();
+        cmodel_inst.GetModel()->SetModelExt(model_ext);
+    }
+        break;
+    default:
+        assert(0);
+    }
 }
 
 void GeoAdaptor::UpdateModel(const std::shared_ptr<model::Model>& model)
@@ -145,9 +246,7 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
     dst.Clear();
 
     auto& brushes = src.GetBrushes();
-    if (brushes.size() != 1) {
-        int zz = 0;
-    }
+    assert(brushes.size() == 1);
     for (auto& brush : brushes)
     {
         auto& points = brush.impl->Points();
@@ -155,8 +254,7 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
 
         for (auto& p : points)
         {
-            auto tmp = std::make_shared<GeoAttribute::Point>();
-            tmp->pos = p;
+            auto tmp = std::make_shared<GeoAttribute::Point>(p);
             tmp->point_idx = dst.m_points.size();
             dst.m_points.push_back(tmp);
         }
@@ -174,60 +272,6 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
             }
             dst.m_primtives.push_back(prim);
         }
-    }
-}
-
-void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const gs::Shape3D& src)
-{
-    dst.Clear();
-
-    auto type = src.get_type();
-    if (type == rttr::type::get<gs::Point3D>())
-    {
-        auto& point = static_cast<const gs::Point3D&>(src);
-        auto tmp = std::make_shared<GeoAttribute::Point>();
-        tmp->pos = point.GetPos();
-        tmp->point_idx = dst.m_points.size();
-        dst.m_points.push_back(tmp);
-    }
-    else if (type == rttr::type::get<gs::PointSet3D>())
-    {
-        auto& pos_set = static_cast<const gs::PointSet3D&>(src);
-        auto& vertices = pos_set.GetVertices();
-        dst.m_points.reserve(vertices.size());
-        for (auto& v : vertices) {
-            auto tmp = std::make_shared<GeoAttribute::Point>();
-            tmp->pos = v;
-            tmp->point_idx = dst.m_points.size();
-            dst.m_points.push_back(tmp);
-        }
-    }
-    else if (type == rttr::type::get<gs::Polyline3D>())
-    {
-        auto& polyline = static_cast<const gs::Polyline3D&>(src);
-        auto& vertices = polyline.GetVertices();
-        dst.m_points.reserve(vertices.size());
-        auto prim = std::make_shared<GeoAttribute::Primitive>();
-        prim->vertices.reserve(vertices.size());
-        for (auto& v : vertices)
-        {
-            auto dst_p = std::make_shared<GeoAttribute::Point>();
-            dst_p->pos = v;
-            dst_p->point_idx = dst.m_points.size();
-            dst.m_points.push_back(dst_p);
-
-            auto dst_v = std::make_shared<GeoAttribute::Vertex>();
-            dst_v->point = dst_p;
-            dst_v->prim  = prim;
-            dst.m_vertices.push_back(dst_v);
-
-            prim->vertices.push_back(dst_v);
-        }
-        dst.m_primtives.push_back(prim);
-    }
-    else
-    {
-        assert(0);
     }
 }
 
@@ -257,49 +301,6 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
     std::vector<model::BrushModel::Brush> brushes;
     brushes.push_back(brush);
     dst.SetBrushes(brushes);
-}
-
-void GeoAdaptor::LoadFromAttr(gs::Shape3D& dst, const GeoAttribute& src)
-{
-    auto type = dst.get_type();
-    if (type == rttr::type::get<gs::Point3D>())
-    {
-        assert(src.m_points.size() == 1);
-
-        auto& point = static_cast<gs::Point3D&>(dst);
-        point.SetPos(src.m_points[0]->pos);
-    }
-    else if (type == rttr::type::get<gs::PointSet3D>())
-    {
-        assert(src.m_vertices.size() == 0);
-        assert(src.m_primtives.size() == 0);
-
-        std::vector<sm::vec3> vertices;
-        vertices.reserve(src.m_points.size());
-        for (auto& p : src.m_points) {
-            vertices.push_back(p->pos);
-        }
-
-        auto& pos_set = static_cast<gs::PointSet3D&>(dst);
-        pos_set.SetVertices(vertices);
-    }
-    else if (type == rttr::type::get<gs::Polyline3D>())
-    {
-        assert(src.m_primtives.size() == 1);
-
-        std::vector<sm::vec3> vertices;
-        vertices.reserve(src.m_vertices.size());
-        for (auto& v : src.m_vertices) {
-            vertices.push_back(v->point->pos);
-        }
-
-        auto& polyline = static_cast<gs::Polyline3D&>(dst);
-        polyline.SetVertices(vertices);
-    }
-    else
-    {
-        assert(0);
-    }
 }
 
 }

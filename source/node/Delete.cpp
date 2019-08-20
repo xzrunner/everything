@@ -1,9 +1,6 @@
 #include "everything/node/Delete.h"
 #include "everything/Geometry.h"
-
-#include <geoshape/PointSet3D.h>
-
-#include <assert.h>
+#include "everything/GeoShape.h"
 
 namespace evt
 {
@@ -30,12 +27,9 @@ void Delete::Execute(TreeContext& ctx)
             vertices.push_back(p->pos);
         }
     }
-    if (vertices.empty()) {
-        return;
+    if (!vertices.empty()) {
+        m_geo = std::make_shared<Geometry>(GeoPoints(vertices));
     }
-
-    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Shape);
-    BuildModel(vertices);
 }
 
 void Delete::SetDelNonSelected(bool del_non_selected)
@@ -70,14 +64,6 @@ void Delete::SetFilterExp(const std::string& exp)
     m_exp.Reset(exp);
 
     SetDirty(true);
-}
-
-void Delete::BuildModel(const std::vector<sm::vec3>& vertices)
-{
-    if (m_geo && !vertices.empty()) {
-        auto shape = std::make_shared<gs::PointSet3D>(vertices);
-        m_geo->UpdateByShape(shape);
-    }
 }
 
 }

@@ -2,8 +2,6 @@
 #include "everything/Geometry.h"
 #include "everything/GeoAttrHelper.h"
 
-#include <polymesh3/Geometry.h>
-
 namespace evt
 {
 namespace node

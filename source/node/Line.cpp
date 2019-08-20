@@ -2,8 +2,6 @@
 #include "everything/Geometry.h"
 #include "everything/GeoAdaptor.h"
 
-#include <geoshape/Polyline3D.h>
-
 namespace evt
 {
 namespace node
@@ -11,7 +9,7 @@ namespace node
 
 void Line::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Shape);
+    m_geo = std::make_shared<Geometry>(GeoShapeType::Polyline);
     BuildModel();
 }
 
@@ -80,8 +78,7 @@ void Line::BuildModel()
         vertices.push_back(v);
         v += dt;
     }
-    auto shape = std::make_shared<gs::Polyline3D>(vertices, false);
-    m_geo->UpdateByShape(shape);
+    m_geo->FromGeoShape(GeoPolyline(vertices));
 }
 
 }

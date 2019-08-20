@@ -1,11 +1,5 @@
 #include "everything/node/Blast.h"
-#include "everything/TreeContext.h"
 #include "everything/Geometry.h"
-
-#include <model/BrushBuilder.h>
-#include <model/BrushModel.h>
-#include <node0/SceneNode.h>
-#include <polymesh3/Geometry.h>
 
 namespace evt
 {
@@ -28,56 +22,39 @@ void Blast::Execute(TreeContext& ctx)
         return;
     }
 
-    auto brush_model = m_geo->GetBrushModel();
-    assert(brush_model);
-    auto& brushes = brush_model->GetBrushes();
-    assert(brushes.size() == 1);
-    auto& brush = brushes[0];
-    assert(brush.impl);
-
     switch (m_group_type)
     {
     case GroupType::Primitives:
     {
-        auto faces = brush.impl->Faces();
+        auto& attr = m_geo->GetAttr();
+        auto& old_prims = attr.GetPrimtives();
+
         std::vector<bool> del_flags;
         if (m_delete_non_selected)
         {
-            del_flags.resize(faces.size(), true);
+            del_flags.resize(old_prims.size(), true);
             for (auto& f : group->items) {
                 del_flags[f] = false;
             }
         }
         else
         {
-            del_flags.resize(faces.size(), false);
+            del_flags.resize(old_prims.size(), false);
             for (auto& f : group->items) {
                 del_flags[f] = true;
             }
         }
-        int idx = 0;
-        for (auto itr = faces.begin(); itr != faces.end(); ++idx)
-        {
-            if (del_flags[idx]) {
-                itr = faces.erase(itr);
-            }
-            else {
-                ++itr;
+
+        std::vector<std::shared_ptr<GeoAttribute::Primitive>> new_prims;
+        assert(del_flags.size() == old_prims.size());
+        for (size_t i = 0, n = del_flags.size(); i < n; ++i) {
+            if (!del_flags[i]) {
+                new_prims.push_back(old_prims[i]);
             }
         }
-
-        if (faces.size() != brush.impl->Faces().size())
-        {
-            group->items.clear();
-            if (m_delete_non_selected) {
-                for (int i = 0, n = faces.size(); i < n; ++i) {
-                    group->items.push_back(i);
-                }
-            }
-
-            brush.impl->SetFaces(faces);
-
-            m_geo->UpdateByBrush(*brush_model);
+        if (new_prims.size() != old_prims.size()) {
+            attr.SetPrimtives(new_prims);
+            m_geo->UpdateByAttr();
         }
 
         break;

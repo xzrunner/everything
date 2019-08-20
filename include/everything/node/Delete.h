@@ -38,9 +38,6 @@ public:
     void SetFilterExp(const std::string& exp);
 
 private:
-    void BuildModel(const std::vector<sm::vec3>& vertices);
-
-private:
     bool m_delete_non_selected = false;
 
     EntityType m_entity_type = EntityType::Points;

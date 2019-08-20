@@ -11,7 +11,7 @@ namespace node
 
 void Box::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Brush);
+    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
     BuildModel();
 }
 
@@ -49,12 +49,13 @@ void Box::SetScale(const sm::vec3& scale)
 
 void Box::BuildModel()
 {
-    if (m_geo) 
-    {
-        auto brush_model = BuildBrush();
-        m_geo->UpdateByBrush(*brush_model);
-        m_geo->StoreBrush(brush_model);
+    if (!m_geo) {
+        return;
     }
+
+    auto brush_model = BuildBrush();
+    m_geo->UpdateByBrush(*brush_model);
+    m_geo->StoreBrush(brush_model);
 }
 
 std::unique_ptr<model::BrushModel>

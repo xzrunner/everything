@@ -38,7 +38,7 @@ void Boolean::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(GeoAdaptor::DataType::Brush);
+    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
 
     std::vector<model::BrushModel::Brush> brushes;
     switch (m_operator)
