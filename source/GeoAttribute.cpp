@@ -105,7 +105,7 @@ void GeoAttribute::SetPoints(const std::vector<std::shared_ptr<Point>>& points)
 {
     m_points = points;
 
-    UpdatePointIndices();
+    ResetPointsOrder();
 }
 
 void GeoAttribute::SetVertices(const std::vector<std::shared_ptr<Vertex>>& vertices)
@@ -135,7 +135,7 @@ void GeoAttribute::SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& p
         }
     }
 
-    UpdatePointIndices();
+    ResetPointsOrder();
 }
 
 void GeoAttribute::Combine(const GeoAttribute& attr)
@@ -146,10 +146,10 @@ void GeoAttribute::Combine(const GeoAttribute& attr)
     std::copy(attr.m_primtives.begin(), attr.m_primtives.end(), std::back_inserter(m_primtives));
 }
 
-void GeoAttribute::UpdatePointIndices()
+void GeoAttribute::ResetPointsOrder()
 {
     for (size_t i = 0, n = m_points.size(); i < n; ++i) {
-        m_points[i]->point_idx = i;
+        m_points[i]->order = i;
     }
 }
 
@@ -166,7 +166,7 @@ void GeoAttribute::FromGeoShape(const GeoShape& shape)
         for (auto& v : vertices) {
             m_points.push_back(std::make_shared<GeoAttribute::Point>(v));
         }
-        UpdatePointIndices();
+        ResetPointsOrder();
     }
         break;
     case GeoShapeType::Polyline:
@@ -175,7 +175,7 @@ void GeoAttribute::FromGeoShape(const GeoShape& shape)
         if (vertices.size() < 2) {
             return;
         }
-        auto from_polyline = [&](const std::vector<sm::vec3>& vertices) 
+        auto from_polyline = [&](const std::vector<sm::vec3>& vertices)
         {
             m_points.reserve(vertices.size());
             auto prim = std::make_shared<GeoAttribute::Primitive>();
@@ -183,7 +183,7 @@ void GeoAttribute::FromGeoShape(const GeoShape& shape)
             for (auto& v : vertices)
             {
                 auto dst_p = std::make_shared<GeoAttribute::Point>(v);
-                dst_p->point_idx = m_points.size();
+                dst_p->order = m_points.size();
                 m_points.push_back(dst_p);
 
                 auto dst_v = std::make_shared<GeoAttribute::Vertex>();

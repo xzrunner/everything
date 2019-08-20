@@ -27,7 +27,7 @@ void CopyToPoints::Execute(TreeContext& ctx)
         }
         attr.Combine(src_attr);
     }
-    attr.UpdatePointIndices();
+    attr.ResetPointsOrder();
 
     m_geo->UpdateByAttr();
 }

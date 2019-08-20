@@ -31,7 +31,7 @@ void Merge::Execute(TreeContext& ctx)
         attr.Combine(c->GetAttr());
         m_geo->Combine(*c, attr.GetPrimtives().size());
     }
-    attr.UpdatePointIndices();
+    attr.ResetPointsOrder();
 
     m_geo->UpdateByAttr();
 }

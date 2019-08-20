@@ -255,7 +255,7 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
         for (auto& p : points)
         {
             auto tmp = std::make_shared<GeoAttribute::Point>(p);
-            tmp->point_idx = dst.m_points.size();
+            tmp->order = dst.m_points.size();
             dst.m_points.push_back(tmp);
         }
 
@@ -279,8 +279,11 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
 {
     std::vector<sm::vec3> points;
     points.reserve(src.m_points.size());
+    std::map<std::shared_ptr<GeoAttribute::Point>, size_t> pt2idx;
+    size_t idx = 0;
     for (auto& p : src.m_points) {
         points.push_back(p->pos);
+        pt2idx.insert({ p, idx++ });
     }
 
     std::vector<pm3::FacePtr> faces;
@@ -290,8 +293,11 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
         assert(prim->vertices.size() > 2);
         auto face = std::make_shared<pm3::Face>();
         face->points.reserve(prim->vertices.size());
-        for (auto& v : prim->vertices) {
-            face->points.push_back(v->point->point_idx);
+        for (auto& v : prim->vertices)
+        {
+            auto itr = pt2idx.find(v->point);
+            assert(itr != pt2idx.end());
+            face->points.push_back(itr->second);
         }
         face->plane = sm::Plane(
             points[face->points[0]],

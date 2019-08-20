@@ -1,6 +1,7 @@
 #pragma once
 
 #include "everything/Node.h"
+#include "everything/GeoAttribute.h"
 
 namespace evt
 {
@@ -32,6 +33,20 @@ public:
     virtual void Execute(TreeContext& ctx) override;
 
     void SetKey(Key key);
+
+private:
+    class PointCmp
+    {
+    public:
+        PointCmp(Key key);
+
+        bool operator () (const std::shared_ptr<GeoAttribute::Point>& i0,
+            const std::shared_ptr<GeoAttribute::Point>& i1) const;
+
+    private:
+        Key m_key;
+
+    }; // PointCmp
 
 private:
     Key m_key = Key::NoChange;

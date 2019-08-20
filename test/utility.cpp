@@ -98,12 +98,10 @@ void check_pos(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    size_t i = 0;
     sm::vec3 src;
     src.MakeInvalid();
-    for (auto& p : geo->GetAttr().GetPoints())
-    {
-        if (i++ == idx) {
+    for (auto& p : geo->GetAttr().GetPoints()) {
+        if (p->order == idx) {
             src = p->pos;
         }
     }

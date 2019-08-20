@@ -20,7 +20,7 @@ public:
 
         sm::vec3 pos;
 
-        size_t point_idx = 0;
+        size_t order = 0;
 
     }; // Point
 
@@ -73,7 +73,7 @@ public:
 
     void Combine(const GeoAttribute& attr);
 
-    void UpdatePointIndices();
+    void ResetPointsOrder();
 
     void FromGeoShape(const GeoShape& shape);
 
