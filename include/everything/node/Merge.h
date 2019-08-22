@@ -15,8 +15,6 @@ public:
         m_imports = {
             {{ NodeVarType::Any, "in0" }},
             {{ NodeVarType::Any, "in1" }},
-            {{ NodeVarType::Any, "in2" }},
-            {{ NodeVarType::Any, "in3" }},
         };
         m_exports = {
             {{ NodeVarType::Any, "out" }},
@@ -24,6 +22,8 @@ public:
     }
 
     virtual void Execute(TreeContext& ctx) override;
+
+    virtual void AddInputPorts(size_t num) override;
 
     RTTR_ENABLE(Node)
 

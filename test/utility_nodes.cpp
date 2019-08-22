@@ -7,6 +7,7 @@
 #include <everything/node/CopyToPoints.h>
 #include <everything/node/GroupCreate.h>
 #include <everything/node/Merge.h>
+#include <everything/node/Switch.h>
 
 #include <everything/node/Box.h>
 #include <everything/node/PolyExtrude.h>
@@ -159,6 +160,7 @@ TEST_CASE("merge")
     eval.AddNode(box2);
 
     auto merge = std::make_shared<evt::node::Merge>();
+    merge->AddInputPorts(3 - merge->GetImports().size());
     eval.AddNode(merge);
 
     eval.Connect({ box0, 0 }, { merge, 0 });
@@ -178,4 +180,56 @@ TEST_CASE("merge")
     aabb_max.y = std::max(pos0.y + size0.y * 0.5f, std::max(pos1.y + size1.y * 0.5f, pos2.y + size2.y * 0.5f));
     aabb_max.z = std::max(pos0.z + size0.z * 0.5f, std::max(pos1.z + size1.z * 0.5f, pos2.z + size2.z * 0.5f));
     test::check_aabb(merge, aabb_min, aabb_max);
+}
+
+TEST_CASE("switch")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box0 = std::make_shared<evt::node::Box>();
+    const sm::vec3 size0(1, 2, 3);
+    box0->SetSize(size0);
+    const sm::vec3 pos0(21, 22, 23);
+    box0->SetCenter(pos0);
+    eval.AddNode(box0);
+
+    auto box1 = std::make_shared<evt::node::Box>();
+    const sm::vec3 size1(11, 12, 13);
+    box1->SetSize(size1);
+    const sm::vec3 pos1(121, 122, 123);
+    box1->SetCenter(pos1);
+    eval.AddNode(box1);
+
+    auto box2 = std::make_shared<evt::node::Box>();
+    const sm::vec3 size2(21, 22, 23);
+    box2->SetSize(size2);
+    const sm::vec3 pos2(221, 222, 223);
+    box2->SetCenter(pos2);
+    eval.AddNode(box2);
+
+    auto switch0 = std::make_shared<evt::node::Switch>();
+    switch0->AddInputPorts(3 - switch0->GetImports().size());
+    eval.AddNode(switch0);
+
+    eval.Connect({ box0, 0 }, { switch0, 0 });
+    eval.Connect({ box1, 0 }, { switch0, 1 });
+    eval.Connect({ box2, 0 }, { switch0, 2 });
+
+    SECTION("init sel 0")
+    {
+        eval.Update();
+
+        test::check_aabb(switch0, pos0 - size0 * 0.5f, pos0 + size0 * 0.5f);
+    }
+
+    SECTION("sel 1")
+    {
+        switch0->SetSelected(1);
+
+        eval.Update();
+
+        test::check_aabb(switch0, pos1 - size1 * 0.5f, pos1 + size1 * 0.5f);
+    }
 }

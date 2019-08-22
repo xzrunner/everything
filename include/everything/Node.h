@@ -21,6 +21,8 @@ public:
     virtual void Execute(TreeContext& ctx) = 0;
     virtual void UpdateContext(TreeContext& ctx) {}
 
+    virtual void AddInputPorts(size_t num) {}
+
     struct Port;
     void SetImports(const std::vector<Port>& imports) { m_imports = imports; }
     void SetExports(const std::vector<Port>& exports) { m_exports = exports; }

@@ -20,6 +20,7 @@
 #include "everything/node/CopyToPoints.h"
 #include "everything/node/GroupCreate.h"
 #include "everything/node/Merge.h"
+#include "everything/node/Switch.h"
 
 #define REGIST_NODE_TYPE(name)                                 \
 	rttr::registration::class_<evt::node::name>("evt::"#name)  \
@@ -56,6 +57,7 @@ REGIST_NODE_TYPE(Blast)
 REGIST_NODE_TYPE(CopyToPoints)
 REGIST_NODE_TYPE(GroupCreate)
 REGIST_NODE_TYPE(Merge)
+REGIST_NODE_TYPE(Switch)
 
 }
 

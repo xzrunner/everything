@@ -36,5 +36,14 @@ void Merge::Execute(TreeContext& ctx)
     m_geo->UpdateByAttr();
 }
 
+void Merge::AddInputPorts(size_t num)
+{
+    const std::string prefix = "in";
+    for (size_t i = 0; i < num; ++i) {
+        auto name = prefix + std::to_string(m_imports.size());
+        m_imports.push_back({{ NodeVarType::Any, name }});
+    }
+}
+
 }
 }
