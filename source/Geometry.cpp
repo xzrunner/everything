@@ -14,11 +14,6 @@ Geometry::Geometry(const GeoShape& shape)
 {
 }
 
-void Geometry::Combine(const Geometry& geo, size_t prim_off)
-{
-    m_groups.Combine(geo.m_groups, prim_off);
-}
-
 void Geometry::AddGroup(const std::shared_ptr<Group>& group)
 {
     m_groups.Add(group);

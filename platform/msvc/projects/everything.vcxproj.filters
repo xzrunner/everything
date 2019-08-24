@@ -95,9 +95,6 @@
     <ClInclude Include="..\..\..\include\everything\Expression.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimitive.h">
-      <Filter>nodes\geometry\utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Switch.h">
       <Filter>nodes\geometry\utility</Filter>
     </ClInclude>
@@ -136,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\GeoShape.h">
       <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimitive.h">
+      <Filter>nodes\geometry\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -197,9 +197,6 @@
     <ClCompile Include="..\..\..\source\Expression.cpp">
       <Filter>system</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\node\ForeachPrimitive.cpp">
-      <Filter>nodes\geometry\utility</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\node\Switch.cpp">
       <Filter>nodes\geometry\utility</Filter>
     </ClCompile>
@@ -226,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
       <Filter>dataset\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\ForeachPrimitive.cpp">
+      <Filter>nodes\geometry\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

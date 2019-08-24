@@ -29,7 +29,7 @@ void Merge::Execute(TreeContext& ctx)
     auto& attr = m_geo->GetAttr();
     for (auto& c : children) {
         attr.Combine(c->GetAttr());
-        m_geo->Combine(*c, attr.GetPrimtives().size());
+        m_geo->GetGroup().Combine(c->GetGroup(), attr.GetPrimtives().size());
     }
     attr.ResetPointsOrder();
 

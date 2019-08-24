@@ -5,12 +5,16 @@
 
 #include <everything/node/Blast.h>
 #include <everything/node/CopyToPoints.h>
+#include <everything/node/ForeachPrimitive.h>
 #include <everything/node/GroupCreate.h>
 #include <everything/node/Merge.h>
 #include <everything/node/Switch.h>
 
 #include <everything/node/Box.h>
 #include <everything/node/PolyExtrude.h>
+#include <everything/node/Delete.h>
+#include <everything/node/Add.h>
+#include <everything/node/Carve.h>
 
 #include <catch/catch.hpp>
 
@@ -88,6 +92,82 @@ TEST_CASE("copy to points")
     auto h_src_sz = src_size * 0.5f;
     auto h_tar_sz = target_size * 0.5f;
     test::check_aabb(copy, src_pos + target_pos - h_src_sz - h_tar_sz, src_pos + target_pos + h_src_sz + h_tar_sz);
+}
+
+TEST_CASE("foreach primitive")
+{
+    test::init();
+
+    std::vector<std::shared_ptr<evt::Node>> nodes;
+
+    size_t idx_begin = nodes.size();
+    auto del = std::make_shared<evt::node::Delete>();
+    del->SetFilterExp("@P.y > 0");
+    nodes.push_back(del);
+
+    auto add = std::make_shared<evt::node::Add>();
+    nodes.push_back(add);
+
+    evt::make_connecting({ del, 0 }, { add, 0 });
+
+    size_t idx_end = nodes.size();
+    auto carve = std::make_shared<evt::node::Carve>();
+    carve->SetFirstU(0.25f);
+    carve->SetSecondU(0.75f);
+    nodes.push_back(carve);
+
+    evt::make_connecting({ add, 0 }, { carve, 0 });
+
+    evt::Evaluator eval;
+
+    auto src_box = std::make_shared<evt::node::Box>();
+    eval.AddNode(src_box);
+
+    // cut top face
+    auto top_face_group = std::make_shared<evt::node::GroupCreate>();
+    top_face_group->SetName("top_face");
+    top_face_group->SetType(evt::GroupType::Primitives);
+    top_face_group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(top_face_group);
+    evt::make_connecting({ src_box, 0 }, { top_face_group, 0 });
+    auto top_face_blast = std::make_shared<evt::node::Blast>();
+    top_face_blast->SetGroupName("top_face");
+    top_face_blast->SetGroupType(evt::GroupType::Primitives);
+    eval.AddNode(top_face_blast);
+    evt::make_connecting({ top_face_group, 0 }, { top_face_blast, 0 });
+
+    // cut bottom face
+    auto btm_face_group = std::make_shared<evt::node::GroupCreate>();
+    btm_face_group->SetName("btm_face");
+    btm_face_group->SetType(evt::GroupType::Primitives);
+    btm_face_group->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
+    eval.AddNode(btm_face_group);
+    evt::make_connecting({ top_face_blast, 0 }, { btm_face_group, 0 });
+    auto btm_face_blast = std::make_shared<evt::node::Blast>();
+    btm_face_blast->SetGroupName("btm_face");
+    btm_face_blast->SetGroupType(evt::GroupType::Primitives);
+    eval.AddNode(btm_face_blast);
+    evt::make_connecting({ btm_face_group, 0 }, { btm_face_blast, 0 });
+
+    auto foreach = std::make_shared<evt::node::ForeachPrimitive>();
+    foreach->SetNodes(nodes, idx_begin, idx_end);
+    eval.AddNode(foreach);
+
+    evt::make_connecting({ btm_face_blast, 0 }, { foreach, 0 });
+
+    auto dst_box = std::make_shared<evt::node::Box>();
+    dst_box->SetSize({ 0.1f, 0.1f, 0.1f });
+    eval.AddNode(dst_box);
+
+    auto copy = std::make_shared<evt::node::CopyToPoints>();
+    eval.AddNode(copy);
+
+    eval.Connect({ dst_box, 0 }, { copy, evt::node::CopyToPoints::IDX_SRC_PRIM });
+    eval.Connect({ foreach, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+
+    eval.Update();
+
+    test::check_points_num(copy, 64);
 }
 
 TEST_CASE("group_create")

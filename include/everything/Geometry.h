@@ -15,8 +15,7 @@ public:
     Geometry(GeoShapeType type);
     Geometry(const GeoShape& shape);
 
-    void Combine(const Geometry& geo, size_t prim_off);
-
+    auto& GetGroup() { return m_groups; }
     void AddGroup(const std::shared_ptr<Group>& group);
     std::shared_ptr<Group> QueryGroup(const std::string& name) const;
 

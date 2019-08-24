@@ -35,6 +35,8 @@ public:
     bool IsDirty() const { return m_dirty; }
     void SetDirty(bool dirty) const { m_dirty = dirty; }
 
+    std::shared_ptr<Geometry> GetInputGeo(size_t idx) const;
+
 public:
     struct PortAddr
     {
@@ -57,9 +59,6 @@ public:
         NodeVar var;
         std::vector<PortAddr> conns;
     };
-
-protected:
-    std::shared_ptr<Geometry> GetInputGeo(size_t idx) const;
 
 protected:
     std::vector<Port> m_imports, m_exports;

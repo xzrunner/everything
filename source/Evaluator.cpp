@@ -11,8 +11,6 @@ namespace evt
 
 void Evaluator::AddNode(const NodePtr& node)
 {
-    assert(!HasNodeConns(node));
-
     assert(m_nodes_set.size() == m_nodes_sorted.size());
     m_nodes_set.insert(node);
     m_nodes_sorted.insert(m_nodes_sorted.begin(), node);
@@ -159,6 +157,14 @@ void Evaluator::Update()
     }
 
     m_dirty = false;
+}
+
+void Evaluator::MakeDirty()
+{
+    m_dirty = true;
+    for (auto& node : m_nodes_set) {
+        node->SetDirty(true);
+    }
 }
 
 void Evaluator::TopologicalSorting()
