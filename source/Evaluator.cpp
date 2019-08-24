@@ -143,8 +143,10 @@ void Evaluator::Update()
                 auto node = conn.node.lock();
                 assert(node);
                 auto itr = map2index.find(node);
-                assert(itr != map2index.end());
-                ctx.Combine(ctxes[itr->second]);
+                //assert(itr != map2index.end());
+                if (itr != map2index.end()) {
+                    ctx.Combine(ctxes[itr->second]);
+                }
             }
         }
 

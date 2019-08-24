@@ -134,7 +134,10 @@
     <ClInclude Include="..\..\..\include\everything\GeoShape.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimitive.h">
+    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimBegin.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimEnd.h">
       <Filter>nodes\geometry\utility</Filter>
     </ClInclude>
   </ItemGroup>
@@ -224,7 +227,10 @@
     <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\node\ForeachPrimitive.cpp">
+    <ClCompile Include="..\..\..\source\node\ForeachPrimBegin.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp">
       <Filter>nodes\geometry\utility</Filter>
     </ClCompile>
   </ItemGroup>

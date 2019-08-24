@@ -24,7 +24,8 @@
     <ClInclude Include="..\..\..\include\everything\node\Add.h" />
     <ClInclude Include="..\..\..\include\everything\node\Carve.h" />
     <ClInclude Include="..\..\..\include\everything\node\Delete.h" />
-    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimitive.h" />
+    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimBegin.h" />
+    <ClInclude Include="..\..\..\include\everything\node\ForeachPrimEnd.h" />
     <ClInclude Include="..\..\..\include\everything\node\Knife.h" />
     <ClInclude Include="..\..\..\include\everything\node\Line.h" />
     <ClInclude Include="..\..\..\include\everything\node\Sort.h" />
@@ -64,7 +65,8 @@
     <ClCompile Include="..\..\..\source\node\CopyToPoints.cpp" />
     <ClCompile Include="..\..\..\source\node\Curve.cpp" />
     <ClCompile Include="..\..\..\source\node\Delete.cpp" />
-    <ClCompile Include="..\..\..\source\node\ForeachPrimitive.cpp" />
+    <ClCompile Include="..\..\..\source\node\ForeachPrimBegin.cpp" />
+    <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
     <ClCompile Include="..\..\..\source\node\Knife.cpp" />
     <ClCompile Include="..\..\..\source\node\Line.cpp" />
