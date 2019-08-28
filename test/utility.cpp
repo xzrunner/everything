@@ -135,4 +135,33 @@ void check_faces_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == geo->GetAttr().GetPrimtives().size());
 }
 
+void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Variable& val)
+{
+    auto find = node->QueryProperty(key);
+    REQUIRE(find.type == val.type);
+    if (find.type == evt::VariableType::Invalid) {
+        return;
+    }
+    switch (val.type)
+    {
+    case evt::VariableType::Bool:
+        REQUIRE(find.b == val.b);
+        break;
+    case evt::VariableType::Int:
+        REQUIRE(find.i == val.i);
+        break;
+    case evt::VariableType::Float:
+        REQUIRE(find.f == Approx(val.f));
+        break;
+    case evt::VariableType::Float3:
+        REQUIRE(find.f3 == val.f3);
+        break;
+    case evt::VariableType::String:
+        REQUIRE(strcmp(find.c, val.c) == 0);
+        break;
+    default:
+        assert(0);
+    }
+}
+
 }

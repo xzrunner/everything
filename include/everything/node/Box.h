@@ -31,6 +31,8 @@ public:
     void SetScale(const sm::vec3& scale);
 
 private:
+    virtual Variable QueryBuildInProp(const std::string& key) const override;
+
     void BuildModel();
 
     std::unique_ptr<model::BrushModel> BuildBrush() const;

@@ -24,6 +24,31 @@ namespace evt
 //{
 //}
 
+Variable Node::QueryProperty(const std::string& key) const
+{
+    auto itr = m_props.find(key);
+    if (itr == m_props.end()) {
+        return QueryBuildInProp(key);
+    } else {
+        return itr->second;
+    }
+}
+
+void Node::AddProperty(const std::string& key, const Variable& val)
+{
+    m_props.insert({ key, val });
+}
+
+void Node::RemoveProperty(const std::string& key)
+{
+    m_props.erase(key);
+}
+
+void Node::ClearProperty()
+{
+    m_props.clear();
+}
+
 std::shared_ptr<Geometry> Node::GetInputGeo(size_t idx) const
 {
     if (idx >= 0 && idx < m_imports.size()) {

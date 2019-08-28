@@ -1,6 +1,7 @@
 #pragma once
 
 #include "everything/NodeVar.h"
+#include "everything/Variable.h"
 
 #include <node0/typedef.h>
 
@@ -23,6 +24,11 @@ public:
 
     virtual void AddInputPorts(size_t num) {}
 
+    Variable QueryProperty(const std::string& key) const;
+    void AddProperty(const std::string& key, const Variable& val);
+    void RemoveProperty(const std::string& key);
+    void ClearProperty();
+
     struct Port;
     void SetImports(const std::vector<Port>& imports) { m_imports = imports; }
     void SetExports(const std::vector<Port>& exports) { m_exports = exports; }
@@ -36,6 +42,9 @@ public:
     void SetDirty(bool dirty) const { m_dirty = dirty; }
 
     std::shared_ptr<Geometry> GetInputGeo(size_t idx) const;
+
+private:
+    virtual Variable QueryBuildInProp(const std::string& key) const { return Variable(); }
 
 public:
     struct PortAddr
@@ -69,6 +78,8 @@ private:
 //    std::string m_name;
 
     mutable bool m_dirty = true;
+
+    std::map<std::string, Variable> m_props;
 
     RTTR_ENABLE()
 

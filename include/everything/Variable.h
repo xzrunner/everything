@@ -9,6 +9,8 @@ namespace evt
 
 enum class VariableType
 {
+    Invalid = 0,
+
     Bool,
     Int,
     Float,
@@ -19,6 +21,7 @@ enum class VariableType
 class Variable
 {
 public:
+    Variable() : type(VariableType::Invalid) {}
     explicit Variable(bool b);
     explicit Variable(int  i);
     explicit Variable(float f);

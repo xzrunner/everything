@@ -27,10 +27,13 @@ TEST_CASE("box")
 
     test::check_aabb(box, -h_sz, h_sz);
 
+    test::check_prop(box, "sizex", evt::Variable(2.0f));
+
     const sm::vec3 off(10, 11, 12);
     box->SetCenter(off);
     box->Execute(evt::TreeContext());
     test::check_aabb(box, -h_sz + off, h_sz + off);
+    test::check_prop(box, "ty", evt::Variable(11.0f));
 
     const sm::vec3 scale(5, 6, 7);
     box->SetScale(scale);

@@ -47,6 +47,25 @@ void Box::SetScale(const sm::vec3& scale)
     BuildModel();
 }
 
+Variable Box::QueryBuildInProp(const std::string& key) const
+{
+    if (key == "sizex") {
+        return Variable(m_size.x);
+    } else if (key == "sizey") {
+        return Variable(m_size.y);
+    } else if (key == "sizez") {
+        return Variable(m_size.z);
+    } else if (key == "tx") {
+        return Variable(m_center.x);
+    } else if (key == "ty") {
+        return Variable(m_center.y);
+    } else if (key == "tz") {
+        return Variable(m_center.z);
+    } else {
+        return Variable();
+    }
+}
+
 void Box::BuildModel()
 {
     if (!m_geo) {
