@@ -9,11 +9,11 @@
 namespace evt
 {
 
-class Geometry
+class GeometryImpl
 {
 public:
-    Geometry(GeoShapeType type);
-    Geometry(const GeoShape& shape);
+    GeometryImpl(GeoShapeType type);
+    GeometryImpl(const GeoShape& shape);
 
     auto& GetGroup() { return m_groups; }
     void AddGroup(const std::shared_ptr<Group>& group);
@@ -43,6 +43,6 @@ private:
 
     GeoAttribute m_attr;
 
-}; // Geometry
+}; // GeometryImpl
 
 }

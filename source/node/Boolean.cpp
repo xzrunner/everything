@@ -1,5 +1,5 @@
 #include "everything/node/Boolean.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -12,7 +12,7 @@ namespace node
 
 void Boolean::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     auto geo_a = GetInputGeo(IDX_A);
     auto geo_b = GetInputGeo(IDX_B);
@@ -38,7 +38,7 @@ void Boolean::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
 
     std::vector<model::BrushModel::Brush> brushes;
     switch (m_operator)
@@ -66,8 +66,8 @@ void Boolean::Execute(TreeContext& ctx)
     {
         auto brush_model = std::make_unique<model::BrushModel>();
         brush_model->SetBrushes(brushes);
-        m_geo->UpdateByBrush(*brush_model);
-        m_geo->StoreBrush(brush_model);
+        m_geo_impl->UpdateByBrush(*brush_model);
+        m_geo_impl->StoreBrush(brush_model);
     }
 }
 

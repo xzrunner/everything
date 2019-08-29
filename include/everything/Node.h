@@ -11,7 +11,7 @@ namespace evt
 {
 
 class TreeContext;
-class Geometry;
+class GeometryImpl;
 
 class Node
 {
@@ -36,7 +36,7 @@ public:
     auto& GetImports() const { return m_imports; }
     auto& GetExports() const { return m_exports; }
 
-    std::shared_ptr<Geometry> GetGeometry() const { return m_geo; }
+    std::shared_ptr<GeometryImpl> GetGeometry() const { return m_geo_impl; }
 
     bool IsDirty() const { return m_dirty; }
     void SetDirty(bool dirty) const { m_dirty = dirty; }
@@ -72,7 +72,8 @@ public:
 protected:
     std::vector<Port> m_imports, m_exports;
 
-    std::shared_ptr<Geometry> m_geo = nullptr;
+    std::shared_ptr<GeometryImpl> m_geo_impl = nullptr;
+
 
 private:
 //    std::string m_name;

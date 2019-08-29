@@ -1,5 +1,5 @@
 #include "everything/node/Sphere.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -8,7 +8,7 @@ namespace node
 
 void Sphere::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
     BuildModel();
 }
 

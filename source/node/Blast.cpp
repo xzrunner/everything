@@ -1,5 +1,5 @@
 #include "everything/node/Blast.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -8,16 +8,16 @@ namespace node
 
 void Blast::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     auto prev_geo = GetInputGeo(0);
     if (!prev_geo) {
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(*prev_geo);
+    m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
-    auto group = m_geo->QueryGroup(m_group_name);
+    auto group = m_geo_impl->QueryGroup(m_group_name);
     if (!group) {
         return;
     }
@@ -26,7 +26,7 @@ void Blast::Execute(TreeContext& ctx)
     {
     case GroupType::Primitives:
     {
-        auto& attr = m_geo->GetAttr();
+        auto& attr = m_geo_impl->GetAttr();
         auto& old_prims = attr.GetPrimtives();
 
         std::vector<bool> del_flags;
@@ -54,7 +54,7 @@ void Blast::Execute(TreeContext& ctx)
         }
         if (new_prims.size() != old_prims.size()) {
             attr.SetPrimtives(new_prims);
-            m_geo->UpdateByAttr();
+            m_geo_impl->UpdateByAttr();
         }
 
         break;

@@ -1,5 +1,5 @@
 #include "everything/node/Delete.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 #include "everything/GeoShape.h"
 
 namespace evt
@@ -9,7 +9,7 @@ namespace node
 
 void Delete::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     // only support points now
     if (m_entity_type != EntityType::Points) {
@@ -28,7 +28,7 @@ void Delete::Execute(TreeContext& ctx)
         }
     }
     if (!vertices.empty()) {
-        m_geo = std::make_shared<Geometry>(GeoPoints(vertices));
+        m_geo_impl = std::make_shared<GeometryImpl>(GeoPoints(vertices));
     }
 }
 

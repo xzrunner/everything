@@ -1,5 +1,5 @@
 #include "everything/node/Box.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
@@ -11,7 +11,7 @@ namespace node
 
 void Box::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
     BuildModel();
 }
 
@@ -73,8 +73,8 @@ void Box::BuildModel()
     }
 
     auto brush_model = BuildBrush();
-    m_geo->UpdateByBrush(*brush_model);
-    m_geo->StoreBrush(brush_model);
+    m_geo_impl->UpdateByBrush(*brush_model);
+    m_geo_impl->StoreBrush(brush_model);
 }
 
 std::unique_ptr<model::BrushModel>

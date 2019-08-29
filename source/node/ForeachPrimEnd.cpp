@@ -1,7 +1,7 @@
 #include "everything/node/ForeachPrimEnd.h"
 #include "everything/node/ForeachPrimBegin.h"
 #include "everything/Evaluator.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 #include "everything/GeoAttrHelper.h"
 
 #include <queue>
@@ -26,7 +26,7 @@ void ForeachPrimEnd::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
 
     // closure
     Evaluator eval;
@@ -49,8 +49,8 @@ void ForeachPrimEnd::Execute(TreeContext& ctx)
 
         auto e_prev_geo = GetInputGeo(0);
         if (e_prev_geo) {
-            m_geo->GetGroup().Combine(e_prev_geo->GetGroup(), m_geo->GetAttr().GetPrimtives().size());
-            m_geo->GetAttr().Combine(e_prev_geo->GetAttr());
+            m_geo_impl->GetGroup().Combine(e_prev_geo->GetGroup(), m_geo_impl->GetAttr().GetPrimtives().size());
+            m_geo_impl->GetAttr().Combine(e_prev_geo->GetAttr());
         }
     }
 }

@@ -1,5 +1,5 @@
 #include "everything/node/Add.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -8,7 +8,7 @@ namespace node
 
 void Add::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     std::vector<sm::vec3> vertices;
 
@@ -27,7 +27,7 @@ void Add::Execute(TreeContext& ctx)
     }
     std::copy(m_points.begin(), m_points.end(), std::back_inserter(vertices));
 
-    m_geo = std::make_shared<Geometry>(GeoPolyline(vertices));
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoPolyline(vertices));
 }
 
 void Add::SetPoints(const std::vector<sm::vec3>& points)

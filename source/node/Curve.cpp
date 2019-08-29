@@ -1,5 +1,5 @@
 #include "everything/node/Curve.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -8,7 +8,7 @@ namespace node
 
 void Curve::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Polyline);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Polyline);
     BuildModel();
 }
 
@@ -27,8 +27,8 @@ void Curve::SetVertices(const std::vector<sm::vec3>& vertices)
 // todo: test close
 void Curve::BuildModel()
 {
-    if (m_geo && m_vertices.size() >= 2) {
-        m_geo->FromGeoShape(GeoPolyline(m_vertices));
+    if (m_geo_impl && m_vertices.size() >= 2) {
+        m_geo_impl->FromGeoShape(GeoPolyline(m_vertices));
     }
 }
 

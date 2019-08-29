@@ -1,5 +1,5 @@
 #include "everything/node/Carve.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 #include "everything/GeoShape.h"
 
 #include <SM_Calc.h>
@@ -11,7 +11,7 @@ namespace node
 
 void Carve::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     auto prev_geo = GetInputGeo(0);
     if (!prev_geo) {
@@ -85,7 +85,7 @@ void Carve::Execute(TreeContext& ctx)
         dst_vertices.push_back(end);
     }
     if (!dst_vertices.empty()) {
-        m_geo = std::make_shared<Geometry>(GeoPolyline(dst_vertices));
+        m_geo_impl = std::make_shared<GeometryImpl>(GeoPolyline(dst_vertices));
     }
 }
 

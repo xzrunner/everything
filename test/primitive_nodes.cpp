@@ -1,7 +1,7 @@
 #include "utility.h"
 
 #include <everything/Evaluator.h>
-#include <everything/Geometry.h>
+#include <everything/GeometryImpl.h>
 #include <everything/TreeContext.h>
 
 #include <everything/node/Box.h>

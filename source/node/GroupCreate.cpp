@@ -1,5 +1,5 @@
 #include "everything/node/GroupCreate.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 #include "everything/GeoAttrHelper.h"
 
 #include <SM_Calc.h>
@@ -11,18 +11,18 @@ namespace node
 
 void GroupCreate::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     auto prev_geo = GetInputGeo(IDX_SOURCE_OBJ);
     if (!prev_geo) {
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(*prev_geo);
+    m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
     auto group = std::make_shared<Group>();
     group->name = m_name;
-    m_geo->AddGroup(group);
+    m_geo_impl->AddGroup(group);
 
     // insert selected to brush part
     if (m_keep_by_normals) {
@@ -89,7 +89,7 @@ void GroupCreate::SelectByNormals(Group& group)
     {
     case GroupType::Primitives:
     {
-        auto& prims = m_geo->GetAttr().GetPrimtives();
+        auto& prims = m_geo_impl->GetAttr().GetPrimtives();
         for (size_t i = 0, n = prims.size(); i < n; ++i)
         {
             auto& prim = prims[i];

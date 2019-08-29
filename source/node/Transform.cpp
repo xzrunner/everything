@@ -1,5 +1,5 @@
 #include "everything/node/Transform.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -8,21 +8,21 @@ namespace node
 
 void Transform::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     auto prev_geo = GetInputGeo(0);
     if (!prev_geo) {
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(*prev_geo);
+    m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
     auto mat = CalcTransformMat();
-    auto& attr = m_geo->GetAttr();
+    auto& attr = m_geo_impl->GetAttr();
     for (auto& p : attr.GetPoints()) {
         p->pos = mat * p->pos;
     }
-    m_geo->UpdateByAttr();
+    m_geo_impl->UpdateByAttr();
 }
 
 void Transform::SetTranslate(const sm::vec3& t)

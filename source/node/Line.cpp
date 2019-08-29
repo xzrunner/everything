@@ -1,5 +1,5 @@
 #include "everything/node/Line.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 #include "everything/GeoAdaptor.h"
 
 namespace evt
@@ -9,7 +9,7 @@ namespace node
 
 void Line::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Polyline);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Polyline);
     BuildModel();
 }
 
@@ -63,7 +63,7 @@ void Line::SetPoints(size_t num)
 
 void Line::BuildModel()
 {
-    if (!m_geo) {
+    if (!m_geo_impl) {
         return;
     }
     if (m_points < 2) {
@@ -78,7 +78,7 @@ void Line::BuildModel()
         vertices.push_back(v);
         v += dt;
     }
-    m_geo->FromGeoShape(GeoPolyline(vertices));
+    m_geo_impl->FromGeoShape(GeoPolyline(vertices));
 }
 
 }

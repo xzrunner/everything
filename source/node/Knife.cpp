@@ -1,5 +1,5 @@
 #include "everything/node/Knife.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -12,22 +12,22 @@ namespace node
 
 void Knife::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     auto prev_geo = GetInputGeo(0);
     if (!prev_geo) {
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(*prev_geo);
+    m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
-    auto brush_model = m_geo->GetBrushModel();
+    auto brush_model = m_geo_impl->GetBrushModel();
     assert(brush_model);
     auto& brushes = brush_model->GetBrushes();
     assert(brushes.size() == 1);
     auto& brush = brushes[0];
     if (Clip(*brush.impl)) {
-        m_geo->UpdateByBrush(*brush_model);
+        m_geo_impl->UpdateByBrush(*brush_model);
     }
 }
 

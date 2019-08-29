@@ -48,8 +48,7 @@ void Node::ClearProperty()
 {
     m_props.clear();
 }
-
-std::shared_ptr<Geometry> Node::GetInputGeo(size_t idx) const
+std::shared_ptr<GeometryImpl> Node::GetInputGeo(size_t idx) const
 {
     if (idx >= 0 && idx < m_imports.size()) {
         if (!m_imports[idx].conns.empty()) {

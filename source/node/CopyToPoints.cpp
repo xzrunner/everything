@@ -1,5 +1,5 @@
 #include "everything/node/CopyToPoints.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -8,7 +8,7 @@ namespace node
 
 void CopyToPoints::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     auto src_geo = GetInputGeo(IDX_SRC_PRIM);
     auto dst_geo = GetInputGeo(IDX_TARGET_POS);
@@ -16,9 +16,9 @@ void CopyToPoints::Execute(TreeContext& ctx)
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
 
-    auto& attr = m_geo->GetAttr();
+    auto& attr = m_geo_impl->GetAttr();
     for (auto& move_to : dst_geo->GetAttr().GetPoints())
     {
         GeoAttribute src_attr(src_geo->GetAttr());
@@ -29,7 +29,7 @@ void CopyToPoints::Execute(TreeContext& ctx)
     }
     attr.ResetPointsOrder();
 
-    m_geo->UpdateByAttr();
+    m_geo_impl->UpdateByAttr();
 }
 
 void CopyToPoints::SetTransformUsingPointOrientations(bool enable)

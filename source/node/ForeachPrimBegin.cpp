@@ -1,5 +1,5 @@
 #include "everything/node/ForeachPrimBegin.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -15,7 +15,7 @@ ForeachPrimBegin::ForeachPrimBegin()
         {{ NodeVarType::Any, "out" }},
     };
 
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
 }
 
 }

@@ -1,5 +1,5 @@
 #include "everything/node/Sort.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -8,15 +8,15 @@ namespace node
 
 void Sort::Execute(TreeContext& ctx)
 {
-    m_geo.reset();
+    m_geo_impl.reset();
 
     auto prev_geo = GetInputGeo(0);
     if (!prev_geo) {
         return;
     }
 
-    m_geo = std::make_shared<Geometry>(*prev_geo);
-    auto& attr = m_geo->GetAttr();
+    m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
+    auto& attr = m_geo_impl->GetAttr();
     if (m_key == Key::NoChange)
     {
         attr.ResetPointsOrder();

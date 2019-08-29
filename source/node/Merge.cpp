@@ -1,5 +1,5 @@
 #include "everything/node/Merge.h"
-#include "everything/Geometry.h"
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
@@ -8,9 +8,9 @@ namespace node
 
 void Merge::Execute(TreeContext& ctx)
 {
-    m_geo = std::make_shared<Geometry>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
 
-    std::vector<std::shared_ptr<Geometry>> children;
+    std::vector<std::shared_ptr<GeometryImpl>> children;
     for (auto& port : m_imports)
     {
         if (port.conns.empty()) {
@@ -26,14 +26,14 @@ void Merge::Execute(TreeContext& ctx)
         children.push_back(src_obj->GetGeometry());
     }
 
-    auto& attr = m_geo->GetAttr();
+    auto& attr = m_geo_impl->GetAttr();
     for (auto& c : children) {
         attr.Combine(c->GetAttr());
-        m_geo->GetGroup().Combine(c->GetGroup(), attr.GetPrimtives().size());
+        m_geo_impl->GetGroup().Combine(c->GetGroup(), attr.GetPrimtives().size());
     }
     attr.ResetPointsOrder();
 
-    m_geo->UpdateByAttr();
+    m_geo_impl->UpdateByAttr();
 }
 
 void Merge::AddInputPorts(size_t num)
