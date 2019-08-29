@@ -1,6 +1,9 @@
 #include "everything/Evaluator.h"
 #include "everything/TreeContext.h"
 
+#include <vexc/EvalAST.h>
+#include <vexc/Parser.h>
+
 #include <stack>
 #include <queue>
 
@@ -137,10 +140,24 @@ void Evaluator::MakeDirty()
     }
 }
 
-Variable Evaluator::CalcExpr(const std::string& expr) const
+Variable Evaluator::CalcExpr(const std::string& str) const
 {
-    int zz = 0;
-    return Variable(1.0f);
+    vexc::Parser parser(str.c_str());
+    auto expr = vexc::ast::ExpressionParser::ParseExpression(parser);
+    auto val = vexc::EvalExpression(expr);
+    switch (val.type)
+    {
+    case vexc::VarType::Bool:
+        return Variable(val.b);
+    case vexc::VarType::Int:
+        return Variable(val.i);
+    case vexc::VarType::Float:
+        return Variable(val.f);
+    case vexc::VarType::Double:
+        return Variable(static_cast<float>(val.d));
+    default:
+        return Variable(1.0f);
+    }
 }
 
 void Evaluator::UpdateProps()

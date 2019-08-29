@@ -155,6 +155,9 @@
     <ClInclude Include="..\..\..\include\everything\NodePropsMgr.h">
       <Filter>dataset\others</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\VexFuncs.h">
+      <Filter>system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp">
@@ -256,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\NodePropsMgr.cpp">
       <Filter>dataset\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\VexFuncs.cpp">
+      <Filter>system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

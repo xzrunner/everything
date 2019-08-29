@@ -1,4 +1,5 @@
 #include "everything/Everything.h"
+#include "everything/VexFuncs.h"
 
 namespace evt
 {
@@ -10,6 +11,8 @@ extern void regist_rttr();
 Everything::Everything()
 {
 	regist_rttr();
+
+    SetupVexFuncs();
 }
 
 }

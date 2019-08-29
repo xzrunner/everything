@@ -1,5 +1,6 @@
 #include "utility.h"
 
+#include <everything/Everything.h>
 #include <everything/Node.h>
 #include <everything/GeometryImpl.h>
 
@@ -64,6 +65,11 @@ void InitRender()
     ur::Blackboard::Instance()->SetRenderContext(ur_rc);
 }
 
+void InitEverything()
+{
+    evt::Everything::Instance();
+}
+
 }
 
 namespace test
@@ -72,9 +78,12 @@ namespace test
 void init()
 {
     static bool inited = false;
-    if (!inited) {
+    if (!inited)
+    {
         InitGL();
         InitRender();
+        InitEverything();
+
         inited = true;
     }
 }
