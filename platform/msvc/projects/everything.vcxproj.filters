@@ -37,6 +37,12 @@
     <Filter Include="dataset\node">
       <UniqueIdentifier>{dd04b857-ea2f-4c23-b7b1-883a61f5a1d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{7336f7a8-4519-45c4-9358-12e620238c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\others">
+      <UniqueIdentifier>{da833931-1ea8-46de-8479-9ed2ef8238e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\node\Curve.h">
@@ -101,25 +107,16 @@
     <ClInclude Include="..\..\..\include\everything\Node.h">
       <Filter>dataset\node</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\TreeContext.h">
-      <Filter>dataset\node</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\NodeVar.h">
       <Filter>dataset\node</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\NodeVarType.h">
       <Filter>dataset\node</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\Variable.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\Group.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\GroupMgr.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\Geometry.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\GeoAdaptor.h">
@@ -139,6 +136,24 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimEnd.h">
       <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Geometry.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\NodeHelper.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeometryImpl.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Variable.h">
+      <Filter>dataset\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\TreeContext.h">
+      <Filter>dataset\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\NodePropsMgr.h">
+      <Filter>dataset\others</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -206,16 +221,7 @@
     <ClCompile Include="..\..\..\source\Node.cpp">
       <Filter>dataset\node</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\TreeContext.cpp">
-      <Filter>dataset\node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\Variable.cpp">
-      <Filter>dataset\geo</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\GroupMgr.cpp">
-      <Filter>dataset\geo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\Geometry.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp">
@@ -232,6 +238,24 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp">
       <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Geometry.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\NodeHelper.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeometryImpl.cpp">
+      <Filter>dataset\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Variable.cpp">
+      <Filter>dataset\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\TreeContext.cpp">
+      <Filter>dataset\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\NodePropsMgr.cpp">
+      <Filter>dataset\others</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

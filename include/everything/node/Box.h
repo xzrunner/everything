@@ -14,7 +14,25 @@ namespace node
 class Box : public Node
 {
 public:
+    enum PropID
+    {
+        SIZE_X,
+        SIZE_Y,
+        SIZE_Z,
+        POS_X,
+        POS_Y,
+        POS_Z,
+
+        MAX_BUILD_IN_PROP,
+    };
+
+    static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
+        "sizex", "sizey", "sizez", "tx", "ty", "tz"
+    };
+
+public:
     Box()
+        : Node(MAX_BUILD_IN_PROP)
     {
         m_imports = {
             {{ NodeVarType::Any, "in" }}
@@ -22,6 +40,8 @@ public:
         m_exports = {
             {{ NodeVarType::Any, "out" }},
         };
+
+        InitProps();
     }
 
     virtual void Execute(TreeContext& ctx) override;
@@ -31,15 +51,13 @@ public:
     void SetScale(const sm::vec3& scale);
 
 private:
-    virtual Variable QueryBuildInProp(const std::string& key) const override;
+    void InitProps();
 
     void BuildModel();
 
     std::unique_ptr<model::BrushModel> BuildBrush() const;
 
 private:
-    sm::vec3 m_size   = sm::vec3(1, 1, 1);
-    sm::vec3 m_center = sm::vec3(0, 0, 0);
     sm::vec3 m_scale  = sm::vec3(1, 1, 1);
 
     RTTR_ENABLE(Node)

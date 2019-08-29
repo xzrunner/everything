@@ -21,11 +21,14 @@
     <ClInclude Include="..\..\..\include\everything\GeoShape.h" />
     <ClInclude Include="..\..\..\include\everything\Group.h" />
     <ClInclude Include="..\..\..\include\everything\GroupMgr.h" />
+    <ClInclude Include="..\..\..\include\everything\NodeHelper.h" />
+    <ClInclude Include="..\..\..\include\everything\NodePropsMgr.h" />
     <ClInclude Include="..\..\..\include\everything\node\Add.h" />
     <ClInclude Include="..\..\..\include\everything\node\Carve.h" />
     <ClInclude Include="..\..\..\include\everything\node\Delete.h" />
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimBegin.h" />
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimEnd.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Geometry.h" />
     <ClInclude Include="..\..\..\include\everything\node\Knife.h" />
     <ClInclude Include="..\..\..\include\everything\node\Line.h" />
     <ClInclude Include="..\..\..\include\everything\node\Sort.h" />
@@ -54,9 +57,11 @@
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
-    <ClCompile Include="..\..\..\source\Geometry.cpp" />
+    <ClCompile Include="..\..\..\source\GeometryImpl.cpp" />
     <ClCompile Include="..\..\..\source\GroupMgr.cpp" />
     <ClCompile Include="..\..\..\source\Node.cpp" />
+    <ClCompile Include="..\..\..\source\NodeHelper.cpp" />
+    <ClCompile Include="..\..\..\source\NodePropsMgr.cpp" />
     <ClCompile Include="..\..\..\source\node\Add.cpp" />
     <ClCompile Include="..\..\..\source\node\Blast.cpp" />
     <ClCompile Include="..\..\..\source\node\Boolean.cpp" />
@@ -67,6 +72,7 @@
     <ClCompile Include="..\..\..\source\node\Delete.cpp" />
     <ClCompile Include="..\..\..\source\node\ForeachPrimBegin.cpp" />
     <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp" />
+    <ClCompile Include="..\..\..\source\node\Geometry.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
     <ClCompile Include="..\..\..\source\node\Knife.cpp" />
     <ClCompile Include="..\..\..\source\node\Line.cpp" />

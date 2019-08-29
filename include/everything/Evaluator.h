@@ -31,7 +31,12 @@ public:
 
     void MakeDirty();
 
+    Variable CalcExpr(const std::string& expr) const;
+
 private:
+    void UpdateProps();
+    void UpdateNodes();
+
     void TopologicalSorting();
 
     static void SetTreeDirty(const NodePtr& root);

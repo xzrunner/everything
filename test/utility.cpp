@@ -137,7 +137,7 @@ void check_faces_num(const evt::NodePtr& node, size_t num)
 
 void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Variable& val)
 {
-    auto find = node->QueryProperty(key);
+    auto find = node->GetProps().Query(key);
     REQUIRE(find.type == val.type);
     if (find.type == evt::VariableType::Invalid) {
         return;

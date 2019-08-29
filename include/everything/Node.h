@@ -2,6 +2,7 @@
 
 #include "everything/NodeVar.h"
 #include "everything/Variable.h"
+#include "everything/NodePropsMgr.h"
 
 #include <node0/typedef.h>
 
@@ -16,18 +17,13 @@ class GeometryImpl;
 class Node
 {
 public:
-    Node() {}
+    Node(size_t build_in_count = 0);
 //    Node(const std::string& name);
 
     virtual void Execute(TreeContext& ctx) = 0;
     virtual void UpdateContext(TreeContext& ctx) {}
 
     virtual void AddInputPorts(size_t num) {}
-
-    Variable QueryProperty(const std::string& key) const;
-    void AddProperty(const std::string& key, const Variable& val);
-    void RemoveProperty(const std::string& key);
-    void ClearProperty();
 
     struct Port;
     void SetImports(const std::vector<Port>& imports) { m_imports = imports; }
@@ -41,10 +37,12 @@ public:
     bool IsDirty() const { return m_dirty; }
     void SetDirty(bool dirty) const { m_dirty = dirty; }
 
-    std::shared_ptr<Geometry> GetInputGeo(size_t idx) const;
+    std::shared_ptr<GeometryImpl> GetInputGeo(size_t idx) const;
 
-private:
-    virtual Variable QueryBuildInProp(const std::string& key) const { return Variable(); }
+    void SetParent(const std::shared_ptr<Node>& node);
+    auto GetParent() const { return m_parent.lock(); }
+
+    auto& GetProps() { return m_props; }
 
 public:
     struct PortAddr
@@ -74,13 +72,16 @@ protected:
 
     std::shared_ptr<GeometryImpl> m_geo_impl = nullptr;
 
+    NodePropsMgr m_props;
 
 private:
 //    std::string m_name;
 
-    mutable bool m_dirty = true;
+    std::weak_ptr<Node> m_parent;
 
-    std::map<std::string, Variable> m_props;
+    size_t m_level = 0;
+
+    mutable bool m_dirty = true;
 
     RTTR_ENABLE()
 

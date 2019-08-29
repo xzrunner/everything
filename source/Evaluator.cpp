@@ -119,7 +119,48 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<Node::PortAddr, N
 
 void Evaluator::Update()
 {
-    if (!m_dirty || m_nodes_sorted.empty()) {
+    if (!m_dirty) {
+        return;
+    }
+
+    UpdateProps();
+    UpdateNodes();
+
+    m_dirty = false;
+}
+
+void Evaluator::MakeDirty()
+{
+    m_dirty = true;
+    for (auto& node : m_nodes_set) {
+        node->SetDirty(true);
+    }
+}
+
+Variable Evaluator::CalcExpr(const std::string& expr) const
+{
+    int zz = 0;
+    return Variable(1.0f);
+}
+
+void Evaluator::UpdateProps()
+{
+    // todo: topo sort props
+
+    if (m_nodes_sorted.empty()) {
+        return;
+    }
+
+    for (auto& node : m_nodes_sorted) {
+        for (auto& prop : node->GetProps().GetProps()) {
+            const_cast<NodeProp&>(prop).Update(*this);
+        }
+    }
+}
+
+void Evaluator::UpdateNodes()
+{
+    if (m_nodes_sorted.empty()) {
         return;
     }
 
@@ -156,16 +197,6 @@ void Evaluator::Update()
         }
 
         node->UpdateContext(ctx);
-    }
-
-    m_dirty = false;
-}
-
-void Evaluator::MakeDirty()
-{
-    m_dirty = true;
-    for (auto& node : m_nodes_set) {
-        node->SetDirty(true);
     }
 }
 

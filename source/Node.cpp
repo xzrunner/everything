@@ -19,35 +19,16 @@ rttr::registration::class_<evt::Node>("evt::Node")
 namespace evt
 {
 
+Node::Node(size_t build_in_count)
+    : m_props(build_in_count)
+{
+}
+
 //Node::Node(const std::string& name)
 //    : m_name(name)
 //{
 //}
 
-Variable Node::QueryProperty(const std::string& key) const
-{
-    auto itr = m_props.find(key);
-    if (itr == m_props.end()) {
-        return QueryBuildInProp(key);
-    } else {
-        return itr->second;
-    }
-}
-
-void Node::AddProperty(const std::string& key, const Variable& val)
-{
-    m_props.insert({ key, val });
-}
-
-void Node::RemoveProperty(const std::string& key)
-{
-    m_props.erase(key);
-}
-
-void Node::ClearProperty()
-{
-    m_props.clear();
-}
 std::shared_ptr<GeometryImpl> Node::GetInputGeo(size_t idx) const
 {
     if (idx >= 0 && idx < m_imports.size()) {
@@ -60,6 +41,13 @@ std::shared_ptr<GeometryImpl> Node::GetInputGeo(size_t idx) const
         }
     }
     return nullptr;
+}
+
+void Node::SetParent(const std::shared_ptr<Node>& node)
+{
+    m_parent = node;
+
+    m_level = node->m_level + 1;
 }
 
 void make_connecting(const Node::PortAddr& from, const Node::PortAddr& to)

@@ -17,24 +17,42 @@ void Box::Execute(TreeContext& ctx)
 
 void Box::SetSize(const sm::vec3& size)
 {
-    if (m_size == size) {
-        return;
+    bool dirty = false;
+
+    if (m_props.SetValue(SIZE_X, Variable(size.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SIZE_Y, Variable(size.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SIZE_Z, Variable(size.z))) {
+        dirty = true;
     }
 
-    m_size = size;
-    BuildModel();
-
-    SetDirty(true);
+    if (dirty) {
+        BuildModel();
+        SetDirty(true);
+    }
 }
 
 void Box::SetCenter(const sm::vec3& center)
 {
-    if (m_center == center) {
-        return;
+    bool dirty = false;
+
+    if (m_props.SetValue(POS_X, Variable(center.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(POS_Y, Variable(center.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(POS_Z, Variable(center.z))) {
+        dirty = true;
     }
 
-    m_center = center;
-    BuildModel();
+    if (dirty) {
+        BuildModel();
+        SetDirty(true);
+    }
 }
 
 void Box::SetScale(const sm::vec3& scale)
@@ -47,28 +65,19 @@ void Box::SetScale(const sm::vec3& scale)
     BuildModel();
 }
 
-Variable Box::QueryBuildInProp(const std::string& key) const
+void Box::InitProps()
 {
-    if (key == "sizex") {
-        return Variable(m_size.x);
-    } else if (key == "sizey") {
-        return Variable(m_size.y);
-    } else if (key == "sizez") {
-        return Variable(m_size.z);
-    } else if (key == "tx") {
-        return Variable(m_center.x);
-    } else if (key == "ty") {
-        return Variable(m_center.y);
-    } else if (key == "tz") {
-        return Variable(m_center.z);
-    } else {
-        return Variable();
-    }
+    m_props.Assign(SIZE_X, PropNames[SIZE_X], Variable(1.0f));
+    m_props.Assign(SIZE_Y, PropNames[SIZE_Y], Variable(1.0f));
+    m_props.Assign(SIZE_Z, PropNames[SIZE_Z], Variable(1.0f));
+    m_props.Assign(POS_X,  PropNames[POS_X],  Variable(0.0f));
+    m_props.Assign(POS_Y,  PropNames[POS_Y],  Variable(0.0f));
+    m_props.Assign(POS_Z,  PropNames[POS_Z],  Variable(0.0f));
 }
 
 void Box::BuildModel()
 {
-    if (!m_geo) {
+    if (!m_geo_impl) {
         return;
     }
 
@@ -80,6 +89,16 @@ void Box::BuildModel()
 std::unique_ptr<model::BrushModel>
 Box::BuildBrush() const
 {
+    auto& props = m_props.GetProps();
+    if (props[SIZE_X].Val().type != VariableType::Float ||
+        props[SIZE_Y].Val().type != VariableType::Float ||
+        props[SIZE_Z].Val().type != VariableType::Float ||
+        props[POS_X].Val().type != VariableType::Float ||
+        props[POS_Y].Val().type != VariableType::Float ||
+        props[POS_Z].Val().type != VariableType::Float) {
+        return nullptr;
+    }
+
     model::BrushModel::Brush brush;
 
     brush.desc.mesh_begin = 0;
@@ -91,8 +110,8 @@ Box::BuildBrush() const
     faces.reserve(face_num);
 
     const sm::vec3 s = m_scale;
-    const sm::vec3 h_sz = m_size * 0.5f;
-    const sm::vec3 c = m_center;
+    const sm::vec3 h_sz = sm::vec3(props[SIZE_X].Val().f, props[SIZE_Y].Val().f, props[SIZE_Z].Val().f) * 0.5f;
+    const sm::vec3 c = sm::vec3(props[POS_X].Val().f, props[POS_Y].Val().f, props[POS_Z].Val().f);
 
     const float xmin = -h_sz.x * s.x + c.x;
     const float xmax =  h_sz.x * s.x + c.x;

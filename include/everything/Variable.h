@@ -31,6 +31,8 @@ public:
     Variable& operator = (const Variable& var);
     ~Variable();
 
+    bool operator == (const Variable& var) const;
+
     VariableType type;
 
     union
