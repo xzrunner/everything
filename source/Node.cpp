@@ -29,20 +29,6 @@ Node::Node(size_t build_in_count)
 //{
 //}
 
-std::shared_ptr<GeometryImpl> Node::GetInputGeo(size_t idx) const
-{
-    if (idx >= 0 && idx < m_imports.size()) {
-        if (!m_imports[idx].conns.empty()) {
-            assert(m_imports[idx].conns.size() == 1);
-            auto node = m_imports[idx].conns[0].node.lock();
-            if (node) {
-                return node->GetGeometry();
-            }
-        }
-    }
-    return nullptr;
-}
-
 void Node::SetParent(const std::shared_ptr<Node>& node)
 {
     m_parent = node;

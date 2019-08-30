@@ -3,6 +3,7 @@
 #include "everything/Evaluator.h"
 #include "everything/GeometryImpl.h"
 #include "everything/GeoAttrHelper.h"
+#include "everything/NodeHelper.h"
 
 #include <queue>
 
@@ -21,7 +22,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
         return;
     }
 
-    auto prev_geo = begin->GetInputGeo(0);
+    auto prev_geo = NodeHelper::GetInputGeo(*begin, 0);
     if (!prev_geo) {
         return;
     }
@@ -47,7 +48,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
         sub_eval.MakeDirty();
         sub_eval.Update();
 
-        auto e_prev_geo = GetInputGeo(0);
+        auto e_prev_geo = NodeHelper::GetInputGeo(*this, 0);
         if (e_prev_geo) {
             m_geo_impl->GetGroup().Combine(e_prev_geo->GetGroup(), m_geo_impl->GetAttr().GetPrimtives().size());
             m_geo_impl->GetAttr().Combine(e_prev_geo->GetAttr());

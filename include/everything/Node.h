@@ -37,8 +37,6 @@ public:
     bool IsDirty() const { return m_dirty; }
     void SetDirty(bool dirty) const { m_dirty = dirty; }
 
-    std::shared_ptr<GeometryImpl> GetInputGeo(size_t idx) const;
-
     void SetParent(const std::shared_ptr<Node>& node);
     auto GetParent() const { return m_parent.lock(); }
 

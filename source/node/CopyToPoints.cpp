@@ -1,5 +1,6 @@
 #include "everything/node/CopyToPoints.h"
 #include "everything/GeometryImpl.h"
+#include "everything/NodeHelper.h"
 
 namespace evt
 {
@@ -10,8 +11,8 @@ void CopyToPoints::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    auto src_geo = GetInputGeo(IDX_SRC_PRIM);
-    auto dst_geo = GetInputGeo(IDX_TARGET_POS);
+    auto src_geo = NodeHelper::GetInputGeo(*this, IDX_SRC_PRIM);
+    auto dst_geo = NodeHelper::GetInputGeo(*this, IDX_TARGET_POS);
     if (!src_geo || !dst_geo) {
         return;
     }

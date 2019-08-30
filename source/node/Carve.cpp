@@ -1,6 +1,7 @@
 #include "everything/node/Carve.h"
 #include "everything/GeometryImpl.h"
 #include "everything/GeoShape.h"
+#include "everything/NodeHelper.h"
 
 #include <SM_Calc.h>
 
@@ -13,7 +14,7 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    auto prev_geo = GetInputGeo(0);
+    auto prev_geo = NodeHelper::GetInputGeo(*this, 0);
     if (!prev_geo) {
         return;
     }

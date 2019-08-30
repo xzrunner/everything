@@ -1,5 +1,6 @@
 #include "everything/node/Add.h"
 #include "everything/GeometryImpl.h"
+#include "everything/NodeHelper.h"
 
 namespace evt
 {
@@ -12,7 +13,7 @@ void Add::Execute(Evaluator& eval, TreeContext& ctx)
 
     std::vector<sm::vec3> vertices;
 
-    auto prev_geo = GetInputGeo(0);
+    auto prev_geo = NodeHelper::GetInputGeo(*this, 0);
     if (prev_geo)
     {
         auto& prev_points = prev_geo->GetAttr().GetPoints();

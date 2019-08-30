@@ -1,5 +1,6 @@
 #include "everything/node/Switch.h"
 #include "everything/GeometryImpl.h"
+#include "everything/NodeHelper.h"
 
 namespace evt
 {
@@ -10,7 +11,7 @@ void Switch::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    auto prev_geo = GetInputGeo(m_selected);
+    auto prev_geo = NodeHelper::GetInputGeo(*this, m_selected);
     if (!prev_geo) {
         return;
     }

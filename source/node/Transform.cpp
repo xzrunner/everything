@@ -1,5 +1,6 @@
 #include "everything/node/Transform.h"
 #include "everything/GeometryImpl.h"
+#include "everything/NodeHelper.h"
 
 namespace evt
 {
@@ -10,7 +11,7 @@ void Transform::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    auto prev_geo = GetInputGeo(0);
+    auto prev_geo = NodeHelper::GetInputGeo(*this, 0);
     if (!prev_geo) {
         return;
     }

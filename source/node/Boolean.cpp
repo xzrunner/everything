@@ -1,5 +1,6 @@
 #include "everything/node/Boolean.h"
 #include "everything/GeometryImpl.h"
+#include "everything/NodeHelper.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -14,8 +15,8 @@ void Boolean::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    auto geo_a = GetInputGeo(IDX_A);
-    auto geo_b = GetInputGeo(IDX_B);
+    auto geo_a = NodeHelper::GetInputGeo(*this, IDX_A);
+    auto geo_b = NodeHelper::GetInputGeo(*this, IDX_B);
     if (!geo_a || !geo_b) {
         return;
     }

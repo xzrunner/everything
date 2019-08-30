@@ -1,6 +1,7 @@
 #include "everything/node/Delete.h"
 #include "everything/GeometryImpl.h"
 #include "everything/GeoShape.h"
+#include "everything/NodeHelper.h"
 
 namespace evt
 {
@@ -16,10 +17,11 @@ void Delete::Execute(Evaluator& eval, TreeContext& ctx)
         return;
     }
 
-    auto prev_geo = GetInputGeo(0);
-    if (!prev_geo) {
+    auto prev_node = NodeHelper::GetInputNode(*this, 0);
+    if (!prev_node) {
         return;
     }
+    auto prev_geo = prev_node->GetGeometry();
 
     std::vector<sm::vec3> vertices;
     for (auto& p : prev_geo->GetAttr().GetPoints()) {

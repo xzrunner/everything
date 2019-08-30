@@ -1,6 +1,7 @@
 #include "everything/node/GroupCreate.h"
 #include "everything/GeometryImpl.h"
 #include "everything/GeoAttrHelper.h"
+#include "everything/NodeHelper.h"
 
 #include <SM_Calc.h>
 
@@ -13,7 +14,7 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    auto prev_geo = GetInputGeo(IDX_SOURCE_OBJ);
+    auto prev_geo = NodeHelper::GetInputGeo(*this, IDX_SOURCE_OBJ);
     if (!prev_geo) {
         return;
     }
