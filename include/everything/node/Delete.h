@@ -1,7 +1,6 @@
 #pragma once
 
 #include "everything/Node.h"
-#include "everything/Expression.h"
 
 namespace evt
 {
@@ -42,9 +41,7 @@ private:
 
     EntityType m_entity_type = EntityType::Points;
 
-    std::string m_filter_exp;
-
-    Expression m_exp;
+    std::string m_filter_expr;
 
     RTTR_ENABLE(Node)
 

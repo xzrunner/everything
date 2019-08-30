@@ -90,14 +90,12 @@ std::unique_ptr<model::BrushModel>
 Box::BuildBrush() const
 {
     auto& props = m_props.GetProps();
-    if (props[SIZE_X].Val().type != VariableType::Float ||
-        props[SIZE_Y].Val().type != VariableType::Float ||
-        props[SIZE_Z].Val().type != VariableType::Float ||
-        props[POS_X].Val().type != VariableType::Float ||
-        props[POS_Y].Val().type != VariableType::Float ||
-        props[POS_Z].Val().type != VariableType::Float) {
-        return nullptr;
-    }
+    assert(props[SIZE_X].Val().type == VariableType::Float 
+        && props[SIZE_Y].Val().type == VariableType::Float 
+        && props[SIZE_Z].Val().type == VariableType::Float
+        && props[POS_X].Val().type == VariableType::Float
+        && props[POS_Y].Val().type == VariableType::Float
+        && props[POS_Z].Val().type == VariableType::Float);
 
     model::BrushModel::Brush brush;
 

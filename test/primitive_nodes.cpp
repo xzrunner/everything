@@ -14,12 +14,16 @@ TEST_CASE("box")
 {
     test::init();
 
+    evt::Evaluator eval;
+
     auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
 
     const sm::vec3 sz(2, 3, 4);
     auto h_sz = sz * 0.5f;
     box->SetSize(sz);
-    box->Execute(evt::TreeContext());
+
+    eval.Update();
 
     test::check_points_num(box, 8);
     //test::check_edges_num(box, 24);
@@ -31,13 +35,13 @@ TEST_CASE("box")
 
     const sm::vec3 off(10, 11, 12);
     box->SetCenter(off);
-    box->Execute(evt::TreeContext());
+    eval.Update();
     test::check_aabb(box, -h_sz + off, h_sz + off);
     test::check_prop(box, "ty", evt::Variable(11.0f));
 
     const sm::vec3 scale(5, 6, 7);
     box->SetScale(scale);
-    box->Execute(evt::TreeContext());
+    eval.Update();
     test::check_aabb(box, -h_sz * scale + off, h_sz * scale + off);
 }
 
@@ -45,7 +49,10 @@ TEST_CASE("curve")
 {
     test::init();
 
+    evt::Evaluator eval;
+
     auto curve = std::make_shared<evt::node::Curve>();
+    eval.AddNode(curve);
 
     SECTION("no loop")
     {
@@ -56,7 +63,7 @@ TEST_CASE("curve")
         };
         curve->SetVertices(vertices);
 
-        curve->Execute(evt::TreeContext());
+        eval.Update();
 
         test::check_points_num(curve, 3);
         test::check_pos(curve, 1, sm::vec3(4, 1, 0));
@@ -73,7 +80,7 @@ TEST_CASE("curve")
         };
         curve->SetVertices(vertices);
 
-        curve->Execute(evt::TreeContext());
+        eval.Update();
 
         test::check_points_num(curve, 3);
         test::check_pos(curve, 1, sm::vec3(4, 1, 0));
@@ -85,7 +92,10 @@ TEST_CASE("line")
 {
     test::init();
 
+    evt::Evaluator eval;
+
     auto line = std::make_shared<evt::node::Line>();
+    eval.AddNode(line);
 
     sm::vec3 ori(1, 2, 3);
     sm::vec3 dir(11, 12, 13);
@@ -97,7 +107,7 @@ TEST_CASE("line")
     line->SetLength(len);
     line->SetPoints(num);
 
-    line->Execute(evt::TreeContext());
+    eval.Update();
 
     auto pos4 = ori + dir * len / static_cast<float>(num - 1) * 4;
     test::check_pos(line, 4, pos4);

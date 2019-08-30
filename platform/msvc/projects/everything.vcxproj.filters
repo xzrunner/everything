@@ -7,9 +7,6 @@
     <Filter Include="dataset">
       <UniqueIdentifier>{119faea4-0286-4ed1-aad3-25958867e376}</UniqueIdentifier>
     </Filter>
-    <Filter Include="system">
-      <UniqueIdentifier>{d2a6f069-4272-41df-abc7-ae5a4eed982d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="nodes\geometry">
       <UniqueIdentifier>{5d1a28a3-62c5-46d1-8a46-57a4ae60d491}</UniqueIdentifier>
     </Filter>
@@ -43,6 +40,9 @@
     <Filter Include="dataset\others">
       <UniqueIdentifier>{da833931-1ea8-46de-8479-9ed2ef8238e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="eval">
+      <UniqueIdentifier>{d2a6f069-4272-41df-abc7-ae5a4eed982d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\node\Curve.h">
@@ -52,7 +52,7 @@
       <Filter>nodes\geometry\primitive</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\Evaluator.h">
-      <Filter>system</Filter>
+      <Filter>eval</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Sphere.h">
       <Filter>nodes\geometry\primitive</Filter>
@@ -97,9 +97,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Sort.h">
       <Filter>nodes\geometry\attribute</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\Expression.h">
-      <Filter>system</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Switch.h">
       <Filter>nodes\geometry\utility</Filter>
@@ -160,15 +157,11 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\EvalContext.h">
       <Filter>eval</Filter>
-      <Filter>system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\source\RegistRTTR.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
-      <Filter>system</Filter>
+      <Filter>eval</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Box.cpp">
       <Filter>nodes\geometry\primitive</Filter>
@@ -219,9 +212,6 @@
     <ClCompile Include="..\..\..\source\node\Curve.cpp">
       <Filter>nodes\geometry\primitive</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\Expression.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\node\Switch.cpp">
       <Filter>nodes\geometry\utility</Filter>
     </ClCompile>
@@ -265,7 +255,10 @@
       <Filter>dataset\others</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\VexFuncs.cpp">
-      <Filter>system</Filter>
+      <Filter>eval</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\RegistRTTR.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

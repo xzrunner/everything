@@ -1,5 +1,6 @@
 #include "everything/NodePropsMgr.h"
 #include "everything/Evaluator.h"
+#include "everything/EvalContext.h"
 
 namespace evt
 {
@@ -116,13 +117,53 @@ void NodeProp::Clear()
     m_to.clear();
 }
 
-void NodeProp::Update(const Evaluator& eval)
+void NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
 {
     if (!m_dirty || m_expr.empty()) {
         return;
     }
 
-    m_val = eval.CalcExpr(m_expr);
+    auto val = eval.CalcExpr(m_expr, EvalContext(eval, *node));
+    if (val.type == m_val.type)
+    {
+        m_val = val;
+    }
+    else
+    {
+        switch (m_val.type)
+        {
+        case VariableType::Int:
+        {
+            switch (val.type)
+            {
+            case VariableType::Float:
+                m_val.i = static_cast<int>(val.f);
+                break;
+            default:
+                assert(0);
+                return;
+            }
+        }
+            break;
+        case VariableType::Float:
+        {
+            switch (val.type)
+            {
+            case VariableType::Int:
+                m_val.f = static_cast<float>(val.i);
+                break;
+            default:
+                assert(0);
+                return;
+            }
+        }
+            break;
+        default:
+            assert(0);
+            return;
+        }
+    }
+
     m_dirty = false;
 }
 

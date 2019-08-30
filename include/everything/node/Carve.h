@@ -12,7 +12,23 @@ namespace node
 class Carve : public Node
 {
 public:
+    enum PropID
+    {
+        FIRST_U,
+        SECOND_U,
+        FIRST_V,
+        SECOND_V,
+
+        MAX_BUILD_IN_PROP,
+    };
+
+    static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
+        "domainu1", "domainu2", "domainv1", "domainv2"
+    };
+
+public:
     Carve()
+        : Node(MAX_BUILD_IN_PROP)
     {
         m_imports = {
             {{ NodeVarType::Any, "in" }}
@@ -20,6 +36,8 @@ public:
         m_exports = {
             {{ NodeVarType::Any, "out" }},
         };
+
+        InitProps();
     }
 
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
@@ -30,10 +48,7 @@ public:
     void SetSecondV(float v);
 
 private:
-    float m_first_u  = 0;
-    float m_second_u = 1;
-    float m_first_v  = 0;
-    float m_second_v = 1;
+    void InitProps();
 
     RTTR_ENABLE(Node)
 

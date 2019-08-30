@@ -14,7 +14,6 @@
     <ClInclude Include="..\..\..\include\everything\EvalContext.h" />
     <ClInclude Include="..\..\..\include\everything\Evaluator.h" />
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
-    <ClInclude Include="..\..\..\include\everything\Expression.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAdaptor.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAttribute.h" />
@@ -55,7 +54,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
     <ClCompile Include="..\..\..\source\Everything.cpp" />
-    <ClCompile Include="..\..\..\source\Expression.cpp" />
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />

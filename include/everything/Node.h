@@ -40,7 +40,9 @@ public:
     void SetParent(const std::shared_ptr<Node>& node);
     auto GetParent() const { return m_parent.lock(); }
 
-    auto& GetProps() { return m_props; }
+    auto& GetProps() const { return m_props; }
+
+    auto GetLevel() const { return m_level; }
 
 public:
     struct PortAddr

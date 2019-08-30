@@ -84,4 +84,20 @@ TEST_CASE("carve")
         test::check_pos(carve, 1, sm::vec3(0, 5, 0));
         test::check_pos(carve, 2, sm::vec3(0, 6, 0));
     }
+
+    SECTION("expr fit")
+    {
+        auto& props = const_cast<evt::NodePropsMgr&>(carve->GetProps());
+        REQUIRE(props.Size() == evt::node::Carve::MAX_BUILD_IN_PROP);
+
+        props.SetExpr(evt::node::Carve::FIRST_U,  "fit(3, 0, 10, 0, 1)");
+        props.SetExpr(evt::node::Carve::SECOND_U, "1 - ch(\"domainu1\")");
+
+        eval.Update();
+
+        test::check_points_num(carve, 3);
+        test::check_pos(carve, 0, sm::vec3(0, 3, 0));
+        test::check_pos(carve, 1, sm::vec3(0, 5, 0));
+        test::check_pos(carve, 2, sm::vec3(0, 7, 0));
+    }
 }

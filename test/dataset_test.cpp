@@ -12,10 +12,14 @@ TEST_CASE("node prop")
 {
     test::init();
 
-    auto box = std::make_shared<evt::node::Box>();
-    box->Execute(evt::TreeContext());
+    evt::Evaluator eval;
 
-    auto& props = box->GetProps();
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    eval.Update();
+
+    auto& props = const_cast<evt::NodePropsMgr&>(box->GetProps());
 
     REQUIRE(props.Size() == evt::node::Box::MAX_BUILD_IN_PROP);
 
@@ -58,15 +62,18 @@ TEST_CASE("parent node prop")
 
     evt::node::Geometry::AddChild(geo, box);
 
-    geo->GetProps().Add("BoxLength", evt::Variable(8));
-    geo->GetProps().Add("BoxWidth",  evt::Variable(5));
-    geo->GetProps().Add("BoxHeight", evt::Variable(3));
+    auto& geo_props = const_cast<evt::NodePropsMgr&>(geo->GetProps());
+    geo_props.Add("BoxLength", evt::Variable(8));
+    geo_props.Add("BoxWidth",  evt::Variable(5));
+    geo_props.Add("BoxHeight", evt::Variable(3));
 
-    auto& box_props = box->GetProps();
+    auto& box_props = const_cast<evt::NodePropsMgr&>(box->GetProps());
     box_props.SetExpr(evt::node::Box::SIZE_X, "ch(\"../BoxLength\")");
     box_props.SetExpr(evt::node::Box::SIZE_Y, "ch(\"../BoxHeight\")");
     box_props.SetExpr(evt::node::Box::SIZE_Z, "ch(\"../BoxWidth\")");
     box_props.SetExpr(evt::node::Box::POS_Y,  "ch(\"sizey\")/2");
 
     eval.Update();
+
+    test::check_aabb(box, sm::vec3(-4, 0, -2.5f), sm::vec3(4, 3, 2.5f));
 }

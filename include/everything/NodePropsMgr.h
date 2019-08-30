@@ -23,7 +23,7 @@ public:
 
     void Clear();
 
-    void Update(const Evaluator& eval);
+    void Update(const Evaluator& eval, const std::shared_ptr<Node>& node);
 
 private:
     std::string m_key;
