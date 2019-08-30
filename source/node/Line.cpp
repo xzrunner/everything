@@ -7,7 +7,7 @@ namespace evt
 namespace node
 {
 
-void Line::Execute(TreeContext& ctx)
+void Line::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Polyline);
     BuildModel();

@@ -9,7 +9,7 @@ namespace evt
 namespace node
 {
 
-void GroupCreate::Execute(TreeContext& ctx)
+void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 

@@ -1,5 +1,6 @@
 #include "everything/Evaluator.h"
 #include "everything/TreeContext.h"
+#include "everything/EvalContext.h"
 
 #include <vexc/EvalAST.h>
 #include <vexc/Parser.h>
@@ -140,11 +141,11 @@ void Evaluator::MakeDirty()
     }
 }
 
-Variable Evaluator::CalcExpr(const std::string& str) const
+Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) const
 {
     vexc::Parser parser(str.c_str());
     auto expr = vexc::ast::ExpressionParser::ParseExpression(parser);
-    auto val = vexc::EvalExpression(expr);
+    auto val = vexc::EvalExpression(expr, &ctx);
     switch (val.type)
     {
     case vexc::VarType::Bool:
@@ -170,7 +171,7 @@ void Evaluator::UpdateProps()
 
     for (auto& node : m_nodes_sorted) {
         for (auto& prop : node->GetProps().GetProps()) {
-            const_cast<NodeProp&>(prop).Update(*this);
+            const_cast<NodeProp&>(prop).Update(*this, node);
         }
     }
 }
@@ -209,7 +210,7 @@ void Evaluator::UpdateNodes()
         }
 
         if (node->IsDirty()) {
-            node->Execute(ctx);
+            node->Execute(*this, ctx);
             node->SetDirty(false);
         }
 

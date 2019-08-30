@@ -6,7 +6,7 @@ namespace evt
 namespace node
 {
 
-void Blast::Execute(TreeContext& ctx)
+void Blast::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 

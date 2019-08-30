@@ -20,7 +20,7 @@ public:
     Node(size_t build_in_count = 0);
 //    Node(const std::string& name);
 
-    virtual void Execute(TreeContext& ctx) = 0;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) = 0;
     virtual void UpdateContext(TreeContext& ctx) {}
 
     virtual void AddInputPorts(size_t num) {}

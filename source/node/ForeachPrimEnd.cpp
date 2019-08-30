@@ -13,7 +13,7 @@ namespace evt
 namespace node
 {
 
-void ForeachPrimEnd::Execute(TreeContext& ctx)
+void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
 {
     std::vector<NodePtr> nodes;
     auto begin = FindForeachBegin(nodes);
@@ -29,9 +29,9 @@ void ForeachPrimEnd::Execute(TreeContext& ctx)
     m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
 
     // closure
-    Evaluator eval;
+    Evaluator sub_eval;
     for (auto& n : nodes) {
-        eval.AddNode(n);
+        sub_eval.AddNode(n);
     }
 
     // foreach prim
@@ -44,8 +44,8 @@ void ForeachPrimEnd::Execute(TreeContext& ctx)
         GeoAttrHelper::GenAttrFromPrim(b_attr, prev_attr, i);
         b_geo->UpdateByAttr();
 
-        eval.MakeDirty();
-        eval.Update();
+        sub_eval.MakeDirty();
+        sub_eval.Update();
 
         auto e_prev_geo = GetInputGeo(0);
         if (e_prev_geo) {

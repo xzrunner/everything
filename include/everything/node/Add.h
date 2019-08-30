@@ -22,7 +22,7 @@ public:
         };
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
     void SetPoints(const std::vector<sm::vec3>& points);
 

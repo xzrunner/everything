@@ -6,11 +6,11 @@ namespace evt
 namespace node
 {
 
-void Geometry::Execute(TreeContext& ctx)
+void Geometry::Execute(Evaluator& eval, TreeContext& ctx)
 {
     for (auto& c : m_children) {
         if (NodeHelper::IsRoot(*c)) {
-            c->Execute(ctx);
+            c->Execute(eval, ctx);
         }
     }
 }

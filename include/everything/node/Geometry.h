@@ -22,7 +22,7 @@ public:
         };
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
     static void AddChild(const std::shared_ptr<Geometry>& parent,
         const std::shared_ptr<Node>& child);

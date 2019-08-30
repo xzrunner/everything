@@ -6,7 +6,7 @@ namespace evt
 namespace node
 {
 
-void Sphere::Execute(TreeContext& ctx)
+void Sphere::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
     BuildModel();

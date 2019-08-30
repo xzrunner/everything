@@ -44,7 +44,7 @@ public:
         InitProps();
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
     void SetSize(const sm::vec3& size);
     void SetCenter(const sm::vec3& center);

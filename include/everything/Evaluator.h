@@ -9,7 +9,7 @@
 namespace evt
 {
 
-class Node;
+struct EvalContext;
 
 class Evaluator
 {
@@ -31,7 +31,7 @@ public:
 
     void MakeDirty();
 
-    Variable CalcExpr(const std::string& expr) const;
+    Variable CalcExpr(const std::string& expr, const EvalContext& ctx) const;
 
 private:
     void UpdateProps();

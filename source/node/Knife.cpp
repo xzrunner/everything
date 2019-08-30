@@ -10,7 +10,7 @@ namespace evt
 namespace node
 {
 
-void Knife::Execute(TreeContext& ctx)
+void Knife::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 

@@ -10,7 +10,7 @@ namespace evt
 namespace node
 {
 
-void Boolean::Execute(TreeContext& ctx)
+void Boolean::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 

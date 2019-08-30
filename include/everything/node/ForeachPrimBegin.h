@@ -12,7 +12,7 @@ class ForeachPrimBegin : public Node
 public:
     ForeachPrimBegin();
 
-    virtual void Execute(TreeContext& ctx) override {}
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override {}
 
     RTTR_ENABLE(Node)
 

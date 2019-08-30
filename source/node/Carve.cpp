@@ -9,7 +9,7 @@ namespace evt
 namespace node
 {
 
-void Carve::Execute(TreeContext& ctx)
+void Carve::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 

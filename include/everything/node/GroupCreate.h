@@ -31,7 +31,7 @@ public:
         };
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
     virtual void UpdateContext(TreeContext& ctx) override;
 
     void  SetName(const std::string& name);

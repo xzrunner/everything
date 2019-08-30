@@ -6,7 +6,7 @@ namespace evt
 namespace node
 {
 
-void Merge::Execute(TreeContext& ctx)
+void Merge::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
 

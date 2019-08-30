@@ -19,7 +19,7 @@ public:
         };
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
     void SetOrigin(const sm::vec3& ori);
     void SetDirection(const sm::vec3& dir);

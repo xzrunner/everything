@@ -21,7 +21,7 @@ public:
         };
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
     virtual void AddInputPorts(size_t num) override;
 

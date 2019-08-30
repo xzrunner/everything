@@ -9,7 +9,7 @@ namespace evt
 namespace node
 {
 
-void Box::Execute(TreeContext& ctx)
+void Box::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
     BuildModel();

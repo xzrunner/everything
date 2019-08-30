@@ -21,7 +21,7 @@ public:
         };
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
     void SetGroupName(const std::string& name) { m_group_name = name; }
 

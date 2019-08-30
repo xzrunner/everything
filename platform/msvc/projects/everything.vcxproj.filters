@@ -156,6 +156,10 @@
       <Filter>dataset\others</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\VexFuncs.h">
+      <Filter>eval</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\EvalContext.h">
+      <Filter>eval</Filter>
       <Filter>system</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,17 +1,18 @@
 #include "everything/node/PolyExtrude.h"
 #include "everything/GeometryImpl.h"
 #include "everything/GeoAttrHelper.h"
+#include "everything/NodeHelper.h"
 
 namespace evt
 {
 namespace node
 {
 
-void PolyExtrude::Execute(TreeContext& ctx)
+void PolyExtrude::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    auto prev_geo = GetInputGeo(0);
+    auto prev_geo = NodeHelper::GetInputGeo(*this, 0);
     if (!prev_geo) {
         return;
     }

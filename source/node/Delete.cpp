@@ -7,7 +7,7 @@ namespace evt
 namespace node
 {
 
-void Delete::Execute(TreeContext& ctx)
+void Delete::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 

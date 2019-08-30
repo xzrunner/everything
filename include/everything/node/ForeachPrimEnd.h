@@ -21,7 +21,7 @@ public:
         };
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
 private:
     NodePtr FindForeachBegin(std::vector<NodePtr>& nodes) const;

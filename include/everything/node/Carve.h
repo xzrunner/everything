@@ -22,7 +22,7 @@ public:
         };
     }
 
-    virtual void Execute(TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
     void SetFirstU(float u);
     void SetSecondU(float u);
