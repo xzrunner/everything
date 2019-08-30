@@ -25,26 +25,37 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
 
     switch (m_group_type)
     {
+    case GroupType::Points:
+    {
+        auto& attr = m_geo_impl->GetAttr();
+        auto& old_pts = attr.GetPoints();
+
+        std::vector<bool> del_flags;
+        SetupDelFlags(*group, old_pts.size(), del_flags);
+
+        std::vector<std::shared_ptr<GeoAttribute::Point>> new_pts;
+        assert(del_flags.size() == old_pts.size());
+        for (size_t i = 0, n = del_flags.size(); i < n; ++i) {
+            if (!del_flags[i]) {
+                new_pts.push_back(old_pts[i]);
+            }
+        }
+        if (new_pts.size() != old_pts.size())
+        {
+            attr.Clear();
+            attr.SetPoints(new_pts);
+            m_geo_impl->UpdateByAttr();
+        }
+    }
+        break;
+
     case GroupType::Primitives:
     {
         auto& attr = m_geo_impl->GetAttr();
         auto& old_prims = attr.GetPrimtives();
 
         std::vector<bool> del_flags;
-        if (m_delete_non_selected)
-        {
-            del_flags.resize(old_prims.size(), true);
-            for (auto& f : group->items) {
-                del_flags[f] = false;
-            }
-        }
-        else
-        {
-            del_flags.resize(old_prims.size(), false);
-            for (auto& f : group->items) {
-                del_flags[f] = true;
-            }
-        }
+        SetupDelFlags(*group, old_prims.size(), del_flags);
 
         std::vector<std::shared_ptr<GeoAttribute::Primitive>> new_prims;
         assert(del_flags.size() == old_prims.size());
@@ -57,9 +68,8 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
             attr.SetPrimtives(new_prims);
             m_geo_impl->UpdateByAttr();
         }
-
-        break;
     }
+        break;
     }
 }
 
@@ -83,6 +93,25 @@ void Blast::SetDeleteNonSelected(bool del_non_selected)
     m_delete_non_selected = del_non_selected;
 
     SetDirty(true);
+}
+
+void Blast::SetupDelFlags(const Group& group, size_t count,
+                          std::vector<bool>& del_flags) const
+{
+    if (m_delete_non_selected)
+    {
+        del_flags.resize(count, true);
+        for (auto& f : group.items) {
+            del_flags[f] = false;
+        }
+    }
+    else
+    {
+        del_flags.resize(count, false);
+        for (auto& f : group.items) {
+            del_flags[f] = true;
+        }
+    }
 }
 
 }

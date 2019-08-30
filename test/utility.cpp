@@ -88,6 +88,22 @@ void init()
     }
 }
 
+sm::vec3 get_pos(const evt::NodePtr& node, size_t idx)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+
+    sm::vec3 ret;
+    ret.MakeInvalid();
+    for (auto& p : geo->GetAttr().GetPoints()) {
+        if (p->order == idx) {
+            ret = p->pos;
+        }
+    }
+
+    return ret;
+}
+
 void check_aabb(const evt::NodePtr& node, const sm::vec3& min, const sm::vec3& max)
 {
     auto sn = node->GetGeometry()->GetNode();

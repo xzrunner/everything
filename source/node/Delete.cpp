@@ -1,6 +1,8 @@
 #include "everything/node/Delete.h"
 #include "everything/GeometryImpl.h"
 #include "everything/GeoShape.h"
+#include "everything/Evaluator.h"
+#include "everything/EvalContext.h"
 #include "everything/NodeHelper.h"
 
 namespace evt
@@ -24,11 +26,18 @@ void Delete::Execute(Evaluator& eval, TreeContext& ctx)
     auto prev_geo = prev_node->GetGeometry();
 
     std::vector<sm::vec3> vertices;
-    for (auto& p : prev_geo->GetAttr().GetPoints()) {
-        if (m_exp.Calc(p->pos)) {
-            vertices.push_back(p->pos);
+    EvalContext eval_ctx(eval, *prev_node);
+    const auto& src_pts = prev_geo->GetAttr().GetPoints();
+    for (int i = 0, n = src_pts.size(); i < n; ++i)
+    {
+        eval_ctx.point_idx = i;
+        auto v = eval.CalcExpr(m_filter_expr, eval_ctx);
+        assert(v.type == VariableType::Bool);
+        if (v.b) {
+            vertices.push_back(src_pts[i]->pos);
         }
     }
+
     if (!vertices.empty()) {
         m_geo_impl = std::make_shared<GeometryImpl>(GeoPoints(vertices));
     }
@@ -56,14 +65,13 @@ void Delete::SetEntityType(EntityType type)
     SetDirty(true);
 }
 
-void Delete::SetFilterExp(const std::string& exp)
+void Delete::SetFilterExpr(const std::string& expr)
 {
-    if (m_filter_exp == exp) {
+    if (m_filter_expr == expr) {
         return;
     }
 
-    m_filter_exp = exp;
-    m_exp.Reset(exp);
+    m_filter_expr = expr;
 
     SetDirty(true);
 }

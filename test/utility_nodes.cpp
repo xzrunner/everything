@@ -136,7 +136,7 @@ TEST_CASE("foreach primitive")
     evt::make_connecting({ btm_face_blast, 0 }, { foreach_begin, 0 });
 
     auto del = std::make_shared<evt::node::Delete>();
-    del->SetFilterExp("@P.y > 0");
+    del->SetFilterExpr("@P.y > 0");
     eval.AddNode(del);
 
     evt::make_connecting({ foreach_begin, 0 }, { del, 0 });
@@ -186,33 +186,57 @@ TEST_CASE("group_create")
 
     auto group = std::make_shared<evt::node::GroupCreate>();
     group->SetName("test");
-    group->EnableKeepByNormals(sm::vec3(0, 0, 1), 10);
     eval.AddNode(group);
 
     eval.Connect({ box0, 0 }, { group, 0 });
 
-    auto box1 = std::make_shared<evt::node::Box>();
-    const sm::vec3 pos1(-5, 0, 0);
-    box1->SetCenter(pos1);
-    eval.AddNode(box1);
+    SECTION("base group")
+    {
+        group->SetType(evt::GroupType::Points);
+        group->EnableBaseGroup("@P.y < 0");
 
-    auto merge = std::make_shared<evt::node::Merge>();
-    eval.AddNode(merge);
-    eval.Connect({ group, 0 }, { merge, 0 });
-    eval.Connect({ box1, 0 }, { merge, 1 });
+        auto blast = std::make_shared<evt::node::Blast>();
+        blast->SetGroupName("test");
+        blast->SetGroupType(evt::GroupType::Points);
+        blast->SetDeleteNonSelected(true);
+        eval.AddNode(blast);
 
-    auto extrude = std::make_shared<evt::node::PolyExtrude>();
-    extrude->SetGroupName("test");
-    extrude->SetDistance(5);
-    eval.AddNode(extrude);
-    eval.Connect({ merge, 0 }, { extrude, 0 });
+        eval.Connect({ group, 0 }, { blast, 0 });
 
-    eval.Update();
+        eval.Update();
 
-    test::check_points_num(merge, 16);
-    test::check_faces_num(merge, 12);
+        test::check_points_num(blast, 4);
+        test::get_pos(blast, 3).y < 0;
+    }
 
-    test::check_aabb(extrude, sm::vec3(-5.5f, -0.5f, -0.5f), sm::vec3(5.5f, 0.5f, 5.5f));
+    SECTION("keey by normal")
+    {
+        group->SetType(evt::GroupType::Primitives);
+        group->EnableKeepByNormals(sm::vec3(0, 0, 1), 10);
+
+        auto box1 = std::make_shared<evt::node::Box>();
+        const sm::vec3 pos1(-5, 0, 0);
+        box1->SetCenter(pos1);
+        eval.AddNode(box1);
+
+        auto merge = std::make_shared<evt::node::Merge>();
+        eval.AddNode(merge);
+        eval.Connect({ group, 0 }, { merge, 0 });
+        eval.Connect({ box1, 0 }, { merge, 1 });
+
+        auto extrude = std::make_shared<evt::node::PolyExtrude>();
+        extrude->SetGroupName("test");
+        extrude->SetDistance(5);
+        eval.AddNode(extrude);
+        eval.Connect({ merge, 0 }, { extrude, 0 });
+
+        eval.Update();
+
+        test::check_points_num(merge, 16);
+        test::check_faces_num(merge, 12);
+
+        test::check_aabb(extrude, sm::vec3(-5.5f, -0.5f, -0.5f), sm::vec3(5.5f, 0.5f, 5.5f));
+    }
 }
 
 TEST_CASE("merge")

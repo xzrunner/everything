@@ -34,7 +34,7 @@ public:
 
     void SetEntityType(EntityType type);
 
-    void SetFilterExp(const std::string& exp);
+    void SetFilterExpr(const std::string& expr);
 
 private:
     bool m_delete_non_selected = false;

@@ -22,7 +22,7 @@ TEST_CASE("delete")
     eval.AddNode(box);
 
     auto del = std::make_shared<evt::node::Delete>();
-    del->SetFilterExp("@P.y < 0");
+    del->SetFilterExpr("@P.y < 0");
     eval.AddNode(del);
 
     eval.Connect({ box, 0 }, { del, 0 });

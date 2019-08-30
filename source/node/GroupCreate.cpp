@@ -2,6 +2,8 @@
 #include "everything/GeometryImpl.h"
 #include "everything/GeoAttrHelper.h"
 #include "everything/NodeHelper.h"
+#include "everything/EvalContext.h"
+#include "everything/Evaluator.h"
 
 #include <SM_Calc.h>
 
@@ -25,8 +27,9 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
     group->name = m_name;
     m_geo_impl->AddGroup(group);
 
-    // insert selected to brush part
-    if (m_keep_by_normals) {
+    if (m_base_group) {
+        SelectByBaseExpr(eval, *group);
+    } else if (m_keep_by_normals) {
         SelectByNormals(*group);
     }
 }
@@ -58,6 +61,30 @@ void GroupCreate::SetType(GroupType type)
     SetDirty(true);
 }
 
+void GroupCreate::EnableBaseGroup(const std::string& expr)
+{
+    if (m_base_group &&
+        m_base_group_expr == expr) {
+        return;
+    }
+
+    m_base_group      = true;
+    m_base_group_expr = expr;
+
+    SetDirty(true);
+}
+
+void GroupCreate::DisableBaseGroup()
+{
+    if (!m_base_group) {
+        return;
+    }
+
+    m_base_group = false;
+
+    SetDirty(true);
+}
+
 void GroupCreate::EnableKeepByNormals(const sm::vec3& direction, float spread_angle)
 {
     if (m_keep_by_normals &&
@@ -82,6 +109,28 @@ void GroupCreate::DisableKeepByNormals()
     m_keep_by_normals = false;
 
     SetDirty(true);
+}
+
+void GroupCreate::SelectByBaseExpr(Evaluator& eval, Group& group)
+{
+    switch (m_type)
+    {
+    case GroupType::Points:
+    {
+        EvalContext eval_ctx(eval, *this);
+        auto& pts = m_geo_impl->GetAttr().GetPoints();
+        for (size_t i = 0, n = pts.size(); i < n; ++i)
+        {
+            eval_ctx.point_idx = i;
+            auto v = eval.CalcExpr(m_base_group_expr, eval_ctx);
+            assert(v.type == VariableType::Bool);
+            if (v.b) {
+                group.items.push_back(i);
+            }
+        }
+    }
+        break;
+    }
 }
 
 void GroupCreate::SelectByNormals(Group& group)

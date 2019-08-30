@@ -13,6 +13,8 @@ namespace test
 
 void init();
 
+sm::vec3 get_pos(const evt::NodePtr& node, size_t idx);
+
 void check_aabb(const evt::NodePtr& node, const sm::vec3& min, const sm::vec3& max);
 void check_pos(const evt::NodePtr& node, size_t idx, const sm::vec3& pos);
 

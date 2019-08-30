@@ -39,16 +39,26 @@ public:
 
     void SetType(GroupType type);
 
+    // base group
+    void EnableBaseGroup(const std::string& expr);
+    void DisableBaseGroup();
+
+    // keep by normal
     void EnableKeepByNormals(const sm::vec3& direction, float spread_angle);
     void DisableKeepByNormals();
 
 private:
+    void SelectByBaseExpr(Evaluator& eval, Group& group);
     void SelectByNormals(Group& group);
 
 private:
     std::string m_name;
 
     GroupType m_type = GroupType::Primitives;
+
+    // base group
+    bool m_base_group = false;
+    std::string m_base_group_expr;
 
     // keep by normals
     bool     m_keep_by_normals = false;
