@@ -61,15 +61,12 @@ public:
 
     void Clear();
 
-    auto& GetPoints() { return m_points; }
     auto& GetPoints() const { return m_points; }
     void  SetPoints(const std::vector<std::shared_ptr<Point>>& points);
 
-    auto& GetVertices() { return m_vertices; }
     auto& GetVertices() const { return m_vertices; }
     void  SetVertices(const std::vector<std::shared_ptr<Vertex>>& vertices);
 
-    auto& GetPrimtives() { return m_primtives; }
     auto& GetPrimtives() const { return m_primtives; }
     void  SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& prims);
 
