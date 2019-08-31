@@ -219,4 +219,54 @@ TEST_CASE("group_expression")
             REQUIRE((pos.y < 0 && pos.x >= 0));
         }
     }
+
+    SECTION("getbbox_max")
+    {
+        evt::node::GroupExpression::Instance inst;
+        inst.group_name = "test0";
+        inst.expr_str = "@P.y==getbbox_max(0).y";
+        inst.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        group_expr->AddInstance(inst);
+
+        auto blast = std::make_shared<evt::node::Blast>();
+        blast->SetGroupName("test0");
+        blast->SetGroupType(evt::GroupType::Points);
+        blast->SetDeleteNonSelected(true);
+        eval.AddNode(blast);
+
+        eval.Connect({ group_expr, 0 }, { blast, 0 });
+
+        eval.Update();
+
+        test::check_points_num(blast, 4);
+        for (int i = 0; i < 4; ++i) {
+            auto pos = test::get_pos(blast, i);
+            REQUIRE(pos.y == Approx(0.5f));
+        }
+    }
+
+    SECTION("getbbox_min")
+    {
+        evt::node::GroupExpression::Instance inst;
+        inst.group_name = "test0";
+        inst.expr_str = "@P.y==getbbox_min(0).y";
+        inst.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        group_expr->AddInstance(inst);
+
+        auto blast = std::make_shared<evt::node::Blast>();
+        blast->SetGroupName("test0");
+        blast->SetGroupType(evt::GroupType::Points);
+        blast->SetDeleteNonSelected(true);
+        eval.AddNode(blast);
+
+        eval.Connect({ group_expr, 0 }, { blast, 0 });
+
+        eval.Update();
+
+        test::check_points_num(blast, 4);
+        for (int i = 0; i < 4; ++i) {
+            auto pos = test::get_pos(blast, i);
+            REQUIRE(pos.y == Approx(-0.5f));
+        }
+    }
 }

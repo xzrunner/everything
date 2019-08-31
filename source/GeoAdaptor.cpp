@@ -273,6 +273,8 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
             dst.m_primtives.push_back(prim);
         }
     }
+
+    dst.SetupAABB();
 }
 
 void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)

@@ -21,9 +21,14 @@
     <ClCompile Include="..\..\..\test\utility_nodes.cpp">
       <Filter>nodes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test\dataset_test.cpp" />
     <ClCompile Include="..\..\..\test\group_nodes.cpp">
       <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\dataset_test.cpp">
+      <Filter>others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\funcs_test.cpp">
+      <Filter>others</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +37,9 @@
   <ItemGroup>
     <Filter Include="nodes">
       <UniqueIdentifier>{c618578f-6d7c-4274-af2e-2181a3bfba41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="others">
+      <UniqueIdentifier>{910e6277-f04f-49ec-8004-fd311e90f75a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

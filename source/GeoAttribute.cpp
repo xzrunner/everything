@@ -86,6 +86,8 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     m_attr_prim   = attr.m_attr_prim;
     m_attr_detail = attr.m_attr_detail;
 
+    SetupAABB();
+
     return *this;
 }
 
@@ -99,11 +101,15 @@ void GeoAttribute::Clear()
     m_attr_vertex.Clear();
     m_attr_prim.Clear();
     m_attr_detail.Clear();
+
+    m_aabb.MakeEmpty();
 }
 
 void GeoAttribute::SetPoints(const std::vector<std::shared_ptr<Point>>& points)
 {
     m_points = points;
+
+    SetupAABB();
 
     ResetPointsOrder();
 }
@@ -204,6 +210,16 @@ void GeoAttribute::FromGeoShape(const GeoShape& shape)
         }
     }
         break;
+    }
+
+    SetupAABB();
+}
+
+void GeoAttribute::SetupAABB()
+{
+    m_aabb.MakeEmpty();
+    for (auto& p : m_points) {
+        m_aabb.Combine(p->pos);
     }
 }
 

@@ -2,6 +2,8 @@
 
 #include "everything/Variable.h"
 
+#include "SM_Cube.h"
+
 #include <vector>
 
 #include <boost/noncopyable.hpp>
@@ -77,6 +79,11 @@ public:
 
     void FromGeoShape(const GeoShape& shape);
 
+    auto& GetAABB() const { return m_aabb; }
+
+private:
+    void SetupAABB();
+
 private:
     std::vector<std::shared_ptr<Point>>     m_points;
     std::vector<std::shared_ptr<Vertex>>    m_vertices;
@@ -87,6 +94,8 @@ private:
     AttrList m_attr_vertex;
     AttrList m_attr_prim;
     AttrList m_attr_detail;
+
+    sm::cube m_aabb;
 
     friend class GeoAdaptor;
 
