@@ -43,6 +43,9 @@
     <Filter Include="eval">
       <UniqueIdentifier>{d2a6f069-4272-41df-abc7-ae5a4eed982d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nodes\geometry\group">
+      <UniqueIdentifier>{fffed165-0a5e-44cf-987f-706769cbea8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\node\Curve.h">
@@ -72,9 +75,6 @@
       <Filter>nodes\geometry\polygon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Blast.h">
-      <Filter>nodes\geometry\utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\node\GroupCreate.h">
       <Filter>nodes\geometry\utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Boolean.h">
@@ -158,6 +158,12 @@
     <ClInclude Include="..\..\..\include\everything\EvalContext.h">
       <Filter>eval</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\GroupCreate.h">
+      <Filter>nodes\geometry\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\GroupExpression.h">
+      <Filter>nodes\geometry\group</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -172,9 +178,6 @@
     <ClCompile Include="..\..\..\source\Everything.cpp" />
     <ClCompile Include="..\..\..\source\node\Transform.cpp">
       <Filter>nodes\geometry\manipulate</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\node\GroupCreate.cpp">
-      <Filter>nodes\geometry\utility</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Blast.cpp">
       <Filter>nodes\geometry\utility</Filter>
@@ -259,6 +262,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\GroupCreate.cpp">
+      <Filter>nodes\geometry\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\GroupExpression.cpp">
+      <Filter>nodes\geometry\group</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

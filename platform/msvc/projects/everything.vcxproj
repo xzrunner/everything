@@ -29,6 +29,7 @@
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimBegin.h" />
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimEnd.h" />
     <ClInclude Include="..\..\..\include\everything\node\Geometry.h" />
+    <ClInclude Include="..\..\..\include\everything\node\GroupExpression.h" />
     <ClInclude Include="..\..\..\include\everything\node\Knife.h" />
     <ClInclude Include="..\..\..\include\everything\node\Line.h" />
     <ClInclude Include="..\..\..\include\everything\node\Sort.h" />
@@ -74,6 +75,7 @@
     <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp" />
     <ClCompile Include="..\..\..\source\node\Geometry.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
+    <ClCompile Include="..\..\..\source\node\GroupExpression.cpp" />
     <ClCompile Include="..\..\..\source\node\Knife.cpp" />
     <ClCompile Include="..\..\..\source\node\Line.cpp" />
     <ClCompile Include="..\..\..\source\node\Merge.cpp" />

@@ -126,6 +126,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\test\attribute_nodes.cpp" />
     <ClCompile Include="..\..\..\test\dataset_test.cpp" />
+    <ClCompile Include="..\..\..\test\group_nodes.cpp" />
     <ClCompile Include="..\..\..\test\manipulate_nodes.cpp" />
     <ClCompile Include="..\..\..\test\nurbs_nodes.cpp" />
     <ClCompile Include="..\..\..\test\main.cpp" />

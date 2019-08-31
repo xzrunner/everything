@@ -22,6 +22,9 @@
       <Filter>nodes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\test\dataset_test.cpp" />
+    <ClCompile Include="..\..\..\test\group_nodes.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\test\utility.h" />
