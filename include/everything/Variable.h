@@ -15,6 +15,7 @@ enum class VariableType
     Int,
     Float,
     Float3,
+    Double,
     String,
 };
 
@@ -25,23 +26,24 @@ public:
     explicit Variable(bool b);
     explicit Variable(int  i);
     explicit Variable(float f);
-    explicit Variable(const sm::vec3& f3);
+    explicit Variable(double d);
     explicit Variable(const std::string& str);
+    explicit Variable(const sm::vec3& v3);
     Variable(const Variable& var);
     Variable& operator = (const Variable& var);
     ~Variable();
 
     bool operator == (const Variable& var) const;
 
-    VariableType type;
+    VariableType type = VariableType::Invalid;
 
     union
     {
-        bool     b;
-        int      i;
-        float    f;
-        sm::vec3 f3;
-        char*    c = nullptr;
+        bool   b;
+        int    i;
+        float  f;
+        double d;
+        const void* p = nullptr;
     };
 
 }; // Variable

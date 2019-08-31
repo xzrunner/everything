@@ -179,10 +179,17 @@ void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Var
         REQUIRE(find.f == Approx(val.f));
         break;
     case evt::VariableType::Float3:
-        REQUIRE(find.f3 == val.f3);
+    {
+        auto v0 = static_cast<const float*>(find.p);
+        auto v1 = static_cast<const float*>(val.p);
+        REQUIRE(v0[0] == v1[0]);
+        REQUIRE(v0[1] == v1[1]);
+        REQUIRE(v0[2] == v1[2]);
+    }
         break;
     case evt::VariableType::String:
-        REQUIRE(strcmp(find.c, val.c) == 0);
+        REQUIRE(strcmp(static_cast<const char*>(find.p),
+            static_cast<const char*>(val.p)) == 0);
         break;
     default:
         assert(0);

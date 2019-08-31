@@ -154,10 +154,18 @@ Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) con
         return Variable(val.i);
     case vexc::VarType::Float:
         return Variable(val.f);
+    case vexc::VarType::Float3:
+    {
+        auto f3 = static_cast<const float*>(val.p);
+        return Variable(sm::vec3(f3[0], f3[1], f3[2]));
+    }
     case vexc::VarType::Double:
         return Variable(static_cast<float>(val.d));
+    case vexc::VarType::String:
+        return Variable(vexc::StringPool::VoidToString(val.p));
     default:
-        return Variable(1.0f);
+        assert(0);
+        return Variable();
     }
 }
 
