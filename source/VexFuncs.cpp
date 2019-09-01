@@ -187,19 +187,10 @@ void SetupVexFuncs()
         return vexc::Variant();
     });
 
-    // OTHERS
+    // ATTRIBUTE
 
     vexc::RegistBuildInFunc("@P", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
     {
-        if (params.empty()) {
-            return vexc::Variant();
-        }
-
-        auto& p = params[0];
-        if (p.type != vexc::VarType::String) {
-            return vexc::Variant();
-        }
-
         auto ctx = static_cast<const EvalContext*>(ud);
         if (!ctx->node) {
             return vexc::Variant();
@@ -213,14 +204,49 @@ void SetupVexFuncs()
             return vexc::Variant();
         }
 
-        auto& pos = points[ctx->point_idx]->pos;
-        std::string mem(vexc::StringPool::VoidToString(p.p));
-        if (mem == "x") {
-            return vexc::Variant(pos.x);
-        } else if (mem == "y") {
-            return vexc::Variant(pos.y);
-        } else if (mem == "z") {
-            return vexc::Variant(pos.z);
+        auto v = new sm::vec3(points[ctx->point_idx]->pos);
+        return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
+    });
+
+    // DESCRIBE
+
+    vexc::RegistBuildInFunc("$SIZEX", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    {
+        auto ctx = static_cast<const EvalContext*>(ud);
+        if (!ctx->node) {
+            return vexc::Variant();
+        }
+        auto geo = ctx->node->GetGeometry();
+        if (geo) {
+            return vexc::Variant(geo->GetAttr().GetAABB().Width());
+        } else {
+            return vexc::Variant();
+        }
+    });
+
+    vexc::RegistBuildInFunc("$SIZEY", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    {
+        auto ctx = static_cast<const EvalContext*>(ud);
+        if (!ctx->node) {
+            return vexc::Variant();
+        }
+        auto geo = ctx->node->GetGeometry();
+        if (geo) {
+            return vexc::Variant(geo->GetAttr().GetAABB().Height());
+        } else {
+            return vexc::Variant();
+        }
+    });
+
+    vexc::RegistBuildInFunc("$SIZEZ", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    {
+        auto ctx = static_cast<const EvalContext*>(ud);
+        if (!ctx->node) {
+            return vexc::Variant();
+        }
+        auto geo = ctx->node->GetGeometry();
+        if (geo) {
+            return vexc::Variant(geo->GetAttr().GetAABB().Depth());
         } else {
             return vexc::Variant();
         }

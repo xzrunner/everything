@@ -127,6 +127,10 @@ void Evaluator::Update()
         return;
     }
 
+    //// fixme: prepare geo for prop: $SIZEX
+    //UpdateNodes();
+    //UpdateProps();
+
     UpdateProps();
     UpdateNodes();
 
