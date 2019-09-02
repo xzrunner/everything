@@ -15,8 +15,14 @@ namespace evt
 
 void Evaluator::AddNode(const NodePtr& node)
 {
-    assert(m_nodes_set.size() == m_nodes_sorted.size());
-    m_nodes_set.insert(node);
+    std::string name;
+    do {
+        name = "node" + std::to_string(m_next_id++);
+    } while (m_nodes_map.find(name) != m_nodes_map.end());
+    node->SetName(name);
+
+    assert(m_nodes_map.size() == m_nodes_sorted.size());
+    m_nodes_map.insert({ name, node });
     m_nodes_sorted.insert(m_nodes_sorted.begin(), node);
 
     m_dirty = true;
@@ -24,19 +30,19 @@ void Evaluator::AddNode(const NodePtr& node)
 
 void Evaluator::RemoveNode(const NodePtr& node)
 {
-    if (m_nodes_set.empty()) {
+    if (m_nodes_map.empty()) {
         return;
     }
 
-    auto itr = m_nodes_set.find(node);
-    if (itr == m_nodes_set.end()) {
+    auto itr = m_nodes_map.find(node->GetName());
+    if (itr == m_nodes_map.end()) {
         return;
     }
 
     SetTreeDirty(node);
 
-    assert(m_nodes_set.size() == m_nodes_sorted.size());
-    m_nodes_set.erase(itr);
+    assert(m_nodes_map.size() == m_nodes_sorted.size());
+    m_nodes_map.erase(itr);
     for (auto itr = m_nodes_sorted.begin(); itr != m_nodes_sorted.end(); ++itr) {
         if (*itr == node) {
             m_nodes_sorted.erase(itr);
@@ -49,12 +55,12 @@ void Evaluator::RemoveNode(const NodePtr& node)
 
 void Evaluator::ClearAllNodes()
 {
-    if (m_nodes_set.empty()) {
+    if (m_nodes_map.empty()) {
         return;
     }
 
-    assert(m_nodes_set.size() == m_nodes_sorted.size());
-    m_nodes_set.clear();
+    assert(m_nodes_map.size() == m_nodes_sorted.size());
+    m_nodes_map.clear();
     m_nodes_sorted.clear();
 
     m_dirty = true;
@@ -92,19 +98,19 @@ void Evaluator::Disconnect(const Node::PortAddr& from, const Node::PortAddr& to)
 void Evaluator::RebuildConnections(const std::vector<std::pair<Node::PortAddr, Node::PortAddr>>& conns)
 {
     // update dirty
-    for (auto& node : m_nodes_set) {
-        if (HasNodeConns(node)) {
-            SetTreeDirty(node);
+    for (auto itr : m_nodes_map) {
+        if (HasNodeConns(itr.second)) {
+            SetTreeDirty(itr.second);
         }
     }
 
     // remove conns
-    for (auto& node : m_nodes_set)
+    for (auto itr : m_nodes_map)
     {
-        for (auto& in : node->GetImports()) {
+        for (auto& in : itr.second->GetImports()) {
             const_cast<Node::Port&>(in).conns.clear();
         }
-        for (auto& out : node->GetExports()) {
+        for (auto& out : itr.second->GetExports()) {
             const_cast<Node::Port&>(out).conns.clear();
         }
     }
@@ -140,8 +146,8 @@ void Evaluator::Update()
 void Evaluator::MakeDirty()
 {
     m_dirty = true;
-    for (auto& node : m_nodes_set) {
-        node->SetDirty(true);
+    for (auto itr : m_nodes_map) {
+        itr.second->SetDirty(true);
     }
 }
 
@@ -171,6 +177,12 @@ Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) con
         assert(0);
         return Variable();
     }
+}
+
+NodePtr Evaluator::QueryNode(const std::string& name) const
+{
+    auto itr = m_nodes_map.find(name);
+    return itr == m_nodes_map.end() ? nullptr : itr->second;
 }
 
 void Evaluator::UpdateProps()
@@ -233,11 +245,13 @@ void Evaluator::UpdateNodes()
 void Evaluator::TopologicalSorting()
 {
     std::vector<NodePtr> nodes;
-    nodes.reserve(m_nodes_set.size());
-    std::copy(m_nodes_set.begin(), m_nodes_set.end(), std::back_inserter(nodes));
+    nodes.reserve(m_nodes_map.size());
+    for (auto itr : m_nodes_map) {
+        nodes.push_back(itr.second);
+    }
 
     // prepare
-    std::vector<int> in_deg(m_nodes_set.size(), 0);
+    std::vector<int> in_deg(m_nodes_map.size(), 0);
     std::vector<std::vector<int>> out_nodes(nodes.size());
     for (int i = 0, n = nodes.size(); i < n; ++i)
     {

@@ -24,11 +24,6 @@ Node::Node(size_t build_in_count)
 {
 }
 
-//Node::Node(const std::string& name)
-//    : m_name(name)
-//{
-//}
-
 void Node::SetParent(const std::shared_ptr<Node>& node)
 {
     m_parent = node;

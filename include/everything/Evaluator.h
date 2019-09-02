@@ -33,6 +33,8 @@ public:
 
     Variable CalcExpr(const std::string& expr, const EvalContext& ctx) const;
 
+    NodePtr QueryNode(const std::string& name) const;
+
 private:
     void UpdateProps();
     void UpdateNodes();
@@ -44,11 +46,13 @@ private:
     static bool HasNodeConns(const NodePtr& node);
 
 private:
-    std::set<NodePtr> m_nodes_set;
+    std::map<std::string, NodePtr> m_nodes_map;
 
     std::vector<NodePtr> m_nodes_sorted;
 
     bool m_dirty = false;
+
+    size_t m_next_id = 0;
 
 }; // Evaluator
 

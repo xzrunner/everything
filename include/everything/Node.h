@@ -18,7 +18,6 @@ class Node
 {
 public:
     Node(size_t build_in_count = 0);
-//    Node(const std::string& name);
 
     virtual void Execute(Evaluator& eval, TreeContext& ctx) = 0;
     virtual void UpdateContext(TreeContext& ctx) {}
@@ -43,6 +42,9 @@ public:
     auto& GetProps() const { return m_props; }
 
     auto GetLevel() const { return m_level; }
+
+    void SetName(const std::string& name) { m_name = name; }
+    auto& GetName() const { return m_name; }
 
 public:
     struct PortAddr
@@ -75,7 +77,7 @@ protected:
     NodePropsMgr m_props;
 
 private:
-//    std::string m_name;
+    std::string m_name;
 
     std::weak_ptr<Node> m_parent;
 
