@@ -1,3 +1,5 @@
+// base
+#include "everything/node/Geometry.h"
 // attribute
 #include "everything/node/Sort.h"
 // manipulate
@@ -31,6 +33,9 @@
 
 RTTR_REGISTRATION
 {
+
+// base
+REGIST_NODE_TYPE(Geometry)
 
 // attribute
 REGIST_NODE_TYPE(Sort)
