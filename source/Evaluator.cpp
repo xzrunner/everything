@@ -179,10 +179,34 @@ Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) con
     }
 }
 
-NodePtr Evaluator::QueryNode(const std::string& name) const
+void Evaluator::Rename(const std::string& from, const std::string& to)
 {
-    auto itr = m_nodes_map.find(name);
-    return itr == m_nodes_map.end() ? nullptr : itr->second;
+    auto itr_f = m_nodes_map.find(from);
+    if (itr_f == m_nodes_map.end()) {
+        assert(0);
+        return;
+    }
+
+    auto node = itr_f->second;
+    m_nodes_map.erase(itr_f);
+
+    auto itr_t = m_nodes_map.find(to);
+    if (itr_t == m_nodes_map.end())
+    {
+        node->SetName(to);
+    }
+    else
+    {
+        std::string fixed;
+        int idx = 0;
+        do {
+            fixed = to + std::to_string(idx++);
+        } while (m_nodes_map.find(fixed) != m_nodes_map.end());
+
+        node->SetName(fixed);
+    }
+
+    m_nodes_map.insert({ node->GetName(), node });
 }
 
 void Evaluator::UpdateProps()
