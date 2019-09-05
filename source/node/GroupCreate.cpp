@@ -24,7 +24,7 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
     auto group = std::make_shared<Group>();
-    group->name = m_name;
+    group->name = m_group_name;
     m_geo_impl->AddGroup(group);
 
     if (m_base_group) {
@@ -41,22 +41,22 @@ void GroupCreate::UpdateContext(TreeContext& ctx)
     //}
 }
 
-void GroupCreate::SetName(const std::string& name)
+void GroupCreate::SetGroupName(const std::string& name)
 {
-    if (m_name == name) {
+    if (m_group_name == name) {
         return;
     }
 
-    m_name = name;
+    m_group_name = name;
 }
 
-void GroupCreate::SetType(GroupType type)
+void GroupCreate::SetGroupType(GroupType type)
 {
-    if (m_type == type) {
+    if (m_group_type == type) {
         return;
     }
 
-    m_type = type;
+    m_group_type = type;
 
     SetDirty(true);
 }
@@ -113,7 +113,7 @@ void GroupCreate::DisableKeepByNormals()
 
 void GroupCreate::SelectByBaseExpr(Evaluator& eval, Group& group)
 {
-    switch (m_type)
+    switch (m_group_type)
     {
     case GroupType::Points:
     {
@@ -135,7 +135,7 @@ void GroupCreate::SelectByBaseExpr(Evaluator& eval, Group& group)
 
 void GroupCreate::SelectByNormals(Group& group)
 {
-    switch (m_type)
+    switch (m_group_type)
     {
     case GroupType::Primitives:
     {

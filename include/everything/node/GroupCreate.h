@@ -34,10 +34,10 @@ public:
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
     virtual void UpdateContext(TreeContext& ctx) override;
 
-    void  SetName(const std::string& name);
-    auto& GetName() const { return m_name; }
+    void  SetGroupName(const std::string& name);
+    auto& GetGroupName() const { return m_group_name; }
 
-    void SetType(GroupType type);
+    void SetGroupType(GroupType type);
 
     // base group
     void EnableBaseGroup(const std::string& expr);
@@ -52,9 +52,9 @@ private:
     void SelectByNormals(Group& group);
 
 private:
-    std::string m_name;
+    std::string m_group_name;
 
-    GroupType m_type = GroupType::Primitives;
+    GroupType m_group_type = GroupType::Primitives;
 
     // base group
     bool m_base_group = false;
