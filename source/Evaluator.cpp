@@ -15,10 +15,15 @@ namespace evt
 
 void Evaluator::AddNode(const NodePtr& node)
 {
-    std::string name;
-    do {
-        name = "node" + std::to_string(m_next_id++);
-    } while (m_nodes_map.find(name) != m_nodes_map.end());
+    auto name = node->GetName();
+    while (name.empty() || m_nodes_map.find(name) != m_nodes_map.end())
+    {
+        if (name.empty()) {
+            name = "node" + std::to_string(m_next_id++);
+        } else {
+            name = node->GetName() + std::to_string(m_next_id++);
+        }
+    }
     node->SetName(name);
 
     assert(m_nodes_map.size() == m_nodes_sorted.size());
