@@ -54,8 +54,15 @@ TEST_CASE("parent node prop")
 
     evt::Evaluator eval;
 
+    auto root = std::make_shared<evt::node::Geometry>();
+    root->SetName("root");
+    eval.AddNode(root);
+
     auto geo = std::make_shared<evt::node::Geometry>();
+    geo->SetName("geo");
     eval.AddNode(geo);
+
+    evt::node::Geometry::AddChild(root, geo);
 
     auto box = std::make_shared<evt::node::Box>();
     eval.AddNode(box);
@@ -67,13 +74,29 @@ TEST_CASE("parent node prop")
     geo_props.Add("BoxWidth",  evt::Variable(5));
     geo_props.Add("BoxHeight", evt::Variable(3));
 
-    auto& box_props = const_cast<evt::NodePropsMgr&>(box->GetProps());
-    box_props.SetExpr(evt::node::Box::SIZE_X, "ch(\"../BoxLength\")");
-    box_props.SetExpr(evt::node::Box::SIZE_Y, "ch(\"../BoxHeight\")");
-    box_props.SetExpr(evt::node::Box::SIZE_Z, "ch(\"../BoxWidth\")");
-    box_props.SetExpr(evt::node::Box::POS_Y,  "ch(\"sizey\")/2");
+    SECTION("direct props")
+    {
+        auto& box_props = const_cast<evt::NodePropsMgr&>(box->GetProps());
+        box_props.SetExpr(evt::node::Box::SIZE_X, "ch(\"../BoxLength\")");
+        box_props.SetExpr(evt::node::Box::SIZE_Y, "ch(\"../BoxHeight\")");
+        box_props.SetExpr(evt::node::Box::SIZE_Z, "ch(\"../BoxWidth\")");
+        box_props.SetExpr(evt::node::Box::POS_Y,  "ch(\"sizey\")/2");
 
-    eval.Update();
+        eval.Update();
 
-    test::check_aabb(box, sm::vec3(-4, 0, -2.5f), sm::vec3(4, 3, 2.5f));
+        test::check_aabb(box, sm::vec3(-4, 0, -2.5f), sm::vec3(4, 3, 2.5f));
+    }
+
+    SECTION("node to props")
+    {
+        auto& box_props = const_cast<evt::NodePropsMgr&>(box->GetProps());
+        box_props.SetExpr(evt::node::Box::SIZE_X, "ch(\"../../geo/BoxLength\")");
+        box_props.SetExpr(evt::node::Box::SIZE_Y, "ch(\"../../geo/BoxHeight\")");
+        box_props.SetExpr(evt::node::Box::SIZE_Z, "ch(\"../../geo/BoxWidth\")");
+        box_props.SetExpr(evt::node::Box::POS_Y,  "ch(\"sizey\")/2");
+
+        eval.Update();
+
+        test::check_aabb(box, sm::vec3(-4, 0, -2.5f), sm::vec3(4, 3, 2.5f));
+    }
 }
