@@ -25,14 +25,14 @@ TEST_CASE("group_create")
     eval.AddNode(box0);
 
     auto group = std::make_shared<evt::node::GroupCreate>();
-    group->SetName("test");
+    group->SetGroupName("test");
     eval.AddNode(group);
 
     eval.Connect({ box0, 0 }, { group, 0 });
 
     SECTION("base group")
     {
-        group->SetType(evt::GroupType::Points);
+        group->SetGroupType(evt::GroupType::Points);
         group->EnableBaseGroup("@P.y < 0");
 
         auto blast = std::make_shared<evt::node::Blast>();
@@ -53,7 +53,7 @@ TEST_CASE("group_create")
 
     SECTION("keey by normal")
     {
-        group->SetType(evt::GroupType::Primitives);
+        group->SetGroupType(evt::GroupType::Primitives);
         group->EnableKeepByNormals(sm::vec3(0, 0, 1), 10);
 
         auto box1 = std::make_shared<evt::node::Box>();
@@ -91,7 +91,7 @@ TEST_CASE("group_expression")
     eval.AddNode(box);
 
     auto group_expr = std::make_shared<evt::node::GroupExpression>();
-    group_expr->SetType(evt::GroupType::Points);
+    group_expr->SetGroupType(evt::GroupType::Points);
     eval.AddNode(group_expr);
 
     eval.Connect({ box, 0 }, { group_expr, 0 });

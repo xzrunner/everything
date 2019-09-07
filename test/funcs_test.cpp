@@ -57,7 +57,7 @@ TEST_CASE("attr")
     eval.AddNode(box);
 
     auto group_expr = std::make_shared<evt::node::GroupExpression>();
-    group_expr->SetType(evt::GroupType::Points);
+    group_expr->SetGroupType(evt::GroupType::Points);
     eval.AddNode(group_expr);
 
     eval.Connect({ box, 0 }, { group_expr, 0 });

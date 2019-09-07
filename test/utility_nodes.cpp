@@ -32,7 +32,7 @@ TEST_CASE("blast")
 
     auto group = std::make_shared<evt::node::GroupCreate>();
     const std::string name("test");
-    group->SetName(name);
+    group->SetGroupName(name);
     group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
     eval.AddNode(group);
 
@@ -106,8 +106,8 @@ TEST_CASE("foreach primitive")
 
     // cut top face
     auto top_face_group = std::make_shared<evt::node::GroupCreate>();
-    top_face_group->SetName("top_face");
-    top_face_group->SetType(evt::GroupType::Primitives);
+    top_face_group->SetGroupName("top_face");
+    top_face_group->SetGroupType(evt::GroupType::Primitives);
     top_face_group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
     eval.AddNode(top_face_group);
     evt::make_connecting({ src_box, 0 }, { top_face_group, 0 });
@@ -119,8 +119,8 @@ TEST_CASE("foreach primitive")
 
     // cut bottom face
     auto btm_face_group = std::make_shared<evt::node::GroupCreate>();
-    btm_face_group->SetName("btm_face");
-    btm_face_group->SetType(evt::GroupType::Primitives);
+    btm_face_group->SetGroupName("btm_face");
+    btm_face_group->SetGroupType(evt::GroupType::Primitives);
     btm_face_group->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
     eval.AddNode(btm_face_group);
     evt::make_connecting({ top_face_blast, 0 }, { btm_face_group, 0 });

@@ -42,7 +42,7 @@ public:
 
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
-    void SetType(GroupType type);
+    void SetGroupType(GroupType type);
 
     void AddInstance(const Instance& inst);
 
@@ -53,7 +53,7 @@ private:
         std::vector<size_t>& dst) const;
 
 private:
-    GroupType m_type = GroupType::Primitives;
+    GroupType m_group_type = GroupType::Primitives;
 
     std::vector<Instance> m_intsts;
 

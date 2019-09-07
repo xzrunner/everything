@@ -36,20 +36,20 @@ void GroupExpression::Execute(Evaluator& eval, TreeContext& ctx)
         {
             group = std::make_shared<Group>();
             group->name  = inst.group_name;
-            group->type  = m_type;
+            group->type  = m_group_type;
             group->items = items;
             group_mgr.Add(group);
         }
     }
 }
 
-void GroupExpression::SetType(GroupType type)
+void GroupExpression::SetGroupType(GroupType type)
 {
-    if (m_type == type) {
+    if (m_group_type == type) {
         return;
     }
 
-    m_type = type;
+    m_group_type = type;
 
     SetDirty(true);
 }
@@ -63,7 +63,7 @@ void GroupExpression::AddInstance(const Instance& inst)
 void GroupExpression::Select(std::vector<size_t>& items,
                              const Instance& inst, Evaluator& eval) const
 {
-    switch (m_type)
+    switch (m_group_type)
     {
     case GroupType::Points:
     {

@@ -183,7 +183,7 @@ TEST_CASE("poly extrude")
     {
         auto group = std::make_shared<evt::node::GroupCreate>();
         const std::string name("test");
-        group->SetName(name);
+        group->SetGroupName(name);
         group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
         eval.AddNode(group);
 
