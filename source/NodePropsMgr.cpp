@@ -149,6 +149,8 @@ void NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
         {
             switch (val.type)
             {
+            case VariableType::Invalid:
+                break;
             case VariableType::Int:
                 m_val.f = static_cast<float>(val.i);
                 break;

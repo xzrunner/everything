@@ -29,5 +29,16 @@ void Geometry::AddChild(const std::shared_ptr<Geometry>& parent,
     child->SetParent(parent);
 }
 
+std::shared_ptr<Node>
+Geometry::QueryChild(const std::string& name) const
+{
+    for (auto& c : m_children) {
+        if (c->GetName() == name) {
+            return c;
+        }
+    }
+    return nullptr;
+}
+
 }
 }

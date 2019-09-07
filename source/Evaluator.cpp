@@ -158,6 +158,8 @@ Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) con
     auto val = vexc::EvalExpression(expr, &ctx);
     switch (val.type)
     {
+    case vexc::VarType::Invalid:
+        return Variable();
     case vexc::VarType::Bool:
         return Variable(val.b);
     case vexc::VarType::Int:

@@ -1,6 +1,7 @@
 #include "everything/VexFuncs.h"
 #include "everything/EvalContext.h"
 #include "everything/GeometryImpl.h"
+#include "everything/node/Geometry.h"
 
 #include <vexc/EvalAST.h>
 #include <vexc/StringPool.h>
@@ -144,43 +145,60 @@ void SetupVexFuncs()
         std::string path(vexc::StringPool::VoidToString(p.p));
         std::vector<std::string> tokens;
         cpputil::StringHelper::Split(path, "/", tokens);
-        auto curr_node = ctx->node;
+        evt::Node* curr_node = const_cast<evt::Node*>(ctx->node);
         int curr_level = curr_node->GetLevel();
         for (size_t i = 0, n = tokens.size(); i < n; ++i)
         {
+            if (!curr_node) {
+                break;
+            }
+
             auto& t = tokens[i];
             if (t == "..") {
                 curr_node = curr_node->GetParent().get();
                 --curr_level;
-            } else {
-                assert(curr_node && i == tokens.size() - 1);
-                auto v = curr_node->GetProps().Query(t);
-                switch (v.type)
-                {
-                case VariableType::Bool:
-                    return vexc::Variant(v.b);
-                case VariableType::Int:
-                    return vexc::Variant(v.i);
-                case VariableType::Float:
-                    return vexc::Variant(v.f);
-                case VariableType::Float3:
-                {
-                    auto buf = new float[3];
-                    memcpy(buf, v.p, sizeof(buf));
-                    return vexc::Variant(vexc::VarType::Float3, buf);
+                continue;
+            }
+
+            // query child
+            assert(curr_node);
+            if (curr_node->get_type() == rttr::type::get<node::Geometry>())
+            {
+                auto child = static_cast<const node::Geometry*>(curr_node)->QueryChild(t);
+                if (child) {
+                    curr_node = child.get();
+                    continue;
                 }
-                case VariableType::Double:
-                    return vexc::Variant(v.d);
-                //case VariableType::String:
-                //{
-                //    auto str = static_cast<const char*>(v.p);
-                //    auto buf = vexc::StringPool::InsertAndQuery(str, strlen(str));
-                //    return vexc::Variant(vexc::VarType::String, buf);
-                //}
-                default:
-                    assert(0);
-                    return vexc::Variant();
-                }
+            }
+
+            // query prop
+            assert(curr_node && i == tokens.size() - 1);
+            auto v = curr_node->GetProps().Query(t);
+            switch (v.type)
+            {
+            case VariableType::Bool:
+                return vexc::Variant(v.b);
+            case VariableType::Int:
+                return vexc::Variant(v.i);
+            case VariableType::Float:
+                return vexc::Variant(v.f);
+            case VariableType::Float3:
+            {
+                auto buf = new float[3];
+                memcpy(buf, v.p, sizeof(buf));
+                return vexc::Variant(vexc::VarType::Float3, buf);
+            }
+            case VariableType::Double:
+                return vexc::Variant(v.d);
+            //case VariableType::String:
+            //{
+            //    auto str = static_cast<const char*>(v.p);
+            //    auto buf = vexc::StringPool::InsertAndQuery(str, strlen(str));
+            //    return vexc::Variant(vexc::VarType::String, buf);
+            //}
+            default:
+                assert(0);
+                return vexc::Variant();
             }
         }
 
