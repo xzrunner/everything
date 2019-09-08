@@ -172,10 +172,12 @@ void SetupVexFuncs()
             }
 
             // query prop
-            assert(curr_node && i == tokens.size() - 1);
+            assert(curr_node);
             auto v = curr_node->GetProps().Query(t);
             switch (v.type)
             {
+            case VariableType::Invalid:
+                return vexc::Variant();
             case VariableType::Bool:
                 return vexc::Variant(v.b);
             case VariableType::Int:
