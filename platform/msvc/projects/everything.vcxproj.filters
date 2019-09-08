@@ -164,6 +164,9 @@
     <ClInclude Include="..\..\..\include\everything\node\GroupExpression.h">
       <Filter>nodes\geometry\group</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Null.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -268,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\GroupExpression.cpp">
       <Filter>nodes\geometry\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Null.cpp">
+      <Filter>nodes\geometry\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

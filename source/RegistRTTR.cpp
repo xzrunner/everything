@@ -24,6 +24,7 @@
 #include "everything/node/ForeachPrimEnd.h"
 #include "everything/node/GroupCreate.h"
 #include "everything/node/Merge.h"
+#include "everything/node/Null.h"
 #include "everything/node/Switch.h"
 
 #define REGIST_NODE_TYPE(name)                                 \
@@ -66,6 +67,7 @@ REGIST_NODE_TYPE(ForeachPrimBegin)
 REGIST_NODE_TYPE(ForeachPrimEnd)
 REGIST_NODE_TYPE(GroupCreate)
 REGIST_NODE_TYPE(Merge)
+REGIST_NODE_TYPE(Null)
 REGIST_NODE_TYPE(Switch)
 
 }

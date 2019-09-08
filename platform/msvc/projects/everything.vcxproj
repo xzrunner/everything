@@ -32,6 +32,7 @@
     <ClInclude Include="..\..\..\include\everything\node\GroupExpression.h" />
     <ClInclude Include="..\..\..\include\everything\node\Knife.h" />
     <ClInclude Include="..\..\..\include\everything\node\Line.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Null.h" />
     <ClInclude Include="..\..\..\include\everything\node\Sort.h" />
     <ClInclude Include="..\..\..\include\everything\node\Switch.h" />
     <ClInclude Include="..\..\..\include\everything\TreeContext.h" />
@@ -79,6 +80,7 @@
     <ClCompile Include="..\..\..\source\node\Knife.cpp" />
     <ClCompile Include="..\..\..\source\node\Line.cpp" />
     <ClCompile Include="..\..\..\source\node\Merge.cpp" />
+    <ClCompile Include="..\..\..\source\node\Null.cpp" />
     <ClCompile Include="..\..\..\source\node\PolyExtrude.cpp" />
     <ClCompile Include="..\..\..\source\node\Sort.cpp" />
     <ClCompile Include="..\..\..\source\node\Sphere.cpp" />
