@@ -24,14 +24,24 @@ void GroupMgr::Combine(const GroupMgr& groups, size_t prim_off)
 {
     for (auto& group : groups.m_groups)
     {
-        auto itr = m_groups.find(group.second->name);
-        assert(itr == m_groups.end());
         assert(group.second->type == GroupType::Primitives);
-        auto new_group = std::make_shared<Group>(*group.second);
-        for (auto& i : new_group->items) {
-            i += prim_off;
+
+        auto itr = m_groups.find(group.second->name);
+        if (itr == m_groups.end())
+        {
+            auto new_group = std::make_shared<Group>(*group.second);
+            for (auto& i : new_group->items) {
+                i += prim_off;
+            }
+            m_groups.insert({ new_group->name, new_group });
         }
-        m_groups.insert({ new_group->name, new_group });
+        else
+        {
+            auto old_group = itr->second;
+            for (auto& i : group.second->items) {
+                old_group->items.push_back(i + prim_off);
+            }
+        }
     }
 }
 
