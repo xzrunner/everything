@@ -28,56 +28,119 @@ void Transform::Execute(Evaluator& eval, TreeContext& ctx)
 
 void Transform::SetTranslate(const sm::vec3& t)
 {
-    if (m_translate == t) {
-        return;
+    bool dirty = false;
+
+    if (m_props.SetValue(TRANS_X, Variable(t.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(TRANS_Y, Variable(t.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(TRANS_Z, Variable(t.z))) {
+        dirty = true;
     }
 
-    m_translate = t;
-
-    SetDirty(true);
+    if (dirty) {
+        SetDirty(true);
+    }
 }
 
 void Transform::SetRotate(const sm::vec3& r)
 {
-    if (m_rotate == r) {
-        return;
+    bool dirty = false;
+
+    if (m_props.SetValue(ROT_X, Variable(r.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(ROT_Y, Variable(r.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(ROT_Z, Variable(r.z))) {
+        dirty = true;
     }
 
-    m_rotate = r;
-
-    SetDirty(true);
+    if (dirty) {
+        SetDirty(true);
+    }
 }
 
 void Transform::SetScale(const sm::vec3& s)
 {
-    if (m_scale == s) {
-        return;
+    bool dirty = false;
+
+    if (m_props.SetValue(SCALE_X, Variable(s.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SCALE_Y, Variable(s.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SCALE_Z, Variable(s.z))) {
+        dirty = true;
     }
 
-    m_scale = s;
-
-    SetDirty(true);
+    if (dirty) {
+        SetDirty(true);
+    }
 }
 
 void Transform::SetShear(const sm::vec3& s)
 {
-    if (m_shear == s) {
-        return;
+    bool dirty = false;
+
+    if (m_props.SetValue(SHEAR_X, Variable(s.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SHEAR_Y, Variable(s.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SHEAR_Z, Variable(s.z))) {
+        dirty = true;
     }
 
-    m_shear = s;
+    if (dirty) {
+        SetDirty(true);
+    }
+}
 
-    SetDirty(true);
+void Transform::InitProps()
+{
+    m_props.Assign(TRANS_X, PropNames[TRANS_X], Variable(0.0f));
+    m_props.Assign(TRANS_Y, PropNames[TRANS_Y], Variable(0.0f));
+    m_props.Assign(TRANS_Z, PropNames[TRANS_Z], Variable(0.0f));
+
+    m_props.Assign(ROT_X, PropNames[ROT_X], Variable(0.0f));
+    m_props.Assign(ROT_Y, PropNames[ROT_Y], Variable(0.0f));
+    m_props.Assign(ROT_Z, PropNames[ROT_Z], Variable(0.0f));
+
+    m_props.Assign(SCALE_X, PropNames[SCALE_X], Variable(1.0f));
+    m_props.Assign(SCALE_Y, PropNames[SCALE_Y], Variable(1.0f));
+    m_props.Assign(SCALE_Z, PropNames[SCALE_Z], Variable(1.0f));
+
+    m_props.Assign(SHEAR_X, PropNames[SHEAR_X], Variable(0.0f));
+    m_props.Assign(SHEAR_Y, PropNames[SHEAR_Y], Variable(0.0f));
+    m_props.Assign(SHEAR_Z, PropNames[SHEAR_Z], Variable(0.0f));
 }
 
 sm::mat4 Transform::CalcTransformMat() const
 {
-    auto s_mat = sm::mat4::Scaled(m_scale.x, m_scale.y, m_scale.z);
+    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VariableType::Float));
 
-    auto rot = m_rotate * SM_DEG_TO_RAD;
+    auto& props = m_props.GetProps();
+
+    auto s_mat = sm::mat4::Scaled(
+        props[SCALE_X].Val().f,
+        props[SCALE_Y].Val().f,
+        props[SCALE_Z].Val().f
+    );
+
+    auto rot = sm::vec3(props[ROT_X].Val().f, props[ROT_Y].Val().f, props[ROT_Z].Val().f) * SM_DEG_TO_RAD;
     auto r_mat = sm::mat4::Rotated(rot.x, rot.y, rot.z);
 
-    auto t_mat = sm::mat4::Translated(m_translate.x, m_translate.y, m_translate.z);
+    auto t_mat = sm::mat4::Translated(
+        props[TRANS_X].Val().f,
+        props[TRANS_Y].Val().f,
+        props[TRANS_Z].Val().f
+    );
 
     return s_mat * r_mat * t_mat;
 }

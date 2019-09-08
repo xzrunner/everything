@@ -1,5 +1,6 @@
 #include "everything/node/Box.h"
 #include "everything/GeometryImpl.h"
+#include "everything/NodeHelper.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
@@ -70,6 +71,7 @@ void Box::InitProps()
     m_props.Assign(SIZE_X, PropNames[SIZE_X], Variable(1.0f));
     m_props.Assign(SIZE_Y, PropNames[SIZE_Y], Variable(1.0f));
     m_props.Assign(SIZE_Z, PropNames[SIZE_Z], Variable(1.0f));
+
     m_props.Assign(POS_X,  PropNames[POS_X],  Variable(0.0f));
     m_props.Assign(POS_Y,  PropNames[POS_Y],  Variable(0.0f));
     m_props.Assign(POS_Z,  PropNames[POS_Z],  Variable(0.0f));
@@ -89,13 +91,7 @@ void Box::BuildModel()
 std::unique_ptr<model::BrushModel>
 Box::BuildBrush() const
 {
-    auto& props = m_props.GetProps();
-    assert(props[SIZE_X].Val().type == VariableType::Float 
-        && props[SIZE_Y].Val().type == VariableType::Float 
-        && props[SIZE_Z].Val().type == VariableType::Float
-        && props[POS_X].Val().type == VariableType::Float
-        && props[POS_Y].Val().type == VariableType::Float
-        && props[POS_Z].Val().type == VariableType::Float);
+    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VariableType::Float));
 
     model::BrushModel::Brush brush;
 
@@ -107,6 +103,7 @@ Box::BuildBrush() const
     std::vector<pm3::FacePtr> faces;
     faces.reserve(face_num);
 
+    auto& props = m_props.GetProps();
     const sm::vec3 s = m_scale;
     const sm::vec3 h_sz = sm::vec3(props[SIZE_X].Val().f, props[SIZE_Y].Val().f, props[SIZE_Z].Val().f) * 0.5f;
     const sm::vec3 c = sm::vec3(props[POS_X].Val().f, props[POS_Y].Val().f, props[POS_Z].Val().f);

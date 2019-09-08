@@ -13,7 +13,37 @@ namespace node
 class Transform : public Node
 {
 public:
+    enum PropID
+    {
+        TRANS_X,
+        TRANS_Y,
+        TRANS_Z,
+
+        ROT_X,
+        ROT_Y,
+        ROT_Z,
+
+        SCALE_X,
+        SCALE_Y,
+        SCALE_Z,
+
+        SHEAR_X,
+        SHEAR_Y,
+        SHEAR_Z,
+
+        MAX_BUILD_IN_PROP,
+    };
+
+    static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
+        "tx", "ty", "tz",
+        "rx", "ry", "rz",
+        "sx", "sy", "sz",
+        "shear1", "shear2", "shear3"
+    };
+
+public:
     Transform()
+        : Node(MAX_BUILD_IN_PROP)
     {
         m_imports = {
             {{ NodeVarType::Any, "in" }}
@@ -21,6 +51,8 @@ public:
         m_exports = {
             {{ NodeVarType::Any, "out" }},
         };
+
+        InitProps();
     }
 
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
@@ -31,13 +63,9 @@ public:
     void SetShear(const sm::vec3& s);
 
 private:
-    sm::mat4 CalcTransformMat() const;
+    void InitProps();
 
-private:
-    sm::vec3 m_translate = sm::vec3(0, 0, 0);
-    sm::vec3 m_rotate    = sm::vec3(0, 0, 0);
-    sm::vec3 m_scale     = sm::vec3(1, 1, 1);
-    sm::vec3 m_shear     = sm::vec3(0, 0, 0);
+    sm::mat4 CalcTransformMat() const;
 
     RTTR_ENABLE(Node)
 

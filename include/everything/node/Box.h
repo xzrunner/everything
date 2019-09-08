@@ -19,6 +19,7 @@ public:
         SIZE_X,
         SIZE_Y,
         SIZE_Z,
+
         POS_X,
         POS_Y,
         POS_Z,
@@ -27,7 +28,8 @@ public:
     };
 
     static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
-        "sizex", "sizey", "sizez", "tx", "ty", "tz"
+        "sizex", "sizey", "sizez",
+        "tx", "ty", "tz"
     };
 
 public:

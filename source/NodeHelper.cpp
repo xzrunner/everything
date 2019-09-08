@@ -41,4 +41,15 @@ NodeHelper::GetInputGeo(const Node& node, size_t idx)
     }
 }
 
+bool NodeHelper::CheckPropsType(const Node& node, int begin, int end, VariableType type)
+{
+    auto& props = node.GetProps().GetProps();
+    for (int i = begin; i < end; ++i) {
+        if (props[i].Val().type != type) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }
