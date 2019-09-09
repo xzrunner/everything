@@ -35,6 +35,8 @@ public:
 
     void Rename(const std::string& from, const std::string& to);
 
+    NodePtr QueryNode(const std::string& name) const;
+
 private:
     void UpdateProps();
     void UpdateNodes();

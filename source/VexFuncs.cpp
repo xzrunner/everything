@@ -1,6 +1,7 @@
 #include "everything/VexFuncs.h"
 #include "everything/EvalContext.h"
 #include "everything/GeometryImpl.h"
+#include "everything/Evaluator.h"
 #include "everything/node/Geometry.h"
 
 #include <vexc/EvalAST.h>
@@ -147,8 +148,16 @@ void SetupVexFuncs()
         cpputil::StringHelper::Split(path, "/", tokens);
         evt::Node* curr_node = const_cast<evt::Node*>(ctx->node);
         int curr_level = curr_node->GetLevel();
+        const int begin_level = curr_level;
         for (size_t i = 0, n = tokens.size(); i < n; ++i)
         {
+            if (!curr_node && curr_level == begin_level - 1) {
+                curr_node = ctx->eval->QueryNode(tokens[i]).get();
+                if (curr_node) {
+                    continue;
+                }
+            }
+
             if (!curr_node) {
                 break;
             }

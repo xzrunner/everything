@@ -216,6 +216,12 @@ void Evaluator::Rename(const std::string& from, const std::string& to)
     m_nodes_map.insert({ node->GetName(), node });
 }
 
+NodePtr Evaluator::QueryNode(const std::string& name) const
+{
+    auto itr = m_nodes_map.find(name);
+    return itr == m_nodes_map.end() ? nullptr : itr->second;
+}
+
 void Evaluator::UpdateProps()
 {
     // todo: topo sort props
