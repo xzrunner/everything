@@ -10,7 +10,20 @@ namespace node
 class Switch : public Node
 {
 public:
+    enum PropID
+    {
+        SELECTED,
+
+        MAX_BUILD_IN_PROP,
+    };
+
+    static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
+        "input",
+    };
+
+public:
     Switch()
+        : Node(MAX_BUILD_IN_PROP)
     {
         m_imports = {
             {{ NodeVarType::Any, "in0" }},
@@ -19,6 +32,8 @@ public:
         m_exports = {
             {{ NodeVarType::Any, "out" }},
         };
+
+        InitProps();
     }
 
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
@@ -28,7 +43,7 @@ public:
     void SetSelected(size_t select);
 
 private:
-    size_t m_selected = 0;
+    void InitProps();
 
     RTTR_ENABLE(Node)
 

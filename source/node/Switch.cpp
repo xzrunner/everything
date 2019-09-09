@@ -11,7 +11,10 @@ void Switch::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    auto prev_geo = NodeHelper::GetInputGeo(*this, m_selected);
+    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VariableType::Int));
+    auto& props = m_props.GetProps();
+    int selected = props[SELECTED].Val().i;
+    auto prev_geo = NodeHelper::GetInputGeo(*this, selected);
     if (!prev_geo) {
         return;
     }
@@ -30,13 +33,20 @@ void Switch::AddInputPorts(size_t num)
 
 void Switch::SetSelected(size_t select)
 {
-    if (m_selected == select) {
-        return;
+    bool dirty = false;
+
+    if (m_props.SetValue(SELECTED, Variable(static_cast<int>(select)))) {
+        dirty = true;
     }
 
-    m_selected = select;
+    if (dirty) {
+        SetDirty(true);
+    }
+}
 
-    SetDirty(true);
+void Switch::InitProps()
+{
+    m_props.Assign(SELECTED, PropNames[SELECTED], Variable(0));
 }
 
 }
