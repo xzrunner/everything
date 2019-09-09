@@ -7,6 +7,7 @@
 #include <everything/node/Transform.h>
 
 #include <everything/node/Box.h>
+#include <everything/node/GroupCreate.h>
 
 #include <catch/catch.hpp>
 
@@ -44,13 +45,13 @@ TEST_CASE("transform")
     box->SetSize(size);
     eval.AddNode(box);
 
-    auto trans = std::make_shared<evt::node::Transform>();
-    eval.AddNode(trans);
-
-    eval.Connect({ box, 0 }, { trans, 0 });
-
     SECTION("scale")
     {
+        auto trans = std::make_shared<evt::node::Transform>();
+        eval.AddNode(trans);
+
+        eval.Connect({ box, 0 }, { trans, 0 });
+
         const sm::vec3 scale(2, 3, 4);
         trans->SetScale(scale);
 
@@ -61,6 +62,11 @@ TEST_CASE("transform")
 
     SECTION("rotate x")
     {
+        auto trans = std::make_shared<evt::node::Transform>();
+        eval.AddNode(trans);
+
+        eval.Connect({ box, 0 }, { trans, 0 });
+
         const sm::vec3 rot(90, 0, 0);
         trans->SetRotate(rot);
 
@@ -71,6 +77,11 @@ TEST_CASE("transform")
 
     SECTION("rotate y")
     {
+        auto trans = std::make_shared<evt::node::Transform>();
+        eval.AddNode(trans);
+
+        eval.Connect({ box, 0 }, { trans, 0 });
+
         const sm::vec3 rot(0, 90, 0);
         trans->SetRotate(rot);
 
@@ -81,6 +92,11 @@ TEST_CASE("transform")
 
     SECTION("rotate z")
     {
+        auto trans = std::make_shared<evt::node::Transform>();
+        eval.AddNode(trans);
+
+        eval.Connect({ box, 0 }, { trans, 0 });
+
         const sm::vec3 rot(0, 0, 90);
         trans->SetRotate(rot);
 
@@ -91,11 +107,40 @@ TEST_CASE("transform")
 
     SECTION("translate")
     {
+        auto trans = std::make_shared<evt::node::Transform>();
+        eval.AddNode(trans);
+
+        eval.Connect({ box, 0 }, { trans, 0 });
+
         const sm::vec3 off(1.1f, 2.2f, 3.3f);
         trans->SetTranslate(off);
 
         eval.Update();
 
         test::check_aabb(trans, -h_sz + off, h_sz + off);
+    }
+
+    SECTION("group")
+    {
+        auto group_create = std::make_shared<evt::node::GroupCreate>();
+        group_create->SetGroupName("bottom");
+        group_create->SetGroupType(evt::GroupType::Points);
+        group_create->EnableBaseGroup("@P.y < 0");
+        eval.AddNode(group_create);
+
+        eval.Connect({ box, 0 }, { group_create, 0 });
+
+        auto trans = std::make_shared<evt::node::Transform>();
+        trans->SetGroupName("bottom");
+        trans->SetGroupType(evt::GroupType::Points);
+        eval.AddNode(trans);
+
+        trans->SetTranslate(sm::vec3(5, 0, 0));
+
+        eval.Connect({ group_create, 0 }, { trans, 0 });
+
+        eval.Update();
+
+        test::check_aabb(trans, -h_sz, sm::vec3(h_sz.x + 5, h_sz.y, h_sz.z));
     }
 }

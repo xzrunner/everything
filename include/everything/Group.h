@@ -8,6 +8,7 @@ namespace evt
 
 enum class GroupType
 {
+    GuessFromGroup,
     Points,
     Vertices,
     Edges,

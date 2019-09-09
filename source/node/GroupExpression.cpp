@@ -54,6 +54,16 @@ void GroupExpression::SetGroupType(GroupType type)
     SetDirty(true);
 }
 
+void GroupExpression::ClearInstances()
+{
+    if (m_intsts.empty()) {
+        return;
+    }
+
+    m_intsts.clear();
+    SetDirty(true);
+}
+
 void GroupExpression::AddInstance(const Instance& inst)
 {
     m_intsts.push_back(inst);
@@ -73,6 +83,9 @@ void GroupExpression::Select(std::vector<size_t>& items,
         {
             eval_ctx.point_idx = i;
             auto v = eval.CalcExpr(inst.expr_str, eval_ctx);
+            if (v.type == VariableType::Invalid) {
+                continue;
+            }
             assert(v.type == VariableType::Bool);
             if (v.b) {
                 items.push_back(i);

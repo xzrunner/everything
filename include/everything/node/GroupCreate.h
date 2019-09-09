@@ -53,8 +53,7 @@ private:
 
 private:
     std::string m_group_name;
-
-    GroupType m_group_type = GroupType::Primitives;
+    GroupType   m_group_type = GroupType::Primitives;
 
     // base group
     bool m_base_group = false;

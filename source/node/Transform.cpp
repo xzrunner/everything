@@ -18,10 +18,40 @@ void Transform::Execute(Evaluator& eval, TreeContext& ctx)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
+    std::shared_ptr<Group> group = nullptr;
+    if (!m_group_name.empty())
+    {
+        group = m_geo_impl->QueryGroup(m_group_name);
+        if (!group) {
+            return;
+        }
+    }
+
     auto mat = CalcTransformMat();
-    auto& attr = m_geo_impl->GetAttr();
-    for (auto& p : attr.GetPoints()) {
-        p->pos = mat * p->pos;
+    if (group)
+    {
+        auto type = m_group_type;
+        if (type == GroupType::GuessFromGroup) {
+            type = group->type;
+        }
+        switch (type)
+        {
+        case GroupType::Points:
+        {
+            auto& pts = m_geo_impl->GetAttr().GetPoints();
+            for (auto i : group->items) {
+                pts[i]->pos = mat * pts[i]->pos;
+            }
+        }
+            break;
+        }
+    }
+    else
+    {
+        auto& attr = m_geo_impl->GetAttr();
+        for (auto& p : attr.GetPoints()) {
+            p->pos = mat * p->pos;
+        }
     }
     m_geo_impl->UpdateByAttr();
 }
@@ -100,6 +130,17 @@ void Transform::SetShear(const sm::vec3& s)
     if (dirty) {
         SetDirty(true);
     }
+}
+
+void Transform::SetGroupType(GroupType type)
+{
+    if (m_group_type == type) {
+        return;
+    }
+
+    m_group_type = type;
+
+    SetDirty(true);
 }
 
 void Transform::InitProps()

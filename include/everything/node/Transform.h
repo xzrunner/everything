@@ -1,6 +1,7 @@
 #pragma once
 
 #include "everything/Node.h"
+#include "everything/Group.h"
 
 #include <SM_Vector.h>
 #include <SM_Matrix.h>
@@ -62,10 +63,17 @@ public:
     void SetScale(const sm::vec3& s);
     void SetShear(const sm::vec3& s);
 
+    void SetGroupName(const std::string& name) { m_group_name = name; }
+    void SetGroupType(GroupType type);
+
 private:
     void InitProps();
 
     sm::mat4 CalcTransformMat() const;
+
+private:
+    std::string m_group_name;
+    GroupType   m_group_type = GroupType::GuessFromGroup;
 
     RTTR_ENABLE(Node)
 

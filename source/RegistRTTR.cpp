@@ -2,6 +2,9 @@
 #include "everything/node/Geometry.h"
 // attribute
 #include "everything/node/Sort.h"
+// group
+#include "everything/node/GroupCreate.h"
+#include "everything/node/GroupExpression.h"
 // manipulate
 #include "everything/node/Delete.h"
 #include "everything/node/Transform.h"
@@ -22,7 +25,6 @@
 #include "everything/node/CopyToPoints.h"
 #include "everything/node/ForeachPrimBegin.h"
 #include "everything/node/ForeachPrimEnd.h"
-#include "everything/node/GroupCreate.h"
 #include "everything/node/Merge.h"
 #include "everything/node/Null.h"
 #include "everything/node/Switch.h"
@@ -40,6 +42,10 @@ REGIST_NODE_TYPE(Geometry)
 
 // attribute
 REGIST_NODE_TYPE(Sort)
+
+// group
+REGIST_NODE_TYPE(GroupCreate)
+REGIST_NODE_TYPE(GroupExpression)
 
 // manipulate
 REGIST_NODE_TYPE(Delete)
@@ -65,7 +71,6 @@ REGIST_NODE_TYPE(Blast)
 REGIST_NODE_TYPE(CopyToPoints)
 REGIST_NODE_TYPE(ForeachPrimBegin)
 REGIST_NODE_TYPE(ForeachPrimEnd)
-REGIST_NODE_TYPE(GroupCreate)
 REGIST_NODE_TYPE(Merge)
 REGIST_NODE_TYPE(Null)
 REGIST_NODE_TYPE(Switch)

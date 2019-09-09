@@ -44,6 +44,7 @@ public:
 
     void SetGroupType(GroupType type);
 
+    void ClearInstances();
     void AddInstance(const Instance& inst);
 
 private:

@@ -25,6 +25,7 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
 
     auto group = std::make_shared<Group>();
     group->name = m_group_name;
+    group->type = m_group_type;
     m_geo_impl->AddGroup(group);
 
     if (m_base_group) {
@@ -123,6 +124,9 @@ void GroupCreate::SelectByBaseExpr(Evaluator& eval, Group& group)
         {
             eval_ctx.point_idx = i;
             auto v = eval.CalcExpr(m_base_group_expr, eval_ctx);
+            if (v.type == evt::VariableType::Invalid) {
+                continue;
+            }
             assert(v.type == VariableType::Bool);
             if (v.b) {
                 group.items.push_back(i);
