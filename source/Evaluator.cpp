@@ -234,10 +234,18 @@ void Evaluator::UpdateProps()
         return;
     }
 
+    bool dirty = false;
     for (auto& node : m_nodes_sorted) {
         for (auto& prop : node->GetProps().GetProps()) {
-            const_cast<NodeProp&>(prop).Update(*this, node);
+            if (const_cast<NodeProp&>(prop).Update(*this, node)) {
+                dirty = true;
+            }
         }
+    }
+
+    // todo: make all dirty
+    if (dirty) {
+        MakeDirty();
     }
 }
 

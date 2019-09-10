@@ -115,18 +115,18 @@ void NodeProp::Clear()
     m_to.clear();
 }
 
-void NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
+bool NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
 {
-    if (!m_dirty || m_expr.empty()) {
-        return;
+    if (m_expr.empty()) {
+        return false;
     }
 
     auto val = eval.CalcExpr(m_expr, EvalContext(eval, *node));
-    if (val.type == m_val.type)
-    {
-        m_val = val;
+    if (val.type == VariableType::Invalid) {
+        return false;
     }
-    else
+
+    if (val.type != m_val.type)
     {
         switch (m_val.type)
         {
@@ -135,11 +135,14 @@ void NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
             switch (val.type)
             {
             case VariableType::Float:
-                m_val.i = static_cast<int>(val.f);
+            {
+                auto tmp = static_cast<int>(val.f);
+                val.i = tmp;
+            }
                 break;
             default:
                 assert(0);
-                return;
+                return false;
             }
         }
             break;
@@ -147,24 +150,32 @@ void NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
         {
             switch (val.type)
             {
-            case VariableType::Invalid:
-                break;
             case VariableType::Int:
-                m_val.f = static_cast<float>(val.i);
+            {
+                auto tmp = static_cast<float>(val.i);
+                val.f = tmp;
+            }
                 break;
             default:
                 assert(0);
-                return;
+                return false;
             }
         }
             break;
         default:
             assert(0);
-            return;
+            return false;
         }
+        val.type = m_val.type;
     }
 
-    m_dirty = false;
+    assert(val.type == m_val.type);
+    if (m_val == val) {
+        return false;
+    } else {
+        m_val = val;
+        return true;
+    }
 }
 
 }
