@@ -42,8 +42,6 @@ public:
 private:
     void Select(std::vector<size_t>& items,
         const Instance& inst, Evaluator& eval) const;
-    void Merge(MergeOP op, const std::vector<size_t>& src,
-        std::vector<size_t>& dst) const;
 
 private:
     GroupType m_group_type = GroupType::Primitives;

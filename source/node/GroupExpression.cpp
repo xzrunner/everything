@@ -30,7 +30,7 @@ void GroupExpression::Execute(Evaluator& eval, TreeContext& ctx)
         auto group = group_mgr.Query(inst.group_name);
         if (group)
         {
-            Merge(inst.merge_op, items, group->items);
+            GroupMgr::Merge(inst.merge_op, items, group->items);
         }
         else
         {
@@ -94,59 +94,6 @@ void GroupExpression::Select(std::vector<size_t>& items,
         }
     }
     break;
-    }
-}
-
-void GroupExpression::Merge(MergeOP op, const std::vector<size_t>& src,
-                            std::vector<size_t>& dst) const
-{
-    switch (op)
-    {
-    case MergeOP::Replace:
-        dst = src;
-        break;
-    case MergeOP::Union:
-    {
-        std::set<size_t> dst_set;
-        for (auto& d : dst) {
-            dst_set.insert(d);
-        }
-        for (auto& s : src) {
-            if (dst_set.find(s) == dst_set.end()) {
-                dst.push_back(s);
-            }
-        }
-    }
-        break;
-    case MergeOP::Intersect:
-    {
-        std::set<size_t> dst_set;
-        for (auto& d : dst) {
-            dst_set.insert(d);
-        }
-        dst.clear();
-        for (auto& s : src) {
-            if (dst_set.find(s) != dst_set.end()) {
-                dst.push_back(s);
-            }
-        }
-    }
-        break;
-    case MergeOP::Subtract:
-    {
-        for (auto& s : src)
-        {
-            for (auto itr = dst.begin(); itr != dst.end(); )
-            {
-                if (s == *itr) {
-                    itr = dst.erase(itr);
-                } else {
-                    ++itr;
-                }
-            }
-        }
-    }
-        break;
     }
 }
 

@@ -75,6 +75,57 @@ void GroupMgr::Rename(const std::string& src, const std::string& dst)
     m_groups.erase(itr);
     group->name = dst;
     Add(group);
+
+void GroupMgr::Merge(GroupMerge op, const std::vector<size_t>& src, std::vector<size_t>& dst)
+{
+    switch (op)
+    {
+    case GroupMerge::Replace:
+        dst = src;
+        break;
+    case GroupMerge::Union:
+    {
+        std::set<size_t> dst_set;
+        for (auto& d : dst) {
+            dst_set.insert(d);
+        }
+        for (auto& s : src) {
+            if (dst_set.find(s) == dst_set.end()) {
+                dst.push_back(s);
+            }
+        }
+    }
+        break;
+    case GroupMerge::Intersect:
+    {
+        std::set<size_t> dst_set;
+        for (auto& d : dst) {
+            dst_set.insert(d);
+        }
+        dst.clear();
+        for (auto& s : src) {
+            if (dst_set.find(s) != dst_set.end()) {
+                dst.push_back(s);
+            }
+        }
+    }
+        break;
+    case GroupMerge::Subtract:
+    {
+        for (auto& s : src)
+        {
+            for (auto itr = dst.begin(); itr != dst.end(); )
+            {
+                if (s == *itr) {
+                    itr = dst.erase(itr);
+                } else {
+                    ++itr;
+                }
+            }
+        }
+    }
+        break;
+    }
 }
 
 }
