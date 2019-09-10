@@ -32,6 +32,8 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
         SelectByBaseExpr(eval, *group);
     } else if (m_keep_by_normals) {
         SelectByNormals(*group);
+    } else {
+        SelectAll(*group);
     }
 
     group_mgr.Add(group, m_merge_op);
@@ -174,6 +176,42 @@ void GroupCreate::SelectByNormals(Group& group)
     case GroupType::Edges:
         break;
     case GroupType::Vertices:
+        break;
+    }
+}
+
+void GroupCreate::SelectAll(Group& group)
+{
+    switch (m_group_type)
+    {
+    case GroupType::Primitives:
+    {
+        auto& prims = m_geo_impl->GetAttr().GetPrimtives();
+        group.items.resize(prims.size());
+        for (size_t i = 0, n = prims.size(); i < n; ++i) {
+            group.items[i] = i;
+        }
+    }
+        break;
+    case GroupType::Points:
+    {
+        auto& pts = m_geo_impl->GetAttr().GetPoints();
+        group.items.resize(pts.size());
+        for (size_t i = 0, n = pts.size(); i < n; ++i) {
+            group.items[i] = i;
+        }
+    }
+        break;
+    case GroupType::Edges:
+        break;
+    case GroupType::Vertices:
+    {
+        auto& vertices = m_geo_impl->GetAttr().GetVertices();
+        group.items.resize(vertices.size());
+        for (size_t i = 0, n = vertices.size(); i < n; ++i) {
+            group.items[i] = i;
+        }
+    }
         break;
     }
 }

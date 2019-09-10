@@ -51,6 +51,7 @@ public:
 private:
     void SelectByBaseExpr(Evaluator& eval, Group& group);
     void SelectByNormals(Group& group);
+    void SelectAll(Group& group);
 
 private:
     std::string m_group_name;
