@@ -1,5 +1,7 @@
 #include "everything/GroupMgr.h"
 
+#include <set>
+
 #include <assert.h>
 
 namespace evt
@@ -45,7 +47,7 @@ void GroupMgr::Combine(const GroupMgr& groups, size_t prim_off)
     }
 }
 
-void GroupMgr::Add(const std::shared_ptr<Group>& group)
+void GroupMgr::Add(const std::shared_ptr<Group>& group, GroupMerge merge_op)
 {
     if (group->name.empty())
     {
@@ -55,9 +57,15 @@ void GroupMgr::Add(const std::shared_ptr<Group>& group)
         } while (m_groups.find(name) != m_groups.end());
         group->name = name;
     }
-    
+
     auto itr = m_groups.insert({ group->name, group });
-    assert(itr.second);
+    if (!itr.second)
+    {
+        auto& old_group = itr.first->second;
+        assert(group->name == old_group->name
+            && group->type == old_group->type);
+        Merge(merge_op, group->items, old_group->items);
+    }
 }
 
 std::shared_ptr<Group>
@@ -74,7 +82,8 @@ void GroupMgr::Rename(const std::string& src, const std::string& dst)
     auto group = itr->second;
     m_groups.erase(itr);
     group->name = dst;
-    Add(group);
+    Add(group, GroupMerge::Replace);
+}
 
 void GroupMgr::Merge(GroupMerge op, const std::vector<size_t>& src, std::vector<size_t>& dst)
 {

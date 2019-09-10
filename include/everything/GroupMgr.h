@@ -16,7 +16,7 @@ public:
 
     void Combine(const GroupMgr& groups, size_t prim_off);
 
-    void Add(const std::shared_ptr<Group>& group);
+    void Add(const std::shared_ptr<Group>& group, GroupMerge merge_op);
     std::shared_ptr<Group> Query(const std::string& name) const;
     void Rename(const std::string& src, const std::string& dst);
 
