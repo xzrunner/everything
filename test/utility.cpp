@@ -6,6 +6,9 @@
 
 #include <unirender/gl/RenderContext.h>
 #include <unirender/Blackboard.h>
+#include <halfedge/Polyhedron.h>
+#include <polymesh3/Geometry.h>
+#include <model/BrushBuilder.h>
 #include <painting3/AABB.h>
 #include <renderpipeline/RenderMgr.h>
 #include <node0/SceneNode.h>
@@ -143,14 +146,15 @@ void check_points_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == geo->GetAttr().GetPoints().size());
 }
 
-// todo
 void check_edges_num(const evt::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    size_t n = 0;
-    REQUIRE(num == n);
+    auto& brushes = geo->GetBrushModel()->GetBrushes();
+    REQUIRE(brushes.size() == 1);
+    auto& brush = brushes[0];
+    REQUIRE(num == brush.impl->GetGeometry()->GetEdges().Size());
 }
 
 void check_faces_num(const evt::NodePtr& node, size_t num)

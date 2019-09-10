@@ -101,7 +101,7 @@ TEST_CASE("boolean")
     }
 }
 
-TEST_CASE("knife")
+TEST_CASE("knife box")
 {
     test::init();
 
@@ -152,6 +152,61 @@ TEST_CASE("knife")
         test::check_faces_num(knife, 5);
 
         test::check_aabb(knife, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0, 0.5f));
+    }
+}
+
+TEST_CASE("knife plane")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<evt::node::GroupCreate>();
+    group->SetGroupName("top");
+    group->SetGroupType(evt::GroupType::Primitives);
+    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto blast = std::make_shared<evt::node::Blast>();
+    blast->SetGroupName("top");
+    blast->SetGroupType(evt::GroupType::Primitives);
+    blast->SetDeleteNonSelected(true);
+    eval.AddNode(blast);
+
+    eval.Connect({ group, 0 }, { blast, 0 });
+
+    auto knife = std::make_shared<evt::node::Knife>();
+    eval.AddNode(knife);
+
+    eval.Connect({ blast, 0 }, { knife, 0 });
+
+    SECTION("dir x")
+    {
+        knife->SetKeepType(evt::node::Knife::KeepType::KeepAll);
+        knife->SetDirection({ 1, 0, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(knife, 2);
+        test::check_points_num(knife, 6);
+        test::check_edges_num(knife, 8);
+    }
+
+    SECTION("dir neg x")
+    {
+        knife->SetKeepType(evt::node::Knife::KeepType::KeepAll);
+        knife->SetDirection({ -1, 0, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(knife, 2);
+        test::check_points_num(knife, 6);
+        test::check_edges_num(knife, 8);
     }
 }
 
