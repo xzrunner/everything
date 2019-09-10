@@ -14,16 +14,6 @@ GeometryImpl::GeometryImpl(const GeoShape& shape)
 {
 }
 
-void GeometryImpl::AddGroup(const std::shared_ptr<Group>& group)
-{
-    m_groups.Add(group);
-}
-
-std::shared_ptr<Group> GeometryImpl::QueryGroup(const std::string& name) const
-{
-    return m_groups.Query(name);
-}
-
 void GeometryImpl::UpdateByBrush(const model::BrushModel& brush_model)
 {
     m_adaptor.UpdateByBrush(const_cast<GeoAttribute&>(m_attr), brush_model);

@@ -21,7 +21,7 @@ void Transform::Execute(Evaluator& eval, TreeContext& ctx)
     std::shared_ptr<Group> group = nullptr;
     if (!m_group_name.empty())
     {
-        group = m_geo_impl->QueryGroup(m_group_name);
+        group = m_geo_impl->GetGroup().Query(m_group_name);
         if (!group) {
             return;
         }

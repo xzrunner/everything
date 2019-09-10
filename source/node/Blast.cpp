@@ -18,7 +18,7 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
-    auto group = m_geo_impl->QueryGroup(m_group_name);
+    auto group = m_geo_impl->GetGroup().Query(m_group_name);
     if (!group) {
         return;
     }

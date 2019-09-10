@@ -21,7 +21,7 @@ void PolyExtrude::Execute(Evaluator& eval, TreeContext& ctx)
 
     bool dirty = false;
     auto& prims = m_geo_impl->GetAttr().GetPrimtives();
-    auto group = m_geo_impl->QueryGroup(m_group_name);
+    auto group = m_geo_impl->GetGroup().Query(m_group_name);
     if (group)
     {
         assert(group->type == GroupType::Primitives);

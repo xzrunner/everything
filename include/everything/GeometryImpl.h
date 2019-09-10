@@ -16,8 +16,6 @@ public:
     GeometryImpl(const GeoShape& shape);
 
     auto& GetGroup() { return m_groups; }
-    void AddGroup(const std::shared_ptr<Group>& group);
-    std::shared_ptr<Group> QueryGroup(const std::string& name) const;
 
     void UpdateByBrush(const model::BrushModel& brush_model);
     void StoreBrush(std::unique_ptr<model::BrushModel>& brush_model);
