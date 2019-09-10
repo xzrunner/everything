@@ -47,7 +47,7 @@ public:
     void SetExpr(size_t idx, const std::string& expr);
     bool SetValue(size_t idx, const Variable& val);
 
-    bool Add(const std::string& key, const Variable& val);
+    int  Add(const std::string& key, const Variable& val);
     bool Remove(const std::string& key);
     void Clear();
 

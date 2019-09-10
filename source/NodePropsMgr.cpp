@@ -54,17 +54,17 @@ bool NodePropsMgr::SetValue(size_t idx, const Variable& val)
     return true;
 }
 
-bool NodePropsMgr::Add(const std::string& key, const Variable& val)
+int NodePropsMgr::Add(const std::string& key, const Variable& val)
 {
     for (auto& p : m_props) {
         if (p.m_key == key) {
-            return false;
+            return -1;
         }
     }
 
     m_props.push_back({ key, val });
 
-    return true;
+    return m_props.size() - 1;
 }
 
 bool NodePropsMgr::Remove(const std::string& key)
