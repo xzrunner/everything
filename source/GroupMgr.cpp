@@ -26,8 +26,6 @@ void GroupMgr::Combine(const GroupMgr& groups, size_t prim_off)
 {
     for (auto& group : groups.m_groups)
     {
-        assert(group.second->type == GroupType::Primitives);
-
         auto itr = m_groups.find(group.second->name);
         if (itr == m_groups.end())
         {
