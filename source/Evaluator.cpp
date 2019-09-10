@@ -342,10 +342,6 @@ void Evaluator::SetTreeDirty(const NodePtr& root)
     while (!buf.empty())
     {
         auto n = buf.front(); buf.pop();
-        if (n->IsDirty()) {
-            continue;
-        }
-
         n->SetDirty(true);
         for (auto& port : n->GetExports()) {
             for (auto& conn : port.conns) {
