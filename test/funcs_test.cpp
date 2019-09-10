@@ -67,7 +67,7 @@ TEST_CASE("attr")
         evt::node::GroupExpression::Instance inst;
         inst.group_name = "test0";
         inst.expr_str = "@P.x < 0 && @P.y < 0 && @P.z > 0";
-        inst.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        inst.merge_op = evt::GroupMerge::Union;
         group_expr->AddInstance(inst);
 
         auto blast = std::make_shared<evt::node::Blast>();

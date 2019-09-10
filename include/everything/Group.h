@@ -15,6 +15,14 @@ enum class GroupType
     Primitives,
 };
 
+enum class GroupMerge
+{
+    Replace,
+    Union,
+    Intersect,
+    Subtract,
+};
+
 struct Group
 {
     std::string name;

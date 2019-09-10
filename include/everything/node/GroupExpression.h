@@ -11,19 +11,11 @@ namespace node
 class GroupExpression : public Node
 {
 public:
-    enum class MergeOP
-    {
-        Replace,
-        Union,
-        Intersect,
-        Subtract,
-    };
-
     struct Instance
     {
         std::string group_name;
         std::string expr_str;
-        MergeOP     merge_op = MergeOP::Union;
+        GroupMerge  merge_op = GroupMerge::Union;
     };
 
 public:

@@ -101,13 +101,13 @@ TEST_CASE("group_expression")
         evt::node::GroupExpression::Instance inst0;
         inst0.group_name = "test0";
         inst0.expr_str = "@P.y < 0";
-        inst0.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        inst0.merge_op = evt::GroupMerge::Union;
         group_expr->AddInstance(inst0);
 
         evt::node::GroupExpression::Instance inst1;
         inst1.group_name = "test0";
         inst1.expr_str = "@P.x < 0";
-        inst1.merge_op = evt::node::GroupExpression::MergeOP::Replace;
+        inst1.merge_op = evt::GroupMerge::Replace;
         group_expr->AddInstance(inst1);
 
         auto blast = std::make_shared<evt::node::Blast>();
@@ -132,13 +132,13 @@ TEST_CASE("group_expression")
         evt::node::GroupExpression::Instance inst0;
         inst0.group_name = "test0";
         inst0.expr_str   = "@P.y < 0";
-        inst0.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        inst0.merge_op = evt::GroupMerge::Union;
         group_expr->AddInstance(inst0);
 
         evt::node::GroupExpression::Instance inst1;
         inst1.group_name = "test0";
         inst1.expr_str   = "@P.x < 0";
-        inst1.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        inst1.merge_op = evt::GroupMerge::Union;
         group_expr->AddInstance(inst1);
 
         auto blast = std::make_shared<evt::node::Blast>();
@@ -163,13 +163,13 @@ TEST_CASE("group_expression")
         evt::node::GroupExpression::Instance inst0;
         inst0.group_name = "test0";
         inst0.expr_str = "@P.y < 0";
-        inst0.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        inst0.merge_op = evt::GroupMerge::Union;
         group_expr->AddInstance(inst0);
 
         evt::node::GroupExpression::Instance inst1;
         inst1.group_name = "test0";
         inst1.expr_str = "@P.x < 0";
-        inst1.merge_op = evt::node::GroupExpression::MergeOP::Intersect;
+        inst1.merge_op = evt::GroupMerge::Intersect;
         group_expr->AddInstance(inst1);
 
         auto blast = std::make_shared<evt::node::Blast>();
@@ -194,13 +194,13 @@ TEST_CASE("group_expression")
         evt::node::GroupExpression::Instance inst0;
         inst0.group_name = "test0";
         inst0.expr_str = "@P.y < 0";
-        inst0.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        inst0.merge_op = evt::GroupMerge::Union;
         group_expr->AddInstance(inst0);
 
         evt::node::GroupExpression::Instance inst1;
         inst1.group_name = "test0";
         inst1.expr_str = "@P.x < 0";
-        inst1.merge_op = evt::node::GroupExpression::MergeOP::Subtract;
+        inst1.merge_op = evt::GroupMerge::Subtract;
         group_expr->AddInstance(inst1);
 
         auto blast = std::make_shared<evt::node::Blast>();
@@ -225,7 +225,7 @@ TEST_CASE("group_expression")
         evt::node::GroupExpression::Instance inst;
         inst.group_name = "test0";
         inst.expr_str = "@P.y==getbbox_max(0).y";
-        inst.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        inst.merge_op = evt::GroupMerge::Union;
         group_expr->AddInstance(inst);
 
         auto blast = std::make_shared<evt::node::Blast>();
@@ -250,7 +250,7 @@ TEST_CASE("group_expression")
         evt::node::GroupExpression::Instance inst;
         inst.group_name = "test0";
         inst.expr_str = "@P.y==getbbox_min(0).y";
-        inst.merge_op = evt::node::GroupExpression::MergeOP::Union;
+        inst.merge_op = evt::GroupMerge::Union;
         group_expr->AddInstance(inst);
 
         auto blast = std::make_shared<evt::node::Blast>();
