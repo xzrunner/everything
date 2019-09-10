@@ -1,6 +1,9 @@
 #include "everything/Everything.h"
 #include "everything/VexFuncs.h"
 
+#include <vexc/Type.h>
+#include <vexc/BuildInFuncs.h>
+
 namespace evt
 {
 
@@ -12,6 +15,9 @@ Everything::Everything()
 {
 	regist_rttr();
 
+    // vexc
+    vexc::SetupTypeSystem();
+    vexc::SetupBuildInFuncs();
     SetupVexFuncs();
 }
 
