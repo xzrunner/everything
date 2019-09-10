@@ -38,6 +38,7 @@ public:
     auto& GetGroupName() const { return m_group_name; }
 
     void SetGroupType(GroupType type);
+    void SetGroupMerge(GroupMerge merge);
 
     // base group
     void EnableBaseGroup(const std::string& expr);
@@ -54,6 +55,7 @@ private:
 private:
     std::string m_group_name;
     GroupType   m_group_type = GroupType::Primitives;
+    GroupMerge  m_merge_op   = GroupMerge::Replace;
 
     // base group
     bool m_base_group = false;

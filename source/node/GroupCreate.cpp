@@ -65,6 +65,17 @@ void GroupCreate::SetGroupType(GroupType type)
     SetDirty(true);
 }
 
+void GroupCreate::SetGroupMerge(GroupMerge merge)
+{
+    if (m_merge_op == merge) {
+        return;
+    }
+
+    m_merge_op = merge;
+
+    SetDirty(true);
+}
+
 void GroupCreate::EnableBaseGroup(const std::string& expr)
 {
     if (m_base_group &&
