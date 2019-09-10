@@ -34,8 +34,7 @@ void NodePropsMgr::SetExpr(size_t idx, const std::string& expr)
     if (p.m_expr == expr) {
         return;
     }
-    p.m_expr  = expr;
-    p.m_dirty = true;
+    p.m_expr = expr;
 }
 
 bool NodePropsMgr::SetValue(size_t idx, const Variable& val)
@@ -110,7 +109,6 @@ void NodeProp::Clear()
     m_key.clear();
     m_val.type = VariableType::Invalid;
 
-    m_dirty = false;
     m_expr.clear();
 
     m_from.clear();

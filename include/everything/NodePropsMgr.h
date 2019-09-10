@@ -29,7 +29,6 @@ private:
     std::string m_key;
     Variable    m_val;
 
-    bool m_dirty = false;
     std::string m_expr;
 
     std::vector<std::weak_ptr<NodeProp>> m_from, m_to;
