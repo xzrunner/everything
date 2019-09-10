@@ -39,6 +39,8 @@ public:
     void ClearInstances();
     void AddInstance(const Instance& inst);
 
+    auto& GetInstances() const { return m_insts; }
+
 private:
     void Select(std::vector<size_t>& items,
         const Instance& inst, Evaluator& eval) const;
@@ -46,7 +48,7 @@ private:
 private:
     GroupType m_group_type = GroupType::Primitives;
 
-    std::vector<Instance> m_intsts;
+    std::vector<Instance> m_insts;
 
     RTTR_ENABLE(Node)
 

@@ -21,7 +21,7 @@ void GroupExpression::Execute(Evaluator& eval, TreeContext& ctx)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
-    for (auto& inst : m_intsts)
+    for (auto& inst : m_insts)
     {
         std::vector<size_t> items;
         Select(items, inst, eval);
@@ -57,17 +57,17 @@ void GroupExpression::SetGroupType(GroupType type)
 
 void GroupExpression::ClearInstances()
 {
-    if (m_intsts.empty()) {
+    if (m_insts.empty()) {
         return;
     }
 
-    m_intsts.clear();
+    m_insts.clear();
     SetDirty(true);
 }
 
 void GroupExpression::AddInstance(const Instance& inst)
 {
-    m_intsts.push_back(inst);
+    m_insts.push_back(inst);
     SetDirty(true);
 }
 
