@@ -7,10 +7,12 @@
 #include <everything/node/Boolean.h>
 #include <everything/node/Knife.h>
 #include <everything/node/PolyExtrude.h>
+#include <everything/node/PolyFill.h>
 
 #include <everything/node/Box.h>
 #include <everything/node/Line.h>
 #include <everything/node/GroupCreate.h>
+#include <everything/node/Blast.h>
 
 #include <catch/catch.hpp>
 
@@ -201,5 +203,73 @@ TEST_CASE("poly extrude")
 
         auto h_sz = size * 0.5f;
         test::check_aabb(extrude, -h_sz, sm::vec3(h_sz.x, h_sz.y + dist, h_sz.z));
+    }
+}
+
+
+TEST_CASE("poly fill")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<evt::node::GroupCreate>();
+    group->SetGroupName("top");
+    group->SetGroupType(evt::GroupType::Primitives);
+    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto blast = std::make_shared<evt::node::Blast>();
+    blast->SetGroupName("top");
+    blast->SetGroupType(evt::GroupType::Primitives);
+    eval.AddNode(blast);
+
+    eval.Connect({ group, 0 }, { blast, 0 });
+
+    SECTION("one face")
+    {
+        auto poly_fill = std::make_shared<evt::node::PolyFill>();
+        eval.AddNode(poly_fill);
+
+        eval.Connect({ blast, 0 }, { poly_fill, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(blast, 5);
+        test::check_faces_num(poly_fill, 6);
+    }
+
+    SECTION("two face")
+    {
+        auto group2 = std::make_shared<evt::node::GroupCreate>();
+        group2->SetGroupName("btm");
+        group2->SetGroupType(evt::GroupType::Primitives);
+        group2->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
+        eval.AddNode(group2);
+
+        eval.Connect({ blast, 0 }, { group2, 0 });
+
+        auto blast2 = std::make_shared<evt::node::Blast>();
+        blast2->SetGroupName("btm");
+        blast2->SetGroupType(evt::GroupType::Primitives);
+        eval.AddNode(blast2);
+
+        eval.Connect({ group2, 0 }, { blast2, 0 });
+
+        auto poly_fill = std::make_shared<evt::node::PolyFill>();
+        eval.AddNode(poly_fill);
+
+        eval.Connect({ blast2, 0 }, { poly_fill, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(blast, 5);
+        test::check_faces_num(blast2, 4);
+        test::check_faces_num(poly_fill, 6);
     }
 }

@@ -18,7 +18,7 @@ void Evaluator::AddNode(const NodePtr& node)
     auto name = node->GetName();
     while (name.empty() || m_nodes_map.find(name) != m_nodes_map.end())
     {
-        if (name.empty()) {
+        if (node->GetName().empty()) {
             name = "node" + std::to_string(m_next_id++);
         } else {
             name = node->GetName() + std::to_string(m_next_id++);

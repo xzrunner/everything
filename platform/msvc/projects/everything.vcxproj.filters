@@ -167,6 +167,9 @@
     <ClInclude Include="..\..\..\include\everything\node\Null.h">
       <Filter>nodes\geometry\utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\PolyFill.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -274,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Null.cpp">
       <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\PolyFill.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
