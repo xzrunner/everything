@@ -158,6 +158,10 @@ void Evaluator::MakeDirty()
 
 Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) const
 {
+    if (str.empty()) {
+        return Variable();
+    }
+
     vexc::Parser parser(str.c_str());
     auto expr = vexc::ast::ExpressionParser::ParseExpression(parser);
     auto val = vexc::EvalExpression(expr, &ctx);
