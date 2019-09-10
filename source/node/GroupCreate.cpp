@@ -22,17 +22,20 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
     }
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
+    auto& group_mgr = m_geo_impl->GetGroup();
 
     auto group = std::make_shared<Group>();
     group->name = m_group_name;
     group->type = m_group_type;
-    m_geo_impl->AddGroup(group);
 
     if (m_base_group) {
         SelectByBaseExpr(eval, *group);
     } else if (m_keep_by_normals) {
         SelectByNormals(*group);
     }
+
+    group_mgr.Add(group, m_merge_op);
+    m_group_name = group->name;
 }
 
 void GroupCreate::UpdateContext(TreeContext& ctx)

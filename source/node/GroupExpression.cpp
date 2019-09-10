@@ -39,6 +39,7 @@ void GroupExpression::Execute(Evaluator& eval, TreeContext& ctx)
             group->type  = m_group_type;
             group->items = items;
             group_mgr.Add(group);
+            inst.group_name = group->name;
         }
     }
 }

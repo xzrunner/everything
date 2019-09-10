@@ -23,6 +23,8 @@ public:
 private:
     std::map<std::string, std::shared_ptr<Group>> m_groups;
 
+    size_t m_next_id = 0;
+
 }; // GroupMgr
 
 }

@@ -47,6 +47,15 @@ void GroupMgr::Combine(const GroupMgr& groups, size_t prim_off)
 
 void GroupMgr::Add(const std::shared_ptr<Group>& group)
 {
+    if (group->name.empty())
+    {
+        std::string name;
+        do {
+            name = "group" + std::to_string(m_next_id++);
+        } while (m_groups.find(name) != m_groups.end());
+        group->name = name;
+    }
+    
     auto itr = m_groups.insert({ group->name, group });
     assert(itr.second);
 }
