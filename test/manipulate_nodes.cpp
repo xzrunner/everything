@@ -120,7 +120,7 @@ TEST_CASE("transform")
         test::check_aabb(trans, -h_sz + off, h_sz + off);
     }
 
-    SECTION("group")
+    SECTION("group point")
     {
         auto group_create = std::make_shared<evt::node::GroupCreate>();
         group_create->SetGroupName("bottom");
@@ -132,7 +132,55 @@ TEST_CASE("transform")
 
         auto trans = std::make_shared<evt::node::Transform>();
         trans->SetGroupName("bottom");
-        trans->SetGroupType(evt::GroupType::Points);
+        trans->SetGroupType(evt::GroupType::GuessFromGroup);
+        eval.AddNode(trans);
+
+        trans->SetTranslate(sm::vec3(5, 0, 0));
+
+        eval.Connect({ group_create, 0 }, { trans, 0 });
+
+        eval.Update();
+
+        test::check_aabb(trans, -h_sz, sm::vec3(h_sz.x + 5, h_sz.y, h_sz.z));
+    }
+
+    SECTION("group vertex")
+    {
+        auto group_create = std::make_shared<evt::node::GroupCreate>();
+        group_create->SetGroupName("bottom");
+        group_create->SetGroupType(evt::GroupType::Vertices);
+        group_create->EnableBaseGroup("@P.y < 0");
+        eval.AddNode(group_create);
+
+        eval.Connect({ box, 0 }, { group_create, 0 });
+
+        auto trans = std::make_shared<evt::node::Transform>();
+        trans->SetGroupName("bottom");
+        trans->SetGroupType(evt::GroupType::GuessFromGroup);
+        eval.AddNode(trans);
+
+        trans->SetTranslate(sm::vec3(5, 0, 0));
+
+        eval.Connect({ group_create, 0 }, { trans, 0 });
+
+        eval.Update();
+
+        test::check_aabb(trans, -h_sz, sm::vec3(h_sz.x + 5, h_sz.y, h_sz.z));
+    }
+
+    SECTION("group prim")
+    {
+        auto group_create = std::make_shared<evt::node::GroupCreate>();
+        group_create->SetGroupName("bottom");
+        group_create->SetGroupType(evt::GroupType::Primitives);
+        group_create->EnableBaseGroup("@P.y < 0");
+        eval.AddNode(group_create);
+
+        eval.Connect({ box, 0 }, { group_create, 0 });
+
+        auto trans = std::make_shared<evt::node::Transform>();
+        trans->SetGroupName("bottom");
+        trans->SetGroupType(evt::GroupType::GuessFromGroup);
         eval.AddNode(trans);
 
         trans->SetTranslate(sm::vec3(5, 0, 0));

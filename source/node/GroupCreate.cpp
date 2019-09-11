@@ -152,6 +152,8 @@ void GroupCreate::SelectByNormals(Group& group)
         break;
     case GroupType::Vertices:
         break;
+    default:
+        assert(0);
     }
 }
 
@@ -159,15 +161,6 @@ void GroupCreate::SelectAll(Group& group)
 {
     switch (m_group_type)
     {
-    case GroupType::Primitives:
-    {
-        auto& prims = m_geo_impl->GetAttr().GetPrimtives();
-        group.items.resize(prims.size());
-        for (size_t i = 0, n = prims.size(); i < n; ++i) {
-            group.items[i] = i;
-        }
-    }
-        break;
     case GroupType::Points:
     {
         auto& pts = m_geo_impl->GetAttr().GetPoints();
@@ -176,8 +169,6 @@ void GroupCreate::SelectAll(Group& group)
             group.items[i] = i;
         }
     }
-        break;
-    case GroupType::Edges:
         break;
     case GroupType::Vertices:
     {
@@ -188,6 +179,19 @@ void GroupCreate::SelectAll(Group& group)
         }
     }
         break;
+    case GroupType::Edges:
+        break;
+    case GroupType::Primitives:
+    {
+        auto& prims = m_geo_impl->GetAttr().GetPrimtives();
+        group.items.resize(prims.size());
+        for (size_t i = 0, n = prims.size(); i < n; ++i) {
+            group.items[i] = i;
+        }
+    }
+        break;
+    default:
+        assert(0);
     }
 }
 
