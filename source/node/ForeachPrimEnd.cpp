@@ -38,6 +38,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
     // foreach prim
     auto& prev_attr = prev_geo->GetAttr();
     auto& prev_prims = prev_attr.GetPrimtives();
+    auto& attr = m_geo_impl->GetAttr();
     for (size_t i = 0, n = prev_prims.size(); i < n; ++i)
     {
         auto b_geo = begin->GetGeometry();
@@ -49,9 +50,11 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
         sub_eval.Update();
 
         auto e_prev_geo = NodeHelper::GetInputGeo(*this, 0);
-        if (e_prev_geo) {
-            m_geo_impl->GetGroup().Combine(e_prev_geo->GetGroup(), m_geo_impl->GetAttr().GetPrimtives().size());
-            m_geo_impl->GetAttr().Combine(e_prev_geo->GetAttr());
+        if (e_prev_geo)
+        {
+            m_geo_impl->GetGroup().Combine(e_prev_geo->GetGroup(), attr.GetPoints().size(),
+                attr.GetVertices().size(), attr.GetPrimtives().size());
+            attr.Combine(e_prev_geo->GetAttr());
         }
     }
 }

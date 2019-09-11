@@ -29,9 +29,9 @@ void Merge::Execute(Evaluator& eval, TreeContext& ctx)
     auto& attr = m_geo_impl->GetAttr();
     for (auto& c : children)
     {
-        const size_t off = attr.GetPrimtives().size();
         attr.Combine(c->GetAttr());
-        m_geo_impl->GetGroup().Combine(c->GetGroup(), off);
+        m_geo_impl->GetGroup().Combine(c->GetGroup(), attr.GetPoints().size(),
+            attr.GetVertices().size(), attr.GetPrimtives().size());
     }
     attr.ResetPointsOrder();
 

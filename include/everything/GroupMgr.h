@@ -3,6 +3,7 @@
 #include "everything/Group.h"
 
 #include <map>
+#include <functional>
 
 namespace evt
 {
@@ -14,7 +15,8 @@ public:
     GroupMgr(const GroupMgr& groups);
     GroupMgr& operator = (const GroupMgr& groups);
 
-    void Combine(const GroupMgr& groups, size_t prim_off);
+    void Combine(const GroupMgr& groups,
+        size_t pts_off, size_t vts_off, size_t prim_off);
 
     void Add(const std::shared_ptr<Group>& group, GroupMerge merge_op);
     std::shared_ptr<Group> Query(const std::string& name) const;

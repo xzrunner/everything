@@ -22,24 +22,42 @@ GroupMgr& GroupMgr::operator = (const GroupMgr& groups)
     return *this;
 }
 
-void GroupMgr::Combine(const GroupMgr& groups, size_t prim_off)
+void GroupMgr::Combine(const GroupMgr& groups, size_t pts_off,
+                          size_t vts_off, size_t prim_off)
 {
     for (auto& group : groups.m_groups)
     {
+        size_t off = 0;
+        switch (group.second->type)
+        {
+        case GroupType::Points:
+            off = pts_off;
+            break;
+        case GroupType::Vertices:
+            off = vts_off;
+            break;
+        case GroupType::Primitives:
+            off = prim_off;
+            break;
+        default:
+            assert(0);
+        }
+
         auto itr = m_groups.find(group.second->name);
         if (itr == m_groups.end())
         {
             auto new_group = std::make_shared<Group>(*group.second);
             for (auto& i : new_group->items) {
-                i += prim_off;
+                i += off;
             }
             m_groups.insert({ new_group->name, new_group });
         }
         else
         {
             auto old_group = itr->second;
+            assert(old_group->type == group.second->type);
             for (auto& i : group.second->items) {
-                old_group->items.push_back(i + prim_off);
+                old_group->items.push_back(i + off);
             }
         }
     }
