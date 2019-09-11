@@ -252,11 +252,8 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
         auto& points = brush.impl->Points();
         auto& faces = brush.impl->Faces();
 
-        for (auto& p : points)
-        {
-            auto tmp = std::make_shared<GeoAttribute::Point>(p);
-            tmp->order = dst.m_points.size();
-            dst.m_points.push_back(tmp);
+        for (auto& p : points) {
+            dst.m_points.push_back(std::make_shared<GeoAttribute::Point>(p));
         }
 
         for (auto& f : faces)

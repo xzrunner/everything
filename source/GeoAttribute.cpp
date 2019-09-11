@@ -110,8 +110,6 @@ void GeoAttribute::SetPoints(const std::vector<std::shared_ptr<Point>>& points)
     m_points = points;
 
     SetupAABB();
-
-    ResetPointsOrder();
 }
 
 void GeoAttribute::SetVertices(const std::vector<std::shared_ptr<Vertex>>& vertices)
@@ -140,8 +138,6 @@ void GeoAttribute::SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& p
             ++itr;
         }
     }
-
-    ResetPointsOrder();
 }
 
 void GeoAttribute::Combine(const GeoAttribute& attr)
@@ -150,13 +146,6 @@ void GeoAttribute::Combine(const GeoAttribute& attr)
     std::copy(attr.m_points.begin(), attr.m_points.end(), std::back_inserter(m_points));
     std::copy(attr.m_vertices.begin(), attr.m_vertices.end(), std::back_inserter(m_vertices));
     std::copy(attr.m_primtives.begin(), attr.m_primtives.end(), std::back_inserter(m_primtives));
-}
-
-void GeoAttribute::ResetPointsOrder()
-{
-    for (size_t i = 0, n = m_points.size(); i < n; ++i) {
-        m_points[i]->order = i;
-    }
 }
 
 void GeoAttribute::FromGeoShape(const GeoShape& shape)
@@ -172,7 +161,6 @@ void GeoAttribute::FromGeoShape(const GeoShape& shape)
         for (auto& v : vertices) {
             m_points.push_back(std::make_shared<GeoAttribute::Point>(v));
         }
-        ResetPointsOrder();
     }
         break;
     case GeoShapeType::Polyline:
@@ -189,7 +177,6 @@ void GeoAttribute::FromGeoShape(const GeoShape& shape)
             for (auto& v : vertices)
             {
                 auto dst_p = std::make_shared<GeoAttribute::Point>(v);
-                dst_p->order = m_points.size();
                 m_points.push_back(dst_p);
 
                 auto dst_v = std::make_shared<GeoAttribute::Vertex>();

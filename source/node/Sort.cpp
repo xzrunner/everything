@@ -18,17 +18,11 @@ void Sort::Execute(Evaluator& eval, TreeContext& ctx)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
     auto& attr = m_geo_impl->GetAttr();
-    if (m_key == Key::NoChange)
-    {
-        attr.ResetPointsOrder();
-    }
-    else
+    if (m_key != Key::NoChange)
     {
         auto sorted = attr.GetPoints();
         std::sort(sorted.begin(), sorted.end(), PointCmp(m_key));
-        for (size_t i = 0, n = sorted.size(); i < n; ++i) {
-            sorted[i]->order = i;
-        }
+        attr.SetPoints(sorted);
     }
 }
 

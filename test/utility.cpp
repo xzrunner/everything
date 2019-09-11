@@ -96,14 +96,9 @@ sm::vec3 get_point_pos(const evt::NodePtr& node, size_t idx)
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    for (auto& p : geo->GetAttr().GetPoints()) {
-        if (p->order == idx) {
-            return p->pos;
-        }
-    }
-
-    FAIL();
-    return sm::vec3();
+    auto& pts = geo->GetAttr().GetPoints();
+    REQUIRE(idx < pts.size());
+    return pts[idx]->pos;
 }
 
 sm::vec3 get_vertex_pos(const evt::NodePtr& node, size_t idx)
@@ -149,17 +144,14 @@ void check_point(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    sm::vec3 src;
-    src.MakeInvalid();
-    for (auto& p : geo->GetAttr().GetPoints()) {
-        if (p->order == idx) {
-            src = p->pos;
-        }
-    }
+    auto& pts = geo->GetAttr().GetPoints();
 
-    REQUIRE(src.x == Approx(pos.x));
-    REQUIRE(src.y == Approx(pos.y));
-    REQUIRE(src.z == Approx(pos.z));
+    REQUIRE(idx < pts.size());
+    auto& p = pts[idx]->pos;
+
+    REQUIRE(p.x == Approx(pos.x));
+    REQUIRE(p.y == Approx(pos.y));
+    REQUIRE(p.z == Approx(pos.z));
 }
 
 void check_vertex(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
@@ -167,17 +159,14 @@ void check_vertex(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    sm::vec3 src;
-    src.MakeInvalid();
-    for (auto& v : geo->GetAttr().GetVertices()) {
-        if (v->point->order == idx) {
-            src = v->point->pos;
-        }
-    }
+    auto& vts = geo->GetAttr().GetVertices();
 
-    REQUIRE(src.x == Approx(pos.x));
-    REQUIRE(src.y == Approx(pos.y));
-    REQUIRE(src.z == Approx(pos.z));
+    REQUIRE(idx < vts.size());
+    auto& p = vts[idx]->point->pos;
+
+    REQUIRE(p.x == Approx(pos.x));
+    REQUIRE(p.y == Approx(pos.y));
+    REQUIRE(p.z == Approx(pos.z));
 }
 
 void check_points_num(const evt::NodePtr& node, size_t num)

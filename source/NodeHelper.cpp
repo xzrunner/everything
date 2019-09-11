@@ -83,10 +83,11 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
     case GroupType::Vertices:
     {
         EvalContext eval_ctx(eval, node);
-        auto& vts = node.GetGeometry()->GetAttr().GetVertices();
+        auto& attr = node.GetGeometry()->GetAttr();
+        auto& vts = attr.GetVertices();
         for (size_t i = 0, n = vts.size(); i < n; ++i)
         {
-            eval_ctx.point_idx = vts[i]->point->order;
+            eval_ctx.point_idx = attr.QueryIndex(vts[i]->point);
             auto v = eval.CalcExpr(expr, eval_ctx);
             if (v.type == evt::VariableType::Invalid) {
                 continue;
@@ -102,14 +103,15 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
     case GroupType::Primitives:
     {
         EvalContext eval_ctx(eval, node);
-        auto& prims = node.GetGeometry()->GetAttr().GetPrimtives();
+        auto& attr = node.GetGeometry()->GetAttr();
+        auto& prims = attr.GetPrimtives();
         for (size_t i = 0, n = prims.size(); i < n; ++i)
         {
             auto& prim = prims[i];
             bool select = true;
-            for (auto& v : prim->vertices) 
+            for (auto& v : prim->vertices)
             {
-                eval_ctx.point_idx = v->point->order;
+                eval_ctx.point_idx = attr.QueryIndex(v->point);
                 auto v = eval.CalcExpr(expr, eval_ctx);
                 if (v.type == evt::VariableType::Invalid) {
                     select = false;

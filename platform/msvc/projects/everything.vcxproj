@@ -93,6 +93,9 @@
     <ClCompile Include="..\..\..\source\Variable.cpp" />
     <ClCompile Include="..\..\..\source\VexFuncs.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\everything\GeoAttribute.inl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>5.everything</ProjectName>
     <ProjectGuid>{A1C0A31A-8FA7-4835-AFD5-77F44C93E040}</ProjectGuid>

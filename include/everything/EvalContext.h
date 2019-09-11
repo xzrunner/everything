@@ -20,8 +20,8 @@ struct EvalContext
 
     // geo context
     int point_idx     = -1;
-    int vertex_idx    = -1;
-    int primitive_idx = -1;
+    //int vertex_idx    = -1;
+    //int primitive_idx = -1;
 
 }; // EvalContext
 

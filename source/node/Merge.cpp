@@ -33,7 +33,6 @@ void Merge::Execute(Evaluator& eval, TreeContext& ctx)
         m_geo_impl->GetGroup().Combine(c->GetGroup(), attr.GetPoints().size(),
             attr.GetVertices().size(), attr.GetPrimtives().size());
     }
-    attr.ResetPointsOrder();
 
     m_geo_impl->UpdateByAttr();
 }

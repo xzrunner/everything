@@ -57,7 +57,6 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
             attr.Combine(e_prev_geo->GetAttr());
         }
     }
-    attr.ResetPointsOrder();
 
     m_geo_impl->UpdateByAttr();
 }

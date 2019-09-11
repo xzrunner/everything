@@ -22,8 +22,6 @@ public:
 
         sm::vec3 pos;
 
-        size_t order = 0;
-
     }; // Point
 
     struct Primitive;
@@ -72,11 +70,12 @@ public:
 
     void Combine(const GeoAttribute& attr);
 
-    void ResetPointsOrder();
-
     void FromGeoShape(const GeoShape& shape);
 
     auto& GetAABB() const { return m_aabb; }
+
+    template<typename T>
+    int QueryIndex(const T& i) const;
 
 private:
     void SetupAABB();
@@ -99,3 +98,5 @@ private:
 }; // GeoAttribute
 
 }
+
+#include "everything/GeoAttribute.inl"

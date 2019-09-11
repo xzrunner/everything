@@ -28,7 +28,6 @@ void CopyToPoints::Execute(Evaluator& eval, TreeContext& ctx)
         }
         attr.Combine(src_attr);
     }
-    attr.ResetPointsOrder();
 
     m_geo_impl->UpdateByAttr();
 }

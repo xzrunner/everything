@@ -282,4 +282,9 @@
       <Filter>nodes\geometry\polygon</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\everything\GeoAttribute.inl">
+      <Filter>dataset\geo</Filter>
+    </None>
+  </ItemGroup>
 </Project>
