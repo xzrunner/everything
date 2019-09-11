@@ -292,7 +292,9 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
     faces.reserve(src.m_primtives.size());
     for (auto& prim : src.m_primtives)
     {
-        assert(prim->vertices.size() > 2);
+        if (prim->vertices.size() < 3) {
+            continue;
+        }
         auto face = std::make_shared<pm3::Face>();
         face->points.reserve(prim->vertices.size());
         for (auto& v : prim->vertices)
