@@ -66,7 +66,7 @@ TEST_CASE("curve")
         eval.Update();
 
         test::check_points_num(curve, 3);
-        test::check_pos(curve, 1, sm::vec3(4, 1, 0));
+        test::check_point(curve, 1, sm::vec3(4, 1, 0));
         test::check_aabb(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
     }
 
@@ -83,7 +83,7 @@ TEST_CASE("curve")
         eval.Update();
 
         test::check_points_num(curve, 3);
-        test::check_pos(curve, 1, sm::vec3(4, 1, 0));
+        test::check_point(curve, 1, sm::vec3(4, 1, 0));
         test::check_aabb(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
     }
 }
@@ -110,6 +110,6 @@ TEST_CASE("line")
     eval.Update();
 
     auto pos4 = ori + dir * len / static_cast<float>(num - 1) * 4;
-    test::check_pos(line, 4, pos4);
+    test::check_point(line, 4, pos4);
     test::check_aabb(line, ori, ori + dir * len);
 }

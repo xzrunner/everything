@@ -42,9 +42,9 @@ TEST_CASE("carve")
         eval.Update();
 
         test::check_points_num(carve, 3);
-        test::check_pos(carve, 0, sm::vec3(0, 2, 0));
-        test::check_pos(carve, 1, sm::vec3(0, 5, 0));
-        test::check_pos(carve, 2, sm::vec3(0, 10, 0));
+        test::check_point(carve, 0, sm::vec3(0, 2, 0));
+        test::check_point(carve, 1, sm::vec3(0, 5, 0));
+        test::check_point(carve, 2, sm::vec3(0, 10, 0));
     }
 
     SECTION("second u")
@@ -54,9 +54,9 @@ TEST_CASE("carve")
         eval.Update();
 
         test::check_points_num(carve, 3);
-        test::check_pos(carve, 0, sm::vec3(0, 0, 0));
-        test::check_pos(carve, 1, sm::vec3(0, 5, 0));
-        test::check_pos(carve, 2, sm::vec3(0, 7, 0));
+        test::check_point(carve, 0, sm::vec3(0, 0, 0));
+        test::check_point(carve, 1, sm::vec3(0, 5, 0));
+        test::check_point(carve, 2, sm::vec3(0, 7, 0));
     }
 
     SECTION("first and second u")
@@ -67,9 +67,9 @@ TEST_CASE("carve")
         eval.Update();
 
         test::check_points_num(carve, 3);
-        test::check_pos(carve, 0, sm::vec3(0, 3, 0));
-        test::check_pos(carve, 1, sm::vec3(0, 5, 0));
-        test::check_pos(carve, 2, sm::vec3(0, 6, 0));
+        test::check_point(carve, 0, sm::vec3(0, 3, 0));
+        test::check_point(carve, 1, sm::vec3(0, 5, 0));
+        test::check_point(carve, 2, sm::vec3(0, 6, 0));
     }
 
     SECTION("first and second u inv")
@@ -80,9 +80,9 @@ TEST_CASE("carve")
         eval.Update();
 
         test::check_points_num(carve, 3);
-        test::check_pos(carve, 0, sm::vec3(0, 3, 0));
-        test::check_pos(carve, 1, sm::vec3(0, 5, 0));
-        test::check_pos(carve, 2, sm::vec3(0, 6, 0));
+        test::check_point(carve, 0, sm::vec3(0, 3, 0));
+        test::check_point(carve, 1, sm::vec3(0, 5, 0));
+        test::check_point(carve, 2, sm::vec3(0, 6, 0));
     }
 
     SECTION("expr fit")
@@ -96,8 +96,8 @@ TEST_CASE("carve")
         eval.Update();
 
         test::check_points_num(carve, 3);
-        test::check_pos(carve, 0, sm::vec3(0, 3, 0));
-        test::check_pos(carve, 1, sm::vec3(0, 5, 0));
-        test::check_pos(carve, 2, sm::vec3(0, 7, 0));
+        test::check_point(carve, 0, sm::vec3(0, 3, 0));
+        test::check_point(carve, 1, sm::vec3(0, 5, 0));
+        test::check_point(carve, 2, sm::vec3(0, 7, 0));
     }
 }

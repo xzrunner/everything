@@ -91,20 +91,20 @@ void init()
     }
 }
 
-sm::vec3 get_pos(const evt::NodePtr& node, size_t idx)
+sm::vec3 get_point_pos(const evt::NodePtr& node, size_t idx)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    sm::vec3 ret;
-    ret.MakeInvalid();
     for (auto& p : geo->GetAttr().GetPoints()) {
         if (p->order == idx) {
-            ret = p->pos;
+            return p->pos;
         }
     }
 
-    return ret;
+    FAIL();
+    return sm::vec3();
+}
 }
 
 void check_aabb(const evt::NodePtr& node, const sm::vec3& min, const sm::vec3& max)
@@ -121,7 +121,7 @@ void check_aabb(const evt::NodePtr& node, const sm::vec3& min, const sm::vec3& m
     REQUIRE(aabb.Max()[2] == Approx(max.z));
 }
 
-void check_pos(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
+void check_point(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);

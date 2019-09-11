@@ -81,7 +81,7 @@ TEST_CASE("attr")
         eval.Update();
 
         test::check_points_num(blast, 1);
-        test::check_pos(blast, 0, sm::vec3(-0.5f, -0.5f, 0.5f));
+        test::check_point(blast, 0, sm::vec3(-0.5f, -0.5f, 0.5f));
     }
 }
 

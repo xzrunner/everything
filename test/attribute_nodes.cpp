@@ -33,9 +33,9 @@ TEST_CASE("sort")
 
         eval.Update();
 
-        test::check_pos(sort, 0, sm::vec3(0, 0, 0));
-        test::check_pos(sort, 1, sm::vec3(1, -2, 3));
-        test::check_pos(sort, 2, sm::vec3(-1, 2, -3));
+        test::check_point(sort, 0, sm::vec3(0, 0, 0));
+        test::check_point(sort, 1, sm::vec3(1, -2, 3));
+        test::check_point(sort, 2, sm::vec3(-1, 2, -3));
     }
 
     SECTION("sort x")
@@ -44,9 +44,9 @@ TEST_CASE("sort")
 
         eval.Update();
 
-        test::check_pos(sort, 0, sm::vec3(-1, 2, -3));
-        test::check_pos(sort, 1, sm::vec3(0, 0, 0));
-        test::check_pos(sort, 2, sm::vec3(1, -2, 3));
+        test::check_point(sort, 0, sm::vec3(-1, 2, -3));
+        test::check_point(sort, 1, sm::vec3(0, 0, 0));
+        test::check_point(sort, 2, sm::vec3(1, -2, 3));
     }
 
     SECTION("sort y")
@@ -55,9 +55,9 @@ TEST_CASE("sort")
 
         eval.Update();
 
-        test::check_pos(sort, 0, sm::vec3(1, -2, 3));
-        test::check_pos(sort, 1, sm::vec3(0, 0, 0));
-        test::check_pos(sort, 2, sm::vec3(-1, 2, -3));
+        test::check_point(sort, 0, sm::vec3(1, -2, 3));
+        test::check_point(sort, 1, sm::vec3(0, 0, 0));
+        test::check_point(sort, 2, sm::vec3(-1, 2, -3));
     }
 
     SECTION("sort z")
@@ -66,8 +66,8 @@ TEST_CASE("sort")
 
         eval.Update();
 
-        test::check_pos(sort, 0, sm::vec3(-1, 2, -3));
-        test::check_pos(sort, 1, sm::vec3(0, 0, 0));
-        test::check_pos(sort, 2, sm::vec3(1, -2, 3));
+        test::check_point(sort, 0, sm::vec3(-1, 2, -3));
+        test::check_point(sort, 1, sm::vec3(0, 0, 0));
+        test::check_point(sort, 2, sm::vec3(1, -2, 3));
     }
 }

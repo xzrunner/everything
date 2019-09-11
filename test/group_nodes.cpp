@@ -47,7 +47,7 @@ TEST_CASE("group_create")
 
         test::check_points_num(blast, 4);
         for (int i = 0; i < 4; ++i) {
-            REQUIRE(test::get_pos(blast, i).y < 0);
+            REQUIRE(test::get_point_pos(blast, i).y < 0);
         }
     }
 
@@ -122,7 +122,7 @@ TEST_CASE("group_expression")
 
         test::check_points_num(blast, 4);
         for (int i = 0; i < 4; ++i) {
-            auto pos = test::get_pos(blast, i);
+            auto pos = test::get_point_pos(blast, i);
             REQUIRE((pos.x < 0));
         }
     }
@@ -153,7 +153,7 @@ TEST_CASE("group_expression")
 
         test::check_points_num(blast, 6);
         for (int i = 0; i < 6; ++i) {
-            auto pos = test::get_pos(blast, i);
+            auto pos = test::get_point_pos(blast, i);
             REQUIRE((pos.y < 0 || pos.x < 0));
         }
     }
@@ -184,7 +184,7 @@ TEST_CASE("group_expression")
 
         test::check_points_num(blast, 2);
         for (int i = 0; i < 2; ++i) {
-            auto pos = test::get_pos(blast, i);
+            auto pos = test::get_point_pos(blast, i);
             REQUIRE((pos.y < 0 && pos.x < 0));
         }
     }
@@ -215,7 +215,7 @@ TEST_CASE("group_expression")
 
         test::check_points_num(blast, 2);
         for (int i = 0; i < 2; ++i) {
-            auto pos = test::get_pos(blast, i);
+            auto pos = test::get_point_pos(blast, i);
             REQUIRE((pos.y < 0 && pos.x >= 0));
         }
     }
@@ -240,7 +240,7 @@ TEST_CASE("group_expression")
 
         test::check_points_num(blast, 4);
         for (int i = 0; i < 4; ++i) {
-            auto pos = test::get_pos(blast, i);
+            auto pos = test::get_point_pos(blast, i);
             REQUIRE(pos.y == Approx(0.5f));
         }
     }
@@ -265,7 +265,7 @@ TEST_CASE("group_expression")
 
         test::check_points_num(blast, 4);
         for (int i = 0; i < 4; ++i) {
-            auto pos = test::get_pos(blast, i);
+            auto pos = test::get_point_pos(blast, i);
             REQUIRE(pos.y == Approx(-0.5f));
         }
     }
