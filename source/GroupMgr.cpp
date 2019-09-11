@@ -83,6 +83,15 @@ void GroupMgr::Rename(const std::string& src, const std::string& dst)
     Add(group, GroupMerge::Replace);
 }
 
+void GroupMgr::Traverse(std::function<bool(const Group&)> func) const
+{
+    for (auto& pair : m_groups) {
+        if (!func(*pair.second)) {
+            break;
+        }
+    }
+}
+
 void GroupMgr::Merge(GroupMerge op, const std::vector<size_t>& src, std::vector<size_t>& dst)
 {
     switch (op)

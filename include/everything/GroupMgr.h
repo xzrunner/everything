@@ -20,6 +20,8 @@ public:
     std::shared_ptr<Group> Query(const std::string& name) const;
     void Rename(const std::string& src, const std::string& dst);
 
+    void Traverse(std::function<bool(const Group&)> func) const;
+
     static void Merge(GroupMerge op, const std::vector<size_t>& src,
         std::vector<size_t>& dst);
 
