@@ -37,7 +37,7 @@ TEST_CASE("group_create")
 
         auto blast = std::make_shared<evt::node::Blast>();
         blast->SetGroupName("test");
-        blast->SetGroupType(evt::GroupType::Points);
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -171,7 +171,7 @@ TEST_CASE("group_expression")
 
         auto blast = std::make_shared<evt::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::Points);
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -202,7 +202,7 @@ TEST_CASE("group_expression")
 
         auto blast = std::make_shared<evt::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::Points);
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -233,7 +233,7 @@ TEST_CASE("group_expression")
 
         auto blast = std::make_shared<evt::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::Points);
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
