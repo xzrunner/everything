@@ -105,6 +105,29 @@ sm::vec3 get_point_pos(const evt::NodePtr& node, size_t idx)
     FAIL();
     return sm::vec3();
 }
+
+sm::vec3 get_vertex_pos(const evt::NodePtr& node, size_t idx)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+
+    auto& vts = geo->GetAttr().GetVertices();
+    REQUIRE(idx < vts.size());
+    return vts[idx]->point->pos;
+}
+
+void get_face_pos(const evt::NodePtr& node, size_t idx, std::function<void(const sm::vec3&)> func)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+
+    auto& prims = geo->GetAttr().GetPrimtives();
+    REQUIRE(idx < prims.size());
+
+    auto& prim = prims[idx];
+    for (auto& v : prim->vertices) {
+        func(v->point->pos);
+    }
 }
 
 void check_aabb(const evt::NodePtr& node, const sm::vec3& min, const sm::vec3& max)
@@ -139,11 +162,36 @@ void check_point(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
     REQUIRE(src.z == Approx(pos.z));
 }
 
+void check_vertex(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+
+    sm::vec3 src;
+    src.MakeInvalid();
+    for (auto& v : geo->GetAttr().GetVertices()) {
+        if (v->point->order == idx) {
+            src = v->point->pos;
+        }
+    }
+
+    REQUIRE(src.x == Approx(pos.x));
+    REQUIRE(src.y == Approx(pos.y));
+    REQUIRE(src.z == Approx(pos.z));
+}
+
 void check_points_num(const evt::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
     REQUIRE(num == geo->GetAttr().GetPoints().size());
+}
+
+void check_vertices_num(const evt::NodePtr& node, size_t num)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+    REQUIRE(num == geo->GetAttr().GetVertices().size());
 }
 
 void check_edges_num(const evt::NodePtr& node, size_t num)

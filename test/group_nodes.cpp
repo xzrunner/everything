@@ -30,7 +30,7 @@ TEST_CASE("group_create")
 
     eval.Connect({ box0, 0 }, { group, 0 });
 
-    SECTION("base group")
+    SECTION("base group points")
     {
         group->SetGroupType(evt::GroupType::Points);
         group->EnableBaseGroup("@P.y < 0");
@@ -49,6 +49,65 @@ TEST_CASE("group_create")
         for (int i = 0; i < 4; ++i) {
             REQUIRE(test::get_point_pos(blast, i).y < 0);
         }
+    }
+
+    SECTION("base group vertices")
+    {
+        group->SetGroupType(evt::GroupType::Vertices);
+        group->EnableBaseGroup("@P.y < 0");
+
+        auto blast = std::make_shared<evt::node::Blast>();
+        blast->SetGroupName("test");
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetDeleteNonSelected(true);
+        eval.AddNode(blast);
+
+        eval.Connect({ group, 0 }, { blast, 0 });
+
+        eval.Update();
+
+        test::check_vertices_num(blast, 12);
+        for (int i = 0; i < 12; ++i) {
+            REQUIRE(test::get_vertex_pos(blast, i).y < 0);
+        }
+    }
+
+    SECTION("base group prims")
+    {
+        group->SetGroupType(evt::GroupType::Primitives);
+        group->EnableBaseGroup("@P.y < 0");
+
+        auto blast = std::make_shared<evt::node::Blast>();
+        blast->SetGroupName("test");
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        eval.AddNode(blast);
+
+        eval.Connect({ group, 0 }, { blast, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(blast, 5);
+    }
+
+    SECTION("base group prims 2")
+    {
+        group->SetGroupType(evt::GroupType::Primitives);
+        group->EnableBaseGroup("@P.y < 0");
+
+        auto blast = std::make_shared<evt::node::Blast>();
+        blast->SetGroupName("test");
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetDeleteNonSelected(true);
+        eval.AddNode(blast);
+
+        eval.Connect({ group, 0 }, { blast, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(blast, 1);
+        test::get_face_pos(blast, 0, [](const sm::vec3& pos) {
+            REQUIRE(pos.y < 0);
+        });
     }
 
     SECTION("keey by normal")
