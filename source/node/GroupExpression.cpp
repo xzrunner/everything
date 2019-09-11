@@ -23,9 +23,7 @@ void GroupExpression::Execute(Evaluator& eval, TreeContext& ctx)
 
     for (auto& inst : m_insts)
     {
-        std::vector<size_t> items;
-        Select(items, inst, eval);
-
+        auto items = NodeHelper::SelectGeoByExpr(m_group_type, eval, *this, inst.expr_str);
         auto& group_mgr = m_geo_impl->GetGroup();
         auto group = group_mgr.Query(inst.group_name);
         if (group)
@@ -69,32 +67,6 @@ void GroupExpression::AddInstance(const Instance& inst)
 {
     m_insts.push_back(inst);
     SetDirty(true);
-}
-
-void GroupExpression::Select(std::vector<size_t>& items,
-                             const Instance& inst, Evaluator& eval) const
-{
-    switch (m_group_type)
-    {
-    case GroupType::Points:
-    {
-        EvalContext eval_ctx(eval, *this);
-        auto& pts = m_geo_impl->GetAttr().GetPoints();
-        for (size_t i = 0, n = pts.size(); i < n; ++i)
-        {
-            eval_ctx.point_idx = i;
-            auto v = eval.CalcExpr(inst.expr_str, eval_ctx);
-            if (v.type == VariableType::Invalid) {
-                continue;
-            }
-            assert(v.type == VariableType::Bool);
-            if (v.b) {
-                items.push_back(i);
-            }
-        }
-    }
-    break;
-    }
 }
 
 }

@@ -29,7 +29,7 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
     group->type = m_group_type;
 
     if (m_base_group) {
-        SelectByBaseExpr(eval, *group);
+        group->items = NodeHelper::SelectGeoByExpr(m_group_type, eval, *this, m_base_group_expr);
     } else if (m_keep_by_normals) {
         SelectByNormals(*group);
     } else {
@@ -126,31 +126,6 @@ void GroupCreate::DisableKeepByNormals()
     m_keep_by_normals = false;
 
     SetDirty(true);
-}
-
-void GroupCreate::SelectByBaseExpr(Evaluator& eval, Group& group)
-{
-    switch (m_group_type)
-    {
-    case GroupType::Points:
-    {
-        EvalContext eval_ctx(eval, *this);
-        auto& pts = m_geo_impl->GetAttr().GetPoints();
-        for (size_t i = 0, n = pts.size(); i < n; ++i)
-        {
-            eval_ctx.point_idx = i;
-            auto v = eval.CalcExpr(m_base_group_expr, eval_ctx);
-            if (v.type == evt::VariableType::Invalid) {
-                continue;
-            }
-            assert(v.type == VariableType::Bool);
-            if (v.b) {
-                group.items.push_back(i);
-            }
-        }
-    }
-        break;
-    }
 }
 
 void GroupCreate::SelectByNormals(Group& group)

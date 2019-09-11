@@ -49,7 +49,6 @@ public:
     void DisableKeepByNormals();
 
 private:
-    void SelectByBaseExpr(Evaluator& eval, Group& group);
     void SelectByNormals(Group& group);
     void SelectAll(Group& group);
 

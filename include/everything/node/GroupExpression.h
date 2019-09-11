@@ -42,10 +42,6 @@ public:
     auto& GetInstances() const { return m_insts; }
 
 private:
-    void Select(std::vector<size_t>& items,
-        const Instance& inst, Evaluator& eval) const;
-
-private:
     GroupType m_group_type = GroupType::Primitives;
 
     std::vector<Instance> m_insts;
