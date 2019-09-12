@@ -43,7 +43,6 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
         }
         if (new_pts.size() != old_pts.size())
         {
-            attr.Clear();
             attr.SetPoints(new_pts);
             m_geo_impl->UpdateByAttr();
         }
@@ -67,7 +66,6 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
         }
         if (new_vts.size() != old_vts.size())
         {
-            attr.Clear();
             attr.SetVertices(new_vts);
             m_geo_impl->UpdateByAttr();
         }

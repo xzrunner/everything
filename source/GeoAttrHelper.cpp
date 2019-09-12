@@ -26,10 +26,7 @@ void GeoAttrHelper::GenAttrFromPrim(GeoAttribute& dst, const GeoAttribute& src, 
         return;
     }
 
-    dst.Clear();
-
     auto& src_prim = src_prims[prim_idx];
-
     auto& src_pts = src.GetPoints();
     auto& src_vts = src.GetVertices();
 
@@ -65,9 +62,7 @@ void GeoAttrHelper::GenAttrFromPrim(GeoAttribute& dst, const GeoAttribute& src, 
         dst_vts.push_back(dst_v);
     }
 
-    dst.SetPoints(dst_pts);
-    dst.SetVertices(dst_vts);
-    dst.SetPrimtives({ dst_prim });
+    dst.Reset(dst_pts, dst_vts, { dst_prim });
 }
 
 }

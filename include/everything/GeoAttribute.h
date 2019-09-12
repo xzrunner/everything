@@ -57,8 +57,6 @@ public:
     GeoAttribute(const GeoAttribute& attr);
     GeoAttribute& operator = (const GeoAttribute& attr);
 
-    void Clear();
-
     auto& GetPoints() const { return m_points; }
     void  SetPoints(const std::vector<std::shared_ptr<Point>>& points);
 
@@ -67,6 +65,10 @@ public:
 
     auto& GetPrimtives() const { return m_primtives; }
     void  SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& prims);
+
+    void Reset(const std::vector<std::shared_ptr<Point>>& points,
+        const std::vector<std::shared_ptr<Vertex>>& vertices,
+        const std::vector<std::shared_ptr<Primitive>>& prims);
 
     void Combine(const GeoAttribute& attr);
 
@@ -78,6 +80,8 @@ public:
     int QueryIndex(const T& i) const;
 
 private:
+    void Clear();
+
     void SetupAABB();
 
 private:

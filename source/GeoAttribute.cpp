@@ -2,6 +2,7 @@
 #include "everything/GeoShape.h"
 
 #include <map>
+#include <set>
 
 namespace evt
 {
@@ -91,53 +92,177 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     return *this;
 }
 
-void GeoAttribute::Clear()
-{
-    m_points.clear();
-    m_vertices.clear();
-    m_primtives.clear();
-
-    m_attr_point.Clear();
-    m_attr_vertex.Clear();
-    m_attr_prim.Clear();
-    m_attr_detail.Clear();
-
-    m_aabb.MakeEmpty();
-}
-
 void GeoAttribute::SetPoints(const std::vector<std::shared_ptr<Point>>& points)
 {
+    if (m_points == points) {
+        return;
+    }
+
     m_points = points;
+
+    std::set<std::shared_ptr<Point>> p_set;
+    for (auto& p : m_points) {
+        p_set.insert(p);
+    }
+
+    bool v_dirty = false;
+    std::set<std::shared_ptr<Vertex>> v_set;
+    for (auto itr = m_vertices.begin(); itr != m_vertices.end(); )
+    {
+        if (p_set.find((*itr)->point) == p_set.end()) {
+            v_dirty = true;
+            itr = m_vertices.erase(itr);
+        } else {
+            v_set.insert(*itr);
+            ++itr;
+        }
+    }
+
+    bool prim_dirty = false;
+    if (v_dirty)
+    {
+        for (auto itr = m_primtives.begin(); itr != m_primtives.end(); )
+        {
+            bool valid = true;
+            for (auto v : (*itr)->vertices) {
+                if (v_set.find(v) == v_set.end()) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (!valid) {
+                prim_dirty = true;
+                itr = m_primtives.erase(itr);
+            } else {
+                ++itr;
+            }
+        }
+    }
+
+    if (prim_dirty)
+    {
+        std::set<std::shared_ptr<Primitive>> prim_set;
+        for (auto prim : m_primtives) {
+            prim_set.insert(prim);
+        }
+        for (auto itr = m_vertices.begin(); itr != m_vertices.end(); ) {
+            if (prim_set.find((*itr)->prim.lock()) == prim_set.end()) {
+                itr = m_vertices.erase(itr);
+            } else {
+                ++itr;
+            }
+        }
+    }
 
     SetupAABB();
 }
 
 void GeoAttribute::SetVertices(const std::vector<std::shared_ptr<Vertex>>& vertices)
 {
-    m_vertices = vertices;
-}
-
-void GeoAttribute::SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& prims)
-{
-    m_primtives = prims;
-
-    // shrink
-    for (auto itr = m_vertices.begin(); itr != m_vertices.end(); )
-    {
-        if (itr->use_count() == 1) {
-            itr = m_vertices.erase(itr);
-        } else {
-            ++itr;
-        }
+    if (m_vertices == vertices) {
+        return;
     }
+
+    m_vertices = vertices;
+
+    std::set<std::shared_ptr<Vertex>> v_set;
+    std::set<std::shared_ptr<Point>>  p_set;
+    for (auto v : m_vertices) {
+        v_set.insert(v);
+        p_set.insert(v->point);
+    }
+
+    bool p_dirty = false;
     for (auto itr = m_points.begin(); itr != m_points.end(); )
     {
-        if (itr->use_count() == 1) {
+        if (p_set.find(*itr) == p_set.end()) {
+            p_dirty = true;
             itr = m_points.erase(itr);
         } else {
             ++itr;
         }
     }
+
+    for (auto itr = m_primtives.begin(); itr != m_primtives.end(); )
+    {
+        bool valid = true;
+        for (auto v : (*itr)->vertices) {
+            if (v_set.find(v) == v_set.end()) {
+                valid = false;
+                break;
+            }
+        }
+        if (!valid) {
+            itr = m_primtives.erase(itr);
+        } else {
+            ++itr;
+        }
+    }
+
+    if (p_dirty) {
+        SetupAABB();
+    }
+}
+
+void GeoAttribute::SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& prims)
+{
+    if (m_primtives == prims) {
+        return;
+    }
+
+    m_primtives = prims;
+
+    std::set<std::shared_ptr<Vertex>> v_set;
+    for (auto prim : m_primtives) {
+        for (auto v : prim->vertices) {
+            v_set.insert(v);
+        }
+    }
+
+    bool v_dirty = false;
+    for (auto itr = m_vertices.begin(); itr != m_vertices.end(); )
+    {
+        if (v_set.find(*itr) == v_set.end()) {
+            itr = m_vertices.erase(itr);
+            v_dirty = true;
+        } else {
+            ++itr;
+        }
+    }
+
+    if (v_dirty)
+    {
+        std::set<std::shared_ptr<Point>> p_set;
+        for (auto v : m_vertices) {
+            p_set.insert(v->point);
+        }
+
+        bool p_dirty = false;
+        for (auto itr = m_points.begin(); itr != m_points.end(); ) {
+            if (p_set.find(*itr) == p_set.end()) {
+                p_dirty = true;
+                itr = m_points.erase(itr);
+            } else {
+                ++itr;
+            }
+        }
+        if (p_dirty) {
+            SetupAABB();
+        }
+    }
+}
+
+void GeoAttribute::Reset(const std::vector<std::shared_ptr<Point>>& points,
+                           const std::vector<std::shared_ptr<Vertex>>& vertices,
+                           const std::vector<std::shared_ptr<Primitive>>& prims)
+{
+    Clear();
+
+    m_points    = points;
+    m_vertices  = vertices;
+    m_primtives = prims;
+
+    SetupAABB();
 }
 
 void GeoAttribute::Combine(const GeoAttribute& attr)
@@ -200,6 +325,20 @@ void GeoAttribute::FromGeoShape(const GeoShape& shape)
     }
 
     SetupAABB();
+}
+
+void GeoAttribute::Clear()
+{
+    m_points.clear();
+    m_vertices.clear();
+    m_primtives.clear();
+
+    m_attr_point.Clear();
+    m_attr_vertex.Clear();
+    m_attr_prim.Clear();
+    m_attr_detail.Clear();
+
+    m_aabb.MakeEmpty();
 }
 
 void GeoAttribute::SetupAABB()
