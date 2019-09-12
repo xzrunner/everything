@@ -37,7 +37,7 @@ private:
 
 private:
     std::string m_group_name;
-    GroupType   m_group_type = GroupType::Points;
+    GroupType   m_group_type = GroupType::GuessFromGroup;
 
     bool m_delete_non_selected = false;
 

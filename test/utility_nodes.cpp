@@ -33,6 +33,7 @@ TEST_CASE("blast")
     auto group = std::make_shared<evt::node::GroupCreate>();
     const std::string name("test");
     group->SetGroupName(name);
+    group->SetGroupType(evt::GroupType::Primitives);
     group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
     eval.AddNode(group);
 
@@ -40,7 +41,7 @@ TEST_CASE("blast")
 
     auto blast = std::make_shared<evt::node::Blast>();
     blast->SetGroupName(name);
-    blast->SetGroupType(evt::GroupType::Primitives);
+    blast->SetGroupType(evt::GroupType::GuessFromGroup);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -115,7 +116,7 @@ TEST_CASE("foreach primitive")
     evt::make_connecting({ src_box, 0 }, { top_face_group, 0 });
     auto top_face_blast = std::make_shared<evt::node::Blast>();
     top_face_blast->SetGroupName("top_face");
-    top_face_blast->SetGroupType(evt::GroupType::Primitives);
+    top_face_blast->SetGroupType(evt::GroupType::GuessFromGroup);
     eval.AddNode(top_face_blast);
     evt::make_connecting({ top_face_group, 0 }, { top_face_blast, 0 });
 
@@ -128,7 +129,7 @@ TEST_CASE("foreach primitive")
     evt::make_connecting({ top_face_blast, 0 }, { btm_face_group, 0 });
     auto btm_face_blast = std::make_shared<evt::node::Blast>();
     btm_face_blast->SetGroupName("btm_face");
-    btm_face_blast->SetGroupType(evt::GroupType::Primitives);
+    btm_face_blast->SetGroupType(evt::GroupType::GuessFromGroup);
     eval.AddNode(btm_face_blast);
     evt::make_connecting({ btm_face_group, 0 }, { btm_face_blast, 0 });
 

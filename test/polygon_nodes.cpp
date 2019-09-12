@@ -174,7 +174,7 @@ TEST_CASE("knife plane")
 
     auto blast = std::make_shared<evt::node::Blast>();
     blast->SetGroupName("top");
-    blast->SetGroupType(evt::GroupType::Primitives);
+    blast->SetGroupType(evt::GroupType::GuessFromGroup);
     blast->SetDeleteNonSelected(true);
     eval.AddNode(blast);
 
@@ -281,7 +281,7 @@ TEST_CASE("poly fill")
 
     auto blast = std::make_shared<evt::node::Blast>();
     blast->SetGroupName("top");
-    blast->SetGroupType(evt::GroupType::Primitives);
+    blast->SetGroupType(evt::GroupType::GuessFromGroup);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -311,7 +311,7 @@ TEST_CASE("poly fill")
 
         auto blast2 = std::make_shared<evt::node::Blast>();
         blast2->SetGroupName("btm");
-        blast2->SetGroupType(evt::GroupType::Primitives);
+        blast2->SetGroupType(evt::GroupType::GuessFromGroup);
         eval.AddNode(blast2);
 
         eval.Connect({ group2, 0 }, { blast2, 0 });

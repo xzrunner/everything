@@ -72,7 +72,7 @@ TEST_CASE("attr")
 
         auto blast = std::make_shared<evt::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::Points);
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
