@@ -42,6 +42,8 @@ public:
 private:
     void Init(const GeoShapeType& type);
 
+    void ChangeType(const GeoShapeType& type);
+
     void UpdateModel(const std::shared_ptr<model::Model>& model);
 
     static void StoreToAttr(GeoAttribute& dst, const model::BrushModel& src);

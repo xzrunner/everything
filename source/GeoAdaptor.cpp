@@ -83,14 +83,54 @@ void GeoAdaptor::StoreBrush(std::unique_ptr<model::BrushModel>& brush_model)
 
 void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
 {
-    auto brush_model = GetBrushModel();
-    assert(brush_model);
-    LoadFromAttr(*brush_model, attr);
+    GeoShapeType type = GeoShapeType::Faces;
+    if (attr.GetPrimtives().empty()) {
+        type = GeoShapeType::Polyline;
+        if (attr.GetVertices().empty()) {
+            type = GeoShapeType::Points;
+        }
+    }
+    ChangeType(type);
 
-    assert(m_type == GeoShapeType::Faces);
-    std::shared_ptr<model::Model> model =
-        model::BrushBuilder::PolymeshFromBrush(*brush_model);
-    UpdateModel(model);
+    switch (type)
+    {
+    case GeoShapeType::Points:
+    {
+        auto& pts = attr.GetPoints();
+
+        std::vector<sm::vec3> vertices;
+        vertices.reserve(pts.size());
+        for (auto& p : pts) {
+            vertices.push_back(p->pos);
+        }
+        FromGeoShape(GeoPoints(vertices));
+    }
+        break;
+    case GeoShapeType::Polyline:
+    {
+        auto& vts = attr.GetVertices();
+
+        std::vector<sm::vec3> vertices;
+        vertices.reserve(vts.size());
+        for (auto& v : vts) {
+            vertices.push_back(v->point->pos);
+        }
+        FromGeoShape(GeoPolyline(vertices));
+    }
+        break;
+    case GeoShapeType::Faces:
+    {
+        auto brush_model = GetBrushModel();
+        assert(brush_model);
+        LoadFromAttr(*brush_model, attr);
+
+        assert(m_type == GeoShapeType::Faces);
+        std::shared_ptr<model::Model> model =
+            model::BrushBuilder::PolymeshFromBrush(*brush_model);
+        UpdateModel(model);
+    }
+        break;
+    }
 }
 
 std::unique_ptr<GeoShape> GeoAdaptor::ToGeoShape() const
@@ -227,6 +267,20 @@ void GeoAdaptor::Init(const GeoShapeType& type)
     default:
         assert(0);
     }
+}
+
+void GeoAdaptor::ChangeType(const GeoShapeType& type)
+{
+    if (m_type == type) {
+        return;
+    }
+    if (m_type == GeoShapeType::Points && type == GeoShapeType::Polyline ||
+        m_type == GeoShapeType::Polyline && type == GeoShapeType::Points) {
+        m_type = type;
+        return;
+    }
+
+    Init(type);
 }
 
 void GeoAdaptor::UpdateModel(const std::shared_ptr<model::Model>& model)
