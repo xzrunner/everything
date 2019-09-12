@@ -201,6 +201,15 @@ void check_faces_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == geo->GetAttr().GetPrimtives().size());
 }
 
+void check_group_num(const evt::NodePtr& node, const std::string& name, size_t num)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+    auto group = geo->GetGroup().Query(name);
+    REQUIRE(group != nullptr);
+    REQUIRE(group->items.size() == num);
+}
+
 void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Variable& val)
 {
     auto find = node->GetProps().Query(key);

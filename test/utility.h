@@ -27,6 +27,8 @@ void check_vertices_num(const evt::NodePtr& node, size_t num);
 void check_edges_num(const evt::NodePtr& node, size_t num);
 void check_faces_num(const evt::NodePtr& node, size_t num);
 
+void check_group_num(const evt::NodePtr& node, const std::string& name, size_t num);
+
 void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Variable& val);
 
 }

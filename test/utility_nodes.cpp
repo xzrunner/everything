@@ -50,6 +50,7 @@ TEST_CASE("blast")
         eval.Update();
 
         test::check_faces_num(blast, 5);
+        test::check_group_num(blast, name, 0);
     }
 
     SECTION("del non selected")
@@ -59,6 +60,7 @@ TEST_CASE("blast")
         eval.Update();
 
         test::check_faces_num(blast, 1);
+        test::check_group_num(blast, name, 1);
     }
 }
 

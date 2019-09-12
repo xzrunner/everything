@@ -97,6 +97,18 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
     default:
         assert(0);
     }
+
+    if (m_delete_non_selected)
+    {
+        assert(GetGeoItemNum() == group->items.size());
+        for (int i = 0, n = group->items.size(); i < n; ++i) {
+            group->items[i] = i;
+        }
+    }
+    else
+    {
+        group->items.clear();
+    }
 }
 
 void Blast::SetGroupType(GroupType type)
@@ -137,6 +149,30 @@ void Blast::SetupDelFlags(const Group& group, size_t count,
         for (auto& f : group.items) {
             del_flags[f] = true;
         }
+    }
+}
+
+size_t Blast::GetGeoItemNum() const
+{
+    if (!m_geo_impl) {
+        return 0;
+    }
+    auto group = m_geo_impl->GetGroup().Query(m_group_name);
+    if (!group) {
+        return 0;
+    }
+
+    auto type = m_group_type == GroupType::GuessFromGroup ? group->type : m_group_type;
+    switch (type)
+    {
+    case GroupType::Points:
+        return m_geo_impl->GetAttr().GetPoints().size();
+    case GroupType::Vertices:
+        return m_geo_impl->GetAttr().GetVertices().size();
+    case GroupType::Primitives:
+        return m_geo_impl->GetAttr().GetPrimtives().size();
+    default:
+        return 0;
     }
 }
 
