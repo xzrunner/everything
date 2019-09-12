@@ -6,6 +6,8 @@
 
 #include <functional>
 
+
+
 namespace evt
 {
 
@@ -33,6 +35,7 @@ public:
     // fixme: move to private
 public:
     model::BrushModel* GetBrushModel() const;
+    std::shared_ptr<gs::Shape3D> GetShape() const;
 
 private:
     GeoAdaptor   m_adaptor;

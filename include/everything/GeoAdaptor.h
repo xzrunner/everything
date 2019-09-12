@@ -8,6 +8,7 @@
 #include <functional>
 
 namespace model { class BrushModel; struct Model; }
+namespace gs { class Shape3D; }
 
 namespace evt
 {
@@ -38,6 +39,7 @@ public:
     // fixme: move to private
 public:
     model::BrushModel* GetBrushModel() const;
+    std::shared_ptr<gs::Shape3D> GetShape() const;
 
 private:
     void Init(const GeoShapeType& type);

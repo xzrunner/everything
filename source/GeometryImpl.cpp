@@ -45,4 +45,9 @@ model::BrushModel* GeometryImpl::GetBrushModel() const
     return m_adaptor.GetBrushModel();
 }
 
+std::shared_ptr<gs::Shape3D> GeometryImpl::GetShape() const
+{
+    return m_adaptor.GetShape();
+}
+
 }

@@ -20,29 +20,6 @@
 #include <ns/NodeFactory.h>
 #include <painting3/MaterialMgr.h>
 
-namespace
-{
-
-std::shared_ptr<gs::Shape3D> get_shape(const evt::GeoAdaptor& adaptor)
-{
-    switch (adaptor.GetType())
-    {
-    case evt::GeoShapeType::Points:
-    case evt::GeoShapeType::Polyline:
-    {
-        auto node = adaptor.GetNode();
-        assert(node->HasSharedComp<n3::CompShape>());
-        auto& cshape = node->GetSharedComp<n3::CompShape>();
-        return cshape.GetShape();
-    }
-        break;
-    default:
-        return nullptr;
-    }
-}
-
-}
-
 namespace evt
 {
 
@@ -140,7 +117,7 @@ std::unique_ptr<GeoShape> GeoAdaptor::ToGeoShape() const
     {
     case GeoShapeType::Points:
     {
-        auto shape = get_shape(*this);
+        auto shape = GetShape();
         assert(shape->get_type() == rttr::type::get<gs::PointSet3D>());
         auto points = std::static_pointer_cast<gs::PointSet3D>(shape);
         ret = std::make_unique<GeoPoints>(points->GetVertices());
@@ -148,7 +125,7 @@ std::unique_ptr<GeoShape> GeoAdaptor::ToGeoShape() const
         break;
     case GeoShapeType::Polyline:
     {
-        auto shape = get_shape(*this);
+        auto shape = GetShape();
         assert(shape->get_type() == rttr::type::get<gs::Polyline3D>());
         auto polyline = std::static_pointer_cast<gs::Polyline3D>(shape);
         if (polyline->GetClosed()) {
@@ -228,6 +205,23 @@ model::BrushModel* GeoAdaptor::GetBrushModel() const
     assert(ext && ext->Type() == model::EXT_BRUSH);
     auto brush_model = static_cast<model::BrushModel*>(ext.get());
     return brush_model;
+}
+
+std::shared_ptr<gs::Shape3D> GeoAdaptor::GetShape() const
+{
+    switch (m_type)
+    {
+    case evt::GeoShapeType::Points:
+    case evt::GeoShapeType::Polyline:
+    {
+        assert(m_node->HasSharedComp<n3::CompShape>());
+        auto& cshape = m_node->GetSharedComp<n3::CompShape>();
+        return cshape.GetShape();
+    }
+        break;
+    default:
+        return nullptr;
+    }
 }
 
 void GeoAdaptor::Init(const GeoShapeType& type)
