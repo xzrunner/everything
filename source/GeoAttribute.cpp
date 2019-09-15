@@ -285,6 +285,13 @@ GeoAttribute::QueryAttr(Type type, const std::string& name) const
     return m_attr_mgr[type].QueryAttr(name);
 }
 
+const std::vector<std::shared_ptr<GeoAttribute::AttrList>>&
+GeoAttribute::GetAttrs(Type type) const
+{
+    assert(type >= 0 && type < MAX_TYPE_NUM);
+    return m_attr_mgr[type].attrs;
+}
+
 void GeoAttribute::Combine(const GeoAttribute& attr)
 {
     std::copy(attr.m_points.begin(),    attr.m_points.end(),    std::back_inserter(m_points));

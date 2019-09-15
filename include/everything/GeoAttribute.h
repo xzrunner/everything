@@ -96,6 +96,7 @@ public:
 
     void AddAttr(Type type, const std::shared_ptr<AttrList>& attr);
     std::shared_ptr<AttrList> QueryAttr(Type type, const std::string& name) const;
+    const std::vector<std::shared_ptr<AttrList>>& GetAttrs(Type type) const;
 
     void Combine(const GeoAttribute& attr);
 
