@@ -10,6 +10,13 @@ namespace node
 class Merge : public Node
 {
 public:
+    enum InPortIdx
+    {
+        IDX_SRC_A = 0,
+        IDX_SRC_B,
+    };
+
+public:
     Merge()
     {
         m_imports = {

@@ -82,10 +82,9 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     }
 
     // attr list
-    m_attr_point  = attr.m_attr_point;
-    m_attr_vertex = attr.m_attr_vertex;
-    m_attr_prim   = attr.m_attr_prim;
-    m_attr_detail = attr.m_attr_detail;
+    for (int i = 0; i < MAX_TYPE_NUM; ++i) {
+        m_attr_mgr[i] = attr.m_attr_mgr[i];
+    }
 
     SetupAABB();
 
@@ -265,12 +264,81 @@ void GeoAttribute::Reset(const std::vector<std::shared_ptr<Point>>& points,
     SetupAABB();
 }
 
+void GeoAttribute::AddAttr(Type type, const std::shared_ptr<AttrList>& attr)
+{
+    assert(type >= 0 && type < MAX_TYPE_NUM);
+    auto& attrs = m_attr_mgr[type];
+    for (auto itr = attrs.attrs.begin(); itr != attrs.attrs.end(); ) {
+        if ((*itr)->name == attr->name) {
+            itr = attrs.attrs.erase(itr);
+        } else {
+            ++itr;
+        }
+    }
+    attrs.attrs.push_back(attr);
+}
+
+std::shared_ptr<GeoAttribute::AttrList>
+GeoAttribute::QueryAttr(Type type, const std::string& name) const
+{
+    assert(type >= 0 && type < MAX_TYPE_NUM);
+    return m_attr_mgr[type].QueryAttr(name);
+}
+
 void GeoAttribute::Combine(const GeoAttribute& attr)
 {
-    // todo attr_lsit
-    std::copy(attr.m_points.begin(), attr.m_points.end(), std::back_inserter(m_points));
-    std::copy(attr.m_vertices.begin(), attr.m_vertices.end(), std::back_inserter(m_vertices));
+    std::copy(attr.m_points.begin(),    attr.m_points.end(),    std::back_inserter(m_points));
+    std::copy(attr.m_vertices.begin(),  attr.m_vertices.end(),  std::back_inserter(m_vertices));
     std::copy(attr.m_primtives.begin(), attr.m_primtives.end(), std::back_inserter(m_primtives));
+
+    for (size_t i = 0; i < MAX_TYPE_NUM; ++i)
+    {
+
+        size_t tot_num = 0;
+        switch (i)
+        {
+        case POINT:
+            tot_num = m_points.size();
+            break;
+        case VERTEX:
+            tot_num = m_vertices.size();
+            break;
+        case PRIMITIVE:
+            tot_num = m_primtives.size();
+            break;
+        case DETAIL:
+            tot_num = 1;
+            break;
+        }
+
+        auto& src_attrs = attr.m_attr_mgr[i];
+        auto& dst_attrs = m_attr_mgr[i];
+        for (auto& s_attr : src_attrs.attrs)
+        {
+            if (s_attr->vars.empty()) {
+                continue;
+            }
+            auto d_attr = dst_attrs.QueryAttr(s_attr->name);
+            if (d_attr)
+            {
+                d_attr->Append(*s_attr);
+
+                if (d_attr->vars.size() != tot_num) {
+                    assert(tot_num > d_attr->vars.size());
+                    assert(!d_attr->vars.empty());
+                    d_attr->Append(d_attr->vars.front().type, tot_num - d_attr->vars.size());
+                }
+            }
+            else
+            {
+                auto d_attr = std::make_shared<AttrList>();
+                d_attr->name = s_attr->name;
+                d_attr->Append(s_attr->vars.front().type, tot_num - s_attr->vars.size());
+                d_attr->Append(*s_attr);
+                dst_attrs.attrs.push_back(d_attr);
+            }
+        }
+    }
 }
 
 void GeoAttribute::FromGeoShape(const GeoShape& shape)
@@ -333,10 +401,9 @@ void GeoAttribute::Clear()
     m_vertices.clear();
     m_primtives.clear();
 
-    m_attr_point.Clear();
-    m_attr_vertex.Clear();
-    m_attr_prim.Clear();
-    m_attr_detail.Clear();
+    for (auto& attrs : m_attr_mgr) {
+        attrs.Clear();
+    }
 
     m_aabb.MakeEmpty();
 }
@@ -352,10 +419,90 @@ void GeoAttribute::SetupAABB()
 //////////////////////////////////////////////////////////////////////////
 // struct GeoAttribute::AttrList
 //////////////////////////////////////////////////////////////////////////
-void GeoAttribute::AttrList::Clear()
+
+void GeoAttribute::AttrList::
+Append(VariableType type, size_t count)
 {
-    names.clear();
-    vars.clear();
+    if (count == 0) {
+        return;
+    }
+
+    Variable var;
+    switch (type)
+    {
+    case VariableType::Bool:
+        var = Variable(false);
+        break;
+    case VariableType::Int:
+        var = Variable(0);
+        break;
+    case VariableType::Float:
+        var = Variable(0.0f);
+        break;
+    case VariableType::Float3:
+        var = Variable(sm::vec3());
+        break;
+    case VariableType::Double:
+        var = Variable(0.0);
+        break;
+    case VariableType::String:
+        var = Variable("");
+        break;
+    default:
+        assert(0);
+    }
+
+    for (size_t i = 0; i < count; ++i) {
+        vars.push_back(var);
+    }
+}
+
+void GeoAttribute::AttrList::
+Append(const AttrList& list)
+{
+    if (list.vars.empty()) {
+        return;
+    }
+
+    assert(list.name == name);
+    assert(vars.empty() || !vars.empty() && vars.front().type == list.vars.front().type);
+    std::copy(list.vars.begin(), list.vars.end(), std::back_inserter(vars));
+}
+
+//////////////////////////////////////////////////////////////////////////
+// struct GeoAttribute::AttrMgr
+//////////////////////////////////////////////////////////////////////////
+
+GeoAttribute::AttrMgr::
+AttrMgr(const GeoAttribute::AttrMgr& attrs)
+{
+    operator = (attrs);
+}
+
+GeoAttribute::AttrMgr& GeoAttribute::AttrMgr::
+operator = (const GeoAttribute::AttrMgr& src)
+{
+    attrs.resize(src.attrs.size());
+    for (int i = 0, n = src.attrs.size(); i < n; ++i) {
+        attrs[i] = std::make_shared<AttrList>(*src.attrs[i]);
+    }
+    return *this;
+}
+
+void GeoAttribute::AttrMgr::Clear()
+{
+    attrs.clear();
+}
+
+std::shared_ptr<GeoAttribute::AttrList>
+GeoAttribute::AttrMgr::QueryAttr(const std::string& name) const
+{
+    for (auto& attr : attrs) {
+        if (attr->name == name) {
+            return attr;
+        }
+    }
+    return nullptr;
 }
 
 }

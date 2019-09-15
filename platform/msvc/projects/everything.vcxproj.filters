@@ -170,6 +170,9 @@
     <ClInclude Include="..\..\..\include\everything\node\PolyFill.h">
       <Filter>nodes\geometry\polygon</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Measure.h">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -280,6 +283,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\PolyFill.cpp">
       <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Measure.cpp">
+      <Filter>nodes\geometry\attribute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

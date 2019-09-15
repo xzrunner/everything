@@ -17,6 +17,8 @@ public:
     GeometryImpl(GeoShapeType type);
     GeometryImpl(const GeoShape& shape);
 
+    auto GetShapeType() const { return m_adaptor.GetType(); }
+
     auto& GetGroup() { return m_groups; }
 
     void UpdateByBrush(const model::BrushModel& brush_model);

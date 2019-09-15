@@ -2,11 +2,126 @@
 
 #include <everything/Evaluator.h>
 
+#include <everything/node/Measure.h>
 #include <everything/node/Sort.h>
 
 #include <everything/node/Add.h>
+#include <everything/node/Box.h>
 
 #include <catch/catch.hpp>
+
+TEST_CASE("measure box")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto measure = std::make_shared<evt::node::Measure>();
+    eval.AddNode(measure);
+
+    eval.Connect({ box, 0 }, { measure, 0 });
+
+    SECTION("perimeter")
+    {
+        measure->SetMesureType(evt::node::Measure::Type::Perimeter);
+
+        eval.Update();
+
+        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 6);
+        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 3, evt::Variable(4.0f));
+    }
+
+    SECTION("area")
+    {
+        measure->SetMesureType(evt::node::Measure::Type::Area);
+
+        eval.Update();
+
+        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "area", 6);
+        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "area", 2, evt::Variable(1.0f));
+    }
+}
+
+TEST_CASE("measure polyline")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto add = std::make_shared<evt::node::Add>();
+    add->SetPoints({
+        { 0, 0, 0 },
+        { 0, 1, 0 },
+        { 0, 1, 1 },
+        { 0, 2, 1 },
+    });
+    eval.AddNode(add);
+
+    auto measure = std::make_shared<evt::node::Measure>();
+    eval.AddNode(measure);
+
+    eval.Connect({ add, 0 }, { measure, 0 });
+
+    SECTION("perimeter")
+    {
+        measure->SetMesureType(evt::node::Measure::Type::Perimeter);
+
+        eval.Update();
+
+        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 1);
+        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 0, evt::Variable(3.0f));
+    }
+
+    SECTION("area")
+    {
+        measure->SetMesureType(evt::node::Measure::Type::Area);
+
+        eval.Update();
+
+        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "area", 1);
+        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "area", 0, evt::Variable(0.0f));
+    }
+}
+
+TEST_CASE("measure rename")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto measure = std::make_shared<evt::node::Measure>();
+    eval.AddNode(measure);
+
+    eval.Connect({ box, 0 }, { measure, 0 });
+
+    SECTION("perimeter")
+    {
+        measure->SetMesureName("test0");
+        measure->SetMesureType(evt::node::Measure::Type::Perimeter);
+
+        eval.Update();
+
+        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "test0", 6);
+        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "test0", 3, evt::Variable(4.0f));
+    }
+
+    SECTION("area")
+    {
+        measure->SetMesureName("test1");
+        measure->SetMesureType(evt::node::Measure::Type::Area);
+
+        eval.Update();
+
+        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "test1", 6);
+        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "test1", 2, evt::Variable(1.0f));
+    }
+}
 
 TEST_CASE("sort")
 {

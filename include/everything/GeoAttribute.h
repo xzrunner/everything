@@ -16,6 +16,16 @@ class GeoShape;
 class GeoAttribute : boost::noncopyable
 {
 public:
+    enum Type
+    {
+        POINT = 0,
+        VERTEX,
+        PRIMITIVE,
+        DETAIL,
+
+        MAX_TYPE_NUM,
+    };
+
     struct Point
     {
         Point(const sm::vec3& pos) : pos(pos) {}
@@ -44,12 +54,26 @@ public:
 
     struct AttrList
     {
-        void Clear();
+        std::string name;
+        std::vector<Variable> vars;
 
-        std::vector<std::string> names;
-        std::vector<Variable>    vars;
+        void Append(VariableType type, size_t count);
+        void Append(const AttrList& list);
 
     }; // AttrList
+
+    struct AttrMgr
+    {
+        AttrMgr() {}
+        AttrMgr(const AttrMgr& attrs);
+        AttrMgr& operator = (const AttrMgr& attrs);
+
+        void Clear();
+        std::shared_ptr<AttrList> QueryAttr(const std::string& name) const;
+
+        std::vector<std::shared_ptr<AttrList>> attrs;
+
+    }; // AttrMgr
 
 public:
     GeoAttribute() {}
@@ -69,6 +93,9 @@ public:
     void Reset(const std::vector<std::shared_ptr<Point>>& points,
         const std::vector<std::shared_ptr<Vertex>>& vertices,
         const std::vector<std::shared_ptr<Primitive>>& prims);
+
+    void AddAttr(Type type, const std::shared_ptr<AttrList>& attr);
+    std::shared_ptr<AttrList> QueryAttr(Type type, const std::string& name) const;
 
     void Combine(const GeoAttribute& attr);
 
@@ -90,10 +117,7 @@ private:
     std::vector<std::shared_ptr<Primitive>> m_primtives;
 //    Detail                 m_detail;
 
-    AttrList m_attr_point;
-    AttrList m_attr_vertex;
-    AttrList m_attr_prim;
-    AttrList m_attr_detail;
+    AttrMgr m_attr_mgr[MAX_TYPE_NUM];
 
     sm::cube m_aabb;
 

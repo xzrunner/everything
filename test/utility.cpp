@@ -201,6 +201,26 @@ void check_faces_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == geo->GetAttr().GetPrimtives().size());
 }
 
+void check_attr_count(const evt::NodePtr& node, evt::GeoAttribute::Type type,
+                      const std::string& name, size_t num)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+    auto attrs = geo->GetAttr().QueryAttr(type, name);
+    REQUIRE(attrs != nullptr);
+    REQUIRE(attrs->vars.size() == num);
+}
+
+void check_attr_value(const evt::NodePtr& node, evt::GeoAttribute::Type type,
+                      const std::string& name, size_t idx, const evt::Variable& var)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+    auto attrs = geo->GetAttr().QueryAttr(type, name);
+    REQUIRE(attrs != nullptr);
+    REQUIRE(attrs->vars[idx] == var);
+}
+
 void check_group_num(const evt::NodePtr& node, const std::string& name, size_t num)
 {
     auto geo = node->GetGeometry();

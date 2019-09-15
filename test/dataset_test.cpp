@@ -6,6 +6,9 @@
 #include <everything/node/Box.h>
 #include <everything/node/Geometry.h>
 #include <everything/node/Null.h>
+#include <everything/node/Measure.h>
+#include <everything/node/Add.h>
+#include <everything/node/Merge.h>
 
 #include <catch/catch.hpp>
 
@@ -137,5 +140,64 @@ TEST_CASE("use other's prop")
         eval.Update();
 
         test::check_aabb(box, sm::vec3(-4, -2, -2.5f), sm::vec3(4, 2, 2.5f));
+    }
+}
+
+TEST_CASE("attr combine")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto add = std::make_shared<evt::node::Add>();
+    add->SetPoints({
+        { 0, 0, 0 },
+        { 0, 1, 0 },
+        { 0, 1, 1 },
+        { 0, 2, 1 },
+    });
+    eval.AddNode(add);
+
+    auto measure1 = std::make_shared<evt::node::Measure>();
+    eval.Connect({ box, 0 }, { measure1, 0 });
+    eval.AddNode(measure1);
+
+    auto measure2 = std::make_shared<evt::node::Measure>();
+    eval.Connect({ add, 0 }, { measure2, 0 });
+    eval.AddNode(measure2);
+
+    auto merge = std::make_shared<evt::node::Merge>();
+    eval.AddNode(merge);
+
+    eval.Connect({ measure1, 0 }, { merge, evt::node::Merge::IDX_SRC_A });
+    eval.Connect({ measure2, 0 }, { merge, evt::node::Merge::IDX_SRC_B });
+
+    SECTION("perimeter")
+    {
+        measure1->SetMesureType(evt::node::Measure::Type::Perimeter);
+        measure2->SetMesureType(evt::node::Measure::Type::Perimeter);
+
+        eval.Update();
+
+        test::check_attr_count(merge, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 7);
+        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 3, evt::Variable(4.0f));
+        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 4, evt::Variable(4.0f));
+        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 6, evt::Variable(3.0f));
+    }
+
+    SECTION("area")
+    {
+        measure1->SetMesureType(evt::node::Measure::Type::Area);
+        measure2->SetMesureType(evt::node::Measure::Type::Area);
+
+        eval.Update();
+
+        test::check_attr_count(merge, evt::GeoAttribute::Type::PRIMITIVE, "area", 7);
+        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "area", 2, evt::Variable(1.0f));
+        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "area", 3, evt::Variable(1.0f));
+        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "area", 6, evt::Variable(0.0f));
     }
 }
