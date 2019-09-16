@@ -7,9 +7,9 @@
 namespace evt
 {
 
-GeoAttribute::GeoAttribute(const GeoShape& shape)
+GeoAttribute::GeoAttribute(const std::vector<std::shared_ptr<GeoShape>>& shapes)
 {
-    FromGeoShape(shape);
+    FromGeoShapes(shapes);
 }
 
 GeoAttribute::GeoAttribute(const GeoAttribute& attr)
@@ -51,7 +51,7 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     // primitives
     m_primtives.reserve(attr.m_primtives.size());
     for (auto& prim : attr.m_primtives) {
-        m_primtives.push_back(std::make_shared<Primitive>());
+        m_primtives.push_back(std::make_shared<Primitive>(prim->type));
     }
 
     // connect
@@ -350,55 +350,55 @@ void GeoAttribute::Combine(const GeoAttribute& attr)
     }
 }
 
-void GeoAttribute::FromGeoShape(const GeoShape& shape)
+void GeoAttribute::FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes)
 {
     Clear();
 
-    switch (shape.Type())
+    for (auto& shape : shapes)
     {
-    case GeoShapeType::Points:
-    {
-        auto& vertices = static_cast<const GeoPoints&>(shape).GetVertices();
-        m_points.reserve(vertices.size());
-        for (auto& v : vertices) {
-            m_points.push_back(std::make_shared<GeoAttribute::Point>(v));
-        }
-    }
-        break;
-    case GeoShapeType::Polyline:
-    {
-        auto& vertices = static_cast<const GeoPolyline&>(shape).GetVertices();
-        if (vertices.size() < 2) {
-            return;
-        }
-        auto from_polyline = [&](const std::vector<sm::vec3>& vertices)
+        switch (shape->Type())
         {
-            m_points.reserve(vertices.size());
-            auto prim = std::make_shared<GeoAttribute::Primitive>();
-            prim->vertices.reserve(vertices.size());
-            for (auto& v : vertices)
-            {
-                auto dst_p = std::make_shared<GeoAttribute::Point>(v);
-                m_points.push_back(dst_p);
-
-                auto dst_v = std::make_shared<GeoAttribute::Vertex>();
-                dst_v->point = dst_p;
-                dst_v->prim = prim;
-                m_vertices.push_back(dst_v);
-
-                prim->vertices.push_back(dst_v);
-            }
-            m_primtives.push_back(prim);
-        };
-        if (vertices.front() == vertices.back()) {
-            auto del_back = vertices;
-            del_back.pop_back();
-            from_polyline(del_back);
-        } else {
-            from_polyline(vertices);
+        case GeoShapeType::Point:
+        {
+            auto& vertex = static_cast<GeoPoint*>(shape.get())->GetVertex();
+            m_points.push_back(std::make_shared<GeoAttribute::Point>(vertex));
         }
-    }
-        break;
+            break;
+        case GeoShapeType::Polyline:
+        {
+            auto& vertices = static_cast<GeoPolyline*>(shape.get())->GetVertices();
+            if (vertices.size() < 2) {
+                return;
+            }
+            auto from_polyline = [&](const std::vector<sm::vec3>& vertices)
+            {
+                m_points.reserve(vertices.size());
+                auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonCurves);
+                prim->vertices.reserve(vertices.size());
+                for (auto& v : vertices)
+                {
+                    auto dst_p = std::make_shared<GeoAttribute::Point>(v);
+                    m_points.push_back(dst_p);
+
+                    auto dst_v = std::make_shared<GeoAttribute::Vertex>();
+                    dst_v->point = dst_p;
+                    dst_v->prim = prim;
+                    m_vertices.push_back(dst_v);
+
+                    prim->vertices.push_back(dst_v);
+                }
+                m_primtives.push_back(prim);
+            };
+            if (vertices.front() == vertices.back()) {
+                auto del_back = vertices;
+                del_back.pop_back();
+                from_polyline(del_back);
+            } else {
+                from_polyline(vertices);
+            }
+        }
+            break;
+        }
     }
 
     SetupAABB();

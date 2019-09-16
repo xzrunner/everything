@@ -19,8 +19,14 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
         return;
     }
 
-    // only support polyline now
-    auto prev_shape = prev_geo->ToGeoShape();
+    auto prev_shapes = prev_geo->ToGeoShapes();
+    if (prev_shapes.empty()) {
+        return;
+    }
+
+    // todo: only support one shape
+    auto& prev_shape = prev_shapes.front();
+    // todo: only support polyline now
     if (prev_shape->Type() != GeoShapeType::Polyline) {
         return;
     }
@@ -92,7 +98,7 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
     }
     if (!dst_vertices.empty()) {
         m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
-        m_geo_impl = std::make_shared<GeometryImpl>(GeoPolyline(dst_vertices));
+        m_geo_impl->FromGeoShapes({ std::make_shared<GeoPolyline>(dst_vertices) });
     }
 }
 

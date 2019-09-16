@@ -38,8 +38,16 @@ void Delete::Execute(Evaluator& eval, TreeContext& ctx)
         }
     }
 
-    if (!vertices.empty()) {
-        m_geo_impl = std::make_shared<GeometryImpl>(GeoPoints(vertices));
+    if (!vertices.empty()) 
+    {
+        m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
+
+        std::vector<std::shared_ptr<GeoShape>> shapes;
+        shapes.reserve(vertices.size());
+        for (auto& v : vertices) {
+            shapes.push_back(std::make_shared<GeoPoint>(v));
+        }
+        m_geo_impl->FromGeoShapes(shapes);
     }
 }
 

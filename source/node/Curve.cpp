@@ -28,7 +28,7 @@ void Curve::SetVertices(const std::vector<sm::vec3>& vertices)
 void Curve::BuildModel()
 {
     if (m_geo_impl && m_vertices.size() >= 2) {
-        m_geo_impl->FromGeoShape(GeoPolyline(m_vertices));
+        m_geo_impl->FromGeoShapes({ std::make_unique<GeoPolyline>(m_vertices) });
     }
 }
 

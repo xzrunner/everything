@@ -35,7 +35,7 @@ void GeoAttrHelper::GenAttrFromPrim(GeoAttribute& dst, const GeoAttribute& src, 
 
     std::map<std::shared_ptr<GeoAttribute::Point>, size_t> s_pt_to_d_idx;
 
-    auto& dst_prim = std::make_shared<GeoAttribute::Primitive>();
+    auto& dst_prim = std::make_shared<GeoAttribute::Primitive>(src_prim->type);
     dst_prim->vertices.reserve(src_prim->vertices.size());
     for (auto& src_v : src_prim->vertices)
     {

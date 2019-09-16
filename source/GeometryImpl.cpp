@@ -8,12 +8,6 @@ GeometryImpl::GeometryImpl(GeoAdaptor::Type type)
 {
 }
 
-GeometryImpl::GeometryImpl(const GeoShape& shape)
-    : m_adaptor(shape)
-    , m_attr(shape)
-{
-}
-
 void GeometryImpl::UpdateByBrush(const model::BrushModel& brush_model)
 {
     m_adaptor.UpdateByBrush(const_cast<GeoAttribute&>(m_attr), brush_model);
@@ -29,25 +23,16 @@ void GeometryImpl::UpdateByAttr()
     m_adaptor.UpdateByAttr(m_attr);
 }
 
-std::unique_ptr<GeoShape> GeometryImpl::ToGeoShape() const
+std::vector<std::shared_ptr<GeoShape>>
+GeometryImpl::ToGeoShapes() const
 {
-    return m_adaptor.ToGeoShape();
+    return m_adaptor.ToGeoShapes();
 }
 
-void GeometryImpl::FromGeoShape(const GeoShape& shape)
+void GeometryImpl::FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes)
 {
-    m_adaptor.FromGeoShape(shape);
-    m_attr.FromGeoShape(shape);
-}
-
-model::BrushModel* GeometryImpl::GetBrushModel() const
-{
-    return m_adaptor.GetBrushModel();
-}
-
-std::shared_ptr<gs::Shape3D> GeometryImpl::GetShape() const
-{
-    return m_adaptor.GetShape();
+    m_adaptor.FromGeoShapes(shapes);
+    m_attr.FromGeoShapes(shapes);
 }
 
 }

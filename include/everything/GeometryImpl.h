@@ -6,8 +6,6 @@
 
 #include <functional>
 
-
-
 namespace evt
 {
 
@@ -15,7 +13,6 @@ class GeometryImpl
 {
 public:
     GeometryImpl(GeoAdaptor::Type type);
-    GeometryImpl(const GeoShape& shape);
 
     auto GetAdaptorType() const { return m_adaptor.GetType(); }
 
@@ -31,13 +28,17 @@ public:
     auto& GetAttr() { return m_attr; }
     auto& GetAttr() const { return m_attr; }
 
-    std::unique_ptr<GeoShape> ToGeoShape() const;
-    void FromGeoShape(const GeoShape& shape);
+    std::vector<std::shared_ptr<GeoShape>> ToGeoShapes() const;
+    void FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes);
 
     // fixme: move to private
 public:
-    model::BrushModel* GetBrushModel() const;
-    std::shared_ptr<gs::Shape3D> GetShape() const;
+    model::BrushModel* GetBrushModel() const {
+        return m_adaptor.GetBrushModel();
+    }
+    std::vector<std::shared_ptr<gs::Shape3D>> GetGeoShapes() const {
+        return m_adaptor.GetGeoShapes();
+    }
 
 private:
     GeoAdaptor   m_adaptor;

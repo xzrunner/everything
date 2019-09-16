@@ -33,9 +33,20 @@ public:
 
     }; // Vertex
 
+    // In Houdini, primitives refer to a unit of geometry, lower-level than an object but above points.
     struct Primitive
     {
+        enum class Type
+        {
+            PolygonFace = 0,
+            PolygonCurves,
+        };
+
+        Primitive(Type type) : type(type) {}
+
         std::vector<std::shared_ptr<Vertex>> vertices;
+
+        Type type = Type::PolygonFace;
 
     }; // Primitive
 
@@ -68,7 +79,7 @@ public:
 
 public:
     GeoAttribute() {}
-    GeoAttribute(const GeoShape& shape);
+    GeoAttribute(const std::vector<std::shared_ptr<GeoShape>>& shapes);
     GeoAttribute(const GeoAttribute& attr);
     GeoAttribute& operator = (const GeoAttribute& attr);
 
@@ -91,7 +102,7 @@ public:
 
     void Combine(const GeoAttribute& attr);
 
-    void FromGeoShape(const GeoShape& shape);
+    void FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes);
 
     auto& GetAABB() const { return m_aabb; }
 

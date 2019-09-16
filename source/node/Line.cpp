@@ -78,8 +78,6 @@ void Line::BuildModel()
         vertices.push_back(v);
         v += dt;
     }
-    m_geo_impl->FromGeoShape(GeoPolyline(vertices));
-}
-
-}
+    m_geo_impl->FromGeoShapes({ std::make_unique<GeoPolyline>(vertices) });
+}}
 }

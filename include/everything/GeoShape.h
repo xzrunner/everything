@@ -9,7 +9,7 @@ namespace evt
 
 enum class GeoShapeType
 {
-    Points,
+    Point,
     Polyline,
     Faces,
 };
@@ -21,24 +21,24 @@ public:
 
 }; // GeoShape
 
-class GeoPoints : public GeoShape
+class GeoPoint : public GeoShape
 {
 public:
-    GeoPoints(const std::vector<sm::vec3>& vertices)
-        : m_vertices(vertices)
+    GeoPoint(const sm::vec3& vertex)
+        : m_vertex(vertex)
     {
     }
 
-    virtual GeoShapeType Type() const { 
-        return GeoShapeType::Points; 
+    virtual GeoShapeType Type() const {
+        return GeoShapeType::Point;
     }
 
-    auto& GetVertices() const { return m_vertices; }
+    auto& GetVertex() const { return m_vertex; }
 
 private:
-    std::vector<sm::vec3> m_vertices;
+    sm::vec3 m_vertex;
 
-}; // GeoPoints
+}; // GeoPoint
 
 class GeoPolyline : public GeoShape
 {
@@ -48,8 +48,8 @@ public:
     {
     }
 
-    virtual GeoShapeType Type() const { 
-        return GeoShapeType::Polyline; 
+    virtual GeoShapeType Type() const {
+        return GeoShapeType::Polyline;
     }
 
     auto& GetVertices() const { return m_vertices; }
@@ -67,7 +67,7 @@ public:
     {
     }
 
-    virtual GeoShapeType Type() const { 
+    virtual GeoShapeType Type() const {
         return GeoShapeType::Faces;
     }
 

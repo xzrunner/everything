@@ -28,7 +28,6 @@ public:
 
 public:
     GeoAdaptor(const Type& type);
-    GeoAdaptor(const GeoShape& shape);
     GeoAdaptor(const GeoAdaptor& adaptor);
     GeoAdaptor& operator = (const GeoAdaptor& adaptor) = delete;
 
@@ -40,13 +39,13 @@ public:
 
     void UpdateByAttr(const GeoAttribute& attr);
 
-    std::unique_ptr<GeoShape> ToGeoShape() const;
-    void FromGeoShape(const GeoShape& shape);
+    std::vector<std::shared_ptr<GeoShape>> ToGeoShapes() const;
+    void FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes);
 
     // fixme: move to private
 public:
     model::BrushModel* GetBrushModel() const;
-    std::shared_ptr<gs::Shape3D> GetShape() const;
+    std::vector<std::shared_ptr<gs::Shape3D>> GetGeoShapes() const;
 
 private:
     void Init(const Type& type);
