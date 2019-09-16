@@ -8,6 +8,8 @@
 #include <everything/node/Geometry.h>
 #include <everything/node/GroupExpression.h>
 #include <everything/node/Blast.h>
+#include <everything/node/Measure.h>
+#include <everything/node/Line.h>
 
 #include <catch/catch.hpp>
 
@@ -45,6 +47,33 @@ TEST_CASE("getbox")
         REQUIRE(f3[1] == Approx(2));
         REQUIRE(f3[2] == Approx(3));
     }
+}
+
+TEST_CASE("prim")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto measure = std::make_shared<evt::node::Measure>();
+    measure->SetName("measure1");
+    measure->SetMesureName("Perim");
+    measure->SetMesureType(evt::node::Measure::Type::Perimeter);
+    eval.AddNode(measure);
+
+    eval.Connect({ box, 0 }, { measure, 0 });
+
+    auto box2 = std::make_shared<evt::node::Box>();
+    auto& box2_props = const_cast<evt::NodePropsMgr&>(box2->GetProps());
+    box2_props.SetExpr(evt::node::Box::SIZE_X, "prim(\"../measure1/\",0,\"Perim\",0)");
+    eval.AddNode(box2);
+
+    eval.Update();
+
+    test::check_aabb(box2, sm::vec3(-2, -0.5f, -0.5f), sm::vec3(2, 0.5f, 0.5f));
 }
 
 TEST_CASE("attr")
