@@ -8,7 +8,7 @@ namespace node
 
 void Merge::Execute(Evaluator& eval, TreeContext& ctx)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 
     std::vector<std::shared_ptr<GeometryImpl>> children;
     for (auto& port : m_imports)

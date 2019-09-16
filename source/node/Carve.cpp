@@ -91,6 +91,7 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
         dst_vertices.push_back(end);
     }
     if (!dst_vertices.empty()) {
+        m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
         m_geo_impl = std::make_shared<GeometryImpl>(GeoPolyline(dst_vertices));
     }
 }

@@ -28,6 +28,7 @@ void Add::Execute(Evaluator& eval, TreeContext& ctx)
     }
     std::copy(m_points.begin(), m_points.end(), std::back_inserter(vertices));
 
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
     m_geo_impl = std::make_shared<GeometryImpl>(GeoPolyline(vertices));
 }
 

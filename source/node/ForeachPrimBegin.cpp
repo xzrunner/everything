@@ -15,7 +15,7 @@ ForeachPrimBegin::ForeachPrimBegin()
         {{ NodeVarType::Any, "out" }},
     };
 
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 }
 
 }

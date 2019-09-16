@@ -20,7 +20,14 @@ class GeoShape;
 class GeoAdaptor
 {
 public:
-    GeoAdaptor(const GeoShapeType& type);
+    enum class Type
+    {
+        Shape,
+        Brush,
+    };
+
+public:
+    GeoAdaptor(const Type& type);
     GeoAdaptor(const GeoShape& shape);
     GeoAdaptor(const GeoAdaptor& adaptor);
     GeoAdaptor& operator = (const GeoAdaptor& adaptor) = delete;
@@ -42,9 +49,7 @@ public:
     std::shared_ptr<gs::Shape3D> GetShape() const;
 
 private:
-    void Init(const GeoShapeType& type);
-
-    void ChangeType(const GeoShapeType& type);
+    void Init(const Type& type);
 
     void UpdateModel(const std::shared_ptr<model::Model>& model);
 
@@ -52,7 +57,7 @@ private:
     static void LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src);
 
 private:
-    GeoShapeType m_type;
+    Type m_type;
 
     n0::SceneNodePtr m_node = nullptr;
 

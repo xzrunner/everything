@@ -12,7 +12,7 @@ namespace node
 
 void Box::Execute(Evaluator& eval, TreeContext& ctx)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
     BuildModel();
 }
 

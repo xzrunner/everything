@@ -39,7 +39,7 @@ void Boolean::Execute(Evaluator& eval, TreeContext& ctx)
         return;
     }
 
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 
     std::vector<model::BrushModel::Brush> brushes;
     switch (m_operator)

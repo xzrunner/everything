@@ -68,17 +68,13 @@ Measure::CalcPerimeter() const
 
     attrs->name = m_ms_name.empty() ? "perimeter" : m_ms_name;
 
-    auto shape_type = m_geo_impl->GetShapeType();
-    switch (shape_type)
+    auto type = m_geo_impl->GetAdaptorType();
+    switch (type)
     {
-    case GeoShapeType::Points:
-        for (auto prim : prims) {
-            attrs->vars.push_back(Variable(0.0f));
-        }
-        break;
-    case GeoShapeType::Polyline:
+    case GeoAdaptor::Type::Shape:
         for (auto prim : prims)
         {
+            assert(prim->type == GeoAttribute::Primitive::Type::PolygonCurves);
             float len = 0;
             auto& vts = prim->vertices;
             assert(vts.size() > 1);
@@ -90,7 +86,7 @@ Measure::CalcPerimeter() const
             attrs->vars.push_back(Variable(len));
         }
         break;
-    case GeoShapeType::Faces:
+    case GeoAdaptor::Type::Brush:
         for (auto prim : prims)
         {
             float len = 0;
@@ -124,16 +120,15 @@ Measure::CalcArea() const
 
     attrs->name = m_ms_name.empty() ? "area" : m_ms_name;
 
-    auto shape_type = m_geo_impl->GetShapeType();
-    switch (shape_type)
+    auto type = m_geo_impl->GetAdaptorType();
+    switch (type)
     {
-    case GeoShapeType::Points:
-    case GeoShapeType::Polyline:
+    case GeoAdaptor::Type::Shape:
         for (auto prim : prims) {
             attrs->vars.push_back(Variable(0.0f));
         }
         break;
-    case GeoShapeType::Faces:
+    case GeoAdaptor::Type::Brush:
         // todo
         for (auto prim : prims)
         {

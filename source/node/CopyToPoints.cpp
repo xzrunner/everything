@@ -17,7 +17,7 @@ void CopyToPoints::Execute(Evaluator& eval, TreeContext& ctx)
         return;
     }
 
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 
     auto& attr = m_geo_impl->GetAttr();
     for (auto& move_to : dst_geo->GetAttr().GetPoints())

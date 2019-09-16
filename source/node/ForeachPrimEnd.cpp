@@ -27,7 +27,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
         return;
     }
 
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Faces);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 
     // closure
     Evaluator sub_eval;

@@ -3,7 +3,7 @@
 namespace evt
 {
 
-GeometryImpl::GeometryImpl(GeoShapeType type)
+GeometryImpl::GeometryImpl(GeoAdaptor::Type type)
     : m_adaptor(type)
 {
 }

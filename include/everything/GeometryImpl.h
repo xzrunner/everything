@@ -14,10 +14,10 @@ namespace evt
 class GeometryImpl
 {
 public:
-    GeometryImpl(GeoShapeType type);
+    GeometryImpl(GeoAdaptor::Type type);
     GeometryImpl(const GeoShape& shape);
 
-    auto GetShapeType() const { return m_adaptor.GetType(); }
+    auto GetAdaptorType() const { return m_adaptor.GetType(); }
 
     auto& GetGroup() { return m_groups; }
 

@@ -8,7 +8,7 @@ namespace node
 
 void Curve::Execute(Evaluator& eval, TreeContext& ctx)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoShapeType::Polyline);
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
     BuildModel();
 }
 

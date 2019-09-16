@@ -23,7 +23,7 @@
 namespace evt
 {
 
-GeoAdaptor::GeoAdaptor(const GeoShapeType& type)
+GeoAdaptor::GeoAdaptor(const Type& type)
 {
     Init(type);
 }
@@ -42,7 +42,7 @@ GeoAdaptor::GeoAdaptor(const GeoAdaptor& adaptor)
 
 void GeoAdaptor::UpdateByBrush(GeoAttribute& attr, const model::BrushModel& brush_model)
 {
-    assert(m_type == GeoShapeType::Faces);
+    assert(m_type == Type::Brush);
 
     std::shared_ptr<model::Model> model =
         model::BrushBuilder::PolymeshFromBrush(brush_model);
@@ -53,6 +53,8 @@ void GeoAdaptor::UpdateByBrush(GeoAttribute& attr, const model::BrushModel& brus
 
 void GeoAdaptor::StoreBrush(std::unique_ptr<model::BrushModel>& brush_model)
 {
+    assert(m_type == Type::Brush);
+
     auto& cmodel_inst = m_node->GetUniqueComp<n3::CompModelInst>();
     std::unique_ptr<model::ModelExtend> model_ext = std::move(brush_model);
     cmodel_inst.GetModel()->SetModelExt(model_ext);
@@ -60,14 +62,15 @@ void GeoAdaptor::StoreBrush(std::unique_ptr<model::BrushModel>& brush_model)
 
 void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
 {
-    GeoShapeType type = GeoShapeType::Faces;
-    if (attr.GetPrimtives().empty()) {
-        type = GeoShapeType::Polyline;
-        if (attr.GetVertices().empty()) {
-            type = GeoShapeType::Points;
+    Type type = Type::Shape;
+    for (auto& prim : attr.GetPrimtives()) {
+        if (prim->type == GeoAttribute::Primitive::Type::PolygonFace) {
+            type = Type::Brush;
         }
     }
-    ChangeType(type);
+    if (type != m_type) {
+        Init(type);
+    }
 
     switch (type)
     {
@@ -193,7 +196,7 @@ void GeoAdaptor::FromGeoShape(const GeoShape& shape)
 
 model::BrushModel* GeoAdaptor::GetBrushModel() const
 {
-    if (m_type != GeoShapeType::Faces) {
+    if (m_type != Type::Brush) {
         return nullptr;
     }
 
@@ -224,17 +227,16 @@ std::shared_ptr<gs::Shape3D> GeoAdaptor::GetShape() const
     }
 }
 
-void GeoAdaptor::Init(const GeoShapeType& type)
+void GeoAdaptor::Init(const Type& type)
 {
     m_type = type;
     switch (m_type)
     {
-    case GeoShapeType::Points:
-    case GeoShapeType::Polyline:
+    case Type::Shape:
         m_node = ns::NodeFactory::Create3D();
         m_node->AddSharedComp<n3::CompShape>();
         break;
-    case GeoShapeType::Faces:
+    case Type::Brush:
     {
         m_node = ns::NodeFactory::Create3D();
 
@@ -261,20 +263,6 @@ void GeoAdaptor::Init(const GeoShapeType& type)
     default:
         assert(0);
     }
-}
-
-void GeoAdaptor::ChangeType(const GeoShapeType& type)
-{
-    if (m_type == type) {
-        return;
-    }
-    if (m_type == GeoShapeType::Points && type == GeoShapeType::Polyline ||
-        m_type == GeoShapeType::Polyline && type == GeoShapeType::Points) {
-        m_type = type;
-        return;
-    }
-
-    Init(type);
 }
 
 void GeoAdaptor::UpdateModel(const std::shared_ptr<model::Model>& model)
