@@ -138,11 +138,11 @@ void Evaluator::Update()
         return;
     }
 
-    //// fixme: prepare geo for prop: $SIZEX
-    //UpdateNodes();
-    //UpdateProps();
-
+    // 1. build node connection for desc calc
+    UpdateNodes();
+    // 2. calc prop
     UpdateProps();
+    // 3. update node finally
     UpdateNodes();
 
     m_dirty = false;
