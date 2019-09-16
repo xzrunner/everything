@@ -6,6 +6,7 @@
 #include <everything/node/Add.h>
 #include <everything/node/Boolean.h>
 #include <everything/node/Knife.h>
+#include <everything/node/Normal.h>
 #include <everything/node/PolyExtrude.h>
 #include <everything/node/PolyFill.h>
 
@@ -207,6 +208,31 @@ TEST_CASE("knife plane")
         test::check_faces_num(knife, 2);
         test::check_points_num(knife, 6);
         test::check_edges_num(knife, 8);
+    }
+}
+
+TEST_CASE("normal box")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto normal = std::make_shared<evt::node::Normal>();
+    eval.AddNode(normal);
+
+    eval.Connect({ box, 0 }, { normal, 0 });
+
+    SECTION("add to point")
+    {
+        normal->SetAttrAddNormalTo(evt::GeoAttrType::Point);
+
+        eval.Update();
+
+        auto attrs = normal->GetGeometry()->GetAttr().QueryAttr(evt::GeoAttrType::Point, "N[x]");
+        REQUIRE(attrs != nullptr);
     }
 }
 

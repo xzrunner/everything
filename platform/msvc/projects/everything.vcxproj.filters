@@ -46,6 +46,15 @@
     <Filter Include="nodes\geometry\group">
       <UniqueIdentifier>{fffed165-0a5e-44cf-987f-706769cbea8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dataset\geo\attr">
+      <UniqueIdentifier>{e81dd3f7-2de2-4311-91ae-af539aaa2660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geo\adaptor">
+      <UniqueIdentifier>{49bd061c-a85d-436e-8c86-d8fcc6879442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geo\group">
+      <UniqueIdentifier>{04b93520-b309-47cd-bb35-7c058d3e4e8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\node\Curve.h">
@@ -110,24 +119,6 @@
     <ClInclude Include="..\..\..\include\everything\NodeVarType.h">
       <Filter>dataset\node</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\Group.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\GroupMgr.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\GeoAdaptor.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\GeoAttribute.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\GeoShape.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimBegin.h">
       <Filter>nodes\geometry\utility</Filter>
     </ClInclude>
@@ -172,6 +163,27 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\node\Measure.h">
       <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Normal.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoAttribute.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoAdaptor.h">
+      <Filter>dataset\geo\adaptor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Group.h">
+      <Filter>dataset\geo\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GroupMgr.h">
+      <Filter>dataset\geo\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoShape.h">
+      <Filter>dataset\geo\adaptor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\GeoAttrType.h">
       <Filter>dataset\geo\attr</Filter>
@@ -233,18 +245,6 @@
     <ClCompile Include="..\..\..\source\Node.cpp">
       <Filter>dataset\node</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\GroupMgr.cpp">
-      <Filter>dataset\geo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\GeoAdaptor.cpp">
-      <Filter>dataset\geo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\GeoAttribute.cpp">
-      <Filter>dataset\geo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
-      <Filter>dataset\geo</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\node\ForeachPrimBegin.cpp">
       <Filter>nodes\geometry\utility</Filter>
     </ClCompile>
@@ -290,10 +290,25 @@
     <ClCompile Include="..\..\..\source\node\Measure.cpp">
       <Filter>nodes\geometry\attribute</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Normal.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
+      <Filter>dataset\geo\attr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAttribute.cpp">
+      <Filter>dataset\geo\attr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAdaptor.cpp">
+      <Filter>dataset\geo\adaptor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GroupMgr.cpp">
+      <Filter>dataset\geo\group</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\include\everything\GeoAttribute.inl">
-      <Filter>dataset\geo</Filter>
+      <Filter>dataset\geo\attr</Filter>
     </None>
   </ItemGroup>
 </Project>

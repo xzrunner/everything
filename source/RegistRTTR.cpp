@@ -15,6 +15,7 @@
 #include "everything/node/Add.h"
 #include "everything/node/Boolean.h"
 #include "everything/node/Knife.h"
+#include "everything/node/Normal.h"
 #include "everything/node/PolyExtrude.h"
 #include "everything/node/PolyFill.h"
 // primitive
@@ -61,6 +62,7 @@ REGIST_NODE_TYPE(Carve)
 REGIST_NODE_TYPE(Add)
 REGIST_NODE_TYPE(Boolean)
 REGIST_NODE_TYPE(Knife)
+REGIST_NODE_TYPE(Normal)
 REGIST_NODE_TYPE(PolyExtrude)
 REGIST_NODE_TYPE(PolyFill)
 
