@@ -28,9 +28,9 @@ void check_vertices_num(const evt::NodePtr& node, size_t num);
 void check_edges_num(const evt::NodePtr& node, size_t num);
 void check_faces_num(const evt::NodePtr& node, size_t num);
 
-void check_attr_count(const evt::NodePtr& node, evt::GeoAttribute::Type type,
+void check_attr_count(const evt::NodePtr& node, evt::GeoAttrType type,
     const std::string& name, size_t num);
-void check_attr_value(const evt::NodePtr& node, evt::GeoAttribute::Type type,
+void check_attr_value(const evt::NodePtr& node, evt::GeoAttrType type,
     const std::string& name, size_t idx, const evt::Variable& var);
 
 void check_group_num(const evt::NodePtr& node, const std::string& name, size_t num);

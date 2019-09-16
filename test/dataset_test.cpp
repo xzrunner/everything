@@ -182,10 +182,10 @@ TEST_CASE("attr combine")
 
         eval.Update();
 
-        test::check_attr_count(merge, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 7);
-        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 3, evt::Variable(4.0f));
-        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 4, evt::Variable(4.0f));
-        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 6, evt::Variable(3.0f));
+        test::check_attr_count(merge, evt::GeoAttrType::Primitive, "perimeter", 7);
+        test::check_attr_value(merge, evt::GeoAttrType::Primitive, "perimeter", 3, evt::Variable(4.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Primitive, "perimeter", 4, evt::Variable(4.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Primitive, "perimeter", 6, evt::Variable(3.0f));
     }
 
     SECTION("area")
@@ -195,9 +195,9 @@ TEST_CASE("attr combine")
 
         eval.Update();
 
-        test::check_attr_count(merge, evt::GeoAttribute::Type::PRIMITIVE, "area", 7);
-        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "area", 2, evt::Variable(1.0f));
-        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "area", 3, evt::Variable(1.0f));
-        test::check_attr_value(merge, evt::GeoAttribute::Type::PRIMITIVE, "area", 6, evt::Variable(0.0f));
+        test::check_attr_count(merge, evt::GeoAttrType::Primitive, "area", 7);
+        test::check_attr_value(merge, evt::GeoAttrType::Primitive, "area", 2, evt::Variable(1.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Primitive, "area", 3, evt::Variable(1.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Primitive, "area", 6, evt::Variable(0.0f));
     }
 }

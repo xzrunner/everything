@@ -1,6 +1,7 @@
 #pragma once
 
 #include "everything/Variable.h"
+#include "everything/GeoAttrType.h"
 
 #include "SM_Cube.h"
 
@@ -16,16 +17,6 @@ class GeoShape;
 class GeoAttribute : boost::noncopyable
 {
 public:
-    enum Type
-    {
-        POINT = 0,
-        VERTEX,
-        PRIMITIVE,
-        DETAIL,
-
-        MAX_TYPE_NUM,
-    };
-
     struct Point
     {
         Point(const sm::vec3& pos) : pos(pos) {}
@@ -94,9 +85,9 @@ public:
         const std::vector<std::shared_ptr<Vertex>>& vertices,
         const std::vector<std::shared_ptr<Primitive>>& prims);
 
-    void AddAttr(Type type, const std::shared_ptr<AttrList>& attr);
-    std::shared_ptr<AttrList> QueryAttr(Type type, const std::string& name) const;
-    const std::vector<std::shared_ptr<AttrList>>& GetAttrs(Type type) const;
+    void AddAttr(GeoAttrType type, const std::shared_ptr<AttrList>& attr);
+    std::shared_ptr<AttrList> QueryAttr(GeoAttrType type, const std::string& name) const;
+    const std::vector<std::shared_ptr<AttrList>>& GetAttrs(GeoAttrType type) const;
 
     void Combine(const GeoAttribute& attr);
 
@@ -118,7 +109,7 @@ private:
     std::vector<std::shared_ptr<Primitive>> m_primtives;
 //    Detail                 m_detail;
 
-    AttrMgr m_attr_mgr[MAX_TYPE_NUM];
+    AttrMgr m_attr_mgr[static_cast<int>(GeoAttrType::MaxTypeNum)];
 
     sm::cube m_aabb;
 

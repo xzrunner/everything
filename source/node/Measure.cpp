@@ -23,10 +23,10 @@ void Measure::Execute(Evaluator& eval, TreeContext& ctx)
     switch (m_ms_type)
     {
     case Type::Perimeter:
-        attr.AddAttr(GeoAttribute::PRIMITIVE, CalcPerimeter());
+        attr.AddAttr(GeoAttrType::Primitive, CalcPerimeter());
         break;
     case Type::Area:
-        attr.AddAttr(GeoAttribute::PRIMITIVE, CalcArea());
+        attr.AddAttr(GeoAttrType::Primitive, CalcArea());
         break;
     default:
         assert(0);

@@ -173,6 +173,9 @@
     <ClInclude Include="..\..\..\include\everything\node\Measure.h">
       <Filter>nodes\geometry\attribute</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoAttrType.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">

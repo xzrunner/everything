@@ -30,8 +30,8 @@ TEST_CASE("measure box")
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 6);
-        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 3, evt::Variable(4.0f));
+        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "perimeter", 6);
+        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "perimeter", 3, evt::Variable(4.0f));
     }
 
     SECTION("area")
@@ -40,8 +40,8 @@ TEST_CASE("measure box")
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "area", 6);
-        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "area", 2, evt::Variable(1.0f));
+        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "area", 6);
+        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "area", 2, evt::Variable(1.0f));
     }
 }
 
@@ -71,8 +71,8 @@ TEST_CASE("measure polyline")
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 1);
-        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "perimeter", 0, evt::Variable(3.0f));
+        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "perimeter", 1);
+        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "perimeter", 0, evt::Variable(3.0f));
     }
 
     SECTION("area")
@@ -81,8 +81,8 @@ TEST_CASE("measure polyline")
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "area", 1);
-        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "area", 0, evt::Variable(0.0f));
+        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "area", 1);
+        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "area", 0, evt::Variable(0.0f));
     }
 }
 
@@ -107,8 +107,8 @@ TEST_CASE("measure rename")
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "test0", 6);
-        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "test0", 3, evt::Variable(4.0f));
+        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "test0", 6);
+        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "test0", 3, evt::Variable(4.0f));
     }
 
     SECTION("area")
@@ -118,8 +118,8 @@ TEST_CASE("measure rename")
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttribute::Type::PRIMITIVE, "test1", 6);
-        test::check_attr_value(measure, evt::GeoAttribute::Type::PRIMITIVE, "test1", 2, evt::Variable(1.0f));
+        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "test1", 6);
+        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "test1", 2, evt::Variable(1.0f));
     }
 }
 

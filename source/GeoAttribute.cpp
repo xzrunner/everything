@@ -82,7 +82,7 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     }
 
     // attr list
-    for (int i = 0; i < MAX_TYPE_NUM; ++i) {
+    for (int i = 0, n = static_cast<int>(GeoAttrType::MaxTypeNum); i < n; ++i) {
         m_attr_mgr[i] = attr.m_attr_mgr[i];
     }
 
@@ -264,10 +264,11 @@ void GeoAttribute::Reset(const std::vector<std::shared_ptr<Point>>& points,
     SetupAABB();
 }
 
-void GeoAttribute::AddAttr(Type type, const std::shared_ptr<AttrList>& attr)
+void GeoAttribute::AddAttr(GeoAttrType type, const std::shared_ptr<AttrList>& attr)
 {
-    assert(type >= 0 && type < MAX_TYPE_NUM);
-    auto& attrs = m_attr_mgr[type];
+    assert(type >= static_cast<GeoAttrType>(0)
+        && type < GeoAttrType::MaxTypeNum);
+    auto& attrs = m_attr_mgr[static_cast<int>(type)];
     for (auto itr = attrs.attrs.begin(); itr != attrs.attrs.end(); ) {
         if ((*itr)->name == attr->name) {
             itr = attrs.attrs.erase(itr);
@@ -279,17 +280,19 @@ void GeoAttribute::AddAttr(Type type, const std::shared_ptr<AttrList>& attr)
 }
 
 std::shared_ptr<GeoAttribute::AttrList>
-GeoAttribute::QueryAttr(Type type, const std::string& name) const
+GeoAttribute::QueryAttr(GeoAttrType type, const std::string& name) const
 {
-    assert(type >= 0 && type < MAX_TYPE_NUM);
-    return m_attr_mgr[type].QueryAttr(name);
+    assert(type >= static_cast<GeoAttrType>(0)
+        && type < GeoAttrType::MaxTypeNum);
+    return m_attr_mgr[static_cast<int>(type)].QueryAttr(name);
 }
 
 const std::vector<std::shared_ptr<GeoAttribute::AttrList>>&
-GeoAttribute::GetAttrs(Type type) const
+GeoAttribute::GetAttrs(GeoAttrType type) const
 {
-    assert(type >= 0 && type < MAX_TYPE_NUM);
-    return m_attr_mgr[type].attrs;
+    assert(type >= static_cast<GeoAttrType>(0)
+        && type < GeoAttrType::MaxTypeNum);
+    return m_attr_mgr[static_cast<int>(type)].attrs;
 }
 
 void GeoAttribute::Combine(const GeoAttribute& attr)
@@ -298,22 +301,21 @@ void GeoAttribute::Combine(const GeoAttribute& attr)
     std::copy(attr.m_vertices.begin(),  attr.m_vertices.end(),  std::back_inserter(m_vertices));
     std::copy(attr.m_primtives.begin(), attr.m_primtives.end(), std::back_inserter(m_primtives));
 
-    for (size_t i = 0; i < MAX_TYPE_NUM; ++i)
+    for (size_t i = 0, n = static_cast<int>(GeoAttrType::MaxTypeNum); i < n; ++i)
     {
-
         size_t tot_num = 0;
-        switch (i)
+        switch (static_cast<GeoAttrType>(i))
         {
-        case POINT:
+        case GeoAttrType::Point:
             tot_num = m_points.size();
             break;
-        case VERTEX:
+        case GeoAttrType::Vertex:
             tot_num = m_vertices.size();
             break;
-        case PRIMITIVE:
+        case GeoAttrType::Primitive:
             tot_num = m_primtives.size();
             break;
-        case DETAIL:
+        case GeoAttrType::Detail:
             tot_num = 1;
             break;
         }
