@@ -32,10 +32,10 @@ public:
 
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
-    void SetTransformUsingPointOrientations(bool enable);
+    void EnableUsePointDir(bool enable);
 
 private:
-    bool m_trans_with_point_dir = false;
+    bool m_use_pt_dir = false;
 
     RTTR_ENABLE(Node)
 

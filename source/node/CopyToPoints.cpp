@@ -32,13 +32,13 @@ void CopyToPoints::Execute(Evaluator& eval, TreeContext& ctx)
     m_geo_impl->UpdateByAttr();
 }
 
-void CopyToPoints::SetTransformUsingPointOrientations(bool enable)
+void CopyToPoints::EnableUsePointDir(bool enable)
 {
-    if (m_trans_with_point_dir == enable) {
+    if (m_use_pt_dir == enable) {
         return;
     }
 
-    m_trans_with_point_dir = enable;
+    m_use_pt_dir = enable;
 
     SetDirty(true);
 }
