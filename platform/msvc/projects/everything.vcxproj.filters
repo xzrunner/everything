@@ -58,6 +58,9 @@
     <Filter Include="dataset\others\var">
       <UniqueIdentifier>{be21ea6b-24ff-4342-8879-5f0c3734f99a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nodes\geometry\material">
+      <UniqueIdentifier>{0d24f5ea-67c1-4b80-bc41-c9c3c5b750a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\node\Curve.h">
@@ -194,6 +197,9 @@
     <ClInclude Include="..\..\..\include\everything\VarValue.h">
       <Filter>dataset\others\var</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Color.h">
+      <Filter>nodes\geometry\material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -310,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\VarValue.cpp">
       <Filter>dataset\others\var</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Color.cpp">
+      <Filter>nodes\geometry\material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

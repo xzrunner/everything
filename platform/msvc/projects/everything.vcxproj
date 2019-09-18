@@ -25,6 +25,7 @@
     <ClInclude Include="..\..\..\include\everything\NodePropsMgr.h" />
     <ClInclude Include="..\..\..\include\everything\node\Add.h" />
     <ClInclude Include="..\..\..\include\everything\node\Carve.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Color.h" />
     <ClInclude Include="..\..\..\include\everything\node\Delete.h" />
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimBegin.h" />
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimEnd.h" />
@@ -73,6 +74,7 @@
     <ClCompile Include="..\..\..\source\node\Boolean.cpp" />
     <ClCompile Include="..\..\..\source\node\Box.cpp" />
     <ClCompile Include="..\..\..\source\node\Carve.cpp" />
+    <ClCompile Include="..\..\..\source\node\Color.cpp" />
     <ClCompile Include="..\..\..\source\node\CopyToPoints.cpp" />
     <ClCompile Include="..\..\..\source\node\Curve.cpp" />
     <ClCompile Include="..\..\..\source\node\Delete.cpp" />
