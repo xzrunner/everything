@@ -46,7 +46,7 @@ void Normal::Execute(Evaluator& eval, TreeContext& ctx)
     }
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
-    switch (m_attr_add_norm_to)
+    switch (m_attr_add_to)
     {
     case GeoAttrType::Point:
         AddToPoint();
@@ -65,13 +65,13 @@ void Normal::Execute(Evaluator& eval, TreeContext& ctx)
     }
 }
 
-void Normal::SetAttrAddNormalTo(GeoAttrType attr)
+void Normal::SetAttrAddTo(GeoAttrType attr)
 {
-    if (m_attr_add_norm_to == attr) {
+    if (m_attr_add_to == attr) {
         return;
     }
 
-    m_attr_add_norm_to = attr;
+    m_attr_add_to = attr;
 
     SetDirty(true);
 }

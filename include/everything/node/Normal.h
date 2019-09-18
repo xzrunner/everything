@@ -23,7 +23,8 @@ public:
 
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
-    void SetAttrAddNormalTo(GeoAttrType attr);
+    void SetAttrAddTo(GeoAttrType attr);
+
 
 private:
     void AddToPoint();
@@ -32,7 +33,7 @@ private:
     void AddToDetail();
 
 private:
-    GeoAttrType m_attr_add_norm_to = GeoAttrType::Vertex;
+    GeoAttrType m_attr_add_to = GeoAttrType::Vertex;
 
     RTTR_ENABLE(Node)
 
