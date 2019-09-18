@@ -24,6 +24,9 @@ void Delete::Execute(Evaluator& eval, TreeContext& ctx)
         return;
     }
     auto prev_geo = prev_node->GetGeometry();
+    if (!prev_geo) {
+        return;
+    }
 
     std::vector<sm::vec3> vertices;
     EvalContext eval_ctx(eval, *prev_node);
