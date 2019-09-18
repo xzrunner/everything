@@ -260,9 +260,6 @@
     <ClCompile Include="..\..\..\source\Node.cpp">
       <Filter>dataset\node</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\node\ForeachPrimBegin.cpp">
-      <Filter>nodes\geometry\utility</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp">
       <Filter>nodes\geometry\utility</Filter>
     </ClCompile>

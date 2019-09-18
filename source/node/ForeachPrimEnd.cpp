@@ -35,15 +35,21 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
     }
 
     // foreach prim
-    auto& prev_attr = prev_geo->GetAttr();
-    auto& prev_prims = prev_attr.GetPrimtives();
+    auto& prev_prims = prev_geo->GetAttr().GetPrimtives();
     auto& attr = m_geo_impl->GetAttr();
+    std::vector<bool> del_flags(prev_prims.size(), true);
     for (size_t i = 0, n = prev_prims.size(); i < n; ++i)
     {
-        auto b_geo = begin->GetGeometry();
-        auto& b_attr = b_geo->GetAttr();
-        GeoAttrHelper::GenAttrFromPrim(b_attr, prev_attr, i);
-        b_geo->UpdateByAttr();
+        assert(begin->get_type() == rttr::type::get<node::ForeachPrimBegin>());
+        auto geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
+        del_flags[i] = false;
+        if (i != 0) {
+            del_flags[i - 1] = true;
+        }
+        geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags);
+        geo_impl->UpdateByAttr();
+
+        std::static_pointer_cast<node::ForeachPrimBegin>(begin)->SetGeoImpl(geo_impl);
 
         sub_eval.MakeDirty();
         sub_eval.Update();

@@ -79,7 +79,6 @@
     <ClCompile Include="..\..\..\source\node\CopyToPoints.cpp" />
     <ClCompile Include="..\..\..\source\node\Curve.cpp" />
     <ClCompile Include="..\..\..\source\node\Delete.cpp" />
-    <ClCompile Include="..\..\..\source\node\ForeachPrimBegin.cpp" />
     <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp" />
     <ClCompile Include="..\..\..\source\node\Geometry.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
