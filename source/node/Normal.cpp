@@ -76,6 +76,43 @@ void Normal::SetAttrAddTo(GeoAttrType attr)
     SetDirty(true);
 }
 
+std::vector<sm::vec3> Normal::CalcBrushPointsNormal(const GeometryImpl& geo)
+{
+    if (geo.GetAdaptorType() != GeoAdaptor::Type::Brush) {
+        return std::vector<sm::vec3>();
+    }
+
+    auto& attr = geo.GetAttr();
+
+    std::map<std::shared_ptr<GeoAttribute::Point>, size_t> point2idx;
+    auto& pts = attr.GetPoints();
+    for (size_t i = 0, n = pts.size(); i < n; ++i) {
+        point2idx.insert({ pts[i], i });
+    }
+
+    std::vector<sm::vec3> norms(pts.size(), sm::vec3(0, 0, 0));
+    std::vector<size_t>   norms_count(pts.size(), 0);
+
+    for (auto& prim : attr.GetPrimtives())
+    {
+        auto norm = CalcPrimNorm(*prim);
+        for (auto& v : prim->vertices)
+        {
+            auto itr = point2idx.find(v->point);
+            assert(itr != point2idx.end());
+            norms[itr->second] += norm;
+            ++norms_count[itr->second];
+        }
+    }
+
+    std::vector<sm::vec3> ret(norms.size(), sm::vec3(0, 0, 1));
+    for (int i = 0, n = norms.size(); i < n; ++i) {
+        assert(norms_count[i] > 0);
+        ret[i] = norms[i] / static_cast<float>(norms_count[i]);
+    }
+    return ret;
+}
+
 void Normal::AddToPoint()
 {
     auto type = m_geo_impl->GetAdaptorType();
@@ -92,39 +129,18 @@ void Normal::AddToPoint()
         break;
     case GeoAdaptor::Type::Brush:
     {
+        auto norms = CalcBrushPointsNormal(*m_geo_impl);
         auto& attr = m_geo_impl->GetAttr();
-
-        std::map<std::shared_ptr<GeoAttribute::Point>, size_t> point2idx;
-        auto& pts = attr.GetPoints();
-        for (size_t i = 0, n = pts.size(); i < n; ++i) {
-            point2idx.insert({ pts[i], i });
-        }
-
-        std::vector<sm::vec3> norms(pts.size(), sm::vec3(0, 0, 0));
-        std::vector<size_t>   norms_count(pts.size(), 0);
-
-        for (auto& prim : attr.GetPrimtives())
-        {
-            auto norm = CalcPrimNorm(*prim);
-            for (auto& v : prim->vertices)
-            {
-                auto itr = point2idx.find(v->point);
-                assert(itr != point2idx.end());
-                norms[itr->second] += norm;
-                ++norms_count[itr->second];
-            }
-        }
+        assert(norms.size() == attr.GetPoints().size());
 
         std::vector<VarValue> x_list(norms.size(), VarValue(0.0f));
         std::vector<VarValue> y_list(norms.size(), VarValue(0.0f));
         std::vector<VarValue> z_list(norms.size(), VarValue(0.0f));
         for (int i = 0, n = norms.size(); i < n; ++i)
         {
-            assert(norms_count[i] > 0);
-            auto norm = norms[i] / static_cast<float>(norms_count[i]);
-            x_list[i] = VarValue(norm.x);
-            y_list[i] = VarValue(norm.y);
-            z_list[i] = VarValue(norm.z);
+            x_list[i] = VarValue(norms[i].x);
+            y_list[i] = VarValue(norms[i].y);
+            z_list[i] = VarValue(norms[i].z);
         }
         attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_x, VarType::Float }, x_list);
         attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_y, VarType::Float }, y_list);

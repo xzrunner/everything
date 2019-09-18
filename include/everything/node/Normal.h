@@ -25,6 +25,7 @@ public:
 
     void SetAttrAddTo(GeoAttrType attr);
 
+    static std::vector<sm::vec3> CalcBrushPointsNormal(const GeometryImpl& geo);
 
 private:
     void AddToPoint();
