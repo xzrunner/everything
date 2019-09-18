@@ -23,10 +23,20 @@ void Measure::Execute(Evaluator& eval, TreeContext& ctx)
     switch (m_ms_type)
     {
     case Type::Perimeter:
-        attr.AddAttr(GeoAttrType::Primitive, CalcPerimeter());
+    {
+        std::string name;
+        std::vector<VarValue> val;
+        CalcPerimeter(name, val);
+        attr.AddAttr(GeoAttrType::Primitive, { name, VarType::Float }, val);
+    }
         break;
     case Type::Area:
-        attr.AddAttr(GeoAttrType::Primitive, CalcArea());
+    {
+        std::string name;
+        std::vector<VarValue> val;
+        CalcArea(name, val);
+        attr.AddAttr(GeoAttrType::Primitive, { name, VarType::Float }, val);
+    }
         break;
     default:
         assert(0);
@@ -55,18 +65,15 @@ void Measure::SetMesureName(const std::string& name)
     SetDirty(true);
 }
 
-std::shared_ptr<GeoAttribute::AttrList>
-Measure::CalcPerimeter() const
+void Measure::CalcPerimeter(std::string& name, std::vector<VarValue>& val) const
 {
+    name = m_ms_name.empty() ? "perimeter" : m_ms_name;
+
     auto& attr = m_geo_impl->GetAttr();
     auto& prims = attr.GetPrimtives();
     if (prims.empty()) {
-        return nullptr;
+        return;
     }
-
-    auto attrs = std::make_shared<GeoAttribute::AttrList>();
-
-    attrs->name = m_ms_name.empty() ? "perimeter" : m_ms_name;
 
     auto type = m_geo_impl->GetAdaptorType();
     switch (type)
@@ -83,7 +90,7 @@ Measure::CalcPerimeter() const
                     vts[i]->point->pos, vts[i + 1]->point->pos
                 );
             }
-            attrs->vars.push_back(Variable(len));
+            val.push_back(VarValue(len));
         }
         break;
     case GeoAdaptor::Type::Brush:
@@ -97,35 +104,30 @@ Measure::CalcPerimeter() const
                     vts[i]->point->pos, vts[(i + 1) % n]->point->pos
                 );
             }
-            attrs->vars.push_back(Variable(len));
+            val.push_back(VarValue(len));
         }
         break;
     default:
         assert(0);
     }
-
-    return attrs;
 }
 
-std::shared_ptr<GeoAttribute::AttrList>
-Measure::CalcArea() const
+void Measure::CalcArea(std::string& name, std::vector<VarValue>& val) const
 {
+    name = m_ms_name.empty() ? "area" : m_ms_name;
+
     auto& attr = m_geo_impl->GetAttr();
     auto& prims = attr.GetPrimtives();
     if (prims.empty()) {
-        return nullptr;
+        return;
     }
-
-    auto attrs = std::make_shared<GeoAttribute::AttrList>();
-
-    attrs->name = m_ms_name.empty() ? "area" : m_ms_name;
 
     auto type = m_geo_impl->GetAdaptorType();
     switch (type)
     {
     case GeoAdaptor::Type::Shape:
         for (auto prim : prims) {
-            attrs->vars.push_back(Variable(0.0f));
+            val.push_back(VarValue(0.0f));
         }
         break;
     case GeoAdaptor::Type::Brush:
@@ -138,14 +140,12 @@ Measure::CalcArea() const
                 vts.push_back(v->point->pos);
             }
             float area = sm::get_polygon_area(vts);
-            attrs->vars.push_back(Variable(area));
+            val.push_back(VarValue(area));
         }
         break;
     default:
         assert(0);
     }
-
-    return attrs;
 }
 
 }

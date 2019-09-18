@@ -1,11 +1,12 @@
 #pragma once
 
-#include "everything/Variable.h"
 #include "everything/GeoAttrType.h"
+#include "everything/Variable.h"
 
-#include "SM_Cube.h"
+#include <SM_Cube.h>
 
 #include <vector>
+#include <memory>
 
 #include <boost/noncopyable.hpp>
 
@@ -23,6 +24,8 @@ public:
 
         sm::vec3 pos;
 
+        std::vector<VarValue> vars;
+
     }; // Point
 
     struct Primitive;
@@ -30,6 +33,8 @@ public:
     {
         std::shared_ptr<Point>   point = nullptr;
         std::weak_ptr<Primitive> prim;
+
+        std::vector<VarValue> vars;
 
     }; // Vertex
 
@@ -48,34 +53,21 @@ public:
 
         Type type = Type::PolygonFace;
 
+        std::vector<VarValue> vars;
+
     }; // Primitive
 
-    //struct Detail
-    //{
-    //}; // Detail
+    struct Detail
+    {
+        std::vector<VarValue> vars;
 
-    struct AttrList
+    }; // Detail
+
+    struct VarDesc
     {
         std::string name;
-        std::vector<Variable> vars;
-
-        void Append(VariableType type, size_t count);
-        void Append(const AttrList& list);
-
-    }; // AttrList
-
-    struct AttrMgr
-    {
-        AttrMgr() {}
-        AttrMgr(const AttrMgr& attrs);
-        AttrMgr& operator = (const AttrMgr& attrs);
-
-        void Clear();
-        std::shared_ptr<AttrList> QueryAttr(const std::string& name) const;
-
-        std::vector<std::shared_ptr<AttrList>> attrs;
-
-    }; // AttrMgr
+        VarType     type;
+    };
 
 public:
     GeoAttribute() {}
@@ -93,12 +85,11 @@ public:
     void  SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& prims);
 
     void Reset(const std::vector<std::shared_ptr<Point>>& points,
-        const std::vector<std::shared_ptr<Vertex>>& vertices,
-        const std::vector<std::shared_ptr<Primitive>>& prims);
+               const std::vector<std::shared_ptr<Vertex>>& vertices,
+               const std::vector<std::shared_ptr<Primitive>>& prims);
 
-    void AddAttr(GeoAttrType type, const std::shared_ptr<AttrList>& attr);
-    std::shared_ptr<AttrList> QueryAttr(GeoAttrType type, const std::string& name) const;
-    const std::vector<std::shared_ptr<AttrList>>& GetAttrs(GeoAttrType type) const;
+    void AddAttr(GeoAttrType type, const VarDesc& var_desc, const std::vector<VarValue>& var_list);
+    Variable QueryAttr(GeoAttrType type, const std::string& name, size_t index) const;
 
     void Combine(const GeoAttribute& attr);
 
@@ -114,13 +105,21 @@ private:
 
     void SetupAABB();
 
+    void CombineAttrDesc(const GeoAttribute& attr, GeoAttrType type,
+        std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars);
+
+    void CombinePoints(const GeoAttribute& attr);
+    void CombineVertices(const GeoAttribute& attr);
+    void CombinePrimitives(const GeoAttribute& attr);
+    void CombineDetail(const GeoAttribute& attr);
+
 private:
     std::vector<std::shared_ptr<Point>>     m_points;
     std::vector<std::shared_ptr<Vertex>>    m_vertices;
     std::vector<std::shared_ptr<Primitive>> m_primtives;
-//    Detail                 m_detail;
+    Detail                                  m_detail;
 
-    AttrMgr m_attr_mgr[static_cast<int>(GeoAttrType::MaxTypeNum)];
+    std::vector<VarDesc> m_var_descs[static_cast<int>(GeoAttrType::MaxTypeNum)];
 
     sm::cube m_aabb;
 

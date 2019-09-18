@@ -204,11 +204,31 @@ void check_faces_num(const evt::NodePtr& node, size_t num)
 void check_attr_count(const evt::NodePtr& node, evt::GeoAttrType type,
                       const std::string& name, size_t num)
 {
+    if (num == 0) {
+        return;
+    }
+
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
-    auto attrs = geo->GetAttr().QueryAttr(type, name);
-    REQUIRE(attrs != nullptr);
-    REQUIRE(attrs->vars.size() == num);
+    auto& attr = geo->GetAttr();
+
+    auto var = attr.QueryAttr(type, name, 0);
+    REQUIRE(var.type != evt::VarType::Invalid);
+    switch (type)
+    {
+    case evt::GeoAttrType::Point:
+        REQUIRE(attr.GetPoints().size() == num);
+        break;
+    case evt::GeoAttrType::Vertex:
+        REQUIRE(attr.GetVertices().size() == num);
+        break;
+    case evt::GeoAttrType::Primitive:
+        REQUIRE(attr.GetPrimtives().size() == num);
+        break;
+    case evt::GeoAttrType::Detail:
+        REQUIRE(1 == num);
+        break;
+    }
 }
 
 void check_attr_value(const evt::NodePtr& node, evt::GeoAttrType type,
@@ -216,9 +236,8 @@ void check_attr_value(const evt::NodePtr& node, evt::GeoAttrType type,
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
-    auto attrs = geo->GetAttr().QueryAttr(type, name);
-    REQUIRE(attrs != nullptr);
-    REQUIRE(attrs->vars[idx] == var);
+    auto var2 = geo->GetAttr().QueryAttr(type, name, idx);
+    REQUIRE(var == var2);
 }
 
 void check_group_num(const evt::NodePtr& node, const std::string& name, size_t num)
@@ -234,21 +253,21 @@ void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Var
 {
     auto find = node->GetProps().Query(key);
     REQUIRE(find.type == val.type);
-    if (find.type == evt::VariableType::Invalid) {
+    if (find.type == evt::VarType::Invalid) {
         return;
     }
     switch (val.type)
     {
-    case evt::VariableType::Bool:
+    case evt::VarType::Bool:
         REQUIRE(find.b == val.b);
         break;
-    case evt::VariableType::Int:
+    case evt::VarType::Int:
         REQUIRE(find.i == val.i);
         break;
-    case evt::VariableType::Float:
+    case evt::VarType::Float:
         REQUIRE(find.f == Approx(val.f));
         break;
-    case evt::VariableType::Float3:
+    case evt::VarType::Float3:
     {
         auto v0 = static_cast<const float*>(find.p);
         auto v1 = static_cast<const float*>(val.p);
@@ -257,7 +276,7 @@ void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Var
         REQUIRE(v0[2] == v1[2]);
     }
         break;
-    case evt::VariableType::String:
+    case evt::VarType::String:
         REQUIRE(strcmp(static_cast<const char*>(find.p),
             static_cast<const char*>(val.p)) == 0);
         break;

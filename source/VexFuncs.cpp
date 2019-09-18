@@ -236,23 +236,23 @@ void SetupVexFuncs()
             auto v = curr_node->GetProps().Query(t);
             switch (v.type)
             {
-            case VariableType::Invalid:
+            case VarType::Invalid:
                 return vexc::Variant();
-            case VariableType::Bool:
+            case VarType::Bool:
                 return vexc::Variant(v.b);
-            case VariableType::Int:
+            case VarType::Int:
                 return vexc::Variant(v.i);
-            case VariableType::Float:
+            case VarType::Float:
                 return vexc::Variant(v.f);
-            case VariableType::Float3:
+            case VarType::Float3:
             {
                 auto buf = new float[3];
                 memcpy(buf, v.p, sizeof(buf));
                 return vexc::Variant(vexc::VarType::Float3, buf);
             }
-            case VariableType::Double:
+            case VarType::Double:
                 return vexc::Variant(v.d);
-            //case VariableType::String:
+            //case VarType::String:
             //{
             //    auto str = static_cast<const char*>(v.p);
             //    auto buf = vexc::StringPool::InsertAndQuery(str, strlen(str));
@@ -369,34 +369,29 @@ void SetupVexFuncs()
         assert(params[3].type == vexc::VarType::Int);
         int attrib_index = params[3].i;
 
-        auto attrs = geo->GetAttr().QueryAttr(GeoAttrType::Primitive, attrib_name);
-        if (!attrs) {
+        auto var = geo->GetAttr().QueryAttr(GeoAttrType::Primitive, attrib_name, attrib_index);
+        if (var.type == VarType::Invalid) {
             return vexc::Variant();
         }
-
-        if (attrib_index < 0 || attrib_index >= static_cast<int>(attrs->vars.size())) {
-            return vexc::Variant();
-        }
-        auto& attr = attrs->vars[attrib_index];
-        switch (attr.type)
+        switch (var.type)
         {
-        case VariableType::Bool:
-            return vexc::Variant(attr.b);
-        case VariableType::Int:
-            return vexc::Variant(attr.i);
-        case VariableType::Float:
-            return vexc::Variant(attr.f);
-        case VariableType::Float3:
+        case VarType::Bool:
+            return vexc::Variant(var.b);
+        case VarType::Int:
+            return vexc::Variant(var.i);
+        case VarType::Float:
+            return vexc::Variant(var.f);
+        case VarType::Float3:
         {
             auto buf = new float[3];
-            memcpy(buf, attr.p, sizeof(buf));
+            memcpy(buf, var.p, sizeof(buf));
             assert(attrib_index >= 0 && attrib_index < 3);
             vexc::Variant ret(buf[attrib_index]);
             delete[] buf;
             return ret;
         }
-        case VariableType::Double:
-            return vexc::Variant(attr.d);
+        case VarType::Double:
+            return vexc::Variant(var.d);
         default:
             assert(0);
             return vexc::Variant();

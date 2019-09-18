@@ -35,8 +35,8 @@ public:
     void SetMesureName(const std::string& name);
 
 private:
-    std::shared_ptr<GeoAttribute::AttrList> CalcPerimeter() const;
-    std::shared_ptr<GeoAttribute::AttrList> CalcArea() const;
+    void CalcPerimeter(std::string& name, std::vector<VarValue>& val) const;
+    void CalcArea(std::string& name, std::vector<VarValue>& val) const;
 
 private:
     Type m_ms_type = Type::Perimeter;

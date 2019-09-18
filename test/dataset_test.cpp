@@ -2,6 +2,7 @@
 
 #include <everything/TreeContext.h>
 #include <everything/Evaluator.h>
+#include <everything/GeometryImpl.h>
 
 #include <everything/node/Box.h>
 #include <everything/node/Geometry.h>
@@ -199,5 +200,106 @@ TEST_CASE("attr combine")
         test::check_attr_value(merge, evt::GeoAttrType::Primitive, "area", 2, evt::Variable(1.0f));
         test::check_attr_value(merge, evt::GeoAttrType::Primitive, "area", 3, evt::Variable(1.0f));
         test::check_attr_value(merge, evt::GeoAttrType::Primitive, "area", 6, evt::Variable(0.0f));
+    }
+}
+
+
+TEST_CASE("attr combine 2")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box0 = std::make_shared<evt::node::Box>();
+    eval.AddNode(box0);
+
+    auto box1 = std::make_shared<evt::node::Box>();
+    eval.AddNode(box1);
+
+    auto merge = std::make_shared<evt::node::Merge>();
+    eval.AddNode(merge);
+
+    eval.Connect({ box0, 0 }, { merge, evt::node::Merge::IDX_SRC_A });
+    eval.Connect({ box1, 0 }, { merge, evt::node::Merge::IDX_SRC_B });
+
+    // create geo impl
+    eval.Update();
+    eval.MakeDirty(false);
+    merge->SetDirty(true);
+
+    std::vector<evt::VarValue> var_list0;
+    var_list0.reserve(8);
+    for (int i = 0; i < 8; ++i) {
+        var_list0.push_back(evt::VarValue(static_cast<float>(i)));
+    }
+
+    std::vector<evt::VarValue> var_list1;
+    var_list1.reserve(8);
+    for (int i = 0; i < 8; ++i) {
+        var_list1.push_back(evt::VarValue(static_cast<float>(-i)));
+    }
+
+    SECTION("simple")
+    {
+        box0->GetGeometry()->GetAttr().AddAttr(
+            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list0
+        );
+
+        box1->GetGeometry()->GetAttr().AddAttr(
+            evt::GeoAttrType::Point, { "test1", evt::VarType::Float }, var_list1
+        );
+
+        eval.Update();
+
+        test::check_attr_count(merge, evt::GeoAttrType::Point, "test0", 16);
+        test::check_attr_count(merge, evt::GeoAttrType::Point, "test1", 16);
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test0", 3,  evt::Variable(3.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test0", 11, evt::Variable(0.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test1", 5,  evt::Variable(0.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test1", 13, evt::Variable(-5.0f));
+    }
+
+    SECTION("same name")
+    {
+        box0->GetGeometry()->GetAttr().AddAttr(
+            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list0
+        );
+
+        box1->GetGeometry()->GetAttr().AddAttr(
+            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list1
+        );
+
+        eval.Update();
+
+        test::check_attr_count(merge, evt::GeoAttrType::Point, "test0", 16);
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test0", 3,  evt::Variable(3.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test0", 11, evt::Variable(-3.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test0", 5,  evt::Variable(5.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test0", 13, evt::Variable(-5.0f));
+    }
+
+    SECTION("part same")
+    {
+        auto var_list2 = var_list0;
+        var_list2[4].f = 1.1f;
+
+        box0->GetGeometry()->GetAttr().AddAttr(
+            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list0
+        );
+
+        box1->GetGeometry()->GetAttr().AddAttr(
+            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list2
+        );
+        box1->GetGeometry()->GetAttr().AddAttr(
+            evt::GeoAttrType::Point, { "test1", evt::VarType::Float }, var_list1
+        );
+
+        eval.Update();
+
+        test::check_attr_count(merge, evt::GeoAttrType::Point, "test0", 16);
+        test::check_attr_count(merge, evt::GeoAttrType::Point, "test1", 16);
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test0", 12, evt::Variable(1.1f));
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test1",  4, evt::Variable(0.0f));
+        test::check_attr_value(merge, evt::GeoAttrType::Point, "test1", 12, evt::Variable(-4.0f));
     }
 }
