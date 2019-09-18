@@ -23,7 +23,10 @@ void Merge::Execute(Evaluator& eval, TreeContext& ctx)
             continue;
         }
 
-        children.push_back(src_obj->GetGeometry());
+        auto geo = src_obj->GetGeometry();
+        if (geo) {
+            children.push_back(geo);
+        }
     }
 
     auto& attr = m_geo_impl->GetAttr();
