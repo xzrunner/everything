@@ -148,11 +148,15 @@ void Evaluator::Update()
     m_dirty = false;
 }
 
-void Evaluator::MakeDirty()
+void Evaluator::MakeDirty(bool all_nodes_dirty)
 {
     m_dirty = true;
-    for (auto itr : m_nodes_map) {
-        itr.second->SetDirty(true);
+
+    if (all_nodes_dirty)
+    {
+        for (auto itr : m_nodes_map) {
+            itr.second->SetDirty(true);
+        }
     }
 }
 

@@ -29,7 +29,7 @@ public:
 
     void Update();
 
-    void MakeDirty();
+    void MakeDirty(bool all_nodes_dirty = true);
 
     Variable CalcExpr(const std::string& expr, const EvalContext& ctx) const;
 
