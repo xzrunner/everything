@@ -2,6 +2,7 @@
 
 #include "everything/Node.h"
 #include "everything/Group.h"
+#include "everything/GeoAttrType.h"
 
 namespace evt
 {

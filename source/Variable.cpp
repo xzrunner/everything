@@ -4,31 +4,31 @@ namespace evt
 {
 
 Variable::Variable(bool b)
-    : type(VariableType::Bool)
+    : type(VarType::Bool)
     , b(b)
 {
 }
 
 Variable::Variable(int  i)
-    : type(VariableType::Int)
+    : type(VarType::Int)
     , i(i)
 {
 }
 
 Variable::Variable(float f)
-    : type(VariableType::Float)
+    : type(VarType::Float)
     , f(f)
 {
 }
 
 Variable::Variable(double d)
-    : type(VariableType::Double)
+    : type(VarType::Double)
     , d(d)
 {
 }
 
 Variable::Variable(const std::string& str)
-    : type(VariableType::String)
+    : type(VarType::String)
 {
     auto buf = new char[str.size() + 1];
     std::strcpy(buf, str.c_str());
@@ -36,7 +36,7 @@ Variable::Variable(const std::string& str)
 }
 
 Variable::Variable(const sm::vec3& v3)
-    : type(VariableType::Float3)
+    : type(VarType::Float3)
 {
     auto buf = new float[3];
     std::memcpy(buf, v3.xyz, sizeof(float) * 3);
@@ -48,7 +48,7 @@ Variable::Variable(const Variable& var)
 {
     switch (type)
     {
-    case VariableType::Float3:
+    case VarType::Float3:
     {
         auto src = static_cast<const float*>(var.p);
         auto buf = new float[3];
@@ -56,7 +56,7 @@ Variable::Variable(const Variable& var)
         p = buf;
     }
         break;
-    case VariableType::String:
+    case VarType::String:
     {
         auto src = static_cast<const char*>(var.p);
         auto buf = new char[strlen(src) + 1];
@@ -73,10 +73,10 @@ Variable& Variable::operator = (const Variable& var)
 {
     switch (type)
     {
-    case VariableType::Float3:
+    case VarType::Float3:
         delete[] static_cast<const float*>(p);
         break;
-    case VariableType::String:
+    case VarType::String:
         delete[] static_cast<const char*>(p);
         break;
     }
@@ -84,7 +84,7 @@ Variable& Variable::operator = (const Variable& var)
     type = var.type;
     switch (type)
     {
-    case VariableType::Float3:
+    case VarType::Float3:
     {
         auto src = static_cast<const float*>(var.p);
         auto buf = new float[3];
@@ -92,7 +92,7 @@ Variable& Variable::operator = (const Variable& var)
         p = buf;
     }
         break;
-    case VariableType::String:
+    case VarType::String:
     {
         auto src = static_cast<const char*>(var.p);
         auto buf = new char[strlen(src) + 1];
@@ -110,10 +110,10 @@ Variable::~Variable()
 {
     switch (type)
     {
-    case VariableType::Float3:
+    case VarType::Float3:
         delete[] static_cast<const float*>(p);
         break;
-    case VariableType::String:
+    case VarType::String:
         delete[] static_cast<const char*>(p);
         break;
     }
@@ -126,15 +126,15 @@ bool Variable::operator == (const Variable& var) const
     }
     switch (type)
     {
-    case VariableType::Invalid:
+    case VarType::Invalid:
         return true;
-    case VariableType::Bool:
+    case VarType::Bool:
         return b == var.b;
-    case VariableType::Int:
+    case VarType::Int:
         return i == var.i;
-    case VariableType::Float:
+    case VarType::Float:
         return f == var.f;
-    case VariableType::Float3:
+    case VarType::Float3:
     {
         auto v0 = static_cast<const float*>(p);
         auto v1 = static_cast<const float*>(var.p);
@@ -142,9 +142,9 @@ bool Variable::operator == (const Variable& var) const
             && v0[1] == v1[1]
             && v0[2] == v1[2];
     }
-    case VariableType::Double:
+    case VarType::Double:
         return d == var.d;
-    case VariableType::String:
+    case VarType::String:
         return strcmp(static_cast<const char*>(p),
             static_cast<const char*>(var.p)) == 0;
     default:

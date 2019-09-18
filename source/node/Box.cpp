@@ -91,7 +91,7 @@ void Box::BuildModel()
 std::unique_ptr<model::BrushModel>
 Box::BuildBrush() const
 {
-    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VariableType::Float));
+    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VarType::Float));
 
     model::BrushModel::Brush brush;
 

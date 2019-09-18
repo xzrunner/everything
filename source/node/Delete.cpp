@@ -32,7 +32,7 @@ void Delete::Execute(Evaluator& eval, TreeContext& ctx)
     {
         eval_ctx.point_idx = i;
         auto v = eval.CalcExpr(m_filter_expr, eval_ctx);
-        assert(v.type == VariableType::Bool);
+        assert(v.type == VarType::Bool);
         if (v.b) {
             vertices.push_back(src_pts[i]->pos);
         }

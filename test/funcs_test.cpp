@@ -31,7 +31,7 @@ TEST_CASE("getbox")
     SECTION("getbbox_center")
     {
         auto v = eval.CalcExpr("getbbox_center(0)", ctx);
-        REQUIRE(v.type == evt::VariableType::Float3);
+        REQUIRE(v.type == evt::VarType::Float3);
         auto f3 = static_cast<const float*>(v.p);
         REQUIRE(f3[0] == Approx(4));
         REQUIRE(f3[1] == Approx(5));
@@ -41,7 +41,7 @@ TEST_CASE("getbox")
     SECTION("getbbox_size")
     {
         auto v = eval.CalcExpr("getbbox_size(0)", ctx);
-        REQUIRE(v.type == evt::VariableType::Float3);
+        REQUIRE(v.type == evt::VarType::Float3);
         auto f3 = static_cast<const float*>(v.p);
         REQUIRE(f3[0] == Approx(1));
         REQUIRE(f3[1] == Approx(2));
@@ -132,7 +132,7 @@ TEST_CASE("desc")
 
         evt::EvalContext ctx(eval, *box);
         auto sz_y = eval.CalcExpr("$SIZEY", ctx);
-        REQUIRE(sz_y.type == evt::VariableType::Float);
+        REQUIRE(sz_y.type == evt::VarType::Float);
         REQUIRE(sz_y.f == Approx(2.0f));
     }
 

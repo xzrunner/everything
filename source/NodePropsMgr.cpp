@@ -107,7 +107,7 @@ Variable NodePropsMgr::Query(const std::string& key) const
 void NodeProp::Clear()
 {
     m_key.clear();
-    m_val.type = VariableType::Invalid;
+    m_val.type = VarType::Invalid;
 
     m_expr.clear();
 
@@ -122,7 +122,7 @@ bool NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
     }
 
     auto val = eval.CalcExpr(m_expr, EvalContext(eval, *node));
-    if (val.type == VariableType::Invalid) {
+    if (val.type == VarType::Invalid) {
         return false;
     }
 
@@ -130,11 +130,11 @@ bool NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
     {
         switch (m_val.type)
         {
-        case VariableType::Int:
+        case VarType::Int:
         {
             switch (val.type)
             {
-            case VariableType::Float:
+            case VarType::Float:
             {
                 auto tmp = static_cast<int>(val.f);
                 val.i = tmp;
@@ -146,11 +146,11 @@ bool NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
             }
         }
             break;
-        case VariableType::Float:
+        case VarType::Float:
         {
             switch (val.type)
             {
-            case VariableType::Int:
+            case VarType::Int:
             {
                 auto tmp = static_cast<float>(val.i);
                 val.f = tmp;

@@ -44,7 +44,7 @@ NodeHelper::GetInputGeo(const Node& node, size_t idx)
     }
 }
 
-bool NodeHelper::CheckPropsType(const Node& node, int begin, int end, VariableType type)
+bool NodeHelper::CheckPropsType(const Node& node, int begin, int end, VarType type)
 {
     auto& props = node.GetProps().GetProps();
     for (int i = begin; i < end; ++i) {
@@ -69,10 +69,10 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
         {
             eval_ctx.point_idx = i;
             auto v = eval.CalcExpr(expr, eval_ctx);
-            if (v.type == evt::VariableType::Invalid) {
+            if (v.type == evt::VarType::Invalid) {
                 continue;
             }
-            assert(v.type == VariableType::Bool);
+            assert(v.type == VarType::Bool);
             if (v.b) {
                 ret.push_back(i);
             }
@@ -89,10 +89,10 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
         {
             eval_ctx.point_idx = attr.QueryIndex(vts[i]->point);
             auto v = eval.CalcExpr(expr, eval_ctx);
-            if (v.type == evt::VariableType::Invalid) {
+            if (v.type == evt::VarType::Invalid) {
                 continue;
             }
-            assert(v.type == VariableType::Bool);
+            assert(v.type == VarType::Bool);
             if (v.b) {
                 ret.push_back(i);
             }
@@ -113,11 +113,11 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
             {
                 eval_ctx.point_idx = attr.QueryIndex(v->point);
                 auto v = eval.CalcExpr(expr, eval_ctx);
-                if (v.type == evt::VariableType::Invalid) {
+                if (v.type == evt::VarType::Invalid) {
                     select = false;
                     break;
                 }
-                assert(v.type == VariableType::Bool);
+                assert(v.type == VarType::Bool);
                 if (!v.b) {
                     select = false;
                     break;

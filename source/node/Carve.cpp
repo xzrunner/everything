@@ -47,8 +47,8 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
     // only support first_u and second_u
     float len_min, len_max;
     auto& props = m_props.GetProps();
-    assert(props[FIRST_U].Val().type == VariableType::Float
-        && props[SECOND_U].Val().type == VariableType::Float);
+    assert(props[FIRST_U].Val().type == VarType::Float
+        && props[SECOND_U].Val().type == VarType::Float);
     auto& first_u  = props[FIRST_U].Val().f;
     auto& second_u = props[SECOND_U].Val().f;
     if (first_u < second_u) {

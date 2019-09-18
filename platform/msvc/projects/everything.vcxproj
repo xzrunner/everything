@@ -55,6 +55,8 @@
     <ClInclude Include="..\..\..\include\everything\NodeVar.h" />
     <ClInclude Include="..\..\..\include\everything\NodeVarType.h" />
     <ClInclude Include="..\..\..\include\everything\Variable.h" />
+    <ClInclude Include="..\..\..\include\everything\VarType.h" />
+    <ClInclude Include="..\..\..\include\everything\VarValue.h" />
     <ClInclude Include="..\..\..\include\everything\VexFuncs.h" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +98,7 @@
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />
     <ClCompile Include="..\..\..\source\TreeContext.cpp" />
     <ClCompile Include="..\..\..\source\Variable.cpp" />
+    <ClCompile Include="..\..\..\source\VarValue.cpp" />
     <ClCompile Include="..\..\..\source\VexFuncs.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -20,7 +20,7 @@ public:
         GetInputGeo(const Node& node, size_t idx);
 
     // begin <= i < end
-    static bool CheckPropsType(const Node& node, int begin, int end, VariableType type);
+    static bool CheckPropsType(const Node& node, int begin, int end, VarType type);
 
     static std::vector<size_t> SelectGeoByExpr(GroupType type, const Evaluator& eval, 
         const Node& node, const std::string& expr);

@@ -11,7 +11,7 @@ void Switch::Execute(Evaluator& eval, TreeContext& ctx)
 {
     m_geo_impl.reset();
 
-    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VariableType::Int));
+    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VarType::Int));
     auto& props = m_props.GetProps();
     int selected = props[SELECTED].Val().i;
     auto prev_geo = NodeHelper::GetInputGeo(*this, selected);

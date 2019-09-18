@@ -55,6 +55,9 @@
     <Filter Include="dataset\geo\group">
       <UniqueIdentifier>{04b93520-b309-47cd-bb35-7c058d3e4e8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dataset\others\var">
+      <UniqueIdentifier>{be21ea6b-24ff-4342-8879-5f0c3734f99a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\everything\node\Curve.h">
@@ -134,9 +137,6 @@
     <ClInclude Include="..\..\..\include\everything\GeometryImpl.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\Variable.h">
-      <Filter>dataset\others</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\TreeContext.h">
       <Filter>dataset\others</Filter>
     </ClInclude>
@@ -187,6 +187,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\GeoAttrType.h">
       <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\Variable.h">
+      <Filter>dataset\others\var</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\VarType.h">
+      <Filter>dataset\others\var</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\VarValue.h">
+      <Filter>dataset\others\var</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -260,9 +269,6 @@
     <ClCompile Include="..\..\..\source\GeometryImpl.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\Variable.cpp">
-      <Filter>dataset\others</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\TreeContext.cpp">
       <Filter>dataset\others</Filter>
     </ClCompile>
@@ -304,6 +310,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\GroupMgr.cpp">
       <Filter>dataset\geo\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Variable.cpp">
+      <Filter>dataset\others\var</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\VarValue.cpp">
+      <Filter>dataset\others\var</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

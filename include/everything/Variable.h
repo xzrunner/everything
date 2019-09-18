@@ -1,5 +1,7 @@
 #pragma once
 
+#include "everything/VarType.h"
+
 #include <SM_Vector.h>
 
 #include <string>
@@ -7,22 +9,10 @@
 namespace evt
 {
 
-enum class VariableType
-{
-    Invalid = 0,
-
-    Bool,
-    Int,
-    Float,
-    Float3,
-    Double,
-    String,
-};
-
 class Variable
 {
 public:
-    Variable() : type(VariableType::Invalid) {}
+    Variable() : type(VarType::Invalid) {}
     explicit Variable(bool b);
     explicit Variable(int  i);
     explicit Variable(float f);
@@ -35,8 +25,7 @@ public:
 
     bool operator == (const Variable& var) const;
 
-    VariableType type = VariableType::Invalid;
-
+    VarType  type = VarType::Invalid;
     union
     {
         bool   b;

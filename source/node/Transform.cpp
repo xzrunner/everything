@@ -192,7 +192,7 @@ void Transform::InitProps()
 
 sm::mat4 Transform::CalcTransformMat() const
 {
-    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VariableType::Float));
+    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VarType::Float));
 
     auto& props = m_props.GetProps();
 
