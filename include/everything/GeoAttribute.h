@@ -48,6 +48,7 @@ public:
         };
 
         Primitive(Type type) : type(type) {}
+        sm::vec3 CalcNormal() const;
 
         std::vector<std::shared_ptr<Vertex>> vertices;
 

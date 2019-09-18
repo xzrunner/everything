@@ -1,6 +1,5 @@
 #include "everything/node/GroupCreate.h"
 #include "everything/GeometryImpl.h"
-#include "everything/GeoAttrHelper.h"
 #include "everything/NodeHelper.h"
 #include "everything/EvalContext.h"
 #include "everything/Evaluator.h"
@@ -137,8 +136,7 @@ void GroupCreate::SelectByNormals(Group& group)
         auto& prims = m_geo_impl->GetAttr().GetPrimtives();
         for (size_t i = 0, n = prims.size(); i < n; ++i)
         {
-            auto& prim = prims[i];
-            auto normal = GeoAttrHelper::CalcFaceNormal(*prim);
+            auto normal = prims[i]->CalcNormal();
             auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, normal);
             if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
                 group.items.push_back(i);

@@ -697,4 +697,21 @@ void GeoAttribute::CombineDetail(const GeoAttribute& attr)
     m_detail.vars = vars;
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// struct GeoAttribute::Primitive
+//////////////////////////////////////////////////////////////////////////
+
+sm::vec3 GeoAttribute::Primitive::CalcNormal() const
+{
+    assert(vertices.size() > 2);
+    sm::Plane plane;
+    plane.Build(
+        vertices[0]->point->pos,
+        vertices[1]->point->pos,
+        vertices[2]->point->pos
+    );
+    return plane.normal;
+}
+
 }

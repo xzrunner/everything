@@ -167,9 +167,6 @@
     <ClInclude Include="..\..\..\include\everything\node\Normal.h">
       <Filter>nodes\geometry\polygon</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h">
-      <Filter>dataset\geo\attr</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\GeoAttribute.h">
       <Filter>dataset\geo\attr</Filter>
     </ClInclude>
@@ -298,9 +295,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Normal.cpp">
       <Filter>nodes\geometry\polygon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
-      <Filter>dataset\geo\attr</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp">
       <Filter>dataset\geo\attr</Filter>

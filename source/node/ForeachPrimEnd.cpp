@@ -2,7 +2,6 @@
 #include "everything/node/ForeachPrimBegin.h"
 #include "everything/Evaluator.h"
 #include "everything/GeometryImpl.h"
-#include "everything/GeoAttrHelper.h"
 #include "everything/NodeHelper.h"
 
 #include <queue>

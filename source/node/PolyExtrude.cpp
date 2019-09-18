@@ -1,6 +1,5 @@
 #include "everything/node/PolyExtrude.h"
 #include "everything/GeometryImpl.h"
-#include "everything/GeoAttrHelper.h"
 #include "everything/NodeHelper.h"
 
 namespace evt
@@ -55,7 +54,7 @@ void PolyExtrude::SetDistance(float dist)
 
 void PolyExtrude::ExtrudeFace(GeoAttribute::Primitive& prim) const
 {
-    auto normal = GeoAttrHelper::CalcFaceNormal(prim);
+    auto normal = prim.CalcNormal();
     auto offset = normal * m_distance;
     for (auto& v : prim.vertices) {
         v->point->pos += offset;
