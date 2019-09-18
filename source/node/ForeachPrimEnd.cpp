@@ -16,7 +16,7 @@ namespace node
 
 void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
 {
-    std::vector<NodePtr> nodes;
+    std::set<NodePtr> nodes;
     auto begin = FindForeachBegin(nodes);
     if (!begin) {
         return;
@@ -61,7 +61,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
     m_geo_impl->UpdateByAttr();
 }
 
-NodePtr ForeachPrimEnd::FindForeachBegin(std::vector<NodePtr>& nodes) const
+NodePtr ForeachPrimEnd::FindForeachBegin(std::set<NodePtr>& nodes) const
 {
     NodePtr begin = nullptr;
 
@@ -78,7 +78,7 @@ NodePtr ForeachPrimEnd::FindForeachBegin(std::vector<NodePtr>& nodes) const
     {
         auto n = buf.front(); buf.pop();
         assert(n);
-        nodes.push_back(n);
+        nodes.insert(n);
 
         if (n->get_type() == rttr::type::get<node::ForeachPrimBegin>()) {
             begin = n;

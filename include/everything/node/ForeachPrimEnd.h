@@ -24,7 +24,7 @@ public:
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
 private:
-    NodePtr FindForeachBegin(std::vector<NodePtr>& nodes) const;
+    NodePtr FindForeachBegin(std::set<NodePtr>& nodes) const;
 
     RTTR_ENABLE(Node)
 
