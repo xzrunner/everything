@@ -98,6 +98,116 @@ TEST_CASE("copy to points")
     test::check_aabb(copy, src_pos + target_pos - h_src_sz - h_tar_sz, src_pos + target_pos + h_src_sz + h_tar_sz);
 }
 
+TEST_CASE("copy to points with points dir")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    box->SetSize({ 1, 2, 4 });
+    eval.AddNode(box);
+
+    auto copy = std::make_shared<evt::node::CopyToPoints>();
+    copy->EnableUsePointDir(true);
+    eval.AddNode(copy);
+
+    eval.Connect({ box, 0 }, { copy, evt::node::CopyToPoints::IDX_SRC_PRIM });
+
+    SECTION("shape")
+    {
+        auto line = std::make_shared<evt::node::Add>();
+        line->SetPoints({
+            { 0, 0, 0 },
+            { 2, 4, 8 }
+        });
+        eval.AddNode(line);
+
+        eval.Connect({ line, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+
+        eval.Update();
+
+        test::check_aabb(copy, { -0.5f, -1, -2 }, { 2.5f, 5, 10 });
+    }
+
+    SECTION("box")
+    {
+        auto to_box = std::make_shared<evt::node::Box>();
+        to_box->SetSize({ 6, 6, 6 });
+        eval.AddNode(to_box);
+
+        eval.Connect({ to_box, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+
+        eval.Update();
+
+        test::check_aabb(copy, { -5.04904f, -5.04904f, -5.02073f }, { 5.04904f, 5.04904f, 5.02073f });
+    }
+
+    SECTION("plane")
+    {
+        auto to_box = std::make_shared<evt::node::Box>();
+        to_box->SetSize({ 6, 6, 6 });
+        eval.AddNode(to_box);
+
+        auto group = std::make_shared<evt::node::GroupCreate>();
+        group->SetGroupName("Top");
+        group->SetGroupType(evt::GroupType::Primitives);
+        group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+        eval.AddNode(group);
+
+        eval.Connect({ to_box, 0 }, { group, 0 });
+
+        auto blast = std::make_shared<evt::node::Blast>();
+        blast->SetGroupName("Top");
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetDeleteNonSelected(true);
+        eval.AddNode(blast);
+
+        eval.Connect({ group, 0 }, { blast, 0 });
+
+        eval.Connect({ blast, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+
+        eval.Update();
+
+        test::check_aabb(copy, { -3.5f, 1, -4 }, { 3.5f, 5, 4 });
+    }
+
+    SECTION("plane with normal")
+    {
+        auto to_box = std::make_shared<evt::node::Box>();
+        to_box->SetSize({ 6, 6, 6 });
+        eval.AddNode(to_box);
+
+        auto normal = std::make_shared<evt::node::Normal>();
+        normal->SetAttrAddTo(evt::GeoAttrType::Point);
+        eval.AddNode(normal);
+
+        eval.Connect({ to_box, 0 }, { normal, 0 });
+
+        auto group = std::make_shared<evt::node::GroupCreate>();
+        group->SetGroupName("Top");
+        group->SetGroupType(evt::GroupType::Primitives);
+        group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+        eval.AddNode(group);
+
+        eval.Connect({ normal, 0 }, { group, 0 });
+
+        auto blast = std::make_shared<evt::node::Blast>();
+        blast->SetGroupName("Top");
+        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetDeleteNonSelected(true);
+        eval.AddNode(blast);
+
+        eval.Connect({ group, 0 }, { blast, 0 });
+
+        eval.Connect({ blast, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+
+        eval.Update();
+
+        test::check_aabb(copy, { -5.04904f, 0.950962f, -5.02073f }, { 5.04904f, 5.04904f, 5.02073f });
+    }
+}
+
 TEST_CASE("foreach primitive")
 {
     test::init();

@@ -6,6 +6,9 @@
 
 namespace evt
 {
+
+class GeometryImpl;
+
 namespace node
 {
 
@@ -33,6 +36,11 @@ public:
     virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
 
     void EnableUsePointDir(bool enable);
+
+private:
+    void CopyTo(const GeometryImpl& src, const GeometryImpl& dst);
+    void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const sm::ivec3& norm_idx);
+    void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const std::vector<sm::vec3>& norms);
 
 private:
     bool m_use_pt_dir = false;
