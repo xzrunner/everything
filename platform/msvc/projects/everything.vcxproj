@@ -16,6 +16,7 @@
     <ClInclude Include="..\..\..\include\everything\Everything.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAdaptor.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAttribute.h" />
+    <ClInclude Include="..\..\..\include\everything\GeoAttrName.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAttrType.h" />
     <ClInclude Include="..\..\..\include\everything\GeometryImpl.h" />
     <ClInclude Include="..\..\..\include\everything\GeoShape.h" />

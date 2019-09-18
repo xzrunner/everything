@@ -1,6 +1,7 @@
 #include "everything/node/Normal.h"
 #include "everything/NodeHelper.h"
 #include "everything/GeometryImpl.h"
+#include "everything/GeoAttrName.h"
 
 #include <SM_Calc.h>
 
@@ -84,9 +85,9 @@ void Normal::AddToPoint()
     {
         auto& attr = m_geo_impl->GetAttr();
         std::vector<VarValue> zero_list(attr.GetPoints().size(), VarValue(0.0f));
-        attr.AddAttr(GeoAttrType::Point, { "N[x]", VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Point, { "N[y]", VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Point, { "N[z]", VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_x, VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_y, VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_z, VarType::Float }, zero_list);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -125,9 +126,9 @@ void Normal::AddToPoint()
             y_list[i] = VarValue(norm.y);
             z_list[i] = VarValue(norm.z);
         }
-        attr.AddAttr(GeoAttrType::Point, { "N[x]", VarType::Float }, x_list);
-        attr.AddAttr(GeoAttrType::Point, { "N[y]", VarType::Float }, y_list);
-        attr.AddAttr(GeoAttrType::Point, { "N[z]", VarType::Float }, z_list);
+        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_x, VarType::Float }, x_list);
+        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_y, VarType::Float }, y_list);
+        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_z, VarType::Float }, z_list);
     }
         break;
     default:
@@ -144,9 +145,9 @@ void Normal::AddToVertex()
     {
         auto& attr = m_geo_impl->GetAttr();
         std::vector<VarValue> zero_list(attr.GetVertices().size(), VarValue(0.0f));
-        attr.AddAttr(GeoAttrType::Vertex, { "N[x]", VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Vertex, { "N[y]", VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Vertex, { "N[z]", VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_x, VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_y, VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_z, VarType::Float }, zero_list);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -165,9 +166,9 @@ void Normal::AddToVertex()
             y_list[i] = VarValue(norm.y);
             z_list[i] = VarValue(norm.z);
         }
-        attr.AddAttr(GeoAttrType::Vertex, { "N[x]", VarType::Float }, x_list);
-        attr.AddAttr(GeoAttrType::Vertex, { "N[y]", VarType::Float }, y_list);
-        attr.AddAttr(GeoAttrType::Vertex, { "N[z]", VarType::Float }, z_list);
+        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_x, VarType::Float }, x_list);
+        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_y, VarType::Float }, y_list);
+        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_z, VarType::Float }, z_list);
     }
         break;
     default:
@@ -184,9 +185,9 @@ void Normal::AddToPrimitive()
     {
         auto& attr = m_geo_impl->GetAttr();
         std::vector<VarValue> zero_list(attr.GetPrimtives().size(), VarValue(0.0f));
-        attr.AddAttr(GeoAttrType::Primitive, { "N[x]", VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Primitive, { "N[y]", VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Primitive, { "N[z]", VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_x, VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_y, VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_z, VarType::Float }, zero_list);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -205,9 +206,9 @@ void Normal::AddToPrimitive()
             y_list[i] = VarValue(norm.y);
             z_list[i] = VarValue(norm.z);
         }
-        attr.AddAttr(GeoAttrType::Primitive, { "N[x]", VarType::Float }, x_list);
-        attr.AddAttr(GeoAttrType::Primitive, { "N[y]", VarType::Float }, y_list);
-        attr.AddAttr(GeoAttrType::Primitive, { "N[z]", VarType::Float }, z_list);
+        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_x, VarType::Float }, x_list);
+        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_y, VarType::Float }, y_list);
+        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_z, VarType::Float }, z_list);
     }
         break;
     default:
@@ -224,9 +225,9 @@ void Normal::AddToDetail()
     {
         auto& attr = m_geo_impl->GetAttr();
         std::vector<VarValue> zero_list(1, VarValue(0.0f));
-        attr.AddAttr(GeoAttrType::Detail, { "N[x]", VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Detail, { "N[y]", VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Detail, { "N[z]", VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_x, VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_y, VarType::Float }, zero_list);
+        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_z, VarType::Float }, zero_list);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -242,9 +243,9 @@ void Normal::AddToDetail()
         std::vector<VarValue> x_list(1, VarValue(norm.x));
         std::vector<VarValue> y_list(1, VarValue(norm.y));
         std::vector<VarValue> z_list(1, VarValue(norm.z));
-        attr.AddAttr(GeoAttrType::Detail, { "N[x]", VarType::Float }, x_list);
-        attr.AddAttr(GeoAttrType::Detail, { "N[y]", VarType::Float }, y_list);
-        attr.AddAttr(GeoAttrType::Detail, { "N[z]", VarType::Float }, z_list);
+        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_x, VarType::Float }, x_list);
+        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_y, VarType::Float }, y_list);
+        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_z, VarType::Float }, z_list);
     }
         break;
     default:

@@ -200,6 +200,9 @@
     <ClInclude Include="..\..\..\include\everything\node\Color.h">
       <Filter>nodes\geometry\material</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoAttrName.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
