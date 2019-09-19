@@ -2,6 +2,7 @@
 #include "everything/GeometryImpl.h"
 #include "everything/GeoShape.h"
 #include "everything/NodeHelper.h"
+#include "everything/GeoAttrHelper.h"
 
 #include <SM_Calc.h>
 
@@ -59,7 +60,7 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
         len_max = tot_len * first_u;
     }
 
-    auto calc_pos = [&](float len, sm::vec3& pos)->size_t
+    auto calc_pos = [&](float len, sm::vec3& pos, size_t& idx_int, float& idx_frac)
     {
         for (int i = 0, n = vertices.size() - 1; i < n; ++i)
         {
@@ -75,25 +76,63 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
             assert(len >= prev_len && len < curr_len);
             const float p = (len - prev_len) / (curr_len - prev_len);
             pos = vertices[i] + (vertices[i + 1] - vertices[i]) * p;
-            return i;
+            idx_int  = i;
+            idx_frac = p;
+            return;
         }
         assert(fabs(len - each_len.back()) < std::numeric_limits<float>::epsilon());
         pos = vertices.back();
-        return vertices.size() - 1;
+        idx_int  = vertices.size() - 1;
+        idx_frac = 0;
     };
 
     sm::vec3 start, end;
-    size_t s_idx = calc_pos(len_min, start);
-    size_t e_idx = calc_pos(len_max, end);
-    assert(s_idx <= e_idx);
+    size_t s_idx_int, e_idx_int;
+    float s_idx_frac, e_idx_frac;
+    calc_pos(len_min, start, s_idx_int, s_idx_frac);
+    calc_pos(len_max, end, e_idx_int, e_idx_frac);
+    assert(s_idx_int <= e_idx_int);
+
+    // calc normal
+    sm::ivec3 norm_idx;
+    bool has_norm = GeoAttrHelper::QueryNormalIndices(prev_geo->GetAttr(), GeoAttrType::Point, norm_idx);
+    sm::vec3 s_norm, e_norm;
+    if (has_norm)
+    {
+        auto& attr = prev_geo->GetAttr();
+        if (s_idx_frac == 0)
+        {
+            GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, s_idx_int, norm_idx, s_norm);
+        }
+        else
+        {
+            sm::vec3 prev, next;
+            bool b_prev = GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, s_idx_int, norm_idx, prev);
+            bool b_next = GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, s_idx_int + 1, norm_idx, next);
+            assert(b_prev && b_next);
+            s_norm = prev + (next - prev) * s_idx_frac;
+        }
+        if (e_idx_frac == 0)
+        {
+            GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, e_idx_int, norm_idx, e_norm);
+        }
+        else
+        {
+            sm::vec3 prev, next;
+            bool b_prev = GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, e_idx_int, norm_idx, prev);
+            bool b_next = GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, e_idx_int + 1, norm_idx, next);
+            assert(b_prev && b_next);
+            e_norm = prev + (next - prev) * e_idx_frac;
+        }
+    }
 
     std::vector<sm::vec3> dst_vertices;
-    dst_vertices.reserve(e_idx - s_idx + 1);
+    dst_vertices.reserve(e_idx_int - s_idx_int + 1);
     dst_vertices.push_back(start);
-    for (size_t i = s_idx + 1; i <= e_idx; ++i) {
+    for (size_t i = s_idx_int + 1; i <= e_idx_int; ++i) {
         dst_vertices.push_back(vertices[i]);
     }
-    if (end != vertices[e_idx]) {
+    if (end != vertices[e_idx_int]) {
         dst_vertices.push_back(end);
     }
 
@@ -106,24 +145,32 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
     auto& attr = m_geo_impl->GetAttr();
     attr.SetAttrDesc(GeoAttrType::Point,
         prev_attr.GetAttrDesc(GeoAttrType::Point));
+
     auto default_vars = prev_attr.GetDefaultValues(GeoAttrType::Point);
     auto& prev_pts = prev_attr.GetPoints();
     assert(prev_pts.size() == vertices.size());
     auto& pts = attr.GetPoints();
+
     size_t idx = 0;
-    if (start == vertices[s_idx]) {
-        pts[idx++]->vars = prev_pts[s_idx]->vars;
-    } else {
+    if (start == vertices[s_idx_int]) {
+        pts[idx++]->vars = prev_pts[s_idx_int]->vars;
+    }  else  {
         pts[idx++]->vars = default_vars;
+        if (has_norm && s_idx_frac != 0) {
+            GeoAttrHelper::SetNormal(attr, pts[idx - 1]->vars, norm_idx, s_norm);
+        }
     }
-    for (size_t i = s_idx + 1; i <= e_idx; ++i) {
+    for (size_t i = s_idx_int + 1; i <= e_idx_int; ++i) {
         pts[idx++]->vars = prev_pts[i]->vars;
     }
-    if (end != vertices[e_idx]) {
-        if (end == vertices[e_idx]) {
-            pts[idx++]->vars = prev_pts[e_idx]->vars;
+    if (end != vertices[e_idx_int]) {
+        if (end == vertices[e_idx_int]) {
+            pts[idx++]->vars = prev_pts[e_idx_int]->vars;
         } else {
             pts[idx++]->vars = default_vars;
+            if (has_norm && e_idx_frac != 0) {
+                GeoAttrHelper::SetNormal(attr, pts[idx - 1]->vars, norm_idx, e_norm);
+            }
         }
     }
 }

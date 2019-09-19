@@ -3,7 +3,7 @@
 
 #include "everything/GeometryImpl.h"
 #include "everything/NodeHelper.h"
-#include "everything/GeoAttrName.h"
+#include "everything/GeoAttrHelper.h"
 
 #include <SM_Quaternion.h>
 #include <SM_Matrix.h>
@@ -38,24 +38,8 @@ void CopyToPoints::Execute(Evaluator& eval, TreeContext& ctx)
     }
     else
     {
-        auto& desc = dst_geo->GetAttr().GetAttrDesc(GeoAttrType::Point);
-        sm::ivec3 idx(-1, -1, -1);
-        for (int i = 0, n = desc.size(); i < n; ++i)
-        {
-            if (desc[i].name == GeoAttrName::norm_x) {
-                assert(desc[i].type == VarType::Float);
-                idx.x = i;
-            }
-            if (desc[i].name == GeoAttrName::norm_y) {
-                assert(desc[i].type == VarType::Float);
-                idx.y = i;
-            }
-            if (desc[i].name == GeoAttrName::norm_z) {
-                assert(desc[i].type == VarType::Float);
-                idx.z = i;
-            }
-        }
-        if (idx.x < 0 || idx.y < 0 || idx.z < 0)
+        sm::ivec3 norm_idx;
+        if (!GeoAttrHelper::QueryNormalIndices(dst_geo->GetAttr(), GeoAttrType::Point, norm_idx))
         {
             auto dst_type = dst_geo->GetAdaptorType();
             switch (dst_type)
@@ -72,7 +56,7 @@ void CopyToPoints::Execute(Evaluator& eval, TreeContext& ctx)
         }
         else
         {
-            CopyTo(*src_geo, *dst_geo, idx);
+            CopyTo(*src_geo, *dst_geo, norm_idx);
         }
     }
 

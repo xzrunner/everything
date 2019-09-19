@@ -203,6 +203,9 @@
     <ClInclude Include="..\..\..\include\everything\GeoAttrName.h">
       <Filter>dataset\geo\attr</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -319,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Color.cpp">
       <Filter>nodes\geometry\material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
+      <Filter>dataset\geo\attr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
