@@ -96,9 +96,35 @@ void Carve::Execute(Evaluator& eval, TreeContext& ctx)
     if (end != vertices[e_idx]) {
         dst_vertices.push_back(end);
     }
-    if (!dst_vertices.empty()) {
-        m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
-        m_geo_impl->FromGeoShapes({ std::make_shared<GeoPolyline>(dst_vertices) });
+
+    assert(!dst_vertices.empty());
+    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
+    m_geo_impl->FromGeoShapes({ std::make_shared<GeoPolyline>(dst_vertices) });
+
+    // update point attrs
+    auto& prev_attr = prev_geo->GetAttr();
+    auto& attr = m_geo_impl->GetAttr();
+    attr.SetAttrDesc(GeoAttrType::Point,
+        prev_attr.GetAttrDesc(GeoAttrType::Point));
+    auto default_vars = prev_attr.GetDefaultValues(GeoAttrType::Point);
+    auto& prev_pts = prev_attr.GetPoints();
+    assert(prev_pts.size() == vertices.size());
+    auto& pts = attr.GetPoints();
+    size_t idx = 0;
+    if (start == vertices[s_idx]) {
+        pts[idx++]->vars = prev_pts[s_idx]->vars;
+    } else {
+        pts[idx++]->vars = default_vars;
+    }
+    for (size_t i = s_idx + 1; i <= e_idx; ++i) {
+        pts[idx++]->vars = prev_pts[i]->vars;
+    }
+    if (end != vertices[e_idx]) {
+        if (end == vertices[e_idx]) {
+            pts[idx++]->vars = prev_pts[e_idx]->vars;
+        } else {
+            pts[idx++]->vars = default_vars;
+        }
     }
 }
 

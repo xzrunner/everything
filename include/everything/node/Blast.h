@@ -31,7 +31,7 @@ public:
     void SetDeleteNonSelected(bool del_non_selected);
 
 private:
-    void SetupDelFlags(const Group& group, size_t count,
+    bool SetupDelFlags(const Group& group, size_t count,
         std::vector<bool>& del_flags) const;
 
     size_t GetGeoItemNum() const;

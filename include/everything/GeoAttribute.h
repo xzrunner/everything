@@ -2,6 +2,7 @@
 
 #include "everything/GeoAttrType.h"
 #include "everything/Variable.h"
+#include "everything/VarValue.h"
 
 #include <SM_Cube.h>
 
@@ -20,7 +21,14 @@ class GeoAttribute : boost::noncopyable
 public:
     struct Point
     {
+        Point() {}
         Point(const sm::vec3& pos) : pos(pos) {}
+        Point(const Point& point) : pos(point.pos), vars(point.vars) {}
+        Point& operator = (const Point& point) {
+            pos = point.pos;
+            vars = point.vars;
+            return *this;
+        }
 
         sm::vec3 pos;
 
@@ -31,6 +39,13 @@ public:
     struct Primitive;
     struct Vertex
     {
+        Vertex() {}
+        Vertex(const Vertex& vert) : vars(vert.vars) {}
+        Vertex& operator = (const Vertex& vert) {
+            vars = vert.vars;
+            return *this;
+        }
+
         std::shared_ptr<Point>   point = nullptr;
         std::weak_ptr<Primitive> prim;
 
@@ -47,7 +62,15 @@ public:
             PolygonCurves,
         };
 
+        Primitive() {}
         Primitive(Type type) : type(type) {}
+        Primitive(const Primitive& prim) : type(prim.type), vars(prim.vars) {}
+        Primitive& operator = (const Primitive& prim) {
+            type = prim.type;
+            vars = prim.vars;
+            return *this;
+        }
+
         sm::vec3 CalcNormal() const;
 
         std::vector<std::shared_ptr<Vertex>> vertices;
@@ -76,18 +99,14 @@ public:
     GeoAttribute(const GeoAttribute& attr);
     GeoAttribute& operator = (const GeoAttribute& attr);
 
-    auto& GetPoints() const { return m_points; }
-    void  SetPoints(const std::vector<std::shared_ptr<Point>>& points);
-
-    auto& GetVertices() const { return m_vertices; }
-    void  SetVertices(const std::vector<std::shared_ptr<Vertex>>& vertices);
-
+    auto& GetPoints() const    { return m_points; }
+    auto& GetVertices() const  { return m_vertices; }
     auto& GetPrimtives() const { return m_primtives; }
-    void  SetPrimtives(const std::vector<std::shared_ptr<Primitive>>& prims);
+    auto& GetDetail() const    { return m_detail; }
 
-    void Reset(const std::vector<std::shared_ptr<Point>>& points,
-               const std::vector<std::shared_ptr<Vertex>>& vertices,
-               const std::vector<std::shared_ptr<Primitive>>& prims);
+    void RemoveItems(GeoAttrType type, const std::vector<bool>& del_flags);
+
+    void ChangePointsOrder(const std::vector<size_t>& order);
 
     void AddAttr(GeoAttrType type, const VarDesc& var_desc, const std::vector<VarValue>& var_list);
     Variable QueryAttr(GeoAttrType type, const std::string& name, size_t index) const;
@@ -97,6 +116,15 @@ public:
     void FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes);
 
     auto& GetAABB() const { return m_aabb; }
+
+    auto& GetAttrDesc(GeoAttrType type) const {
+        return m_var_descs[static_cast<int>(type)];
+    }
+    void SetAttrDesc(GeoAttrType type, const std::vector<VarDesc>& desc) {
+        m_var_descs[static_cast<int>(type)] = desc;
+    }
+
+    std::vector<VarValue> GetDefaultValues(GeoAttrType type) const;
 
     template<typename T>
     int QueryIndex(const T& i) const;
@@ -113,6 +141,10 @@ private:
     void CombineVertices(const GeoAttribute& attr);
     void CombinePrimitives(const GeoAttribute& attr);
     void CombineDetail(const GeoAttribute& attr);
+
+    void UpdatePointsChanged();
+    void UpdateVerticesChanged();
+    void UpdatePrimitivesChanged();
 
 private:
     std::vector<std::shared_ptr<Point>>     m_points;

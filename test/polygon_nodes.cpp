@@ -2,6 +2,7 @@
 
 #include <everything/Evaluator.h>
 #include <everything/GeometryImpl.h>
+#include <everything/GeoAttrName.h>
 
 #include <everything/node/Add.h>
 #include <everything/node/Boolean.h>
@@ -14,48 +15,126 @@
 #include <everything/node/Line.h>
 #include <everything/node/GroupCreate.h>
 #include <everything/node/Blast.h>
+#include <everything/node/Color.h>
 
 #include <catch/catch.hpp>
 
-TEST_CASE("add")
+// Add
+
+TEST_CASE("add to brush")
 {
     test::init();
 
     evt::Evaluator eval;
 
-    SECTION("add to brush")
-    {
-        auto box = std::make_shared<evt::node::Box>();
-        eval.AddNode(box);
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
 
-        auto add = std::make_shared<evt::node::Add>();
-        eval.AddNode(add);
+    auto add = std::make_shared<evt::node::Add>();
+    eval.AddNode(add);
 
-        add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+    add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
 
-        eval.Connect({ box, 0 }, { add, 0 });
+    eval.Connect({ box, 0 }, { add, 0 });
 
-        eval.Update();
+    eval.Update();
 
-        test::check_points_num(add, 10);
-    }
+    test::check_points_num(add, 10);
+}
 
-    SECTION("add to shape")
-    {
-        auto line = std::make_shared<evt::node::Line>();
-        eval.AddNode(line);
+TEST_CASE("add to brush with attr")
+{
+    test::init();
 
-        auto add = std::make_shared<evt::node::Add>();
-        eval.AddNode(add);
+    evt::Evaluator eval;
 
-        add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
 
-        eval.Connect({ line, 0 }, { add, 0 });
+    auto color = std::make_shared<evt::node::Color>();
+    color->SetAttrAddTo(evt::GeoAttrType::Point);
+    color->SetColor({ 0.3f, 0.4f, 0.5f });
+    eval.AddNode(color);
 
-        eval.Update();
+    eval.Connect({ box, 0 }, { color, 0 });
 
-        test::check_points_num(add, 4);
-    }
+    auto add = std::make_shared<evt::node::Add>();
+    eval.AddNode(add);
+
+    add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+
+    eval.Connect({ color, 0 }, { add, 0 });
+
+    eval.Update();
+
+    test::check_points_num(add, 10);
+    test::check_attr_count(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 10);
+    test::check_attr_count(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 10);
+    test::check_attr_count(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 10);
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 6, evt::Variable(0.3f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 8, evt::Variable(0.0f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 2, evt::Variable(0.4f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 9, evt::Variable(0.0f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 7, evt::Variable(0.5f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 8, evt::Variable(0.0f));
+}
+
+TEST_CASE("add to shape")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto line = std::make_shared<evt::node::Line>();
+    eval.AddNode(line);
+
+    auto add = std::make_shared<evt::node::Add>();
+    eval.AddNode(add);
+
+    add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+
+    eval.Connect({ line, 0 }, { add, 0 });
+
+    eval.Update();
+
+    test::check_points_num(add, 4);
+}
+
+TEST_CASE("add to shape with attr")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto line = std::make_shared<evt::node::Line>();
+    eval.AddNode(line);
+
+    auto color = std::make_shared<evt::node::Color>();
+    color->SetAttrAddTo(evt::GeoAttrType::Point);
+    color->SetColor({ 0.3f, 0.4f, 0.5f });
+    eval.AddNode(color);
+
+    eval.Connect({ line, 0 }, { color, 0 });
+
+    auto add = std::make_shared<evt::node::Add>();
+    eval.AddNode(add);
+
+    add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+
+    eval.Connect({ color, 0 }, { add, 0 });
+
+    eval.Update();
+
+    test::check_points_num(add, 4);
+    test::check_attr_count(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 4);
+    test::check_attr_count(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 4);
+    test::check_attr_count(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 4);
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 0, evt::Variable(0.3f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 2, evt::Variable(0.0f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 1, evt::Variable(0.4f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 3, evt::Variable(0.0f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 0, evt::Variable(0.5f));
+    test::check_attr_value(add, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 2, evt::Variable(0.0f));
 }
 
 TEST_CASE("boolean")
@@ -227,49 +306,49 @@ TEST_CASE("normal box")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Point);
+        normal->SetAttrAddTo(evt::GeoAttrType::Point);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[x]", 8);
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[y]", 8);
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[z]", 8);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, 8);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, 8);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, 8);
     }
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Vertex);
+        normal->SetAttrAddTo(evt::GeoAttrType::Vertex);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[x]", 24);
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[y]", 24);
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[z]", 24);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_x, 24);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_y, 24);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_z, 24);
     }
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Primitive);
+        normal->SetAttrAddTo(evt::GeoAttrType::Primitive);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[x]", 6);
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[y]", 6);
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[z]", 6);
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_x, 6);
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_y, 6);
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_z, 6);
     }
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Detail);
+        normal->SetAttrAddTo(evt::GeoAttrType::Detail);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[x]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[y]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[z]", 1);
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[x]", 0, evt::Variable(0.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[y]", 0, evt::Variable(0.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[z]", 0, evt::Variable(0.0f));
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_x, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_y, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_z, 1);
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_x, 0, evt::Variable(0.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_y, 0, evt::Variable(0.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_z, 0, evt::Variable(0.0f));
     }
 }
 
@@ -305,62 +384,62 @@ TEST_CASE("normal plane")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Point);
+        normal->SetAttrAddTo(evt::GeoAttrType::Point);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[x]", 4);
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[y]", 4);
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[z]", 4);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, 4);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, 4);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, 4);
         for (int i = 0; i < 4; ++i) {
-            test::check_attr_value(normal, evt::GeoAttrType::Point, "N[x]", i, evt::Variable(0.0f));
-            test::check_attr_value(normal, evt::GeoAttrType::Point, "N[y]", i, evt::Variable(1.0f));
-            test::check_attr_value(normal, evt::GeoAttrType::Point, "N[z]", i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, i, evt::Variable(1.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, i, evt::Variable(0.0f));
         }
     }
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Vertex);
+        normal->SetAttrAddTo(evt::GeoAttrType::Vertex);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[x]", 4);
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[y]", 4);
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[z]", 4);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_x, 4);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_y, 4);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_z, 4);
         for (int i = 0; i < 4; ++i) {
-            test::check_attr_value(normal, evt::GeoAttrType::Vertex, "N[x]", i, evt::Variable(0.0f));
-            test::check_attr_value(normal, evt::GeoAttrType::Vertex, "N[y]", i, evt::Variable(1.0f));
-            test::check_attr_value(normal, evt::GeoAttrType::Vertex, "N[z]", i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_x, i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_y, i, evt::Variable(1.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_z, i, evt::Variable(0.0f));
         }
     }
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Primitive);
+        normal->SetAttrAddTo(evt::GeoAttrType::Primitive);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[x]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[y]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[z]", 1);
-        test::check_attr_value(normal, evt::GeoAttrType::Primitive, "N[x]", 0, evt::Variable(0.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Primitive, "N[y]", 0, evt::Variable(1.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Primitive, "N[z]", 0, evt::Variable(0.0f));
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_x, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_y, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_z, 1);
+        test::check_attr_value(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_x, 0, evt::Variable(0.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_y, 0, evt::Variable(1.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_z, 0, evt::Variable(0.0f));
     }
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Detail);
+        normal->SetAttrAddTo(evt::GeoAttrType::Detail);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[x]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[y]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[z]", 1);
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[x]", 0, evt::Variable(0.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[y]", 0, evt::Variable(1.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[z]", 0, evt::Variable(0.0f));
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_x, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_y, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_z, 1);
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_x, 0, evt::Variable(0.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_y, 0, evt::Variable(1.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_z, 0, evt::Variable(0.0f));
     }
 }
 
@@ -386,62 +465,62 @@ TEST_CASE("normal line")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Point);
+        normal->SetAttrAddTo(evt::GeoAttrType::Point);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[x]", n);
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[y]", n);
-        test::check_attr_count(normal, evt::GeoAttrType::Point, "N[z]", n);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, n);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, n);
+        test::check_attr_count(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, n);
         for (int i = 0; i < n; ++i) {
-            test::check_attr_value(normal, evt::GeoAttrType::Point, "N[x]", i, evt::Variable(0.0f));
-            test::check_attr_value(normal, evt::GeoAttrType::Point, "N[y]", i, evt::Variable(0.0f));
-            test::check_attr_value(normal, evt::GeoAttrType::Point, "N[z]", i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, i, evt::Variable(0.0f));
         }
     }
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Vertex);
+        normal->SetAttrAddTo(evt::GeoAttrType::Vertex);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[x]", n);
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[y]", n);
-        test::check_attr_count(normal, evt::GeoAttrType::Vertex, "N[z]", n);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_x, n);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_y, n);
+        test::check_attr_count(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_z, n);
         for (int i = 0; i < n; ++i) {
-            test::check_attr_value(normal, evt::GeoAttrType::Vertex, "N[x]", i, evt::Variable(0.0f));
-            test::check_attr_value(normal, evt::GeoAttrType::Vertex, "N[y]", i, evt::Variable(0.0f));
-            test::check_attr_value(normal, evt::GeoAttrType::Vertex, "N[z]", i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_x, i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_y, i, evt::Variable(0.0f));
+            test::check_attr_value(normal, evt::GeoAttrType::Vertex, evt::GeoAttrName::norm_z, i, evt::Variable(0.0f));
         }
     }
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Primitive);
+        normal->SetAttrAddTo(evt::GeoAttrType::Primitive);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[x]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[y]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Primitive, "N[z]", 1);
-        test::check_attr_value(normal, evt::GeoAttrType::Primitive, "N[x]", 0, evt::Variable(0.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Primitive, "N[y]", 0, evt::Variable(0.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Primitive, "N[z]", 0, evt::Variable(0.0f));
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_x, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_y, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_z, 1);
+        test::check_attr_value(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_x, 0, evt::Variable(0.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_y, 0, evt::Variable(0.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_z, 0, evt::Variable(0.0f));
     }
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddNormalTo(evt::GeoAttrType::Detail);
+        normal->SetAttrAddTo(evt::GeoAttrType::Detail);
 
         eval.Update();
 
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[x]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[y]", 1);
-        test::check_attr_count(normal, evt::GeoAttrType::Detail, "N[z]", 1);
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[x]", 0, evt::Variable(0.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[y]", 0, evt::Variable(0.0f));
-        test::check_attr_value(normal, evt::GeoAttrType::Detail, "N[z]", 0, evt::Variable(0.0f));
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_x, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_y, 1);
+        test::check_attr_count(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_z, 1);
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_x, 0, evt::Variable(0.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_y, 0, evt::Variable(0.0f));
+        test::check_attr_value(normal, evt::GeoAttrType::Detail, evt::GeoAttrName::norm_z, 0, evt::Variable(0.0f));
     }
 }
 

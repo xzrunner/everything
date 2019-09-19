@@ -38,12 +38,13 @@ private:
     class PointCmp
     {
     public:
-        PointCmp(Key key);
+        PointCmp(const std::vector<std::shared_ptr<GeoAttribute::Point>>& points, Key key);
 
-        bool operator () (const std::shared_ptr<GeoAttribute::Point>& i0,
-            const std::shared_ptr<GeoAttribute::Point>& i1) const;
+        bool operator () (size_t i0, size_t i1) const;
 
     private:
+        const std::vector<std::shared_ptr<GeoAttribute::Point>>& m_points;
+
         Key m_key;
 
     }; // PointCmp

@@ -28,22 +28,10 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
     {
     case GroupType::Points:
     {
-        auto& attr = m_geo_impl->GetAttr();
-        auto& old_pts = attr.GetPoints();
-
         std::vector<bool> del_flags;
-        SetupDelFlags(*group, old_pts.size(), del_flags);
-
-        std::vector<std::shared_ptr<GeoAttribute::Point>> new_pts;
-        assert(del_flags.size() == old_pts.size());
-        for (size_t i = 0, n = del_flags.size(); i < n; ++i) {
-            if (!del_flags[i]) {
-                new_pts.push_back(old_pts[i]);
-            }
-        }
-        if (new_pts.size() != old_pts.size())
+        if (SetupDelFlags(*group, m_geo_impl->GetAttr().GetPoints().size(), del_flags))
         {
-            attr.SetPoints(new_pts);
+            m_geo_impl->GetAttr().RemoveItems(GeoAttrType::Point, del_flags);
             m_geo_impl->UpdateByAttr();
         }
     }
@@ -51,22 +39,10 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
 
     case GroupType::Vertices:
     {
-        auto& attr = m_geo_impl->GetAttr();
-        auto& old_vts = attr.GetVertices();
-
         std::vector<bool> del_flags;
-        SetupDelFlags(*group, old_vts.size(), del_flags);
-
-        std::vector<std::shared_ptr<GeoAttribute::Vertex>> new_vts;
-        assert(del_flags.size() == old_vts.size());
-        for (size_t i = 0, n = del_flags.size(); i < n; ++i) {
-            if (!del_flags[i]) {
-                new_vts.push_back(old_vts[i]);
-            }
-        }
-        if (new_vts.size() != old_vts.size())
+        if (SetupDelFlags(*group, m_geo_impl->GetAttr().GetVertices().size(), del_flags))
         {
-            attr.SetVertices(new_vts);
+            m_geo_impl->GetAttr().RemoveItems(GeoAttrType::Vertex, del_flags);
             m_geo_impl->UpdateByAttr();
         }
     }
@@ -74,21 +50,10 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
 
     case GroupType::Primitives:
     {
-        auto& attr = m_geo_impl->GetAttr();
-        auto& old_prims = attr.GetPrimtives();
-
         std::vector<bool> del_flags;
-        SetupDelFlags(*group, old_prims.size(), del_flags);
-
-        std::vector<std::shared_ptr<GeoAttribute::Primitive>> new_prims;
-        assert(del_flags.size() == old_prims.size());
-        for (size_t i = 0, n = del_flags.size(); i < n; ++i) {
-            if (!del_flags[i]) {
-                new_prims.push_back(old_prims[i]);
-            }
-        }
-        if (new_prims.size() != old_prims.size()) {
-            attr.SetPrimtives(new_prims);
+        if (SetupDelFlags(*group, m_geo_impl->GetAttr().GetPrimtives().size(), del_flags))
+        {
+            m_geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags);
             m_geo_impl->UpdateByAttr();
         }
     }
@@ -133,11 +98,15 @@ void Blast::SetDeleteNonSelected(bool del_non_selected)
     SetDirty(true);
 }
 
-void Blast::SetupDelFlags(const Group& group, size_t count,
+bool Blast::SetupDelFlags(const Group& group, size_t count,
                           std::vector<bool>& del_flags) const
 {
+    bool dirty = false;
     if (m_delete_non_selected)
     {
+        if (count > 0) {
+            dirty = true;
+        }
         del_flags.resize(count, true);
         for (auto& f : group.items) {
             del_flags[f] = false;
@@ -148,8 +117,10 @@ void Blast::SetupDelFlags(const Group& group, size_t count,
         del_flags.resize(count, false);
         for (auto& f : group.items) {
             del_flags[f] = true;
+            dirty = true;
         }
     }
+    return dirty;
 }
 
 size_t Blast::GetGeoItemNum() const

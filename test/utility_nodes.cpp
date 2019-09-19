@@ -2,6 +2,7 @@
 
 #include <everything/Evaluator.h>
 #include <everything/GeometryImpl.h>
+#include <everything/GeoAttrName.h>
 
 #include <everything/node/Blast.h>
 #include <everything/node/CopyToPoints.h>
@@ -16,6 +17,8 @@
 #include <everything/node/Delete.h>
 #include <everything/node/Add.h>
 #include <everything/node/Carve.h>
+#include <everything/node/Color.h>
+#include <everything/node/Normal.h>
 
 #include <catch/catch.hpp>
 
@@ -206,6 +209,46 @@ TEST_CASE("copy to points with points dir")
 
         test::check_aabb(copy, { -5.04904f, 0.950962f, -5.02073f }, { 5.04904f, 5.04904f, 5.02073f });
     }
+}
+
+TEST_CASE("copy to points with attr")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto color = std::make_shared<evt::node::Color>();
+    color->SetAttrAddTo(evt::GeoAttrType::Point);
+    color->SetColor({ 0.3f, 0.4f, 0.5f });
+    eval.AddNode(color);
+
+    eval.Connect({ box, 0 }, { color, 0 });
+
+    auto add = std::make_shared<evt::node::Add>();
+    add->SetPoints({
+        { 0, 0, 0 },
+        { 10, 10, 10 },
+    });
+    eval.AddNode(add);
+
+    auto copy = std::make_shared<evt::node::CopyToPoints>();
+    eval.AddNode(copy);
+
+    eval.Connect({ color, 0 }, { copy, evt::node::CopyToPoints::IDX_SRC_PRIM });
+    eval.Connect({ add, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+
+    eval.Update();
+
+    test::check_points_num(copy, 16);
+    test::check_attr_count(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 16);
+    test::check_attr_count(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 16);
+    test::check_attr_count(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 16);
+    test::check_attr_value(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 2, evt::Variable(0.3f));
+    test::check_attr_value(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 7, evt::Variable(0.4f));
+    test::check_attr_value(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 13, evt::Variable(0.5f));
 }
 
 TEST_CASE("foreach primitive")

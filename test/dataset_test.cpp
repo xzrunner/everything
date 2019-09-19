@@ -3,6 +3,7 @@
 #include <everything/TreeContext.h>
 #include <everything/Evaluator.h>
 #include <everything/GeometryImpl.h>
+#include <everything/GeoAttrName.h>
 
 #include <everything/node/Box.h>
 #include <everything/node/Geometry.h>
@@ -10,6 +11,9 @@
 #include <everything/node/Measure.h>
 #include <everything/node/Add.h>
 #include <everything/node/Merge.h>
+#include <everything/node/Normal.h>
+#include <everything/node/Blast.h>
+#include <everything/node/GroupCreate.h>
 
 #include <catch/catch.hpp>
 
@@ -203,7 +207,6 @@ TEST_CASE("attr combine")
     }
 }
 
-
 TEST_CASE("attr combine 2")
 {
     test::init();
@@ -302,4 +305,45 @@ TEST_CASE("attr combine 2")
         test::check_attr_value(merge, evt::GeoAttrType::Point, "test1",  4, evt::Variable(0.0f));
         test::check_attr_value(merge, evt::GeoAttrType::Point, "test1", 12, evt::Variable(-4.0f));
     }
+}
+
+TEST_CASE("attr blast")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box = std::make_shared<evt::node::Box>();
+    eval.AddNode(box);
+
+    auto normal = std::make_shared<evt::node::Normal>();
+    normal->SetAttrAddTo(evt::GeoAttrType::Primitive);
+    eval.AddNode(normal);
+
+    eval.Connect({ box, 0 }, { normal, 0 });
+
+    auto group = std::make_shared<evt::node::GroupCreate>();
+    group->SetGroupName("Top");
+    group->SetGroupType(evt::GroupType::Primitives);
+    group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+    eval.AddNode(group);
+
+    eval.Connect({ normal, 0 }, { group, 0 });
+
+    auto blast = std::make_shared<evt::node::Blast>();
+    blast->SetGroupName("Top");
+    blast->SetGroupType(evt::GroupType::GuessFromGroup);
+    blast->SetDeleteNonSelected(true);
+    eval.AddNode(blast);
+
+    eval.Connect({ group, 0 }, { blast, 0 });
+
+    eval.Update();
+
+    test::check_attr_count(blast, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_x, 1);
+    test::check_attr_count(blast, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_y, 1);
+    test::check_attr_count(blast, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_z, 1);
+    test::check_attr_value(blast, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_x, 0, evt::Variable(0.0f));
+    test::check_attr_value(blast, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_y, 0, evt::Variable(1.0f));
+    test::check_attr_value(blast, evt::GeoAttrType::Primitive, evt::GeoAttrName::norm_z, 0, evt::Variable(0.0f));
 }
