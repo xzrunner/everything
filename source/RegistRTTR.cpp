@@ -9,6 +9,8 @@
 // manipulate
 #include "everything/node/Delete.h"
 #include "everything/node/Transform.h"
+// material
+#include "everything/node/Color.h"
 // nurbs
 #include "everything/node/Carve.h"
 // polygon
@@ -54,6 +56,9 @@ REGIST_NODE_TYPE(GroupExpression)
 // manipulate
 REGIST_NODE_TYPE(Delete)
 REGIST_NODE_TYPE(Transform)
+
+// material
+REGIST_NODE_TYPE(Color)
 
 // NURBs
 REGIST_NODE_TYPE(Carve)
