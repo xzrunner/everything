@@ -15,8 +15,7 @@ namespace node
 
 void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
 {
-    std::set<NodePtr> nodes;
-    auto begin = FindForeachBegin(nodes);
+    auto begin = FindForeachBegin();
     if (!begin) {
         return;
     }
@@ -28,6 +27,8 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
 
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 
+    auto nodes = FindClosureNodes(begin);
+
     // closure
     Evaluator sub_eval;
     for (auto& n : nodes) {
@@ -36,10 +37,17 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
 
     // foreach prim
     auto& prev_prims = prev_geo->GetAttr().GetPrimtives();
+    if (m_do_single_pass && m_single_pass_offset >= static_cast<int>(prev_prims.size())) {
+        return;
+    }
     auto& attr = m_geo_impl->GetAttr();
     std::vector<bool> del_flags(prev_prims.size(), true);
     for (size_t i = 0, n = prev_prims.size(); i < n; ++i)
     {
+        if (m_do_single_pass) {
+            i = m_single_pass_offset;
+        }
+
         assert(begin->get_type() == rttr::type::get<node::ForeachPrimBegin>());
         auto geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
         del_flags[i] = false;
@@ -61,20 +69,45 @@ void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
                 attr.GetVertices().size(), attr.GetPrimtives().size());
             attr.Combine(e_prev_geo->GetAttr());
         }
+
+        if (m_do_single_pass) {
+            break;
+        }
     }
 
     m_geo_impl->UpdateByAttr();
 }
 
-NodePtr ForeachPrimEnd::FindForeachBegin(std::set<NodePtr>& nodes) const
+void ForeachPrimEnd::EnableSinglePass(bool do_single_pass)
 {
-    NodePtr begin = nullptr;
+    if (m_do_single_pass == do_single_pass) {
+        return;
+    }
 
+    m_do_single_pass = do_single_pass;
+
+    SetDirty(true);
+}
+
+void ForeachPrimEnd::SetSinglePassOffset(int single_pass_offset)
+{
+    if (m_single_pass_offset == single_pass_offset) {
+        return;
+    }
+
+    m_single_pass_offset = single_pass_offset;
+
+    SetDirty(true);
+}
+
+NodePtr ForeachPrimEnd::FindForeachBegin() const
+{
     std::queue<NodePtr> buf;
     assert(m_imports.size() == 1);
     if (m_imports[0].conns.empty()) {
-        return begin;
+        return nullptr;
     }
+
     assert(m_imports[0].conns.size() == 1);
     auto prev_node = m_imports[0].conns[0].node.lock();
     assert(prev_node);
@@ -83,22 +116,45 @@ NodePtr ForeachPrimEnd::FindForeachBegin(std::set<NodePtr>& nodes) const
     {
         auto n = buf.front(); buf.pop();
         assert(n);
-        nodes.insert(n);
 
         if (n->get_type() == rttr::type::get<node::ForeachPrimBegin>()) {
-            begin = n;
-            continue;
+            return n;
         }
 
         for (auto& in : n->GetImports()) {
             for (auto& conn : in.conns) {
-                auto prev = conn.node.lock();
-                buf.push(prev);
+                buf.push(conn.node.lock());
             }
         }
     }
 
-    return begin;
+    return nullptr;
+}
+
+std::set<NodePtr> ForeachPrimEnd::FindClosureNodes(const NodePtr& begin) const
+{
+    std::set<NodePtr> nodes;
+
+    std::queue<NodePtr> buf;
+    buf.push(begin);
+    while (!buf.empty())
+    {
+        auto n = buf.front(); buf.pop();
+        assert(n);
+
+        if (n.get() == this) {
+            continue;
+        }
+
+        nodes.insert(n);
+        for (auto& out : n->GetExports()) {
+            for (auto& conn : out.conns) {
+                buf.push(conn.node.lock());
+            }
+        }
+    }
+
+    return nodes;
 }
 
 }
