@@ -25,8 +25,11 @@ void check_vertex(const evt::NodePtr& node, size_t idx, const sm::vec3& pos);
 
 void check_points_num(const evt::NodePtr& node, size_t num);
 void check_vertices_num(const evt::NodePtr& node, size_t num);
-void check_edges_num(const evt::NodePtr& node, size_t num);
 void check_faces_num(const evt::NodePtr& node, size_t num);
+
+void check_halfedge_vertices_num(const evt::NodePtr& node, size_t num);
+void check_halfedge_edges_num(const evt::NodePtr& node, size_t num);
+void check_halfedge_faces_num(const evt::NodePtr& node, size_t num);
 
 void check_attr_count(const evt::NodePtr& node, evt::GeoAttrType type,
     const std::string& name, size_t num);

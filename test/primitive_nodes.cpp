@@ -26,8 +26,8 @@ TEST_CASE("box")
     eval.Update();
 
     test::check_points_num(box, 8);
-    //test::check_edges_num(box, 24);
     test::check_faces_num(box, 6);
+    test::check_halfedge_edges_num(box, 24);
 
     test::check_aabb(box, -h_sz, h_sz);
 

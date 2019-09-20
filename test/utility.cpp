@@ -183,7 +183,25 @@ void check_vertices_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == geo->GetAttr().GetVertices().size());
 }
 
-void check_edges_num(const evt::NodePtr& node, size_t num)
+void check_faces_num(const evt::NodePtr& node, size_t num)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+    REQUIRE(num == geo->GetAttr().GetPrimtives().size());
+}
+
+void check_halfedge_vertices_num(const evt::NodePtr& node, size_t num)
+{
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+
+    auto& brushes = geo->GetBrushModel()->GetBrushes();
+    REQUIRE(brushes.size() == 1);
+    auto& brush = brushes[0];
+    REQUIRE(num == brush.impl->GetGeometry()->GetVertices().Size());
+}
+
+void check_halfedge_edges_num(const evt::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -194,11 +212,15 @@ void check_edges_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == brush.impl->GetGeometry()->GetEdges().Size());
 }
 
-void check_faces_num(const evt::NodePtr& node, size_t num)
+void check_halfedge_faces_num(const evt::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
-    REQUIRE(num == geo->GetAttr().GetPrimtives().size());
+
+    auto& brushes = geo->GetBrushModel()->GetBrushes();
+    REQUIRE(brushes.size() == 1);
+    auto& brush = brushes[0];
+    REQUIRE(num == brush.impl->GetGeometry()->GetFaces().Size());
 }
 
 void check_attr_count(const evt::NodePtr& node, evt::GeoAttrType type,

@@ -379,6 +379,53 @@ TEST_CASE("merge")
     test::check_aabb(merge, aabb_min, aabb_max);
 }
 
+TEST_CASE("merge 2")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box0 = std::make_shared<evt::node::Box>();
+    eval.AddNode(box0);
+
+    auto box1 = std::make_shared<evt::node::Box>();
+    eval.AddNode(box1);
+
+    auto merge = std::make_shared<evt::node::Merge>();
+    eval.AddNode(merge);
+
+    eval.Connect({ box0, 0 }, { merge, evt::node::Merge::IDX_SRC_A });
+    eval.Connect({ box1, 0 }, { merge, evt::node::Merge::IDX_SRC_B });
+
+    SECTION("overlap")
+    {
+        eval.Update();
+
+        test::check_faces_num(merge, 12);
+        test::check_halfedge_faces_num(merge, 12);
+    }
+
+    SECTION("separate")
+    {
+        box1->SetCenter({ 0, 2, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(merge, 12);
+        test::check_halfedge_faces_num(merge, 12);
+    }
+
+    SECTION("connect")
+    {
+        box1->SetCenter({ 0, 1, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(merge, 12);
+        test::check_halfedge_faces_num(merge, 12);
+    }
+}
+
 TEST_CASE("switch")
 {
     test::init();

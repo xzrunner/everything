@@ -16,6 +16,7 @@
 #include <everything/node/GroupCreate.h>
 #include <everything/node/Blast.h>
 #include <everything/node/Color.h>
+#include <everything/node/Merge.h>
 
 #include <catch/catch.hpp>
 
@@ -170,8 +171,8 @@ TEST_CASE("boolean")
         eval.Update();
 
         test::check_points_num(boolean, 8);
-        //test::check_edges_num(boolean, 24);
         test::check_faces_num(boolean, 6);
+        test::check_halfedge_edges_num(boolean, 24);
 
         test::check_aabb(boolean, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
     }
@@ -202,8 +203,8 @@ TEST_CASE("knife box")
         eval.Update();
 
         test::check_points_num(knife, 12);
-        //test::check_edges_num(knife, 40);
         test::check_faces_num(knife, 10);
+        test::check_halfedge_edges_num(knife, 40);
 
         test::check_aabb(knife, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
     }
@@ -215,8 +216,8 @@ TEST_CASE("knife box")
         eval.Update();
 
         test::check_points_num(knife, 8);
-        //test::check_edges_num(knife, 20);
         test::check_faces_num(knife, 5);
+        test::check_halfedge_edges_num(knife, 20);
 
         test::check_aabb(knife, sm::vec3(-0.5f, 0, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
     }
@@ -228,8 +229,8 @@ TEST_CASE("knife box")
         eval.Update();
 
         test::check_points_num(knife, 8);
-        //test::check_edges_num(knife, 20);
         test::check_faces_num(knife, 5);
+        test::check_halfedge_edges_num(knife, 20);
 
         test::check_aabb(knife, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0, 0.5f));
     }
@@ -274,7 +275,7 @@ TEST_CASE("knife plane")
 
         test::check_faces_num(knife, 2);
         test::check_points_num(knife, 6);
-        test::check_edges_num(knife, 8);
+        test::check_halfedge_edges_num(knife, 8);
     }
 
     SECTION("dir neg x")
@@ -286,7 +287,7 @@ TEST_CASE("knife plane")
 
         test::check_faces_num(knife, 2);
         test::check_points_num(knife, 6);
-        test::check_edges_num(knife, 8);
+        test::check_halfedge_edges_num(knife, 8);
     }
 }
 
@@ -575,7 +576,6 @@ TEST_CASE("poly extrude")
     }
 }
 
-
 TEST_CASE("poly fill")
 {
     test::init();
@@ -640,5 +640,48 @@ TEST_CASE("poly fill")
         test::check_faces_num(blast, 5);
         test::check_faces_num(blast2, 4);
         test::check_faces_num(poly_fill, 6);
+    }
+
+    SECTION("two box")
+    {
+        auto box2 = std::make_shared<evt::node::Box>();
+        box2->SetCenter({ 0, 1, 0 });
+        eval.AddNode(box2);
+
+        auto group2 = std::make_shared<evt::node::GroupCreate>();
+        group2->SetGroupName("btm");
+        group2->SetGroupType(evt::GroupType::Primitives);
+        group2->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
+        eval.AddNode(group2);
+
+        eval.Connect({ box2, 0 }, { group2, 0 });
+
+        auto blast2 = std::make_shared<evt::node::Blast>();
+        blast2->SetGroupName("btm");
+        blast2->SetGroupType(evt::GroupType::GuessFromGroup);
+        eval.AddNode(blast2);
+
+        eval.Connect({ group2, 0 }, { blast2, 0 });
+
+        auto merge = std::make_shared<evt::node::Merge>();
+        eval.AddNode(merge);
+
+        eval.Connect({ blast, 0 },  { merge, evt::node::Merge::IDX_SRC_A });
+        eval.Connect({ blast2, 0 }, { merge, evt::node::Merge::IDX_SRC_B });
+
+        auto poly_fill = std::make_shared<evt::node::PolyFill>();
+        eval.AddNode(poly_fill);
+
+        eval.Connect({ merge, 0 }, { poly_fill, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(merge, 10);
+        test::check_halfedge_faces_num(merge, 10);
+        test::check_halfedge_edges_num(merge, 40);
+
+        test::check_faces_num(poly_fill, 12);
+        test::check_halfedge_faces_num(poly_fill, 12);
+        test::check_halfedge_edges_num(poly_fill, 48);
     }
 }
