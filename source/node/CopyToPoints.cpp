@@ -80,6 +80,9 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)
     auto& to_attr = dst.GetAttr();
     for (auto& to_p : to_attr.GetPoints())
     {
+        m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
+            attr.GetVertices().size(), attr.GetPrimtives().size());
+
         GeoAttribute src_attr(src.GetAttr());
         for (auto& p : src_attr.GetPoints()) {
             p->pos += to_p->pos;
@@ -94,6 +97,9 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, cons
     auto& to_attr = dst.GetAttr();
     for (auto& to_p : to_attr.GetPoints())
     {
+        m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
+            attr.GetVertices().size(), attr.GetPrimtives().size());
+
         sm::vec3 norm;
         norm.x = to_p->vars[norm_idx.x].f;
         norm.y = to_p->vars[norm_idx.y].f;
@@ -116,6 +122,9 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, cons
     assert(to_points.size() == norms.size());
     for (size_t i = 0, n = to_points.size(); i < n; ++i)
     {
+        m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
+            attr.GetVertices().size(), attr.GetPrimtives().size());
+
         GeoAttribute src_attr(src.GetAttr());
         auto rot = sm::mat4(sm::Quaternion::CreateFromVectors(BASE_DIR, norms[i]));
         for (auto& p : src_attr.GetPoints()) {
