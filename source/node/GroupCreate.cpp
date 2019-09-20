@@ -27,12 +27,17 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
     group->name = m_group_name;
     group->type = m_group_type;
 
-    if (m_base_group) {
-        group->items = NodeHelper::SelectGeoByExpr(m_group_type, eval, *this, m_base_group_expr);
-    } else if (m_keep_by_normals) {
+    if (m_base_group)
+    {
+        if (m_base_group_expr.empty()) {
+            SelectAll(*group);
+        } else {
+            group->items = NodeHelper::SelectGeoByExpr(m_group_type, eval, *this, m_base_group_expr);
+        }
+    }
+    else if (m_keep_by_normals)
+    {
         SelectByNormals(*group);
-    } else {
-        SelectAll(*group);
     }
 
     group_mgr.Add(group, m_merge_op);
