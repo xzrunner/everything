@@ -1,6 +1,7 @@
 #include "everything/node/Blast.h"
 #include "everything/GeometryImpl.h"
 #include "everything/NodeHelper.h"
+#include "everything/GroupRebuild.h"
 
 namespace evt
 {
@@ -23,15 +24,27 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
         return;
     }
 
+    auto& attr = m_geo_impl->GetAttr();
+
+    std::vector<GroupRebuild> groups;
+    m_geo_impl->GetGroup().Traverse([&](const Group& group)->bool {
+        groups.emplace_back(attr, const_cast<Group&>(group));
+        return true;
+    });
+
     auto type = m_group_type == GroupType::GuessFromGroup ? group->type : m_group_type;
+    if (type != group->type) {
+        return;
+    }
+
     switch (type)
     {
     case GroupType::Points:
     {
         std::vector<bool> del_flags;
-        if (SetupDelFlags(*group, m_geo_impl->GetAttr().GetPoints().size(), del_flags))
+        if (SetupDelFlags(*group, attr.GetPoints().size(), del_flags))
         {
-            m_geo_impl->GetAttr().RemoveItems(GeoAttrType::Point, del_flags);
+            attr.RemoveItems(GeoAttrType::Point, del_flags);
             m_geo_impl->UpdateByAttr();
         }
     }
@@ -40,9 +53,9 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
     case GroupType::Vertices:
     {
         std::vector<bool> del_flags;
-        if (SetupDelFlags(*group, m_geo_impl->GetAttr().GetVertices().size(), del_flags))
+        if (SetupDelFlags(*group, attr.GetVertices().size(), del_flags))
         {
-            m_geo_impl->GetAttr().RemoveItems(GeoAttrType::Vertex, del_flags);
+            attr.RemoveItems(GeoAttrType::Vertex, del_flags);
             m_geo_impl->UpdateByAttr();
         }
     }
@@ -51,9 +64,9 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
     case GroupType::Primitives:
     {
         std::vector<bool> del_flags;
-        if (SetupDelFlags(*group, m_geo_impl->GetAttr().GetPrimtives().size(), del_flags))
+        if (SetupDelFlags(*group, attr.GetPrimtives().size(), del_flags))
         {
-            m_geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags);
+            attr.RemoveItems(GeoAttrType::Primitive, del_flags);
             m_geo_impl->UpdateByAttr();
         }
     }
@@ -61,18 +74,6 @@ void Blast::Execute(Evaluator& eval, TreeContext& ctx)
 
     default:
         assert(0);
-    }
-
-    if (m_delete_non_selected)
-    {
-        assert(GetGeoItemNum() == group->items.size());
-        for (int i = 0, n = group->items.size(); i < n; ++i) {
-            group->items[i] = i;
-        }
-    }
-    else
-    {
-        group->items.clear();
     }
 }
 

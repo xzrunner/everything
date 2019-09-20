@@ -17,6 +17,7 @@ public:
     auto GetAdaptorType() const { return m_adaptor.GetType(); }
 
     auto& GetGroup() { return m_groups; }
+    auto& GetGroup() const { return m_groups; }
 
     void UpdateByBrush(const model::BrushModel& brush_model);
     void StoreBrush(std::unique_ptr<model::BrushModel>& brush_model);

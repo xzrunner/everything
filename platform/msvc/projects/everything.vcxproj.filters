@@ -206,6 +206,9 @@
     <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h">
       <Filter>dataset\geo\attr</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\GroupRebuild.h">
+      <Filter>dataset\geo\group</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -325,6 +328,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
       <Filter>dataset\geo\attr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GroupRebuild.cpp">
+      <Filter>dataset\geo\group</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

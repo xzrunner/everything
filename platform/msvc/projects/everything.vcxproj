@@ -22,6 +22,7 @@
     <ClInclude Include="..\..\..\include\everything\GeometryImpl.h" />
     <ClInclude Include="..\..\..\include\everything\GeoShape.h" />
     <ClInclude Include="..\..\..\include\everything\Group.h" />
+    <ClInclude Include="..\..\..\include\everything\GroupRebuild.h" />
     <ClInclude Include="..\..\..\include\everything\GroupMgr.h" />
     <ClInclude Include="..\..\..\include\everything\NodeHelper.h" />
     <ClInclude Include="..\..\..\include\everything\NodePropsMgr.h" />
@@ -69,6 +70,7 @@
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
     <ClCompile Include="..\..\..\source\GeometryImpl.cpp" />
     <ClCompile Include="..\..\..\source\GroupMgr.cpp" />
+    <ClCompile Include="..\..\..\source\GroupRebuild.cpp" />
     <ClCompile Include="..\..\..\source\Node.cpp" />
     <ClCompile Include="..\..\..\source\NodeHelper.cpp" />
     <ClCompile Include="..\..\..\source\NodePropsMgr.cpp" />
