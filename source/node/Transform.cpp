@@ -31,6 +31,10 @@ void Transform::Execute(Evaluator& eval, TreeContext& ctx)
     if (group)
     {
         auto type = m_group_type == GroupType::GuessFromGroup ? group->type : m_group_type;
+        if (type != group->type) {
+            return;
+        }
+
         switch (type)
         {
         case GroupType::Points:
