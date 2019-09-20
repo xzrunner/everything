@@ -123,29 +123,5 @@ bool Blast::SetupDelFlags(const Group& group, size_t count,
     return dirty;
 }
 
-size_t Blast::GetGeoItemNum() const
-{
-    if (!m_geo_impl) {
-        return 0;
-    }
-    auto group = m_geo_impl->GetGroup().Query(m_group_name);
-    if (!group) {
-        return 0;
-    }
-
-    auto type = m_group_type == GroupType::GuessFromGroup ? group->type : m_group_type;
-    switch (type)
-    {
-    case GroupType::Points:
-        return m_geo_impl->GetAttr().GetPoints().size();
-    case GroupType::Vertices:
-        return m_geo_impl->GetAttr().GetVertices().size();
-    case GroupType::Primitives:
-        return m_geo_impl->GetAttr().GetPrimtives().size();
-    default:
-        return 0;
-    }
-}
-
 }
 }

@@ -34,8 +34,6 @@ private:
     bool SetupDelFlags(const Group& group, size_t count,
         std::vector<bool>& del_flags) const;
 
-    size_t GetGeoItemNum() const;
-
 private:
     std::string m_group_name;
     GroupType   m_group_type = GroupType::GuessFromGroup;
