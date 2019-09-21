@@ -1,6 +1,7 @@
 #include "everything/node/Knife.h"
 #include "everything/GeometryImpl.h"
 #include "everything/NodeHelper.h"
+#include "everything/GeoAttrRebuild.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -27,6 +28,9 @@ void Knife::Execute(Evaluator& eval, TreeContext& ctx)
     auto& brushes = brush_model->GetBrushes();
     assert(brushes.size() == 1);
     auto& brush = brushes[0];
+
+    GeoAttrRebuild attr_rebuild(*m_geo_impl);
+
     if (Clip(*brush.impl)) {
         m_geo_impl->UpdateByBrush(*brush_model);
     }

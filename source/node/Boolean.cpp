@@ -1,6 +1,7 @@
 #include "everything/node/Boolean.h"
 #include "everything/GeometryImpl.h"
 #include "everything/NodeHelper.h"
+#include "everything/GeoAttrRebuild.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -65,6 +66,8 @@ void Boolean::Execute(Evaluator& eval, TreeContext& ctx)
 
     if (!brushes.empty())
     {
+        GeoAttrRebuild attr_rebuild(*m_geo_impl);
+
         auto brush_model = std::make_unique<model::BrushModel>();
         brush_model->SetBrushes(brushes);
         m_geo_impl->UpdateByBrush(*brush_model);

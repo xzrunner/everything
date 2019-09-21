@@ -684,4 +684,95 @@ TEST_CASE("poly fill")
         test::check_halfedge_faces_num(poly_fill, 12);
         test::check_halfedge_edges_num(poly_fill, 48);
     }
+
+    SECTION("point attr rebuild")
+    {
+        auto color = std::make_shared<evt::node::Color>();
+        color->SetAttrAddTo(evt::GeoAttrType::Point);
+        color->SetColor({ 0.3f, 0.4f, 0.5f });
+        eval.AddNode(color);
+
+        eval.Connect({ blast, 0 }, { color, 0 });
+
+        auto poly_fill = std::make_shared<evt::node::PolyFill>();
+        eval.AddNode(poly_fill);
+
+        eval.Connect({ color, 0 }, { poly_fill, 0 });
+
+        eval.Update();
+
+        test::check_attr_count(poly_fill, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 8);
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 2, evt::Variable(0.3f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 5, evt::Variable(0.4f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 6, evt::Variable(0.5f));
+    }
+
+    SECTION("vertex attr rebuild")
+    {
+        auto color = std::make_shared<evt::node::Color>();
+        color->SetAttrAddTo(evt::GeoAttrType::Vertex);
+        color->SetColor({ 0.3f, 0.4f, 0.5f });
+        eval.AddNode(color);
+
+        eval.Connect({ blast, 0 }, { color, 0 });
+
+        auto poly_fill = std::make_shared<evt::node::PolyFill>();
+        eval.AddNode(poly_fill);
+
+        eval.Connect({ color, 0 }, { poly_fill, 0 });
+
+        eval.Update();
+
+        test::check_attr_count(poly_fill, evt::GeoAttrType::Vertex, evt::GeoAttrName::col_x, 24);
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Vertex, evt::GeoAttrName::col_x, 2, evt::Variable(0.3f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Vertex, evt::GeoAttrName::col_y, 5, evt::Variable(0.4f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Vertex, evt::GeoAttrName::col_z, 6, evt::Variable(0.5f));
+    }
+
+    SECTION("primitive attr rebuild")
+    {
+        auto color = std::make_shared<evt::node::Color>();
+        color->SetAttrAddTo(evt::GeoAttrType::Primitive);
+        color->SetColor({ 0.3f, 0.4f, 0.5f });
+        eval.AddNode(color);
+
+        eval.Connect({ blast, 0 }, { color, 0 });
+
+        auto poly_fill = std::make_shared<evt::node::PolyFill>();
+        eval.AddNode(poly_fill);
+
+        eval.Connect({ color, 0 }, { poly_fill, 0 });
+
+        eval.Update();
+
+        test::check_attr_count(poly_fill, evt::GeoAttrType::Primitive, evt::GeoAttrName::col_x, 6);
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Primitive, evt::GeoAttrName::col_x, 1, evt::Variable(0.3f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Primitive, evt::GeoAttrName::col_y, 3, evt::Variable(0.4f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Primitive, evt::GeoAttrName::col_z, 4, evt::Variable(0.5f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Primitive, evt::GeoAttrName::col_z, 5, evt::Variable(0.0f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Primitive, evt::GeoAttrName::col_z, 5, evt::Variable(0.0f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Primitive, evt::GeoAttrName::col_z, 5, evt::Variable(0.0f));
+    }
+
+    SECTION("detail attr rebuild")
+    {
+        auto color = std::make_shared<evt::node::Color>();
+        color->SetAttrAddTo(evt::GeoAttrType::Detail);
+        color->SetColor({ 0.3f, 0.4f, 0.5f });
+        eval.AddNode(color);
+
+        eval.Connect({ blast, 0 }, { color, 0 });
+
+        auto poly_fill = std::make_shared<evt::node::PolyFill>();
+        eval.AddNode(poly_fill);
+
+        eval.Connect({ color, 0 }, { poly_fill, 0 });
+
+        eval.Update();
+
+        test::check_attr_count(poly_fill, evt::GeoAttrType::Detail, evt::GeoAttrName::col_x, 0);
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Detail, evt::GeoAttrName::col_x, 0, evt::Variable(0.3f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Detail, evt::GeoAttrName::col_y, 0, evt::Variable(0.4f));
+        test::check_attr_value(poly_fill, evt::GeoAttrType::Detail, evt::GeoAttrName::col_z, 0, evt::Variable(0.5f));
+    }
 }

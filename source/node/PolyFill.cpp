@@ -1,6 +1,7 @@
 #include "everything/node/PolyFill.h"
 #include "everything/GeometryImpl.h"
 #include "everything/NodeHelper.h"
+#include "everything/GeoAttrRebuild.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -25,6 +26,8 @@ void PolyFill::Execute(Evaluator& eval, TreeContext& ctx)
     if (!brush_model) {
         return;
     }
+
+    GeoAttrRebuild attr_rebuild(*m_geo_impl);
 
     for (auto& brush : brush_model->GetBrushes())
     {

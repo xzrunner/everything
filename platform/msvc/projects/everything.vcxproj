@@ -18,6 +18,7 @@
     <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAttribute.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAttrName.h" />
+    <ClInclude Include="..\..\..\include\everything\GeoAttrRebuild.h" />
     <ClInclude Include="..\..\..\include\everything\GeoAttrType.h" />
     <ClInclude Include="..\..\..\include\everything\GeometryImpl.h" />
     <ClInclude Include="..\..\..\include\everything\GeoShape.h" />
@@ -68,6 +69,7 @@
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
+    <ClCompile Include="..\..\..\source\GeoAttrRebuild.cpp" />
     <ClCompile Include="..\..\..\source\GeometryImpl.cpp" />
     <ClCompile Include="..\..\..\source\GroupMgr.cpp" />
     <ClCompile Include="..\..\..\source\GroupRebuild.cpp" />
