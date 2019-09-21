@@ -56,6 +56,9 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
         m_primtives.push_back(std::make_shared<Primitive>(*prim));
     }
 
+    // detail
+    m_detail = attr.m_detail;
+
     // connect
     for (size_t i = 0, n = attr.m_vertices.size(); i < n; ++i)
     {
