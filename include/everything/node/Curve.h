@@ -22,7 +22,7 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval) override;
 
     auto& GetVertices() const { return m_vertices; }
     void  SetVertices(const std::vector<sm::vec3>& vertices);

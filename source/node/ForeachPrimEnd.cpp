@@ -13,7 +13,7 @@ namespace evt
 namespace node
 {
 
-void ForeachPrimEnd::Execute(Evaluator& eval, TreeContext& ctx)
+void ForeachPrimEnd::Execute(Evaluator& eval)
 {
     auto begin = FindForeachBegin();
     if (!begin) {

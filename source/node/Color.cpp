@@ -8,7 +8,7 @@ namespace evt
 namespace node
 {
 
-void Color::Execute(Evaluator& eval, TreeContext& ctx)
+void Color::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 

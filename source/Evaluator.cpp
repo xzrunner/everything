@@ -1,5 +1,4 @@
 #include "everything/Evaluator.h"
-#include "everything/TreeContext.h"
 #include "everything/EvalContext.h"
 
 #include <vexc/EvalAST.h>
@@ -266,32 +265,13 @@ void Evaluator::UpdateNodes()
         map2index.insert({ m_nodes_sorted[i], i });
     }
 
-    std::vector<TreeContext> ctxes(m_nodes_sorted.size());
     for (int i = 0, n = m_nodes_sorted.size(); i < n; ++i)
     {
         auto& node = m_nodes_sorted[i];
-
-        auto& ctx = ctxes[i];
-        for (auto& port : node->GetImports())
-        {
-            for (auto& conn : port.conns)
-            {
-                auto node = conn.node.lock();
-                assert(node);
-                auto itr = map2index.find(node);
-                //assert(itr != map2index.end());
-                if (itr != map2index.end()) {
-                    ctx.Combine(ctxes[itr->second]);
-                }
-            }
-        }
-
         if (node->IsDirty()) {
-            node->Execute(*this, ctx);
+            node->Execute(*this);
             node->SetDirty(false);
         }
-
-        node->UpdateContext(ctx);
     }
 }
 

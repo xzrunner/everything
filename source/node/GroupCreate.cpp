@@ -11,7 +11,7 @@ namespace evt
 namespace node
 {
 
-void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
+void GroupCreate::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -42,13 +42,6 @@ void GroupCreate::Execute(Evaluator& eval, TreeContext& ctx)
 
     group_mgr.Add(group, m_merge_op);
     m_group_name = group->name;
-}
-
-void GroupCreate::UpdateContext(TreeContext& ctx)
-{
-    //if (m_group) {
-    //    ctx.AddGroup(m_group);
-    //}
 }
 
 void GroupCreate::SetGroupName(const std::string& name)

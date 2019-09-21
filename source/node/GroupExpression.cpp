@@ -10,7 +10,7 @@ namespace evt
 namespace node
 {
 
-void GroupExpression::Execute(Evaluator& eval, TreeContext& ctx)
+void GroupExpression::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 

@@ -140,9 +140,6 @@
     <ClInclude Include="..\..\..\include\everything\GeometryImpl.h">
       <Filter>dataset\geo</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\everything\TreeContext.h">
-      <Filter>dataset\others</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\everything\NodePropsMgr.h">
       <Filter>dataset\others</Filter>
     </ClInclude>
@@ -205,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\GeoAttrHelper.h">
       <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Fuse.h">
+      <Filter>nodes\geometry\polygon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\everything\GroupRebuild.h">
       <Filter>dataset\geo\group</Filter>
@@ -281,9 +281,6 @@
     <ClCompile Include="..\..\..\source\GeometryImpl.cpp">
       <Filter>dataset\geo</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\TreeContext.cpp">
-      <Filter>dataset\others</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\NodePropsMgr.cpp">
       <Filter>dataset\others</Filter>
     </ClCompile>
@@ -331,6 +328,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
       <Filter>dataset\geo\attr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Fuse.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GroupRebuild.cpp">
       <Filter>dataset\geo\group</Filter>

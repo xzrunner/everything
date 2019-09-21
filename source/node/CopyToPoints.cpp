@@ -20,7 +20,7 @@ namespace evt
 namespace node
 {
 
-void CopyToPoints::Execute(Evaluator& eval, TreeContext& ctx)
+void CopyToPoints::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 

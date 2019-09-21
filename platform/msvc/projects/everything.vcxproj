@@ -43,7 +43,6 @@
     <ClInclude Include="..\..\..\include\everything\node\PolyFill.h" />
     <ClInclude Include="..\..\..\include\everything\node\Sort.h" />
     <ClInclude Include="..\..\..\include\everything\node\Switch.h" />
-    <ClInclude Include="..\..\..\include\everything\TreeContext.h" />
     <ClInclude Include="..\..\..\include\everything\Node.h" />
     <ClInclude Include="..\..\..\include\everything\node\Blast.h" />
     <ClInclude Include="..\..\..\include\everything\node\Boolean.h" />
@@ -102,7 +101,6 @@
     <ClCompile Include="..\..\..\source\node\Switch.cpp" />
     <ClCompile Include="..\..\..\source\node\Transform.cpp" />
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />
-    <ClCompile Include="..\..\..\source\TreeContext.cpp" />
     <ClCompile Include="..\..\..\source\Variable.cpp" />
     <ClCompile Include="..\..\..\source\VarValue.cpp" />
     <ClCompile Include="..\..\..\source\VexFuncs.cpp" />

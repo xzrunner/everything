@@ -56,7 +56,7 @@ public:
         InitProps();
     }
 
-    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval) override;
 
     void SetTranslate(const sm::vec3& t);
     void SetRotate(const sm::vec3& r);

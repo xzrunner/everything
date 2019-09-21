@@ -7,7 +7,7 @@ namespace evt
 namespace node
 {
 
-void Line::Execute(Evaluator& eval, TreeContext& ctx)
+void Line::Execute(Evaluator& eval)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
     BuildModel();

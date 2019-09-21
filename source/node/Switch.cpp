@@ -7,7 +7,7 @@ namespace evt
 namespace node
 {
 
-void Switch::Execute(Evaluator& eval, TreeContext& ctx)
+void Switch::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 

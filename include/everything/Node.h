@@ -11,7 +11,6 @@
 namespace evt
 {
 
-class TreeContext;
 class GeometryImpl;
 
 class Node
@@ -19,8 +18,7 @@ class Node
 public:
     Node(size_t build_in_count = 0);
 
-    virtual void Execute(Evaluator& eval, TreeContext& ctx) = 0;
-    virtual void UpdateContext(TreeContext& ctx) {}
+    virtual void Execute(Evaluator& eval) = 0;
 
     virtual void AddInputPorts(size_t num) {}
 

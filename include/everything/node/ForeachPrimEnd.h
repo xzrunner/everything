@@ -21,7 +21,7 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval) override;
 
     void EnableSinglePass(bool do_single_pass);
 

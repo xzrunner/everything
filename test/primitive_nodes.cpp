@@ -2,7 +2,6 @@
 
 #include <everything/Evaluator.h>
 #include <everything/GeometryImpl.h>
-#include <everything/TreeContext.h>
 
 #include <everything/node/Box.h>
 #include <everything/node/Curve.h>

@@ -20,7 +20,7 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval, TreeContext& ctx) override {}
+    virtual void Execute(Evaluator& eval) override {}
 
     void SetGeoImpl(const std::shared_ptr<GeometryImpl>& geo_impl) {
         m_geo_impl = geo_impl;

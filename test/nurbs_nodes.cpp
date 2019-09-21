@@ -1,6 +1,5 @@
 #include "utility.h"
 
-#include <everything/TreeContext.h>
 #include <everything/Evaluator.h>
 #include <everything/GeometryImpl.h>
 #include <everything/GeoAttrName.h>

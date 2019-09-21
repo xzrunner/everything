@@ -7,7 +7,7 @@ namespace evt
 namespace node
 {
 
-void Sort::Execute(Evaluator& eval, TreeContext& ctx)
+void Sort::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 

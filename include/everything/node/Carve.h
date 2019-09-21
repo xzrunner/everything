@@ -40,7 +40,7 @@ public:
         InitProps();
     }
 
-    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval) override;
 
     void SetFirstU(float u);
     void SetSecondU(float u);

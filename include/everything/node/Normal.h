@@ -21,7 +21,7 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval) override;
 
     void SetAttrAddTo(GeoAttrType attr);
 

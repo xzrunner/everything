@@ -7,7 +7,7 @@ namespace evt
 namespace node
 {
 
-void PolyExtrude::Execute(Evaluator& eval, TreeContext& ctx)
+void PolyExtrude::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 

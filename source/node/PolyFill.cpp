@@ -12,7 +12,7 @@ namespace evt
 namespace node
 {
 
-void PolyFill::Execute(Evaluator& eval, TreeContext& ctx)
+void PolyFill::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 

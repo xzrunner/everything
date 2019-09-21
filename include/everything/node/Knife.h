@@ -25,7 +25,7 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval, TreeContext& ctx) override;
+    virtual void Execute(Evaluator& eval) override;
 
     void SetOrigin(const sm::vec3& origin);
     void SetDirection(const sm::vec3& dir);

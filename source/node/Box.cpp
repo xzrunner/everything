@@ -10,7 +10,7 @@ namespace evt
 namespace node
 {
 
-void Box::Execute(Evaluator& eval, TreeContext& ctx)
+void Box::Execute(Evaluator& eval)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
     BuildModel();
