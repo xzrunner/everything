@@ -33,6 +33,7 @@
     <ClInclude Include="..\..\..\include\everything\node\Delete.h" />
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimBegin.h" />
     <ClInclude Include="..\..\..\include\everything\node\ForeachPrimEnd.h" />
+    <ClInclude Include="..\..\..\include\everything\node\Fuse.h" />
     <ClInclude Include="..\..\..\include\everything\node\Geometry.h" />
     <ClInclude Include="..\..\..\include\everything\node\GroupExpression.h" />
     <ClInclude Include="..\..\..\include\everything\node\Knife.h" />
@@ -85,6 +86,7 @@
     <ClCompile Include="..\..\..\source\node\Curve.cpp" />
     <ClCompile Include="..\..\..\source\node\Delete.cpp" />
     <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp" />
+    <ClCompile Include="..\..\..\source\node\Fuse.cpp" />
     <ClCompile Include="..\..\..\source\node\Geometry.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupExpression.cpp" />

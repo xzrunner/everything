@@ -6,6 +6,7 @@
 
 #include <everything/node/Add.h>
 #include <everything/node/Boolean.h>
+#include <everything/node/Fuse.h>
 #include <everything/node/Knife.h>
 #include <everything/node/Normal.h>
 #include <everything/node/PolyExtrude.h>
@@ -180,6 +181,77 @@ TEST_CASE("boolean")
     SECTION("subtract")
     {
     }
+}
+
+TEST_CASE("fuse")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box0 = std::make_shared<evt::node::Box>();
+    eval.AddNode(box0);
+
+    auto group0 = std::make_shared<evt::node::GroupCreate>();
+    group0->SetGroupName("top");
+    group0->SetGroupType(evt::GroupType::Primitives);
+    group0->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(group0);
+
+    eval.Connect({ box0, 0 }, { group0, 0 });
+
+    auto blast0 = std::make_shared<evt::node::Blast>();
+    blast0->SetGroupName("top");
+    blast0->SetGroupType(evt::GroupType::GuessFromGroup);
+    eval.AddNode(blast0);
+
+    eval.Connect({ group0, 0 }, { blast0, 0 });
+
+    auto box1 = std::make_shared<evt::node::Box>();
+    box1->SetCenter({ 0, 1, 0 });
+    eval.AddNode(box1);
+
+    auto group1 = std::make_shared<evt::node::GroupCreate>();
+    group1->SetGroupName("btm");
+    group1->SetGroupType(evt::GroupType::Primitives);
+    group1->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
+    eval.AddNode(group1);
+
+    eval.Connect({ box1, 0 }, { group1, 0 });
+
+    auto blast1 = std::make_shared<evt::node::Blast>();
+    blast1->SetGroupName("btm");
+    blast1->SetGroupType(evt::GroupType::GuessFromGroup);
+    eval.AddNode(blast1);
+
+    eval.Connect({ group1, 0 }, { blast1, 0 });
+
+    auto merge = std::make_shared<evt::node::Merge>();
+    eval.AddNode(merge);
+
+    eval.Connect({ blast0, 0 }, { merge, evt::node::Merge::IDX_SRC_A });
+    eval.Connect({ blast1, 0 }, { merge, evt::node::Merge::IDX_SRC_B });
+
+    auto fuse = std::make_shared<evt::node::Fuse>();
+    eval.AddNode(fuse);
+
+    eval.Connect({ merge, 0 }, { fuse, 0 });
+
+    eval.Update();
+
+    test::check_points_num(merge, 16);
+    test::check_vertices_num(merge, 40);
+    test::check_faces_num(merge, 10);
+    test::check_halfedge_vertices_num(merge, 16);
+    test::check_halfedge_edges_num(merge, 40);
+    test::check_halfedge_faces_num(merge, 10);
+
+    test::check_points_num(fuse, 12);
+    test::check_vertices_num(fuse, 40);
+    test::check_faces_num(fuse, 10);
+    test::check_halfedge_vertices_num(fuse, 12);
+    test::check_halfedge_edges_num(fuse, 40);
+    test::check_halfedge_faces_num(fuse, 10);
 }
 
 TEST_CASE("knife box")
