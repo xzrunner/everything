@@ -51,27 +51,6 @@ TEST_CASE("group_create")
         }
     }
 
-    SECTION("base group vertices")
-    {
-        group->SetGroupType(evt::GroupType::Vertices);
-        group->EnableBaseGroup("@P.y < 0");
-
-        auto blast = std::make_shared<evt::node::Blast>();
-        blast->SetGroupName("test");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
-        blast->SetDeleteNonSelected(true);
-        eval.AddNode(blast);
-
-        eval.Connect({ group, 0 }, { blast, 0 });
-
-        eval.Update();
-
-        test::check_vertices_num(blast, 12);
-        for (int i = 0; i < 12; ++i) {
-            REQUIRE(test::get_vertex_pos(blast, i).y < 0);
-        }
-    }
-
     SECTION("base group prims")
     {
         group->SetGroupType(evt::GroupType::Primitives);
