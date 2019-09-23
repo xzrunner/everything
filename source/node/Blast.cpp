@@ -24,19 +24,14 @@ void Blast::Execute(Evaluator& eval)
         return;
     }
 
-    auto& attr = m_geo_impl->GetAttr();
-
-    std::vector<GroupRebuild> groups;
-    m_geo_impl->GetGroup().Traverse([&](const Group& group)->bool {
-        groups.emplace_back(attr, const_cast<Group&>(group));
-        return true;
-    });
-
     auto type = m_group_type == GroupType::GuessFromGroup ? group->type : m_group_type;
     if (type != group->type) {
         return;
     }
 
+    GroupRebuild group_rebuild(*m_geo_impl);
+
+    auto& attr = m_geo_impl->GetAttr();
     switch (type)
     {
     case GroupType::Points:

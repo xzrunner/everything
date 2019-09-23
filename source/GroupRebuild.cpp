@@ -1,119 +1,176 @@
 #include "everything/GroupRebuild.h"
 #include "everything/Group.h"
-
-#include <map>
+#include "everything/GeometryImpl.h"
 
 namespace evt
 {
 
-GroupRebuild::GroupRebuild(const GeoAttribute& attr, Group& group)
-    : m_attr(attr)
-    , m_group(group)
+GroupRebuild::GroupRebuild(GeometryImpl& geo)
+    : m_geo(geo)
 {
-    switch (group.type)
-    {
-    case GroupType::Points:
-    {
-        m_points.reserve(group.items.size());
-        auto& pts = attr.GetPoints();
-        for (auto i : group.items) {
-            assert(i < pts.size());
-            m_points.push_back(pts[i]);
-        }
-    }
-        break;
-    case GroupType::Vertices:
-    {
-        m_vertices.reserve(group.items.size());
-        auto& vts = attr.GetVertices();
-        for (auto i : group.items) {
-            assert(i < vts.size());
-            m_vertices.push_back(vts[i]);
-        }
-    }
-        break;
-    case GroupType::Primitives:
-    {
-        m_primtives.reserve(group.items.size());
-        auto& prims = attr.GetPrimtives();
-        for (auto i : group.items) {
-            assert(i < prims.size());
-            m_primtives.push_back(prims[i]);
-        }
-    }
-        break;
-    default:
-        assert(0);
-    }
+    Save();
 }
 
 GroupRebuild::~GroupRebuild()
 {
-    switch (m_group.type)
-    {
-    case GroupType::Points:
-    {
-        auto& pts = m_attr.GetPoints();
-        std::map<std::shared_ptr<GeoAttribute::Point>, size_t> p2idx;
-        for (size_t i = 0, n = pts.size(); i < n; ++i) {
-            p2idx.insert({ pts[i], i });
-        }
+    Load();
+}
 
-        m_group.items.clear();
-        m_group.items.reserve(m_points.size());
-        for (auto& p : m_points)
+void GroupRebuild::Save()
+{
+    if (m_geo.GetAdaptorType() != GeoAdaptor::Type::Brush) {
+        return;
+    }
+
+    m_geo.GetGroup().Traverse([&](const Group& group)->bool
+    {
+        GroupDump dump;
+        dump.ori = &group;
+        switch (group.type)
         {
-            assert(p);
-            auto itr = p2idx.find(p);
-            if (itr != p2idx.end()) {
-                m_group.items.push_back(itr->second);
+        case GroupType::Points:
+        {
+            auto& pts = m_geo.GetAttr().GetPoints();
+            dump.points.reserve(group.items.size());
+            for (auto i : group.items)
+            {
+                auto& p = pts[i];
+                assert(p->topo_id >= 0);
+                dump.points.push_back(p->topo_id);
             }
         }
-    }
-        break;
-    case GroupType::Vertices:
-    {
-        auto& vts = m_attr.GetVertices();
-        std::map<std::shared_ptr<GeoAttribute::Vertex>, size_t> v2idx;
-        for (size_t i = 0, n = vts.size(); i < n; ++i) {
-            v2idx.insert({ vts[i], i });
-        }
-
-        m_group.items.clear();
-        m_group.items.reserve(m_vertices.size());
-        for (auto& v : m_vertices)
+            break;
+        case GroupType::Vertices:
         {
-            assert(v);
-            auto itr = v2idx.find(v);
-            if (itr != v2idx.end()) {
-                m_group.items.push_back(itr->second);
+            auto& vts = m_geo.GetAttr().GetVertices();
+            dump.vertices.reserve(group.items.size());
+            for (auto i : group.items)
+            {
+                auto& v = vts[i];
+                int vert_id = v->point->topo_id;
+                auto face = v->prim.lock();
+                assert(face);
+                int face_id = face->topo_id;
+                assert(vert_id >= 0 && face_id >= 0);
+                int id = face_id << 16 | vert_id;
+                dump.vertices.push_back(id);
             }
         }
-    }
-        break;
-    case GroupType::Primitives:
-    {
-        auto& prims = m_attr.GetPrimtives();
-        std::map<std::shared_ptr<GeoAttribute::Primitive>, size_t> prim2idx;
-        for (size_t i = 0, n = prims.size(); i < n; ++i) {
-            prim2idx.insert({ prims[i], i });
-        }
-
-        m_group.items.clear();
-        m_group.items.reserve(m_primtives.size());
-        for (auto& prim : m_primtives)
+            break;
+        case GroupType::Primitives:
         {
-            assert(prim);
-            auto itr = prim2idx.find(prim);
-            if (itr != prim2idx.end()) {
-                m_group.items.push_back(itr->second);
+            auto& prims = m_geo.GetAttr().GetPrimtives();
+            dump.primtives.reserve(group.items.size());
+            for (auto i : group.items)
+            {
+                auto& prim = prims[i];
+                assert(prim->topo_id >= 0);
+                dump.primtives.push_back(prim->topo_id);
             }
         }
+            break;
+        default:
+            assert(0);
+        }
+        m_groups.push_back(dump);
+
+        return true;
+    });
+}
+
+void GroupRebuild::Load()
+{
+    if (m_geo.GetAdaptorType() != GeoAdaptor::Type::Brush) {
+        return;
     }
-        break;
-    default:
-        assert(0);
+    if (m_groups.empty()) {
+        return;
     }
+
+    std::map<size_t, size_t> p_topo2idx;
+    auto& pts = m_geo.GetAttr().GetPoints();
+    for (size_t i = 0, n = pts.size(); i < n; ++i) {
+        assert(pts[i]->topo_id >= 0);
+        p_topo2idx.insert({ pts[i]->topo_id, i });
+    }
+
+    std::map<size_t, size_t> v_topo2idx;
+    auto& vts = m_geo.GetAttr().GetVertices();
+    for (size_t i = 0, n = vts.size(); i < n; ++i)
+    {
+        auto& v = vts[i];
+        int vert_id = v->point->topo_id;
+        auto face = v->prim.lock();
+        assert(face);
+        int face_id = face->topo_id;
+        assert(vert_id >= 0 && face_id >= 0);
+        int id = face_id << 16 | vert_id;
+        v_topo2idx.insert({ id, i });
+    }
+
+    std::map<size_t, size_t> prim_topo2idx;
+    auto& prims = m_geo.GetAttr().GetPrimtives();
+    for (size_t i = 0, n = prims.size(); i < n; ++i) {
+        assert(prims[i]->topo_id >= 0);
+        prim_topo2idx.insert({ prims[i]->topo_id, i });
+    }
+
+    auto itr = m_groups.begin();
+    m_geo.GetGroup().Traverse([&](const Group& group)->bool
+    {
+        assert(itr != m_groups.end() && itr->ori == &group);
+
+        auto& dst = const_cast<Group&>(group);
+
+        switch (group.type)
+        {
+        case GroupType::Points:
+        {
+            dst.items.clear();
+            dst.items.reserve(itr->points.size());
+            for (auto& p : itr->points)
+            {
+                auto itr = p_topo2idx.find(p);
+                if (itr != p_topo2idx.end()) {
+                    dst.items.push_back(itr->second);
+                }
+            }
+        }
+            break;
+        case GroupType::Vertices:
+        {
+            dst.items.clear();
+            dst.items.reserve(itr->vertices.size());
+            for (auto& v : itr->vertices)
+            {
+                auto itr = v_topo2idx.find(v);
+                if (itr != v_topo2idx.end()) {
+                    dst.items.push_back(itr->second);
+                }
+            }
+        }
+            break;
+        case GroupType::Primitives:
+        {
+            dst.items.clear();
+            dst.items.reserve(itr->primtives.size());
+            for (auto& prim : itr->primtives)
+            {
+                auto itr = prim_topo2idx.find(prim);
+                if (itr != prim_topo2idx.end()) {
+                    dst.items.push_back(itr->second);
+                }
+            }
+        }
+            break;
+        default:
+            assert(0);
+        }
+
+        ++itr;
+
+        return true;
+    });
 }
 
 }

@@ -22,17 +22,13 @@ public:
     struct Point
     {
         Point() {}
-        Point(const sm::vec3& pos) : pos(pos) {}
-        Point(const Point& point) : pos(point.pos), vars(point.vars) {}
-        Point& operator = (const Point& point) {
-            pos = point.pos;
-            vars = point.vars;
-            return *this;
-        }
+        Point(const sm::vec3& pos);
 
         sm::vec3 pos;
 
         std::vector<VarValue> vars;
+
+        int topo_id = -1;
 
     }; // Point
 
@@ -40,11 +36,8 @@ public:
     struct Vertex
     {
         Vertex() {}
-        Vertex(const Vertex& vert) : vars(vert.vars) {}
-        Vertex& operator = (const Vertex& vert) {
-            vars = vert.vars;
-            return *this;
-        }
+        Vertex(const Vertex& vert);
+        Vertex& operator = (const Vertex& vert);
 
         std::shared_ptr<Point>   point = nullptr;
         std::weak_ptr<Primitive> prim;
@@ -63,13 +56,9 @@ public:
         };
 
         Primitive() {}
-        Primitive(Type type) : type(type) {}
-        Primitive(const Primitive& prim) : type(prim.type), vars(prim.vars) {}
-        Primitive& operator = (const Primitive& prim) {
-            type = prim.type;
-            vars = prim.vars;
-            return *this;
-        }
+        Primitive(Type type);
+        Primitive(const Primitive& prim);
+        Primitive& operator = (const Primitive& prim);
 
         sm::vec3 CalcNormal() const;
 
@@ -78,6 +67,8 @@ public:
         Type type = Type::PolygonFace;
 
         std::vector<VarValue> vars;
+
+        int topo_id = -1;
 
     }; // Primitive
 

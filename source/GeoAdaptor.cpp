@@ -289,13 +289,17 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
         auto& points = brush.impl->Points();
         auto& faces = brush.impl->Faces();
 
-        for (auto& p : points) {
-            dst.m_points.push_back(std::make_shared<GeoAttribute::Point>(p));
+        for (auto& p : points)
+        {
+            auto point = std::make_shared<GeoAttribute::Point>(p->pos);
+            point->topo_id = p->topo_id;
+            dst.m_points.push_back(point);
         }
 
         for (auto& f : faces)
         {
             auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonFace);
+            prim->topo_id = f->topo_id;
             for (auto& p : f->points)
             {
                 auto v = std::make_shared<GeoAttribute::Vertex>();
@@ -313,12 +317,16 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
 
 void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
 {
-    std::vector<sm::vec3> points;
+    std::vector<pm3::PointPtr> points;
     points.reserve(src.m_points.size());
     std::map<std::shared_ptr<GeoAttribute::Point>, size_t> pt2idx;
     size_t idx = 0;
-    for (auto& p : src.m_points) {
-        points.push_back(p->pos);
+    for (auto& p : src.m_points)
+    {
+        auto point = std::make_shared<pm3::Point>();
+        point->pos = p->pos;
+        point->topo_id = p->topo_id;
+        points.push_back(point);
         pt2idx.insert({ p, idx++ });
     }
 
@@ -331,6 +339,7 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
         }
         auto face = std::make_shared<pm3::Face>();
         face->points.reserve(prim->vertices.size());
+        face->topo_id = prim->topo_id;
         for (auto& v : prim->vertices)
         {
             auto itr = pt2idx.find(v->point);
@@ -338,9 +347,9 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
             face->points.push_back(itr->second);
         }
         face->plane = sm::Plane(
-            points[face->points[0]],
-            points[face->points[1]],
-            points[face->points[2]]
+            points[face->points[0]]->pos,
+            points[face->points[1]]->pos,
+            points[face->points[2]]->pos
         );
         faces.push_back(face);
     }

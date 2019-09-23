@@ -511,6 +511,7 @@ void GeoAttribute::CombinePoints(const GeoAttribute& attr)
         }
         auto point = std::make_shared<Point>(p->pos);
         point->vars = vars;
+        point->topo_id = p->topo_id;
         m_points.push_back(point);
     }
 }
@@ -610,6 +611,8 @@ void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
             dst_prim->vertices.push_back(v);
             v->prim = dst_prim;
         }
+
+        dst_prim->topo_id = src_prim->topo_id;
 
         m_primtives.push_back(dst_prim);
     }
@@ -742,12 +745,55 @@ void GeoAttribute::UpdatePrimitivesChanged(bool del_unused_pt)
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+// struct GeoAttribute::Point
+//////////////////////////////////////////////////////////////////////////
 
+GeoAttribute::Point::Point(const sm::vec3& pos)
+    : pos(pos)
+{
+}
+
+//////////////////////////////////////////////////////////////////////////
+// struct GeoAttribute::Vertex
+//////////////////////////////////////////////////////////////////////////
+
+GeoAttribute::Vertex::Vertex(const Vertex& vert)
+    : vars(vert.vars)
+{
+}
+
+GeoAttribute::Vertex&
+GeoAttribute::Vertex::operator = (const Vertex& vert)
+{
+    vars = vert.vars;
+    return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // struct GeoAttribute::Primitive
 //////////////////////////////////////////////////////////////////////////
+
+GeoAttribute::Primitive::Primitive(Type type)
+    : type(type)
+{
+}
+
+GeoAttribute::Primitive::Primitive(const Primitive& prim)
+    : type(prim.type)
+    , vars(prim.vars)
+    , topo_id(prim.topo_id)
+{
+}
+
+GeoAttribute::Primitive&
+GeoAttribute::Primitive::operator = (const Primitive& prim)
+{
+    type = prim.type;
+    vars = prim.vars;
+    topo_id = prim.topo_id;
+    return *this;
+}
 
 sm::vec3 GeoAttribute::Primitive::CalcNormal() const
 {

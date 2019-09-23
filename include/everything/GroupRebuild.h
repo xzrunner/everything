@@ -6,20 +6,32 @@ namespace evt
 {
 
 struct Group;
+class GeometryImpl;
 
 class GroupRebuild
 {
 public:
-    GroupRebuild(const GeoAttribute& attr, Group& group);
+    GroupRebuild(GeometryImpl& geo);
     ~GroupRebuild();
 
 private:
-    const GeoAttribute& m_attr;
-    Group& m_group;
+    void Save();
+    void Load();
 
-    std::vector<std::shared_ptr<GeoAttribute::Point>>     m_points;
-    std::vector<std::shared_ptr<GeoAttribute::Vertex>>    m_vertices;
-    std::vector<std::shared_ptr<GeoAttribute::Primitive>> m_primtives;
+private:
+    struct GroupDump
+    {
+        const Group* ori = nullptr;
+
+        std::vector<int> points;
+        std::vector<int> vertices;
+        std::vector<int> primtives;
+    };
+
+private:
+    GeometryImpl& m_geo;
+
+    std::vector<GroupDump> m_groups;
 
 }; // GroupRebuild
 

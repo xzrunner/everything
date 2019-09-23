@@ -2,6 +2,7 @@
 #include "everything/GeometryImpl.h"
 #include "everything/NodeHelper.h"
 #include "everything/GeoAttrRebuild.h"
+#include "everything/GroupRebuild.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -27,6 +28,7 @@ void Fuse::Execute(Evaluator& eval)
         return;
     }
 
+    GroupRebuild group_rebuild(*m_geo_impl);
     GeoAttrRebuild attr_rebuild(*m_geo_impl);
 
     for (auto& brush : brush_model->GetBrushes())
