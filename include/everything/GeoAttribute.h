@@ -104,7 +104,7 @@ public:
     auto& GetPrimtives() const { return m_primtives; }
     auto& GetDetail() const    { return m_detail; }
 
-    void RemoveItems(GeoAttrType type, const std::vector<bool>& del_flags);
+    void RemoveItems(GeoAttrType type, const std::vector<bool>& del_flags, bool del_unused_pt);
 
     void ChangePointsOrder(const std::vector<size_t>& order);
 
@@ -142,9 +142,9 @@ private:
     void CombinePrimitives(const GeoAttribute& attr);
     void CombineDetail(const GeoAttribute& attr);
 
-    void UpdatePointsChanged();
-    void UpdateVerticesChanged();
-    void UpdatePrimitivesChanged();
+    void UpdatePointsChanged(bool del_unused_pt);
+    void UpdateVerticesChanged(bool del_unused_pt);
+    void UpdatePrimitivesChanged(bool del_unused_pt);
 
 private:
     std::vector<std::shared_ptr<Point>>     m_points;

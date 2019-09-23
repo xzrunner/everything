@@ -54,7 +54,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval)
         if (i != 0) {
             del_flags[i - 1] = true;
         }
-        geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags);
+        geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags, true);
         geo_impl->UpdateByAttr();
 
         std::static_pointer_cast<node::ForeachPrimBegin>(begin)->SetGeoImpl(geo_impl);
