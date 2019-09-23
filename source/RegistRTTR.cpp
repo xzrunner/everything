@@ -16,6 +16,7 @@
 // polygon
 #include "everything/node/Add.h"
 #include "everything/node/Boolean.h"
+#include "everything/node/Fuse.h"
 #include "everything/node/Knife.h"
 #include "everything/node/Normal.h"
 #include "everything/node/PolyExtrude.h"
@@ -66,6 +67,7 @@ REGIST_NODE_TYPE(Carve)
 // polygon
 REGIST_NODE_TYPE(Add)
 REGIST_NODE_TYPE(Boolean)
+REGIST_NODE_TYPE(Fuse)
 REGIST_NODE_TYPE(Knife)
 REGIST_NODE_TYPE(Normal)
 REGIST_NODE_TYPE(PolyExtrude)
