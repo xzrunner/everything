@@ -23,9 +23,9 @@ private:
     {
         const Group* ori = nullptr;
 
-        std::vector<int> points;
-        std::vector<int> vertices;
-        std::vector<int> primtives;
+        std::vector<uint64_t> points;
+        std::vector<uint64_t> vertices;
+        std::vector<uint64_t> primtives;
     };
 
 private:

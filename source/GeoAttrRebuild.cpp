@@ -28,26 +28,26 @@ void GeoAttrRebuild::Save()
 
     // points
     for (auto& p : attr.GetPoints()) {
-        assert(p->topo_id >= 0);
-        m_points.insert({ p->topo_id, p->vars });
+        assert(!p->topo_id.Empty());
+        m_points.insert({ p->topo_id.UID(), p->vars });
     }
 
     // vertices
     for (auto& v : attr.GetVertices())
     {
-        int vert_id = v->point->topo_id;
+        auto& vert_id = v->point->topo_id;
         auto face = v->prim.lock();
         assert(face);
-        int face_id = face->topo_id;
-        assert(vert_id >= 0 && face_id >= 0);
-        int id = face_id << 16 | vert_id;
+        auto& face_id = face->topo_id;
+        assert(!vert_id.Empty() && !face_id.Empty());
+        const uint64_t id = static_cast<uint64_t>(face_id.UID()) << 32 | vert_id.UID();
         m_vertices.insert({ id, v->vars });
     }
 
     // primitives
     for (auto& prim : attr.GetPrimtives()) {
-        assert(prim->topo_id >= 0);
-        m_primitives.insert({ prim->topo_id, prim->vars });
+        assert(!prim->topo_id.Empty());
+        m_primitives.insert({ prim->topo_id.UID(), prim->vars });
     }
 
     // detail
@@ -69,8 +69,8 @@ void GeoAttrRebuild::Load()
     auto default_attr_p = attr.GetDefaultValues(GeoAttrType::Point);
     for (auto& p : attr.GetPoints())
     {
-        assert(p->topo_id >= 0);
-        auto itr = m_points.find(p->topo_id);
+        assert(!p->topo_id.Empty());
+        auto itr = m_points.find(p->topo_id.UID());
         if (itr != m_points.end()) {
             p->vars = itr->second;
         } else {
@@ -82,12 +82,12 @@ void GeoAttrRebuild::Load()
     auto default_attr_v = attr.GetDefaultValues(GeoAttrType::Vertex);
     for (auto& v : attr.GetVertices())
     {
-        int vert_id = v->point->topo_id;
+        auto& vert_id = v->point->topo_id;
         auto face = v->prim.lock();
         assert(face);
-        int face_id = face->topo_id;
-        assert(vert_id >= 0 && face_id >= 0);
-        int id = face_id << 16 | vert_id;
+        auto& face_id = face->topo_id;
+        assert(!vert_id.Empty() && !face_id.Empty());
+        const uint64_t id = static_cast<uint64_t>(face_id.UID()) << 32 | vert_id.UID();
         auto itr = m_vertices.find(id);
         if (itr != m_vertices.end()) {
             v->vars = itr->second;
@@ -100,8 +100,8 @@ void GeoAttrRebuild::Load()
     auto default_attr_prim = attr.GetDefaultValues(GeoAttrType::Primitive);
     for (auto& prim : attr.GetPrimtives())
     {
-        assert(prim->topo_id >= 0);
-        auto itr = m_primitives.find(prim->topo_id);
+        assert(!prim->topo_id.Empty());
+        auto itr = m_primitives.find(prim->topo_id.UID());
         if (itr != m_primitives.end()) {
             prim->vars = itr->second;
         } else {

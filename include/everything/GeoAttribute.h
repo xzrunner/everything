@@ -5,6 +5,7 @@
 #include "everything/VarValue.h"
 
 #include <SM_Cube.h>
+#include <halfedge/TopoID.h>
 
 #include <vector>
 #include <memory>
@@ -28,7 +29,7 @@ public:
 
         std::vector<VarValue> vars;
 
-        int topo_id = -1;
+        he::TopoID topo_id;
 
     }; // Point
 
@@ -68,7 +69,7 @@ public:
 
         std::vector<VarValue> vars;
 
-        int topo_id = -1;
+        he::TopoID topo_id;
 
     }; // Primitive
 
