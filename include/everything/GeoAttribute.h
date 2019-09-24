@@ -129,6 +129,8 @@ private:
     void CombineAttrDesc(const GeoAttribute& attr, GeoAttrType type,
         std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars);
 
+    void CombineTopoID(const GeoAttribute& attr);
+
     void CombinePoints(const GeoAttribute& attr);
     void CombineVertices(const GeoAttribute& attr);
     void CombinePrimitives(const GeoAttribute& attr);

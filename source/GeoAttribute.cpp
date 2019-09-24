@@ -335,6 +335,8 @@ Variable GeoAttribute::QueryAttr(GeoAttrType type, const std::string& name, size
 
 void GeoAttribute::Combine(const GeoAttribute& attr)
 {
+    CombineTopoID(attr);
+
     CombinePoints(attr);
     CombineVertices(attr);
     CombinePrimitives(attr);
@@ -479,6 +481,108 @@ void GeoAttribute::CombineAttrDesc(const GeoAttribute& attr, GeoAttrType type,
     }
 
     default_vars = GetDefaultValues(type);
+}
+
+void GeoAttribute::CombineTopoID(const GeoAttribute& attr)
+{
+    // prepare unique set
+    std::set<size_t> src_pt, src_prim;
+    std::set<size_t> dst_pt, dst_prim;
+    for (auto& p : attr.GetPoints()) {
+        for (auto& id : p->topo_id.Path()) {
+            src_pt.insert(id);
+        }
+    }
+    for (auto& prim : attr.GetPrimtives()) {
+        for (auto& id : prim->topo_id.Path()) {
+            src_prim.insert(id);
+        }
+    }
+    for (auto& p : GetPoints()) {
+        for (auto& id : p->topo_id.Path()) {
+            dst_pt.insert(id);
+        }
+    }
+    for (auto& prim : GetPrimtives()) {
+        for (auto& id : prim->topo_id.Path()) {
+            dst_prim.insert(id);
+        }
+    }
+
+    // next id
+    size_t next_pt_id = 0, next_prim_id = 0;
+    if (!src_pt.empty()) {
+        next_pt_id = std::max(next_pt_id, *src_pt.rbegin() + 1);
+    }
+    if (!dst_pt.empty()) {
+        next_pt_id = std::max(next_pt_id, *dst_pt.rbegin() + 1);
+    }
+    if (!src_prim.empty()) {
+        next_prim_id = std::max(next_prim_id, *src_prim.rbegin() + 1);
+    }
+    if (!dst_prim.empty()) {
+        next_prim_id = std::max(next_prim_id, *dst_prim.rbegin() + 1);
+    }
+
+    // update points id
+    {
+        auto s_itr = src_pt.begin();
+        auto d_itr = dst_pt.begin();
+        while (s_itr != src_pt.end() && d_itr != dst_pt.end())
+        {
+            if (*s_itr < *d_itr)
+            {
+                ++s_itr;
+            }
+            else if (*s_itr > *d_itr)
+            {
+                ++d_itr;
+            }
+            else
+            {
+                auto new_id = next_pt_id++;
+                for (auto& p : GetPoints()) {
+                    for (auto& id : p->topo_id.Path()) {
+                        if (id == *s_itr) {
+                            const_cast<size_t&>(id) = new_id;
+                        }
+                    }
+                }
+                ++s_itr;
+                ++d_itr;
+            }
+        }
+    }
+
+    // update prims id
+    {
+        auto s_itr = src_prim.begin();
+        auto d_itr = dst_prim.begin();
+        while (s_itr != src_prim.end() && d_itr != dst_prim.end())
+        {
+            if (*s_itr < *d_itr)
+            {
+                ++s_itr;
+            }
+            else if (*s_itr > *d_itr)
+            {
+                ++d_itr;
+            }
+            else
+            {
+                auto new_id = next_prim_id++;
+                for (auto& p : GetPrimtives()) {
+                    for (auto& id : p->topo_id.Path()) {
+                        if (id == *s_itr) {
+                            const_cast<size_t&>(id) = new_id;
+                        }
+                    }
+                }
+                ++s_itr;
+                ++d_itr;
+            }
+        }
+    }
 }
 
 void GeoAttribute::CombinePoints(const GeoAttribute& attr)
