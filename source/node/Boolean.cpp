@@ -50,7 +50,7 @@ void Boolean::Execute(Evaluator& eval)
     case Operator::Intersect:
     {
         auto poly = he_a->Intersect(*he_b);
-        if (poly->GetFaces().Size() > 0)
+        if (poly && poly->GetFaces().Size() > 0)
         {
             model::BrushModel::Brush brush;
             brush.impl = std::make_shared<pm3::Polytope>(poly);
