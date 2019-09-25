@@ -17,10 +17,6 @@ GeoAttrRebuild::~GeoAttrRebuild()
 
 void GeoAttrRebuild::Save()
 {
-    if (m_geo.GetAdaptorType() != GeoAdaptor::Type::Brush) {
-        return;
-    }
-
     auto& attr = m_geo.GetAttr();
     for (int i = 0, n = static_cast<int>(GeoAttrType::MaxTypeNum); i < n; ++i) {
         m_var_descs[i] = attr.GetAttrDesc(static_cast<GeoAttrType>(i));
@@ -56,10 +52,6 @@ void GeoAttrRebuild::Save()
 
 void GeoAttrRebuild::Load()
 {
-    if (m_geo.GetAdaptorType() != GeoAdaptor::Type::Brush) {
-        return;
-    }
-
     auto& attr = m_geo.GetAttr();
     for (int i = 0, n = static_cast<int>(GeoAttrType::MaxTypeNum); i < n; ++i) {
         attr.SetAttrDesc(static_cast<GeoAttrType>(i), m_var_descs[i]);

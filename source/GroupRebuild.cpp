@@ -18,10 +18,6 @@ GroupRebuild::~GroupRebuild()
 
 void GroupRebuild::Save()
 {
-    if (m_geo.GetAdaptorType() != GeoAdaptor::Type::Brush) {
-        return;
-    }
-
     m_geo.GetGroup().Traverse([&](const Group& group)->bool
     {
         GroupDump dump;
@@ -80,9 +76,6 @@ void GroupRebuild::Save()
 
 void GroupRebuild::Load()
 {
-    if (m_geo.GetAdaptorType() != GeoAdaptor::Type::Brush) {
-        return;
-    }
     if (m_groups.empty()) {
         return;
     }
