@@ -39,14 +39,9 @@ void Line::SetDirection(const sm::vec3& dir)
 
 void Line::SetLength(float len)
 {
-    if (m_length == len) {
-        return;
+    if (m_props.SetValue(LENGTH, Variable(len))) {
+        SetDirty(true);
     }
-
-    m_length = len;
-    BuildModel();
-
-    SetDirty(true);
 }
 
 void Line::SetPoints(size_t num)
@@ -56,9 +51,13 @@ void Line::SetPoints(size_t num)
     }
 
     m_points = num;
-    BuildModel();
 
     SetDirty(true);
+}
+
+void Line::InitProps()
+{
+    m_props.Assign(LENGTH, PropNames[LENGTH], Variable(1.0f));
 }
 
 void Line::BuildModel()
@@ -72,7 +71,10 @@ void Line::BuildModel()
 
     std::vector<sm::vec3> vertices;
     vertices.reserve(m_points);
-    auto dt = m_direction * m_length / static_cast<float>(m_points - 1);
+    auto& props = m_props.GetProps();
+    assert(props[LENGTH].Val().type == VarType::Float);
+    const float length = props[LENGTH].Val().f;
+    auto dt = m_direction * length / static_cast<float>(m_points - 1);
     auto v = m_origin;
     for (size_t i = 0; i < m_points; ++i) {
         vertices.push_back(v);
