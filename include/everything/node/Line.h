@@ -31,7 +31,7 @@ private:
 
 private:
     sm::vec3 m_origin    = sm::vec3(0, 0, 0);
-    sm::vec3 m_direction = sm::vec3(0, 0, 1);
+    sm::vec3 m_direction = sm::vec3(0, 1, 0);
 
     float m_length = 1;
 
