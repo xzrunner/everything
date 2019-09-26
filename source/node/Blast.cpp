@@ -1,6 +1,7 @@
 #include "everything/node/Blast.h"
 #include "everything/GeometryImpl.h"
 #include "everything/NodeHelper.h"
+#include "everything/GeoAttrRebuild.h"
 #include "everything/GroupRebuild.h"
 
 namespace evt
@@ -30,6 +31,7 @@ void Blast::Execute(Evaluator& eval)
     }
 
     GroupRebuild group_rebuild(*m_geo_impl);
+    GeoAttrRebuild attr_rebuild(*m_geo_impl);
 
     auto& attr = m_geo_impl->GetAttr();
     switch (type)
