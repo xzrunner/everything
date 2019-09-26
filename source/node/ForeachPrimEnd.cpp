@@ -29,49 +29,21 @@ void ForeachPrimEnd::Execute(Evaluator& eval)
 
     auto nodes = FindClosureNodes(begin);
 
-    // closure
+    // prepare eval, closure
     Evaluator sub_eval;
     for (auto& n : nodes) {
         sub_eval.AddNode(n);
     }
 
-    // foreach prim
-    auto& prev_prims = prev_geo->GetAttr().GetPrimtives();
-    if (m_do_single_pass && m_single_pass_offset >= static_cast<int>(prev_prims.size())) {
-        return;
-    }
-    auto& attr = m_geo_impl->GetAttr();
-    std::vector<bool> del_flags(prev_prims.size(), true);
-    for (size_t i = 0, n = prev_prims.size(); i < n; ++i)
-    {
-        if (m_do_single_pass) {
-            i = m_single_pass_offset;
+    // do
+    size_t n_prim = prev_geo->GetAttr().GetPrimtives().size();
+    if (m_do_single_pass) {
+        if (m_single_pass_offset < n_prim) {
+            DoOnePass(sub_eval, begin, prev_geo, m_single_pass_offset);
         }
-
-        assert(begin->get_type() == rttr::type::get<node::ForeachPrimBegin>());
-        auto geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
-        del_flags[i] = false;
-        if (i != 0) {
-            del_flags[i - 1] = true;
-        }
-        geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags, true);
-        geo_impl->UpdateByAttr();
-
-        std::static_pointer_cast<node::ForeachPrimBegin>(begin)->SetGeoImpl(geo_impl);
-
-        sub_eval.MakeDirty();
-        sub_eval.Update();
-
-        auto e_prev_geo = NodeHelper::GetInputGeo(*this, 0);
-        if (e_prev_geo)
-        {
-            m_geo_impl->GetGroup().Combine(e_prev_geo->GetGroup(), attr.GetPoints().size(),
-                attr.GetVertices().size(), attr.GetPrimtives().size());
-            attr.Combine(e_prev_geo->GetAttr());
-        }
-
-        if (m_do_single_pass) {
-            break;
+    } else {
+        for (size_t i = 0, n = n_prim; i < n; ++i) {
+            DoOnePass(sub_eval, begin, prev_geo, i);
         }
     }
 
@@ -155,6 +127,34 @@ std::set<NodePtr> ForeachPrimEnd::FindClosureNodes(const NodePtr& begin) const
     }
 
     return nodes;
+}
+
+void ForeachPrimEnd::DoOnePass(Evaluator& sub_eval, const NodePtr& begin, 
+                               const std::shared_ptr<GeometryImpl>& prev_geo, size_t idx)
+{
+    auto& prev_prims = prev_geo->GetAttr().GetPrimtives();
+    std::vector<bool> del_flags(prev_prims.size(), true);
+    del_flags[idx] = false;
+
+    assert(begin->get_type() == rttr::type::get<node::ForeachPrimBegin>());
+    auto geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
+    
+    geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags, true);
+    geo_impl->UpdateByAttr();
+
+    std::static_pointer_cast<node::ForeachPrimBegin>(begin)->SetGeoImpl(geo_impl);
+
+    sub_eval.MakeDirty();
+    sub_eval.Update();
+
+    auto e_prev_geo = NodeHelper::GetInputGeo(*this, 0);
+    if (e_prev_geo)
+    {
+        auto& attr = m_geo_impl->GetAttr();
+        m_geo_impl->GetGroup().Combine(e_prev_geo->GetGroup(), attr.GetPoints().size(),
+            attr.GetVertices().size(), attr.GetPrimtives().size());
+        attr.Combine(e_prev_geo->GetAttr());
+    }
 }
 
 }
