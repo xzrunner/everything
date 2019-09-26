@@ -142,6 +142,7 @@ void Evaluator::Update()
     // 2. calc prop
     UpdateProps();
     // 3. update node finally
+    MakeDirty(true);    // todo: set dirty by props
     UpdateNodes();
 
     m_dirty = false;
