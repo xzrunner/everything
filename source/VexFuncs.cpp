@@ -59,6 +59,189 @@ namespace evt
 
 void SetupVexFuncs()
 {
+    // ATTRIBUTES AND INTRINSICS
+
+    vexc::RegistBuildInFunc("prim", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    {
+        if (params.size() < 4) {
+            return vexc::Variant();
+        }
+        for (int i = 0; i < 4; ++i) {
+            if (params[i].type == vexc::VarType::Invalid) {
+                return vexc::Variant();
+            }
+        }
+
+        auto ctx = static_cast<const EvalContext*>(ud);
+        evt::Node* base_node = const_cast<evt::Node*>(ctx->node);
+
+        assert(params[0].type == vexc::VarType::String);
+        std::string path(vexc::StringPool::VoidToString(params[0].p));
+        auto surface_node = PathToNode(base_node, path, *ctx->eval);
+        if (!surface_node) {
+            return vexc::Variant();
+        }
+
+        auto geo = surface_node->GetGeometry();
+        if (!geo) {
+            return vexc::Variant();
+        }
+
+        assert(params[1].type == vexc::VarType::Int);
+        int prim_num = params[1].i;
+
+        assert(params[2].type == vexc::VarType::String);
+        std::string attrib_name = vexc::StringPool::VoidToString(params[2].p);
+
+        assert(params[3].type == vexc::VarType::Int);
+        int attrib_index = params[3].i;
+
+        auto var = geo->GetAttr().QueryAttr(GeoAttrType::Primitive, attrib_name, attrib_index);
+        if (var.type == VarType::Invalid) {
+            return vexc::Variant();
+        }
+        switch (var.type)
+        {
+        case VarType::Bool:
+            return vexc::Variant(var.b);
+        case VarType::Int:
+            return vexc::Variant(var.i);
+        case VarType::Float:
+            return vexc::Variant(var.f);
+        case VarType::Float3:
+        {
+            auto buf = new float[3];
+            memcpy(buf, var.p, sizeof(buf));
+            assert(attrib_index >= 0 && attrib_index < 3);
+            vexc::Variant ret(buf[attrib_index]);
+            delete[] buf;
+            return ret;
+        }
+        case VarType::Double:
+            return vexc::Variant(var.d);
+        default:
+            assert(0);
+            return vexc::Variant();
+        }
+    });
+
+    vexc::RegistBuildInFunc("setattrib", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    {
+        if (params.size() < 6) {
+            return vexc::Variant();
+        }
+
+        auto geohandle   = params[0].ToInt();
+        auto attr_class  = vexc::StringPool::VoidToString(params[1].p);
+        auto attr_name   = vexc::StringPool::VoidToString(params[2].p);
+        auto element_num = params[3].ToInt();
+        auto vertex_num  = params[4].ToInt();
+        auto value       = params[5].ToFloat();
+
+        assert(vertex_num == 0);
+
+        assert(geohandle == 0);
+        auto ctx = static_cast<const EvalContext*>(ud);
+        if (!ctx->node) {
+            return vexc::Variant();
+        }
+        auto geo = ctx->node->GetGeometry();
+        if (!geo) {
+            return vexc::Variant();
+        }
+
+        evt::GeoAttrType type;
+        if (attr_class == "point") {
+            type = evt::GeoAttrType::Point;
+        } else if (attr_class == "vertex") {
+            type = evt::GeoAttrType::Vertex;
+        } else if (attr_class == "detail" || attr_class == "global") {
+            type = evt::GeoAttrType::Detail;
+        } else {
+            return vexc::Variant();
+        }
+
+        auto& attr = geo->GetAttr();
+
+        auto& desc = attr.GetAttrDesc(type);
+        int attr_idx = -1;
+        for (int i = 0, n = desc.size(); i < n; ++i) {
+            if (desc[i].name == attr_name) {
+                attr_idx = i;
+                break;
+            }
+        }
+
+        if (attr_idx == -1)
+        {
+            attr_idx = desc.size();
+
+            auto new_desc = desc;
+            new_desc.push_back({ attr_name, evt::VarType::Float });
+            const_cast<evt::GeoAttribute&>(attr).SetAttrDesc(type, new_desc);
+            
+            switch (type)
+            {
+            case evt::GeoAttrType::Point:
+                for (auto& p : attr.GetPoints()) {
+                    p->vars.push_back(evt::VarValue());
+                }
+                break;
+            case evt::GeoAttrType::Vertex:
+                for (auto& v : attr.GetVertices()) {
+                    v->vars.push_back(evt::VarValue());
+                }
+                break;
+            case evt::GeoAttrType::Primitive:
+                for (auto& prim : attr.GetPrimtives()) {
+                    prim->vars.push_back(evt::VarValue());
+                }
+                break;
+            case evt::GeoAttrType::Detail:
+            {
+                auto& detail = const_cast<evt::GeoAttribute::Detail&>(attr.GetDetail());
+                detail.vars.push_back(evt::VarValue());
+            }
+                break;
+            default:
+                assert(0);
+            }
+        }
+
+        switch (type)
+        {
+        case evt::GeoAttrType::Point:
+        {
+            auto& pts = attr.GetPoints();
+            assert(element_num >= 0 && element_num < static_cast<int>(pts.size()));
+            pts[element_num]->vars[attr_idx].f = value;
+        }
+            break;
+        case evt::GeoAttrType::Vertex:
+        {
+            auto& vts = attr.GetVertices();
+            assert(element_num >= 0 && element_num < static_cast<int>(vts.size()));
+            vts[element_num]->vars[attr_idx].f = value;
+        }
+            break;
+        case evt::GeoAttrType::Primitive:
+        {
+            auto& prims = attr.GetPrimtives();
+            assert(element_num >= 0 && element_num < static_cast<int>(prims.size()));
+            prims[element_num]->vars[attr_idx].f = value;
+        }
+            break;
+        case evt::GeoAttrType::Detail:
+        {
+            auto& detail = const_cast<evt::GeoAttribute::Detail&>(attr.GetDetail());
+            detail.vars[attr_idx].f = value;
+        }
+            break;
+        }
+
+        return vexc::Variant();
+    });
+
     // INTERPOLATION
 
     vexc::RegistBuildInFunc("fit", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
@@ -288,6 +471,12 @@ void SetupVexFuncs()
         return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
     });
 
+    vexc::RegistBuildInFunc("@ptnum", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    {
+        auto ctx = static_cast<const EvalContext*>(ud);
+        return vexc::Variant(ctx->point_idx);
+    });
+
     // DESCRIBE
 
     vexc::RegistBuildInFunc("$SIZEX", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
@@ -328,72 +517,6 @@ void SetupVexFuncs()
         if (geo) {
             return vexc::Variant(geo->GetAttr().GetAABB().Depth());
         } else {
-            return vexc::Variant();
-        }
-    });
-
-    // others
-
-    vexc::RegistBuildInFunc("prim", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
-    {
-        if (params.size() < 4) {
-            return vexc::Variant();
-        }
-        for (int i = 0; i < 4; ++i) {
-            if (params[i].type == vexc::VarType::Invalid) {
-                return vexc::Variant();
-            }
-        }
-
-        auto ctx = static_cast<const EvalContext*>(ud);
-        evt::Node* base_node = const_cast<evt::Node*>(ctx->node);
-
-        assert(params[0].type == vexc::VarType::String);
-        std::string path(vexc::StringPool::VoidToString(params[0].p));
-        auto surface_node = PathToNode(base_node, path, *ctx->eval);
-        if (!surface_node) {
-            return vexc::Variant();
-        }
-
-        auto geo = surface_node->GetGeometry();
-        if (!geo) {
-            return vexc::Variant();
-        }
-
-        assert(params[1].type == vexc::VarType::Int);
-        int prim_num = params[1].i;
-
-        assert(params[2].type == vexc::VarType::String);
-        std::string attrib_name = vexc::StringPool::VoidToString(params[2].p);
-
-        assert(params[3].type == vexc::VarType::Int);
-        int attrib_index = params[3].i;
-
-        auto var = geo->GetAttr().QueryAttr(GeoAttrType::Primitive, attrib_name, attrib_index);
-        if (var.type == VarType::Invalid) {
-            return vexc::Variant();
-        }
-        switch (var.type)
-        {
-        case VarType::Bool:
-            return vexc::Variant(var.b);
-        case VarType::Int:
-            return vexc::Variant(var.i);
-        case VarType::Float:
-            return vexc::Variant(var.f);
-        case VarType::Float3:
-        {
-            auto buf = new float[3];
-            memcpy(buf, var.p, sizeof(buf));
-            assert(attrib_index >= 0 && attrib_index < 3);
-            vexc::Variant ret(buf[attrib_index]);
-            delete[] buf;
-            return ret;
-        }
-        case VarType::Double:
-            return vexc::Variant(var.d);
-        default:
-            assert(0);
             return vexc::Variant();
         }
     });
