@@ -31,6 +31,8 @@ public:
 
         he::TopoID topo_id;
 
+        size_t brush_id = 0;
+
     }; // Point
 
     struct Primitive;
@@ -70,6 +72,8 @@ public:
         std::vector<VarValue> vars;
 
         he::TopoID topo_id;
+
+        size_t brush_id = 0;
 
     }; // Primitive
 
@@ -130,6 +134,7 @@ private:
         std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars);
 
     void CombineTopoID(const GeoAttribute& attr);
+    void CombineBrushID(const GeoAttribute& attr);
 
     void CombinePoints(const GeoAttribute& attr);
     void CombineVertices(const GeoAttribute& attr);

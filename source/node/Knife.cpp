@@ -25,13 +25,17 @@ void Knife::Execute(Evaluator& eval)
 
     auto brush_model = m_geo_impl->GetBrushModel();
     assert(brush_model);
-    auto& brushes = brush_model->GetBrushes();
-    assert(brushes.size() == 1);
-    auto& brush = brushes[0];
 
     GeoAttrRebuild attr_rebuild(*m_geo_impl);
 
-    if (Clip(*brush.impl)) {
+    bool dirty = false;
+    for (auto& brush : brush_model->GetBrushes()) {
+        if (Clip(*brush.impl)) {
+            dirty = true;
+        }
+    }
+
+    if (dirty) {
         m_geo_impl->UpdateByBrush(*brush_model);
     }
 }

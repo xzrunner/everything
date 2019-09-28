@@ -26,42 +26,44 @@ void Boolean::Execute(Evaluator& eval)
     if (!brush_model_a || !brush_model_b) {
         return;
     }
-    auto& brushes_a = brush_model_a->GetBrushes();
-    auto& brushes_b = brush_model_b->GetBrushes();
-    assert(brushes_a.size() == 1 && brushes_b.size() == 1);
-    auto brush_a = brushes_a[0].impl;
-    auto brush_b = brushes_b[0].impl;
-    if (!brush_a || !brush_b) {
-        return;
-    }
-    auto he_a = brush_a->GetGeometry();
-    auto he_b = brush_b->GetGeometry();
-    if (!he_a || !he_b) {
-        return;
-    }
 
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 
     std::vector<model::BrushModel::Brush> brushes;
-    switch (m_operator)
+
+    auto& brushes_a = brush_model_a->GetBrushes();
+    auto& brushes_b = brush_model_b->GetBrushes();
+    for (auto& a : brushes_a)
     {
-    case Operator::Union:
-        break;
-    case Operator::Intersect:
-    {
-        auto poly = he_a->Intersect(*he_b);
-        if (poly && poly->GetFaces().Size() > 0)
+        for (auto& b : brushes_b)
         {
-            model::BrushModel::Brush brush;
-            brush.impl = std::make_shared<pm3::Polytope>(poly);
-            brushes.push_back(brush);
+            auto he_a = a.impl->GetGeometry();
+            auto he_b = b.impl->GetGeometry();
+            if (!he_a || !he_b) {
+                continue;
+            }
+
+            switch (m_operator)
+            {
+            case Operator::Union:
+                break;
+            case Operator::Intersect:
+            {
+                auto poly = he_a->Intersect(*he_b);
+                if (poly && poly->GetFaces().Size() > 0)
+                {
+                    model::BrushModel::Brush brush;
+                    brush.impl = std::make_shared<pm3::Polytope>(poly);
+                    brushes.push_back(brush);
+                }
+            }
+                break;
+            case Operator::Subtract:
+                break;
+            default:
+                assert(0);
+            }
         }
-    }
-        break;
-    case Operator::Subtract:
-        break;
-    default:
-        assert(0);
     }
 
     if (!brushes.empty())

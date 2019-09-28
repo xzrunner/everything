@@ -283,33 +283,39 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
     dst.Clear();
 
     auto& brushes = src.GetBrushes();
-    assert(brushes.size() == 1);
+    size_t brush_id = 0;
     for (auto& brush : brushes)
     {
         auto& points = brush.impl->Points();
         auto& faces = brush.impl->Faces();
 
+        auto p_off = dst.m_points.size();
+
         for (auto& p : points)
         {
             auto point = std::make_shared<GeoAttribute::Point>(p->pos);
-            point->topo_id = p->topo_id;
+            point->topo_id  = p->topo_id;
+            point->brush_id = brush_id;
             dst.m_points.push_back(point);
         }
 
         for (auto& f : faces)
         {
             auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonFace);
-            prim->topo_id = f->topo_id;
+            prim->topo_id  = f->topo_id;
+            prim->brush_id = brush_id;
             for (auto& p : f->points)
             {
                 auto v = std::make_shared<GeoAttribute::Vertex>();
-                v->point = dst.m_points[p];
+                v->point = dst.m_points[p_off + p];
                 v->prim  = prim;
                 prim->vertices.push_back(v);
                 dst.m_vertices.push_back(v);
             }
             dst.m_primtives.push_back(prim);
         }
+
+        ++brush_id;
     }
 
     dst.SetupAABB();
@@ -317,49 +323,73 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
 
 void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
 {
-    std::vector<pm3::PointPtr> points;
-    points.reserve(src.m_points.size());
-    std::map<std::shared_ptr<GeoAttribute::Point>, size_t> pt2idx;
-    size_t idx = 0;
+    struct Brush
+    {
+        std::vector<pm3::PointPtr> points;
+        std::vector<pm3::FacePtr>  faces;
+
+        std::map<std::shared_ptr<GeoAttribute::Point>, size_t> pt2idx;
+    };
+    std::map<int, std::shared_ptr<Brush>> brushes;
+
     for (auto& p : src.m_points)
     {
         auto point = std::make_shared<pm3::Point>();
         point->pos = p->pos;
         point->topo_id = p->topo_id;
-        points.push_back(point);
-        pt2idx.insert({ p, idx++ });
+
+        std::shared_ptr<Brush> b = nullptr;
+        auto itr = brushes.find(p->brush_id);
+        if (itr == brushes.end()) {
+            b = std::make_shared<Brush>();
+            brushes.insert({ p->brush_id, b });
+        } else {
+            b = itr->second;
+        }
+
+        b->pt2idx.insert({ p, b->points.size() });
+        b->points.push_back(point);
     }
 
-    std::vector<pm3::FacePtr> faces;
-    faces.reserve(src.m_primtives.size());
     for (auto& prim : src.m_primtives)
     {
         if (prim->vertices.size() < 3) {
             continue;
         }
+        auto itr = brushes.find(prim->brush_id);
+        if (itr == brushes.end()) {
+            continue;
+        }
+
+        auto b = itr->second;
+
         auto face = std::make_shared<pm3::Face>();
         face->points.reserve(prim->vertices.size());
         face->topo_id = prim->topo_id;
         for (auto& v : prim->vertices)
         {
-            auto itr = pt2idx.find(v->point);
-            assert(itr != pt2idx.end());
+            assert(v->point->brush_id == prim->brush_id);
+            auto itr = b->pt2idx.find(v->point);
+            assert(itr != b->pt2idx.end());
             face->points.push_back(itr->second);
         }
         face->plane = sm::Plane(
-            points[face->points[0]]->pos,
-            points[face->points[1]]->pos,
-            points[face->points[2]]->pos
+            b->points[face->points[0]]->pos,
+            b->points[face->points[1]]->pos,
+            b->points[face->points[2]]->pos
         );
-        faces.push_back(face);
+        b->faces.push_back(face);
     }
 
-    model::BrushModel::Brush brush;
-    brush.impl = std::make_shared<pm3::Polytope>(points, faces);
-
-    std::vector<model::BrushModel::Brush> brushes;
-    brushes.push_back(brush);
-    dst.SetBrushes(brushes);
+    std::vector<model::BrushModel::Brush> model_brushes;
+    model_brushes.resize(brushes.size());
+    size_t i = 0;
+    for (auto itr : brushes) {
+        model_brushes[i++].impl = std::make_shared<pm3::Polytope>(
+            itr.second->points, itr.second->faces
+        );
+    }
+    dst.SetBrushes(model_brushes);
 }
 
 }

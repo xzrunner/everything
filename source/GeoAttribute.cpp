@@ -336,6 +336,7 @@ Variable GeoAttribute::QueryAttr(GeoAttrType type, const std::string& name, size
 void GeoAttribute::Combine(const GeoAttribute& attr)
 {
     CombineTopoID(attr);
+    CombineBrushID(attr);
 
     CombinePoints(attr);
     CombineVertices(attr);
@@ -585,6 +586,60 @@ void GeoAttribute::CombineTopoID(const GeoAttribute& attr)
     }
 }
 
+void GeoAttribute::CombineBrushID(const GeoAttribute& attr)
+{
+    // prepare unique set
+    std::set<size_t> src, dst;
+    for (auto& p : attr.GetPoints()) {
+        src.insert(p->brush_id);
+    }
+    for (auto& p : GetPoints()) {
+        dst.insert(p->brush_id);
+    }
+
+    // next id
+    size_t next_id = 0;
+    if (!src.empty()) {
+        next_id = std::max(next_id, *src.rbegin() + 1);
+    }
+    if (!dst.empty()) {
+        next_id = std::max(next_id, *dst.rbegin() + 1);
+    }
+
+    // update id
+    {
+        auto s_itr = src.begin();
+        auto d_itr = dst.begin();
+        while (s_itr != src.end() && d_itr != dst.end())
+        {
+            if (*s_itr < *d_itr)
+            {
+                ++s_itr;
+            }
+            else if (*s_itr > *d_itr)
+            {
+                ++d_itr;
+            }
+            else
+            {
+                auto new_id = next_id++;
+                for (auto& p : GetPoints()) {
+                    if (p->brush_id == *s_itr) {
+                        p->brush_id = new_id;
+                    }
+                }
+                for (auto& prim : GetPrimtives()) {
+                    if (prim->brush_id == *s_itr) {
+                        prim->brush_id = new_id;
+                    }
+                }
+                ++s_itr;
+                ++d_itr;
+            }
+        }
+    }
+}
+
 void GeoAttribute::CombinePoints(const GeoAttribute& attr)
 {
     std::vector<uint32_t> indices;
@@ -616,6 +671,7 @@ void GeoAttribute::CombinePoints(const GeoAttribute& attr)
         auto point = std::make_shared<Point>(p->pos);
         point->vars = vars;
         point->topo_id = p->topo_id;
+        point->brush_id = p->brush_id;
         m_points.push_back(point);
     }
 }
@@ -709,6 +765,7 @@ void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
         dst_prim->vertices.reserve(src_prim->vertices.size());
         for (auto& src_v : src_prim->vertices)
         {
+            assert(src_v->point->brush_id == src_prim->brush_id);
             auto itr = vert2idx.find(src_v);
             assert(itr != vert2idx.end());
             auto v = m_vertices[ori_vt_count + itr->second];
@@ -717,6 +774,7 @@ void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
         }
 
         dst_prim->topo_id = src_prim->topo_id;
+        dst_prim->brush_id = src_prim->brush_id;
 
         m_primtives.push_back(dst_prim);
     }
@@ -884,18 +942,17 @@ GeoAttribute::Primitive::Primitive(Type type)
 }
 
 GeoAttribute::Primitive::Primitive(const Primitive& prim)
-    : type(prim.type)
-    , vars(prim.vars)
-    , topo_id(prim.topo_id)
 {
+    operator = (prim);
 }
 
 GeoAttribute::Primitive&
 GeoAttribute::Primitive::operator = (const Primitive& prim)
 {
-    type = prim.type;
-    vars = prim.vars;
-    topo_id = prim.topo_id;
+    type     = prim.type;
+    vars     = prim.vars;
+    topo_id  = prim.topo_id;
+    brush_id = prim.brush_id;
     return *this;
 }
 
