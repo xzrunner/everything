@@ -28,6 +28,7 @@
     <ClInclude Include="..\..\..\include\everything\NodeHelper.h" />
     <ClInclude Include="..\..\..\include\everything\NodePropsMgr.h" />
     <ClInclude Include="..\..\..\include\everything\node\Add.h" />
+    <ClInclude Include="..\..\..\include\everything\node\AttributeWrangle.h" />
     <ClInclude Include="..\..\..\include\everything\node\Carve.h" />
     <ClInclude Include="..\..\..\include\everything\node\Color.h" />
     <ClInclude Include="..\..\..\include\everything\node\Delete.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="..\..\..\source\NodeHelper.cpp" />
     <ClCompile Include="..\..\..\source\NodePropsMgr.cpp" />
     <ClCompile Include="..\..\..\source\node\Add.cpp" />
+    <ClCompile Include="..\..\..\source\node\AttributeWrangle.cpp" />
     <ClCompile Include="..\..\..\source\node\Blast.cpp" />
     <ClCompile Include="..\..\..\source\node\Boolean.cpp" />
     <ClCompile Include="..\..\..\source\node\Box.cpp" />

@@ -13,6 +13,7 @@
 #include <everything/node/Normal.h>
 #include <everything/node/Blast.h>
 #include <everything/node/GroupCreate.h>
+#include <everything/node/AttributeWrangle.h>
 
 #include <catch/catch.hpp>
 
@@ -215,41 +216,33 @@ TEST_CASE("attr combine 2")
     auto box0 = std::make_shared<evt::node::Box>();
     eval.AddNode(box0);
 
+    auto attr0 = std::make_shared<evt::node::AttributeWrangle>();
+    eval.AddNode(attr0);
+
+    eval.Connect({ box0, 0 }, { attr0, 0 });
+
     auto box1 = std::make_shared<evt::node::Box>();
     eval.AddNode(box1);
+
+    auto attr1 = std::make_shared<evt::node::AttributeWrangle>();
+    eval.AddNode(attr1);
+
+    eval.Connect({ box1, 0 }, { attr1, 0 });
 
     auto merge = std::make_shared<evt::node::Merge>();
     eval.AddNode(merge);
 
-    eval.Connect({ box0, 0 }, { merge, evt::node::Merge::IDX_SRC_A });
-    eval.Connect({ box1, 0 }, { merge, evt::node::Merge::IDX_SRC_B });
-
-    // create geo impl
-    eval.Update();
-    eval.MakeDirty(false);
-    merge->SetDirty(true);
-
-    std::vector<evt::VarValue> var_list0;
-    var_list0.reserve(8);
-    for (int i = 0; i < 8; ++i) {
-        var_list0.push_back(evt::VarValue(static_cast<float>(i)));
-    }
-
-    std::vector<evt::VarValue> var_list1;
-    var_list1.reserve(8);
-    for (int i = 0; i < 8; ++i) {
-        var_list1.push_back(evt::VarValue(static_cast<float>(-i)));
-    }
+    eval.Connect({ attr0, 0 }, { merge, evt::node::Merge::IDX_SRC_A });
+    eval.Connect({ attr1, 0 }, { merge, evt::node::Merge::IDX_SRC_B });
 
     SECTION("simple")
     {
-        box0->GetGeometry()->GetAttr().AddAttr(
-            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list0
-        );
-
-        box1->GetGeometry()->GetAttr().AddAttr(
-            evt::GeoAttrType::Point, { "test1", evt::VarType::Float }, var_list1
-        );
+        attr0->SetVexExpr(R"(
+setattrib(0, "point", "test0", @ptnum, 0, @ptnum);
+)");
+        attr1->SetVexExpr(R"(
+setattrib(0, "point", "test1", @ptnum, 0, -@ptnum);
+)");
 
         eval.Update();
 
@@ -263,13 +256,12 @@ TEST_CASE("attr combine 2")
 
     SECTION("same name")
     {
-        box0->GetGeometry()->GetAttr().AddAttr(
-            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list0
-        );
-
-        box1->GetGeometry()->GetAttr().AddAttr(
-            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list1
-        );
+        attr0->SetVexExpr(R"(
+setattrib(0, "point", "test0", @ptnum, 0, @ptnum);
+)");
+        attr1->SetVexExpr(R"(
+setattrib(0, "point", "test0", @ptnum, 0, -@ptnum);
+)");
 
         eval.Update();
 
@@ -282,19 +274,17 @@ TEST_CASE("attr combine 2")
 
     SECTION("part same")
     {
-        auto var_list2 = var_list0;
-        var_list2[4].f = 1.1f;
-
-        box0->GetGeometry()->GetAttr().AddAttr(
-            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list0
-        );
-
-        box1->GetGeometry()->GetAttr().AddAttr(
-            evt::GeoAttrType::Point, { "test0", evt::VarType::Float }, var_list2
-        );
-        box1->GetGeometry()->GetAttr().AddAttr(
-            evt::GeoAttrType::Point, { "test1", evt::VarType::Float }, var_list1
-        );
+        attr0->SetVexExpr(R"(
+setattrib(0, "point", "test0", @ptnum, 0, @ptnum);
+)");
+        attr1->SetVexExpr(R"(
+if (@ptnum == 4) {
+    setattrib(0, "point", "test0", @ptnum, 0, 1.1);
+} else {
+    setattrib(0, "point", "test0", @ptnum, 0, @ptnum);
+}
+setattrib(0, "point", "test1", @ptnum, 0, -@ptnum);
+)");
 
         eval.Update();
 

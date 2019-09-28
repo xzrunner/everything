@@ -194,6 +194,17 @@ Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) con
     }
 }
 
+void Evaluator::RunStatement(const std::string& str, const EvalContext& ctx) const
+{
+    if (str.empty()) {
+        return;
+    }
+
+    vexc::Parser parser(str.c_str());
+    auto ast = vexc::ast::StatementParser::ParseCompoundStatement(parser);
+    vexc::RunStatement(ast, &ctx);
+}
+
 void Evaluator::Rename(const std::string& from, const std::string& to)
 {
     auto itr_f = m_nodes_map.find(from);

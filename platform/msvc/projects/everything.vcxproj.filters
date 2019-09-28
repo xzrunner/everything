@@ -212,6 +212,9 @@
     <ClInclude Include="..\..\..\include\everything\GeoAttrRebuild.h">
       <Filter>dataset\geo\attr</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\AttributeWrangle.h">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -337,6 +340,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAttrRebuild.cpp">
       <Filter>dataset\geo\attr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\AttributeWrangle.cpp">
+      <Filter>nodes\geometry\attribute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 // base
 #include "everything/node/Geometry.h"
 // attribute
+#include "everything/node/AttributeWrangle.h"
 #include "everything/node/Measure.h"
 #include "everything/node/Sort.h"
 // group
@@ -47,6 +48,7 @@ RTTR_REGISTRATION
 REGIST_NODE_TYPE(Geometry)
 
 // attribute
+REGIST_NODE_TYPE(AttributeWrangle)
 REGIST_NODE_TYPE(Measure)
 REGIST_NODE_TYPE(Sort)
 
