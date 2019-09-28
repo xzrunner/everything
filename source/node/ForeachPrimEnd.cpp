@@ -38,7 +38,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval)
     // do
     size_t n_prim = prev_geo->GetAttr().GetPrimtives().size();
     if (m_do_single_pass) {
-        if (m_single_pass_offset < n_prim) {
+        if (m_single_pass_offset < static_cast<int>(n_prim)) {
             DoOnePass(sub_eval, begin, prev_geo, m_single_pass_offset);
         }
     } else {
