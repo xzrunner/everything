@@ -543,11 +543,7 @@ void GeoAttribute::CombineTopoID(const GeoAttribute& attr)
             {
                 auto new_id = next_pt_id++;
                 for (auto& p : GetPoints()) {
-                    for (auto& id : p->topo_id.Path()) {
-                        if (id == *s_itr) {
-                            const_cast<size_t&>(id) = new_id;
-                        }
-                    }
+                    p->topo_id.Replace(*s_itr, new_id);
                 }
                 ++s_itr;
                 ++d_itr;
@@ -573,11 +569,7 @@ void GeoAttribute::CombineTopoID(const GeoAttribute& attr)
             {
                 auto new_id = next_prim_id++;
                 for (auto& p : GetPrimtives()) {
-                    for (auto& id : p->topo_id.Path()) {
-                        if (id == *s_itr) {
-                            const_cast<size_t&>(id) = new_id;
-                        }
-                    }
+                    p->topo_id.Replace(*s_itr, new_id);
                 }
                 ++s_itr;
                 ++d_itr;
