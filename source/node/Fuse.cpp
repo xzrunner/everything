@@ -31,12 +31,17 @@ void Fuse::Execute(Evaluator& eval)
     GroupRebuild group_rebuild(*m_geo_impl);
     GeoAttrRebuild attr_rebuild(*m_geo_impl);
 
-    for (auto& brush : brush_model->GetBrushes())
-    {
-        auto poly = brush.impl;
-        poly->GetGeometry()->Fuse(m_distance);
-        poly->BuildFromGeo();
+    auto& brushes = brush_model->GetBrushes();
+    std::vector<he::PolyhedronPtr> src;
+    src.reserve(brushes.size());
+    for (auto& b : brushes) {
+        src.push_back(b.impl->GetGeometry());
     }
+    auto dst = he::Polyhedron::Fuse(src, m_distance);
+    model::BrushModel::Brush brush;
+    brush.impl = std::make_shared<pm3::Polytope>(dst);
+    brush_model->SetBrushes({ brush });
+
     m_geo_impl->UpdateByBrush(*brush_model);
 }
 
