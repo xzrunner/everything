@@ -195,10 +195,11 @@ void check_halfedge_vertices_num(const evt::NodePtr& node, size_t num)
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    auto& brushes = geo->GetBrushModel()->GetBrushes();
-    REQUIRE(brushes.size() == 1);
-    auto& brush = brushes[0];
-    REQUIRE(num == brush.impl->GetGeometry()->GetVertices().Size());
+    size_t n = 0;
+    for (auto& b : geo->GetBrushModel()->GetBrushes()) {
+        n += b.impl->GetGeometry()->GetVertices().Size();
+    }
+    REQUIRE(num == n);
 }
 
 void check_halfedge_edges_num(const evt::NodePtr& node, size_t num)
@@ -206,10 +207,11 @@ void check_halfedge_edges_num(const evt::NodePtr& node, size_t num)
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    auto& brushes = geo->GetBrushModel()->GetBrushes();
-    REQUIRE(brushes.size() == 1);
-    auto& brush = brushes[0];
-    REQUIRE(num == brush.impl->GetGeometry()->GetEdges().Size());
+    size_t n = 0;
+    for (auto& b : geo->GetBrushModel()->GetBrushes()) {
+        n += b.impl->GetGeometry()->GetEdges().Size();
+    }
+    REQUIRE(num == n);
 }
 
 void check_halfedge_faces_num(const evt::NodePtr& node, size_t num)
@@ -217,10 +219,11 @@ void check_halfedge_faces_num(const evt::NodePtr& node, size_t num)
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
 
-    auto& brushes = geo->GetBrushModel()->GetBrushes();
-    REQUIRE(brushes.size() == 1);
-    auto& brush = brushes[0];
-    REQUIRE(num == brush.impl->GetGeometry()->GetFaces().Size());
+    size_t n = 0;
+    for (auto& b : geo->GetBrushModel()->GetBrushes()) {
+        n += b.impl->GetGeometry()->GetFaces().Size();
+    }
+    REQUIRE(num == n);
 }
 
 void check_attr_count(const evt::NodePtr& node, evt::GeoAttrType type,
