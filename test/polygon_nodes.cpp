@@ -180,6 +180,69 @@ TEST_CASE("boolean")
 
     SECTION("subtract")
     {
+        boolean->SetOperator(evt::node::Boolean::Operator::Subtract);
+
+        eval.Update();
+
+        //test::check_points_num(boolean, 8);
+        //test::check_faces_num(boolean, 6);
+        //test::check_halfedge_edges_num(boolean, 24);
+
+        test::check_aabb(boolean, sm::vec3(-2, -0.5f, -2), sm::vec3(2, 0.5f, 2));
+    }
+}
+
+TEST_CASE("boolean 2")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto box0 = std::make_shared<evt::node::Box>();
+    const sm::vec3 size0(4, 1, 4);
+    box0->SetSize(size0);
+    eval.AddNode(box0);
+
+    auto box1 = std::make_shared<evt::node::Box>();
+    const sm::vec3 size1(6, 6, 6);
+    box1->SetSize(size1);
+    box1->SetCenter(sm::vec3(3, 0, 0));
+    eval.AddNode(box1);
+
+    auto boolean = std::make_shared<evt::node::Boolean>();
+    eval.AddNode(boolean);
+
+    eval.Connect({ box0, 0 }, { boolean, evt::node::Boolean::IDX_A });
+    eval.Connect({ box1, 0 }, { boolean, evt::node::Boolean::IDX_B });
+
+    SECTION("union")
+    {
+    }
+
+    SECTION("intersect")
+    {
+        boolean->SetOperator(evt::node::Boolean::Operator::Intersect);
+
+        eval.Update();
+
+        test::check_points_num(boolean, 8);
+        test::check_faces_num(boolean, 6);
+        test::check_halfedge_edges_num(boolean, 24);
+
+        test::check_aabb(boolean, sm::vec3(0, -0.5f, -2), sm::vec3(2, 0.5f, 2));
+    }
+
+    SECTION("subtract")
+    {
+        boolean->SetOperator(evt::node::Boolean::Operator::Subtract);
+
+        eval.Update();
+
+        test::check_points_num(boolean, 8);
+        test::check_faces_num(boolean, 6);
+        test::check_halfedge_edges_num(boolean, 24);
+
+        test::check_aabb(boolean, sm::vec3(-2, -0.5f, -2), sm::vec3(0, 0.5f, 2));
     }
 }
 

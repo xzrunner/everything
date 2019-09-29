@@ -59,6 +59,17 @@ void Boolean::Execute(Evaluator& eval)
             }
                 break;
             case Operator::Subtract:
+            {
+                auto polys = he_a->Subtract(*he_b);
+                for (auto& poly : polys) {
+                    if (poly->GetFaces().Size() > 0)
+                    {
+                        model::BrushModel::Brush brush;
+                        brush.impl = std::make_shared<pm3::Polytope>(poly);
+                        brushes.push_back(brush);
+                    }
+                }
+            }
                 break;
             default:
                 assert(0);
