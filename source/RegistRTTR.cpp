@@ -26,6 +26,7 @@
 #include "everything/node/Box.h"
 #include "everything/node/Curve.h"
 #include "everything/node/Line.h"
+#include "everything/node/Primitive.h"
 #include "everything/node/Sphere.h"
 // utility
 #include "everything/node/Blast.h"
@@ -79,6 +80,7 @@ REGIST_NODE_TYPE(PolyFill)
 REGIST_NODE_TYPE(Box)
 REGIST_NODE_TYPE(Curve)
 REGIST_NODE_TYPE(Line)
+REGIST_NODE_TYPE(Primitive)
 REGIST_NODE_TYPE(Sphere)
 
 // utility

@@ -66,6 +66,9 @@ public:
     void SetGroupName(const std::string& name) { m_group_name = name; }
     void SetGroupType(GroupType type);
 
+    static sm::mat4 CalcTransformMat(const sm::vec3& translate,
+        const sm::vec3& rotate, const sm::vec3& scale, const sm::vec3& shear);
+
 private:
     void InitProps();
 

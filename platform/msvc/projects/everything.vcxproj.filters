@@ -215,6 +215,9 @@
     <ClInclude Include="..\..\..\include\everything\node\AttributeWrangle.h">
       <Filter>nodes\geometry\attribute</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\everything\node\Primitive.h">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -343,6 +346,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributeWrangle.cpp">
       <Filter>nodes\geometry\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Primitive.cpp">
+      <Filter>nodes\geometry\primitive</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

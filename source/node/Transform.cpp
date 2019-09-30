@@ -175,6 +175,15 @@ void Transform::SetGroupType(GroupType type)
     SetDirty(true);
 }
 
+sm::mat4 Transform::CalcTransformMat(const sm::vec3& translate, const sm::vec3& rotate,
+                                     const sm::vec3& scale, const sm::vec3& shear)
+{
+    auto s_mat = sm::mat4::Scaled(scale.x, scale.y, scale.z);
+    auto r_mat = sm::mat4::Rotated(rotate.x, rotate.y, rotate.z);
+    auto t_mat = sm::mat4::Translated(translate.x, translate.y, translate.z);
+    return s_mat * r_mat * t_mat;
+}
+
 void Transform::InitProps()
 {
     m_props.Assign(TRANS_X, PropNames[TRANS_X], Variable(0.0f));
@@ -200,22 +209,25 @@ sm::mat4 Transform::CalcTransformMat() const
 
     auto& props = m_props.GetProps();
 
-    auto s_mat = sm::mat4::Scaled(
+    auto scale = sm::vec3(
         props[SCALE_X].Val().f,
         props[SCALE_Y].Val().f,
         props[SCALE_Z].Val().f
     );
 
-    auto rot = sm::vec3(props[ROT_X].Val().f, props[ROT_Y].Val().f, props[ROT_Z].Val().f) * SM_DEG_TO_RAD;
-    auto r_mat = sm::mat4::Rotated(rot.x, rot.y, rot.z);
+    auto rotate = sm::vec3(
+        props[ROT_X].Val().f,
+        props[ROT_Y].Val().f,
+        props[ROT_Z].Val().f
+    ) * SM_DEG_TO_RAD;
 
-    auto t_mat = sm::mat4::Translated(
+    auto translate = sm::vec3(
         props[TRANS_X].Val().f,
         props[TRANS_Y].Val().f,
         props[TRANS_Z].Val().f
     );
 
-    return s_mat * r_mat * t_mat;
+    return CalcTransformMat(translate, rotate, scale, sm::vec3(0, 0, 0));
 }
 
 }
