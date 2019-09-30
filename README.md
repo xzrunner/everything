@@ -1,3 +1,3 @@
 # sop
 
-Houdini SOP.
+Houdini SOP back-end.
