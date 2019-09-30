@@ -3,6 +3,7 @@
 #include "everything/Evaluator.h"
 #include "everything/GeometryImpl.h"
 #include "everything/NodeHelper.h"
+#include "everything/GroupRebuild.h"
 
 #include <queue>
 
@@ -129,20 +130,24 @@ std::set<NodePtr> ForeachPrimEnd::FindClosureNodes(const NodePtr& begin) const
     return nodes;
 }
 
-void ForeachPrimEnd::DoOnePass(Evaluator& sub_eval, const NodePtr& begin, 
+void ForeachPrimEnd::DoOnePass(Evaluator& sub_eval, const NodePtr& begin,
                                const std::shared_ptr<GeometryImpl>& prev_geo, size_t idx)
 {
-    auto& prev_prims = prev_geo->GetAttr().GetPrimtives();
-    std::vector<bool> del_flags(prev_prims.size(), true);
-    del_flags[idx] = false;
+    {
+        auto& prev_prims = prev_geo->GetAttr().GetPrimtives();
+        std::vector<bool> del_flags(prev_prims.size(), true);
+        del_flags[idx] = false;
 
-    assert(begin->get_type() == rttr::type::get<node::ForeachPrimBegin>());
-    auto geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
-    
-    geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags, true);
-    geo_impl->UpdateByAttr();
+        assert(begin->get_type() == rttr::type::get<node::ForeachPrimBegin>());
+        auto geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
-    std::static_pointer_cast<node::ForeachPrimBegin>(begin)->SetGeoImpl(geo_impl);
+        GroupRebuild group_rebuild(*geo_impl);
+
+        geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags, true);
+        geo_impl->UpdateByAttr();
+
+        std::static_pointer_cast<node::ForeachPrimBegin>(begin)->SetGeoImpl(geo_impl);
+    }
 
     sub_eval.MakeDirty();
     sub_eval.Update();
