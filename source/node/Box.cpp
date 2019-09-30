@@ -84,8 +84,10 @@ void Box::BuildModel()
     }
 
     auto brush_model = BuildBrush();
-    m_geo_impl->UpdateByBrush(*brush_model);
-    m_geo_impl->StoreBrush(brush_model);
+    if (brush_model) {
+        m_geo_impl->UpdateByBrush(*brush_model);
+        m_geo_impl->StoreBrush(brush_model);
+    }
 }
 
 std::unique_ptr<model::BrushModel>
@@ -107,6 +109,12 @@ Box::BuildBrush() const
     const sm::vec3 s = m_scale;
     const sm::vec3 h_sz = sm::vec3(props[SIZE_X].Val().f, props[SIZE_Y].Val().f, props[SIZE_Z].Val().f) * 0.5f;
     const sm::vec3 c = sm::vec3(props[POS_X].Val().f, props[POS_Y].Val().f, props[POS_Z].Val().f);
+
+    if (fabs(h_sz.x) < FLT_EPSILON ||
+        fabs(h_sz.y) < FLT_EPSILON ||
+        fabs(h_sz.z) < FLT_EPSILON) {
+        return nullptr;
+    }
 
     const float xmin = -h_sz.x * s.x + c.x;
     const float xmax =  h_sz.x * s.x + c.x;
