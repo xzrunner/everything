@@ -1,3 +1,3 @@
-# everything
+# sop
 
-Node based wrapper.
+Houdini SOP.
