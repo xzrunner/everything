@@ -1,8 +1,8 @@
-#include "everything/NodePropsMgr.h"
-#include "everything/Evaluator.h"
-#include "everything/EvalContext.h"
+#include "sop/NodePropsMgr.h"
+#include "sop/Evaluator.h"
+#include "sop/EvalContext.h"
 
-namespace evt
+namespace sop
 {
 
 NodePropsMgr::NodePropsMgr(size_t build_in_count)

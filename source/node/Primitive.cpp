@@ -1,9 +1,9 @@
-#include "everything/node/Primitive.h"
-#include "everything/node/Transform.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeometryImpl.h"
+#include "sop/node/Primitive.h"
+#include "sop/node/Transform.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

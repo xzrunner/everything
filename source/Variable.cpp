@@ -1,6 +1,6 @@
-#include "everything/Variable.h"
+#include "sop/Variable.h"
 
-namespace evt
+namespace sop
 {
 
 Variable::Variable(bool b)

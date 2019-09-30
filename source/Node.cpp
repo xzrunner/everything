@@ -1,22 +1,22 @@
-#include "everything/Node.h"
+#include "sop/Node.h"
 
 #include <assert.h>
 
 RTTR_REGISTRATION
 {
 
-rttr::registration::class_<evt::Node::Port>("evt::Node::Port")
-	.property("var", &evt::Node::Port::var)
+rttr::registration::class_<sop::Node::Port>("sop::Node::Port")
+	.property("var", &sop::Node::Port::var)
 ;
 
-rttr::registration::class_<evt::Node>("evt::Node")
-	.method("GetImports", &evt::Node::GetImports)
-	.method("GetExports", &evt::Node::GetExports)
+rttr::registration::class_<sop::Node>("sop::Node")
+	.method("GetImports", &sop::Node::GetImports)
+	.method("GetExports", &sop::Node::GetExports)
 ;
 
 }
 
-namespace evt
+namespace sop
 {
 
 Node::Node(size_t build_in_count)

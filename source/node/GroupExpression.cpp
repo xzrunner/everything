@@ -1,11 +1,11 @@
-#include "everything/node/GroupExpression.h"
-#include "everything/NodeHelper.h"
-#include "everything/Group.h"
-#include "everything/EvalContext.h"
-#include "everything/Evaluator.h"
-#include "everything/GeometryImpl.h"
+#include "sop/node/GroupExpression.h"
+#include "sop/NodeHelper.h"
+#include "sop/Group.h"
+#include "sop/EvalContext.h"
+#include "sop/Evaluator.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

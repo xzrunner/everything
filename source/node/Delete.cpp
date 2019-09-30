@@ -1,11 +1,11 @@
-#include "everything/node/Delete.h"
-#include "everything/GeometryImpl.h"
-#include "everything/GeoShape.h"
-#include "everything/Evaluator.h"
-#include "everything/EvalContext.h"
-#include "everything/NodeHelper.h"
+#include "sop/node/Delete.h"
+#include "sop/GeometryImpl.h"
+#include "sop/GeoShape.h"
+#include "sop/Evaluator.h"
+#include "sop/EvalContext.h"
+#include "sop/NodeHelper.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

@@ -1,10 +1,10 @@
-#include "everything/GroupMgr.h"
+#include "sop/GroupMgr.h"
 
 #include <set>
 
 #include <assert.h>
 
-namespace evt
+namespace sop
 {
 
 GroupMgr::GroupMgr(const GroupMgr& groups)

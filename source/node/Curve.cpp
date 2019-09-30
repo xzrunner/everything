@@ -1,7 +1,7 @@
-#include "everything/node/Curve.h"
-#include "everything/GeometryImpl.h"
+#include "sop/node/Curve.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

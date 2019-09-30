@@ -1,6 +1,6 @@
-#include "everything/VarValue.h"
+#include "sop/VarValue.h"
 
-namespace evt
+namespace sop
 {
 
 VarValue::VarValue(bool b)

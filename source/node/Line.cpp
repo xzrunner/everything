@@ -1,8 +1,8 @@
-#include "everything/node/Line.h"
-#include "everything/GeometryImpl.h"
-#include "everything/GeoAdaptor.h"
+#include "sop/node/Line.h"
+#include "sop/GeometryImpl.h"
+#include "sop/GeoAdaptor.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

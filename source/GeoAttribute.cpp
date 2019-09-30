@@ -1,12 +1,12 @@
-#include "everything/GeoAttribute.h"
-#include "everything/GeoShape.h"
+#include "sop/GeoAttribute.h"
+#include "sop/GeoShape.h"
 
 #include <SM_Plane.h>
 
 #include <map>
 #include <set>
 
-namespace evt
+namespace sop
 {
 
 GeoAttribute::GeoAttribute(const std::vector<std::shared_ptr<GeoShape>>& shapes)

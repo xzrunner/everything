@@ -1,13 +1,13 @@
-#include "everything/node/Boolean.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeoAttrRebuild.h"
+#include "sop/node/Boolean.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeoAttrRebuild.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 
-namespace evt
+namespace sop
 {
 namespace node
 {
@@ -95,6 +95,18 @@ void Boolean::SetOperator(Operator op)
     }
 
     m_operator = op;
+
+    SetDirty(true);
+}
+
+void Boolean::SetTreatAs(TreatAs a, TreatAs b)
+{
+    if (m_a_type == a && m_b_type == b) {
+        return;
+    }
+
+    m_a_type = a;
+    m_b_type = b;
 
     SetDirty(true);
 }

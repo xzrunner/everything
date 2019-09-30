@@ -1,12 +1,12 @@
-#include "everything/node/Carve.h"
-#include "everything/GeometryImpl.h"
-#include "everything/GeoShape.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeoAttrHelper.h"
+#include "sop/node/Carve.h"
+#include "sop/GeometryImpl.h"
+#include "sop/GeoShape.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeoAttrHelper.h"
 
 #include <SM_Calc.h>
 
-namespace evt
+namespace sop
 {
 namespace node
 {

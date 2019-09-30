@@ -1,8 +1,8 @@
-everything/
-everything_test/
+sop/
+sop_test/
 projects/*
 
-!projects/everything.vcxproj
-!projects/everything.vcxproj.filters
-!projects/everything_test.vcxproj
-!projects/everything_test.vcxproj.filters
+!projects/sop.vcxproj
+!projects/sop.vcxproj.filters
+!projects/sop_test.vcxproj
+!projects/sop_test.vcxproj.filters

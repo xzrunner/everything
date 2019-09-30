@@ -1,11 +1,11 @@
-#include "everything/node/Box.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
+#include "sop/node/Box.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 
-namespace evt
+namespace sop
 {
 namespace node
 {

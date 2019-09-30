@@ -1,6 +1,6 @@
-#include "everything/GeometryImpl.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 
 GeometryImpl::GeometryImpl(GeoAdaptor::Type type)

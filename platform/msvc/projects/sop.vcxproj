@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\sop\EvalContext.h" />
+    <ClInclude Include="..\..\..\include\sop\Evaluator.h" />
+    <ClInclude Include="..\..\..\include\sop\SOP.h" />
+    <ClInclude Include="..\..\..\include\sop\GeoAdaptor.h" />
+    <ClInclude Include="..\..\..\include\sop\GeoAttrHelper.h" />
+    <ClInclude Include="..\..\..\include\sop\GeoAttribute.h" />
+    <ClInclude Include="..\..\..\include\sop\GeoAttrName.h" />
+    <ClInclude Include="..\..\..\include\sop\GeoAttrRebuild.h" />
+    <ClInclude Include="..\..\..\include\sop\GeoAttrType.h" />
+    <ClInclude Include="..\..\..\include\sop\GeometryImpl.h" />
+    <ClInclude Include="..\..\..\include\sop\GeoShape.h" />
+    <ClInclude Include="..\..\..\include\sop\Group.h" />
+    <ClInclude Include="..\..\..\include\sop\GroupRebuild.h" />
+    <ClInclude Include="..\..\..\include\sop\GroupMgr.h" />
+    <ClInclude Include="..\..\..\include\sop\NodeHelper.h" />
+    <ClInclude Include="..\..\..\include\sop\NodePropsMgr.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Add.h" />
+    <ClInclude Include="..\..\..\include\sop\node\AttributeWrangle.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Carve.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Color.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Delete.h" />
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimBegin.h" />
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimEnd.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Fuse.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Geometry.h" />
+    <ClInclude Include="..\..\..\include\sop\node\GroupExpression.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Knife.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Line.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Measure.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Normal.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Null.h" />
+    <ClInclude Include="..\..\..\include\sop\node\PolyFill.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Primitive.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Sort.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Switch.h" />
+    <ClInclude Include="..\..\..\include\sop\Node.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Blast.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Boolean.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Box.h" />
+    <ClInclude Include="..\..\..\include\sop\node\CopyToPoints.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Curve.h" />
+    <ClInclude Include="..\..\..\include\sop\node\GroupCreate.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Merge.h" />
+    <ClInclude Include="..\..\..\include\sop\node\PolyExtrude.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Sphere.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Transform.h" />
+    <ClInclude Include="..\..\..\include\sop\typedef.h" />
+    <ClInclude Include="..\..\..\include\sop\NodeVar.h" />
+    <ClInclude Include="..\..\..\include\sop\NodeVarType.h" />
+    <ClInclude Include="..\..\..\include\sop\Variable.h" />
+    <ClInclude Include="..\..\..\include\sop\VarType.h" />
+    <ClInclude Include="..\..\..\include\sop\VarValue.h" />
+    <ClInclude Include="..\..\..\include\sop\VexFuncs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\source\Evaluator.cpp" />
+    <ClCompile Include="..\..\..\source\SOP.cpp" />
+    <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
+    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp" />
+    <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
+    <ClCompile Include="..\..\..\source\GeoAttrRebuild.cpp" />
+    <ClCompile Include="..\..\..\source\GeometryImpl.cpp" />
+    <ClCompile Include="..\..\..\source\GroupMgr.cpp" />
+    <ClCompile Include="..\..\..\source\GroupRebuild.cpp" />
+    <ClCompile Include="..\..\..\source\Node.cpp" />
+    <ClCompile Include="..\..\..\source\NodeHelper.cpp" />
+    <ClCompile Include="..\..\..\source\NodePropsMgr.cpp" />
+    <ClCompile Include="..\..\..\source\node\Add.cpp" />
+    <ClCompile Include="..\..\..\source\node\AttributeWrangle.cpp" />
+    <ClCompile Include="..\..\..\source\node\Blast.cpp" />
+    <ClCompile Include="..\..\..\source\node\Boolean.cpp" />
+    <ClCompile Include="..\..\..\source\node\Box.cpp" />
+    <ClCompile Include="..\..\..\source\node\Carve.cpp" />
+    <ClCompile Include="..\..\..\source\node\Color.cpp" />
+    <ClCompile Include="..\..\..\source\node\CopyToPoints.cpp" />
+    <ClCompile Include="..\..\..\source\node\Curve.cpp" />
+    <ClCompile Include="..\..\..\source\node\Delete.cpp" />
+    <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp" />
+    <ClCompile Include="..\..\..\source\node\Fuse.cpp" />
+    <ClCompile Include="..\..\..\source\node\Geometry.cpp" />
+    <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
+    <ClCompile Include="..\..\..\source\node\GroupExpression.cpp" />
+    <ClCompile Include="..\..\..\source\node\Knife.cpp" />
+    <ClCompile Include="..\..\..\source\node\Line.cpp" />
+    <ClCompile Include="..\..\..\source\node\Measure.cpp" />
+    <ClCompile Include="..\..\..\source\node\Merge.cpp" />
+    <ClCompile Include="..\..\..\source\node\Normal.cpp" />
+    <ClCompile Include="..\..\..\source\node\Null.cpp" />
+    <ClCompile Include="..\..\..\source\node\PolyExtrude.cpp" />
+    <ClCompile Include="..\..\..\source\node\PolyFill.cpp" />
+    <ClCompile Include="..\..\..\source\node\Primitive.cpp" />
+    <ClCompile Include="..\..\..\source\node\Sort.cpp" />
+    <ClCompile Include="..\..\..\source\node\Sphere.cpp" />
+    <ClCompile Include="..\..\..\source\node\Switch.cpp" />
+    <ClCompile Include="..\..\..\source\node\Transform.cpp" />
+    <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />
+    <ClCompile Include="..\..\..\source\Variable.cpp" />
+    <ClCompile Include="..\..\..\source\VarValue.cpp" />
+    <ClCompile Include="..\..\..\source\VexFuncs.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\sop\GeoAttribute.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>5.sop</ProjectName>
+    <ProjectGuid>{A1C0A31A-8FA7-4835-AFD5-77F44C93E040}</ProjectGuid>
+    <RootNamespace>sop</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.26730.12</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\sop\x86\Debug\</OutDir>
+    <IntDir>..\sop\x86\Debug\obj\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\sop\x86\Release\</OutDir>
+    <IntDir>..\sop\x86\Release\obj\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\halfedge\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\halfedge\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

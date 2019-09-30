@@ -1,9 +1,9 @@
-#include "everything/node/CopyToPoints.h"
-#include "everything/node/Normal.h"
+#include "sop/node/CopyToPoints.h"
+#include "sop/node/Normal.h"
 
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeoAttrHelper.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeoAttrHelper.h"
 
 #include <SM_Quaternion.h>
 #include <SM_Matrix.h>
@@ -15,7 +15,7 @@ const sm::vec3 BASE_DIR(0, 0, 1);
 
 }
 
-namespace evt
+namespace sop
 {
 namespace node
 {

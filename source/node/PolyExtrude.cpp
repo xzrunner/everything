@@ -1,8 +1,8 @@
-#include "everything/node/PolyExtrude.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
+#include "sop/node/PolyExtrude.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

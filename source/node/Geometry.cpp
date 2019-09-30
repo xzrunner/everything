@@ -1,7 +1,7 @@
-#include "everything/node/Geometry.h"
-#include "everything/NodeHelper.h"
+#include "sop/node/Geometry.h"
+#include "sop/NodeHelper.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

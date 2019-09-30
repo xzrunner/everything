@@ -1,9 +1,9 @@
-#include "everything/node/Color.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeometryImpl.h"
-#include "everything/GeoAttrName.h"
+#include "sop/node/Color.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeometryImpl.h"
+#include "sop/GeoAttrName.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

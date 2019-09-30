@@ -1,10 +1,10 @@
-#include "everything/node/Blast.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeoAttrRebuild.h"
-#include "everything/GroupRebuild.h"
+#include "sop/node/Blast.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeoAttrRebuild.h"
+#include "sop/GroupRebuild.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

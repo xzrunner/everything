@@ -1,8 +1,8 @@
-#include "everything/node/Add.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
+#include "sop/node/Add.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

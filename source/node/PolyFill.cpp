@@ -1,13 +1,13 @@
-#include "everything/node/PolyFill.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeoAttrRebuild.h"
+#include "sop/node/PolyFill.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeoAttrRebuild.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 
-namespace evt
+namespace sop
 {
 namespace node
 {

@@ -1,8 +1,8 @@
-#include "everything/node/Transform.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
+#include "sop/node/Transform.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

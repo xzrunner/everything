@@ -1,7 +1,7 @@
-#include "everything/GeoAdaptor.h"
-#include "everything/GroupMgr.h"
-#include "everything/GeoAttribute.h"
-#include "everything/GeoShape.h"
+#include "sop/GeoAdaptor.h"
+#include "sop/GroupMgr.h"
+#include "sop/GeoAttribute.h"
+#include "sop/GeoShape.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -19,7 +19,7 @@
 #include <ns/NodeFactory.h>
 #include <painting3/MaterialMgr.h>
 
-namespace evt
+namespace sop
 {
 
 GeoAdaptor::GeoAdaptor(const Type& type)

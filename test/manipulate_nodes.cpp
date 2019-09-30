@@ -1,13 +1,13 @@
 #include "utility.h"
 
-#include <everything/Evaluator.h>
-#include <everything/GeometryImpl.h>
+#include <sop/Evaluator.h>
+#include <sop/GeometryImpl.h>
 
-#include <everything/node/Delete.h>
-#include <everything/node/Transform.h>
+#include <sop/node/Delete.h>
+#include <sop/node/Transform.h>
 
-#include <everything/node/Box.h>
-#include <everything/node/GroupCreate.h>
+#include <sop/node/Box.h>
+#include <sop/node/GroupCreate.h>
 
 #include <catch/catch.hpp>
 
@@ -15,14 +15,14 @@ TEST_CASE("delete")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     const sm::vec3 size(2, 3, 4);
     box->SetSize(size);
     eval.AddNode(box);
 
-    auto del = std::make_shared<evt::node::Delete>();
+    auto del = std::make_shared<sop::node::Delete>();
     del->SetFilterExpr("@P.y < 0");
     eval.AddNode(del);
 
@@ -37,9 +37,9 @@ TEST_CASE("transform")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     const sm::vec3 size(1, 2, 3);
     auto h_sz = size * 0.5f;
     box->SetSize(size);
@@ -47,7 +47,7 @@ TEST_CASE("transform")
 
     SECTION("scale")
     {
-        auto trans = std::make_shared<evt::node::Transform>();
+        auto trans = std::make_shared<sop::node::Transform>();
         eval.AddNode(trans);
 
         eval.Connect({ box, 0 }, { trans, 0 });
@@ -62,7 +62,7 @@ TEST_CASE("transform")
 
     SECTION("rotate x")
     {
-        auto trans = std::make_shared<evt::node::Transform>();
+        auto trans = std::make_shared<sop::node::Transform>();
         eval.AddNode(trans);
 
         eval.Connect({ box, 0 }, { trans, 0 });
@@ -77,7 +77,7 @@ TEST_CASE("transform")
 
     SECTION("rotate y")
     {
-        auto trans = std::make_shared<evt::node::Transform>();
+        auto trans = std::make_shared<sop::node::Transform>();
         eval.AddNode(trans);
 
         eval.Connect({ box, 0 }, { trans, 0 });
@@ -92,7 +92,7 @@ TEST_CASE("transform")
 
     SECTION("rotate z")
     {
-        auto trans = std::make_shared<evt::node::Transform>();
+        auto trans = std::make_shared<sop::node::Transform>();
         eval.AddNode(trans);
 
         eval.Connect({ box, 0 }, { trans, 0 });
@@ -107,7 +107,7 @@ TEST_CASE("transform")
 
     SECTION("translate")
     {
-        auto trans = std::make_shared<evt::node::Transform>();
+        auto trans = std::make_shared<sop::node::Transform>();
         eval.AddNode(trans);
 
         eval.Connect({ box, 0 }, { trans, 0 });
@@ -122,17 +122,17 @@ TEST_CASE("transform")
 
     SECTION("group point")
     {
-        auto group_create = std::make_shared<evt::node::GroupCreate>();
+        auto group_create = std::make_shared<sop::node::GroupCreate>();
         group_create->SetGroupName("bottom");
-        group_create->SetGroupType(evt::GroupType::Points);
+        group_create->SetGroupType(sop::GroupType::Points);
         group_create->EnableBaseGroup("@P.y < 0");
         eval.AddNode(group_create);
 
         eval.Connect({ box, 0 }, { group_create, 0 });
 
-        auto trans = std::make_shared<evt::node::Transform>();
+        auto trans = std::make_shared<sop::node::Transform>();
         trans->SetGroupName("bottom");
-        trans->SetGroupType(evt::GroupType::GuessFromGroup);
+        trans->SetGroupType(sop::GroupType::GuessFromGroup);
         eval.AddNode(trans);
 
         trans->SetTranslate(sm::vec3(5, 0, 0));
@@ -146,17 +146,17 @@ TEST_CASE("transform")
 
     SECTION("group vertex")
     {
-        auto group_create = std::make_shared<evt::node::GroupCreate>();
+        auto group_create = std::make_shared<sop::node::GroupCreate>();
         group_create->SetGroupName("bottom");
-        group_create->SetGroupType(evt::GroupType::Vertices);
+        group_create->SetGroupType(sop::GroupType::Vertices);
         group_create->EnableBaseGroup("@P.y < 0");
         eval.AddNode(group_create);
 
         eval.Connect({ box, 0 }, { group_create, 0 });
 
-        auto trans = std::make_shared<evt::node::Transform>();
+        auto trans = std::make_shared<sop::node::Transform>();
         trans->SetGroupName("bottom");
-        trans->SetGroupType(evt::GroupType::GuessFromGroup);
+        trans->SetGroupType(sop::GroupType::GuessFromGroup);
         eval.AddNode(trans);
 
         trans->SetTranslate(sm::vec3(5, 0, 0));
@@ -170,17 +170,17 @@ TEST_CASE("transform")
 
     SECTION("group prim")
     {
-        auto group_create = std::make_shared<evt::node::GroupCreate>();
+        auto group_create = std::make_shared<sop::node::GroupCreate>();
         group_create->SetGroupName("bottom");
-        group_create->SetGroupType(evt::GroupType::Primitives);
+        group_create->SetGroupType(sop::GroupType::Primitives);
         group_create->EnableBaseGroup("@P.y < 0");
         eval.AddNode(group_create);
 
         eval.Connect({ box, 0 }, { group_create, 0 });
 
-        auto trans = std::make_shared<evt::node::Transform>();
+        auto trans = std::make_shared<sop::node::Transform>();
         trans->SetGroupName("bottom");
-        trans->SetGroupType(evt::GroupType::GuessFromGroup);
+        trans->SetGroupType(sop::GroupType::GuessFromGroup);
         eval.AddNode(trans);
 
         trans->SetTranslate(sm::vec3(5, 0, 0));

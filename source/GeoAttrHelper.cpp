@@ -1,8 +1,8 @@
-#include "everything/GeoAttrHelper.h"
-#include "everything/GeoAttribute.h"
-#include "everything/GeoAttrName.h"
+#include "sop/GeoAttrHelper.h"
+#include "sop/GeoAttribute.h"
+#include "sop/GeoAttrName.h"
 
-namespace evt
+namespace sop
 {
 
 bool GeoAttrHelper::QueryNormalIndices(const GeoAttribute& attr, GeoAttrType type, sm::ivec3& norm_idx)

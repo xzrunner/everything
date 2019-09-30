@@ -1,15 +1,15 @@
 #include "utility.h"
 
-#include <everything/Evaluator.h>
-#include <everything/GeometryImpl.h>
+#include <sop/Evaluator.h>
+#include <sop/GeometryImpl.h>
 
-#include <everything/node/GroupCreate.h>
-#include <everything/node/GroupExpression.h>
+#include <sop/node/GroupCreate.h>
+#include <sop/node/GroupExpression.h>
 
-#include <everything/node/Box.h>
-#include <everything/node/Blast.h>
-#include <everything/node/Merge.h>
-#include <everything/node/PolyExtrude.h>
+#include <sop/node/Box.h>
+#include <sop/node/Blast.h>
+#include <sop/node/Merge.h>
+#include <sop/node/PolyExtrude.h>
 
 #include <catch/catch.hpp>
 
@@ -17,14 +17,14 @@ TEST_CASE("group_create")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box0 = std::make_shared<evt::node::Box>();
+    auto box0 = std::make_shared<sop::node::Box>();
     const sm::vec3 pos0(5, 0, 0);
     box0->SetCenter(pos0);
     eval.AddNode(box0);
 
-    auto group = std::make_shared<evt::node::GroupCreate>();
+    auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("test");
     eval.AddNode(group);
 
@@ -32,12 +32,12 @@ TEST_CASE("group_create")
 
     SECTION("base group points")
     {
-        group->SetGroupType(evt::GroupType::Points);
+        group->SetGroupType(sop::GroupType::Points);
         group->EnableBaseGroup("@P.y < 0");
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -53,12 +53,12 @@ TEST_CASE("group_create")
 
     SECTION("base group prims")
     {
-        group->SetGroupType(evt::GroupType::Primitives);
+        group->SetGroupType(sop::GroupType::Primitives);
         group->EnableBaseGroup("@P.y < 0");
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         eval.AddNode(blast);
 
         eval.Connect({ group, 0 }, { blast, 0 });
@@ -70,12 +70,12 @@ TEST_CASE("group_create")
 
     SECTION("base group prims 2")
     {
-        group->SetGroupType(evt::GroupType::Primitives);
+        group->SetGroupType(sop::GroupType::Primitives);
         group->EnableBaseGroup("@P.y < 0");
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -91,20 +91,20 @@ TEST_CASE("group_create")
 
     SECTION("keey by normal")
     {
-        group->SetGroupType(evt::GroupType::Primitives);
+        group->SetGroupType(sop::GroupType::Primitives);
         group->EnableKeepByNormals(sm::vec3(0, 0, 1), 10);
 
-        auto box1 = std::make_shared<evt::node::Box>();
+        auto box1 = std::make_shared<sop::node::Box>();
         const sm::vec3 pos1(-5, 0, 0);
         box1->SetCenter(pos1);
         eval.AddNode(box1);
 
-        auto merge = std::make_shared<evt::node::Merge>();
+        auto merge = std::make_shared<sop::node::Merge>();
         eval.AddNode(merge);
         eval.Connect({ group, 0 }, { merge, 0 });
         eval.Connect({ box1, 0 },  { merge, 1 });
 
-        auto extrude = std::make_shared<evt::node::PolyExtrude>();
+        auto extrude = std::make_shared<sop::node::PolyExtrude>();
         extrude->SetGroupName("test");
         extrude->SetDistance(5);
         eval.AddNode(extrude);
@@ -123,34 +123,34 @@ TEST_CASE("group_expression")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     eval.AddNode(box);
 
-    auto group_expr = std::make_shared<evt::node::GroupExpression>();
-    group_expr->SetGroupType(evt::GroupType::Points);
+    auto group_expr = std::make_shared<sop::node::GroupExpression>();
+    group_expr->SetGroupType(sop::GroupType::Points);
     eval.AddNode(group_expr);
 
     eval.Connect({ box, 0 }, { group_expr, 0 });
 
     SECTION("replace")
     {
-        evt::node::GroupExpression::Instance inst0;
+        sop::node::GroupExpression::Instance inst0;
         inst0.group_name = "test0";
         inst0.expr_str = "@P.y < 0";
-        inst0.merge_op = evt::GroupMerge::Union;
+        inst0.merge_op = sop::GroupMerge::Union;
         group_expr->AddInstance(inst0);
 
-        evt::node::GroupExpression::Instance inst1;
+        sop::node::GroupExpression::Instance inst1;
         inst1.group_name = "test0";
         inst1.expr_str = "@P.x < 0";
-        inst1.merge_op = evt::GroupMerge::Replace;
+        inst1.merge_op = sop::GroupMerge::Replace;
         group_expr->AddInstance(inst1);
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -167,21 +167,21 @@ TEST_CASE("group_expression")
 
     SECTION("union")
     {
-        evt::node::GroupExpression::Instance inst0;
+        sop::node::GroupExpression::Instance inst0;
         inst0.group_name = "test0";
         inst0.expr_str   = "@P.y < 0";
-        inst0.merge_op = evt::GroupMerge::Union;
+        inst0.merge_op = sop::GroupMerge::Union;
         group_expr->AddInstance(inst0);
 
-        evt::node::GroupExpression::Instance inst1;
+        sop::node::GroupExpression::Instance inst1;
         inst1.group_name = "test0";
         inst1.expr_str   = "@P.x < 0";
-        inst1.merge_op = evt::GroupMerge::Union;
+        inst1.merge_op = sop::GroupMerge::Union;
         group_expr->AddInstance(inst1);
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -198,21 +198,21 @@ TEST_CASE("group_expression")
 
     SECTION("intersect")
     {
-        evt::node::GroupExpression::Instance inst0;
+        sop::node::GroupExpression::Instance inst0;
         inst0.group_name = "test0";
         inst0.expr_str = "@P.y < 0";
-        inst0.merge_op = evt::GroupMerge::Union;
+        inst0.merge_op = sop::GroupMerge::Union;
         group_expr->AddInstance(inst0);
 
-        evt::node::GroupExpression::Instance inst1;
+        sop::node::GroupExpression::Instance inst1;
         inst1.group_name = "test0";
         inst1.expr_str = "@P.x < 0";
-        inst1.merge_op = evt::GroupMerge::Intersect;
+        inst1.merge_op = sop::GroupMerge::Intersect;
         group_expr->AddInstance(inst1);
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -229,21 +229,21 @@ TEST_CASE("group_expression")
 
     SECTION("subtract")
     {
-        evt::node::GroupExpression::Instance inst0;
+        sop::node::GroupExpression::Instance inst0;
         inst0.group_name = "test0";
         inst0.expr_str = "@P.y < 0";
-        inst0.merge_op = evt::GroupMerge::Union;
+        inst0.merge_op = sop::GroupMerge::Union;
         group_expr->AddInstance(inst0);
 
-        evt::node::GroupExpression::Instance inst1;
+        sop::node::GroupExpression::Instance inst1;
         inst1.group_name = "test0";
         inst1.expr_str = "@P.x < 0";
-        inst1.merge_op = evt::GroupMerge::Subtract;
+        inst1.merge_op = sop::GroupMerge::Subtract;
         group_expr->AddInstance(inst1);
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -260,15 +260,15 @@ TEST_CASE("group_expression")
 
     SECTION("getbbox_max")
     {
-        evt::node::GroupExpression::Instance inst;
+        sop::node::GroupExpression::Instance inst;
         inst.group_name = "test0";
         inst.expr_str = "@P.y==getbbox_max(0).y";
-        inst.merge_op = evt::GroupMerge::Union;
+        inst.merge_op = sop::GroupMerge::Union;
         group_expr->AddInstance(inst);
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
@@ -285,15 +285,15 @@ TEST_CASE("group_expression")
 
     SECTION("getbbox_min")
     {
-        evt::node::GroupExpression::Instance inst;
+        sop::node::GroupExpression::Instance inst;
         inst.group_name = "test0";
         inst.expr_str = "@P.y==getbbox_min(0).y";
-        inst.merge_op = evt::GroupMerge::Union;
+        inst.merge_op = sop::GroupMerge::Union;
         group_expr->AddInstance(inst);
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test0");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 

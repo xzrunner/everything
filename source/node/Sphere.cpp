@@ -1,7 +1,7 @@
-#include "everything/node/Sphere.h"
-#include "everything/GeometryImpl.h"
+#include "sop/node/Sphere.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

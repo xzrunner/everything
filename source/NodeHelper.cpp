@@ -1,10 +1,10 @@
-#include "everything/NodeHelper.h"
-#include "everything/Node.h"
-#include "everything/EvalContext.h"
-#include "everything/Evaluator.h"
-#include "everything/GeometryImpl.h"
+#include "sop/NodeHelper.h"
+#include "sop/Node.h"
+#include "sop/EvalContext.h"
+#include "sop/Evaluator.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 
 bool NodeHelper::IsRoot(const Node& node)
@@ -69,7 +69,7 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
         {
             eval_ctx.point_idx = i;
             auto v = eval.CalcExpr(expr, eval_ctx);
-            if (v.type == evt::VarType::Invalid) {
+            if (v.type == sop::VarType::Invalid) {
                 continue;
             }
             assert(v.type == VarType::Bool);
@@ -89,7 +89,7 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
         {
             eval_ctx.point_idx = attr.QueryIndex(vts[i]->point);
             auto v = eval.CalcExpr(expr, eval_ctx);
-            if (v.type == evt::VarType::Invalid) {
+            if (v.type == sop::VarType::Invalid) {
                 continue;
             }
             assert(v.type == VarType::Bool);
@@ -113,7 +113,7 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
             {
                 eval_ctx.point_idx = attr.QueryIndex(v->point);
                 auto v = eval.CalcExpr(expr, eval_ctx);
-                if (v.type == evt::VarType::Invalid) {
+                if (v.type == sop::VarType::Invalid) {
                     select = false;
                     break;
                 }

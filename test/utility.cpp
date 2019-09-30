@@ -1,8 +1,8 @@
 #include "utility.h"
 
-#include <everything/Everything.h>
-#include <everything/Node.h>
-#include <everything/GeometryImpl.h>
+#include <sop/SOP.h>
+#include <sop/Node.h>
+#include <sop/GeometryImpl.h>
 
 #include <unirender/gl/RenderContext.h>
 #include <unirender/Blackboard.h>
@@ -70,7 +70,7 @@ void InitRender()
 
 void InitEverything()
 {
-    evt::Everything::Instance();
+    sop::SOP::Instance();
 }
 
 }
@@ -91,7 +91,7 @@ void init()
     }
 }
 
-sm::vec3 get_point_pos(const evt::NodePtr& node, size_t idx)
+sm::vec3 get_point_pos(const sop::NodePtr& node, size_t idx)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -101,7 +101,7 @@ sm::vec3 get_point_pos(const evt::NodePtr& node, size_t idx)
     return pts[idx]->pos;
 }
 
-sm::vec3 get_vertex_pos(const evt::NodePtr& node, size_t idx)
+sm::vec3 get_vertex_pos(const sop::NodePtr& node, size_t idx)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -111,7 +111,7 @@ sm::vec3 get_vertex_pos(const evt::NodePtr& node, size_t idx)
     return vts[idx]->point->pos;
 }
 
-void get_face_pos(const evt::NodePtr& node, size_t idx, std::function<void(const sm::vec3&)> func)
+void get_face_pos(const sop::NodePtr& node, size_t idx, std::function<void(const sm::vec3&)> func)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -125,7 +125,7 @@ void get_face_pos(const evt::NodePtr& node, size_t idx, std::function<void(const
     }
 }
 
-void check_aabb(const evt::NodePtr& node, const sm::vec3& min, const sm::vec3& max)
+void check_aabb(const sop::NodePtr& node, const sm::vec3& min, const sm::vec3& max)
 {
     auto sn = node->GetGeometry()->GetNode();
     auto& caabb = sn->GetUniqueComp<n3::CompAABB>();
@@ -139,7 +139,7 @@ void check_aabb(const evt::NodePtr& node, const sm::vec3& min, const sm::vec3& m
     REQUIRE(aabb.Max()[2] == Approx(max.z));
 }
 
-void check_point(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
+void check_point(const sop::NodePtr& node, size_t idx, const sm::vec3& pos)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -154,7 +154,7 @@ void check_point(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
     REQUIRE(p.z == Approx(pos.z));
 }
 
-void check_vertex(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
+void check_vertex(const sop::NodePtr& node, size_t idx, const sm::vec3& pos)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -169,28 +169,28 @@ void check_vertex(const evt::NodePtr& node, size_t idx, const sm::vec3& pos)
     REQUIRE(p.z == Approx(pos.z));
 }
 
-void check_points_num(const evt::NodePtr& node, size_t num)
+void check_points_num(const sop::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
     REQUIRE(num == geo->GetAttr().GetPoints().size());
 }
 
-void check_vertices_num(const evt::NodePtr& node, size_t num)
+void check_vertices_num(const sop::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
     REQUIRE(num == geo->GetAttr().GetVertices().size());
 }
 
-void check_faces_num(const evt::NodePtr& node, size_t num)
+void check_faces_num(const sop::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
     REQUIRE(num == geo->GetAttr().GetPrimtives().size());
 }
 
-void check_halfedge_vertices_num(const evt::NodePtr& node, size_t num)
+void check_halfedge_vertices_num(const sop::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -202,7 +202,7 @@ void check_halfedge_vertices_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == n);
 }
 
-void check_halfedge_edges_num(const evt::NodePtr& node, size_t num)
+void check_halfedge_edges_num(const sop::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -214,7 +214,7 @@ void check_halfedge_edges_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == n);
 }
 
-void check_halfedge_faces_num(const evt::NodePtr& node, size_t num)
+void check_halfedge_faces_num(const sop::NodePtr& node, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -226,7 +226,7 @@ void check_halfedge_faces_num(const evt::NodePtr& node, size_t num)
     REQUIRE(num == n);
 }
 
-void check_attr_count(const evt::NodePtr& node, evt::GeoAttrType type,
+void check_attr_count(const sop::NodePtr& node, sop::GeoAttrType type,
                       const std::string& name, size_t num)
 {
     if (num == 0) {
@@ -238,26 +238,26 @@ void check_attr_count(const evt::NodePtr& node, evt::GeoAttrType type,
     auto& attr = geo->GetAttr();
 
     auto var = attr.QueryAttr(type, name, 0);
-    REQUIRE(var.type != evt::VarType::Invalid);
+    REQUIRE(var.type != sop::VarType::Invalid);
     switch (type)
     {
-    case evt::GeoAttrType::Point:
+    case sop::GeoAttrType::Point:
         REQUIRE(attr.GetPoints().size() == num);
         break;
-    case evt::GeoAttrType::Vertex:
+    case sop::GeoAttrType::Vertex:
         REQUIRE(attr.GetVertices().size() == num);
         break;
-    case evt::GeoAttrType::Primitive:
+    case sop::GeoAttrType::Primitive:
         REQUIRE(attr.GetPrimtives().size() == num);
         break;
-    case evt::GeoAttrType::Detail:
+    case sop::GeoAttrType::Detail:
         REQUIRE(1 == num);
         break;
     }
 }
 
-void check_attr_value(const evt::NodePtr& node, evt::GeoAttrType type,
-                      const std::string& name, size_t idx, const evt::Variable& var)
+void check_attr_value(const sop::NodePtr& node, sop::GeoAttrType type,
+                      const std::string& name, size_t idx, const sop::Variable& var)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -265,7 +265,7 @@ void check_attr_value(const evt::NodePtr& node, evt::GeoAttrType type,
     REQUIRE(var == var2);
 }
 
-void check_group_num(const evt::NodePtr& node, const std::string& name, size_t num)
+void check_group_num(const sop::NodePtr& node, const std::string& name, size_t num)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -274,25 +274,25 @@ void check_group_num(const evt::NodePtr& node, const std::string& name, size_t n
     REQUIRE(group->items.size() == num);
 }
 
-void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Variable& val)
+void check_prop(const sop::NodePtr& node, const std::string& key, const sop::Variable& val)
 {
     auto find = node->GetProps().Query(key);
     REQUIRE(find.type == val.type);
-    if (find.type == evt::VarType::Invalid) {
+    if (find.type == sop::VarType::Invalid) {
         return;
     }
     switch (val.type)
     {
-    case evt::VarType::Bool:
+    case sop::VarType::Bool:
         REQUIRE(find.b == val.b);
         break;
-    case evt::VarType::Int:
+    case sop::VarType::Int:
         REQUIRE(find.i == val.i);
         break;
-    case evt::VarType::Float:
+    case sop::VarType::Float:
         REQUIRE(find.f == Approx(val.f));
         break;
-    case evt::VarType::Float3:
+    case sop::VarType::Float3:
     {
         auto v0 = static_cast<const float*>(find.p);
         auto v1 = static_cast<const float*>(val.p);
@@ -301,7 +301,7 @@ void check_prop(const evt::NodePtr& node, const std::string& key, const evt::Var
         REQUIRE(v0[2] == v1[2]);
     }
         break;
-    case evt::VarType::String:
+    case sop::VarType::String:
         REQUIRE(strcmp(static_cast<const char*>(find.p),
             static_cast<const char*>(val.p)) == 0);
         break;

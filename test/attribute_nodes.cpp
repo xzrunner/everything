@@ -1,12 +1,12 @@
 #include "utility.h"
 
-#include <everything/Evaluator.h>
+#include <sop/Evaluator.h>
 
-#include <everything/node/Measure.h>
-#include <everything/node/Sort.h>
+#include <sop/node/Measure.h>
+#include <sop/node/Sort.h>
 
-#include <everything/node/Add.h>
-#include <everything/node/Box.h>
+#include <sop/node/Add.h>
+#include <sop/node/Box.h>
 
 #include <catch/catch.hpp>
 
@@ -14,34 +14,34 @@ TEST_CASE("measure box")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     eval.AddNode(box);
 
-    auto measure = std::make_shared<evt::node::Measure>();
+    auto measure = std::make_shared<sop::node::Measure>();
     eval.AddNode(measure);
 
     eval.Connect({ box, 0 }, { measure, 0 });
 
     SECTION("perimeter")
     {
-        measure->SetMesureType(evt::node::Measure::Type::Perimeter);
+        measure->SetMesureType(sop::node::Measure::Type::Perimeter);
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "perimeter", 6);
-        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "perimeter", 3, evt::Variable(4.0f));
+        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "perimeter", 6);
+        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "perimeter", 3, sop::Variable(4.0f));
     }
 
     SECTION("area")
     {
-        measure->SetMesureType(evt::node::Measure::Type::Area);
+        measure->SetMesureType(sop::node::Measure::Type::Area);
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "area", 6);
-        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "area", 2, evt::Variable(1.0f));
+        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "area", 6);
+        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "area", 2, sop::Variable(1.0f));
     }
 }
 
@@ -49,9 +49,9 @@ TEST_CASE("measure polyline")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto add = std::make_shared<evt::node::Add>();
+    auto add = std::make_shared<sop::node::Add>();
     add->SetPoints({
         { 0, 0, 0 },
         { 0, 1, 0 },
@@ -60,29 +60,29 @@ TEST_CASE("measure polyline")
     });
     eval.AddNode(add);
 
-    auto measure = std::make_shared<evt::node::Measure>();
+    auto measure = std::make_shared<sop::node::Measure>();
     eval.AddNode(measure);
 
     eval.Connect({ add, 0 }, { measure, 0 });
 
     SECTION("perimeter")
     {
-        measure->SetMesureType(evt::node::Measure::Type::Perimeter);
+        measure->SetMesureType(sop::node::Measure::Type::Perimeter);
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "perimeter", 1);
-        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "perimeter", 0, evt::Variable(3.0f));
+        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "perimeter", 1);
+        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "perimeter", 0, sop::Variable(3.0f));
     }
 
     SECTION("area")
     {
-        measure->SetMesureType(evt::node::Measure::Type::Area);
+        measure->SetMesureType(sop::node::Measure::Type::Area);
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "area", 1);
-        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "area", 0, evt::Variable(0.0f));
+        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "area", 1);
+        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "area", 0, sop::Variable(0.0f));
     }
 }
 
@@ -90,12 +90,12 @@ TEST_CASE("measure rename")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     eval.AddNode(box);
 
-    auto measure = std::make_shared<evt::node::Measure>();
+    auto measure = std::make_shared<sop::node::Measure>();
     eval.AddNode(measure);
 
     eval.Connect({ box, 0 }, { measure, 0 });
@@ -103,23 +103,23 @@ TEST_CASE("measure rename")
     SECTION("perimeter")
     {
         measure->SetMesureName("test0");
-        measure->SetMesureType(evt::node::Measure::Type::Perimeter);
+        measure->SetMesureType(sop::node::Measure::Type::Perimeter);
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "test0", 6);
-        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "test0", 3, evt::Variable(4.0f));
+        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "test0", 6);
+        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "test0", 3, sop::Variable(4.0f));
     }
 
     SECTION("area")
     {
         measure->SetMesureName("test1");
-        measure->SetMesureType(evt::node::Measure::Type::Area);
+        measure->SetMesureType(sop::node::Measure::Type::Area);
 
         eval.Update();
 
-        test::check_attr_count(measure, evt::GeoAttrType::Primitive, "test1", 6);
-        test::check_attr_value(measure, evt::GeoAttrType::Primitive, "test1", 2, evt::Variable(1.0f));
+        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "test1", 6);
+        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "test1", 2, sop::Variable(1.0f));
     }
 }
 
@@ -127,9 +127,9 @@ TEST_CASE("sort")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto add = std::make_shared<evt::node::Add>();
+    auto add = std::make_shared<sop::node::Add>();
     add->SetPoints({
         { 0, 0, 0 },
         { 1, -2, 3 },
@@ -137,14 +137,14 @@ TEST_CASE("sort")
     });
     eval.AddNode(add);
 
-    auto sort = std::make_shared<evt::node::Sort>();
+    auto sort = std::make_shared<sop::node::Sort>();
     eval.AddNode(sort);
 
     eval.Connect({ add, 0 }, { sort, 0 });
 
     SECTION("no sort")
     {
-        sort->SetKey(evt::node::Sort::Key::NoChange);
+        sort->SetKey(sop::node::Sort::Key::NoChange);
 
         eval.Update();
 
@@ -155,7 +155,7 @@ TEST_CASE("sort")
 
     SECTION("sort x")
     {
-        sort->SetKey(evt::node::Sort::Key::X);
+        sort->SetKey(sop::node::Sort::Key::X);
 
         eval.Update();
 
@@ -166,7 +166,7 @@ TEST_CASE("sort")
 
     SECTION("sort y")
     {
-        sort->SetKey(evt::node::Sort::Key::Y);
+        sort->SetKey(sop::node::Sort::Key::Y);
 
         eval.Update();
 
@@ -177,7 +177,7 @@ TEST_CASE("sort")
 
     SECTION("sort z")
     {
-        sort->SetKey(evt::node::Sort::Key::Z);
+        sort->SetKey(sop::node::Sort::Key::Z);
 
         eval.Update();
 

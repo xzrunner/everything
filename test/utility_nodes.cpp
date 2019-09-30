@@ -1,24 +1,24 @@
 #include "utility.h"
 
-#include <everything/Evaluator.h>
-#include <everything/GeometryImpl.h>
-#include <everything/GeoAttrName.h>
+#include <sop/Evaluator.h>
+#include <sop/GeometryImpl.h>
+#include <sop/GeoAttrName.h>
 
-#include <everything/node/Blast.h>
-#include <everything/node/CopyToPoints.h>
-#include <everything/node/ForeachPrimBegin.h>
-#include <everything/node/ForeachPrimEnd.h>
-#include <everything/node/GroupCreate.h>
-#include <everything/node/Merge.h>
-#include <everything/node/Switch.h>
+#include <sop/node/Blast.h>
+#include <sop/node/CopyToPoints.h>
+#include <sop/node/ForeachPrimBegin.h>
+#include <sop/node/ForeachPrimEnd.h>
+#include <sop/node/GroupCreate.h>
+#include <sop/node/Merge.h>
+#include <sop/node/Switch.h>
 
-#include <everything/node/Box.h>
-#include <everything/node/PolyExtrude.h>
-#include <everything/node/Delete.h>
-#include <everything/node/Add.h>
-#include <everything/node/Carve.h>
-#include <everything/node/Color.h>
-#include <everything/node/Normal.h>
+#include <sop/node/Box.h>
+#include <sop/node/PolyExtrude.h>
+#include <sop/node/Delete.h>
+#include <sop/node/Add.h>
+#include <sop/node/Carve.h>
+#include <sop/node/Color.h>
+#include <sop/node/Normal.h>
 
 #include <catch/catch.hpp>
 
@@ -26,25 +26,25 @@ TEST_CASE("blast")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     const sm::vec3 size(1, 2, 3);
     box->SetSize(size);
     eval.AddNode(box);
 
-    auto group = std::make_shared<evt::node::GroupCreate>();
+    auto group = std::make_shared<sop::node::GroupCreate>();
     const std::string name("test");
     group->SetGroupName(name);
-    group->SetGroupType(evt::GroupType::Primitives);
+    group->SetGroupType(sop::GroupType::Primitives);
     group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
 
-    auto blast = std::make_shared<evt::node::Blast>();
+    auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName(name);
-    blast->SetGroupType(evt::GroupType::GuessFromGroup);
+    blast->SetGroupType(sop::GroupType::GuessFromGroup);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -72,27 +72,27 @@ TEST_CASE("copy to points")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto src_box = std::make_shared<evt::node::Box>();
+    auto src_box = std::make_shared<sop::node::Box>();
     const sm::vec3 src_size(1, 2, 3);
     src_box->SetSize(src_size);
     const sm::vec3 src_pos(21, 22, 23);
     src_box->SetCenter(src_pos);
     eval.AddNode(src_box);
 
-    auto target_box = std::make_shared<evt::node::Box>();
+    auto target_box = std::make_shared<sop::node::Box>();
     const sm::vec3 target_pos(5, 6, 7);
     const sm::vec3 target_size(1.1f, 2.2f, 3.3f);
     target_box->SetCenter(target_pos);
     target_box->SetSize(target_size);
     eval.AddNode(target_box);
 
-    auto copy = std::make_shared<evt::node::CopyToPoints>();
+    auto copy = std::make_shared<sop::node::CopyToPoints>();
     eval.AddNode(copy);
 
-    eval.Connect({ src_box, 0 },    { copy, evt::node::CopyToPoints::IDX_SRC_PRIM });
-    eval.Connect({ target_box, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+    eval.Connect({ src_box, 0 },    { copy, sop::node::CopyToPoints::IDX_SRC_PRIM });
+    eval.Connect({ target_box, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
 
     eval.Update();
 
@@ -105,28 +105,28 @@ TEST_CASE("copy to points with points dir")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     box->SetSize({ 1, 2, 4 });
     eval.AddNode(box);
 
-    auto copy = std::make_shared<evt::node::CopyToPoints>();
+    auto copy = std::make_shared<sop::node::CopyToPoints>();
     copy->EnableUsePointDir(true);
     eval.AddNode(copy);
 
-    eval.Connect({ box, 0 }, { copy, evt::node::CopyToPoints::IDX_SRC_PRIM });
+    eval.Connect({ box, 0 }, { copy, sop::node::CopyToPoints::IDX_SRC_PRIM });
 
     SECTION("shape")
     {
-        auto line = std::make_shared<evt::node::Add>();
+        auto line = std::make_shared<sop::node::Add>();
         line->SetPoints({
             { 0, 0, 0 },
             { 2, 4, 8 }
         });
         eval.AddNode(line);
 
-        eval.Connect({ line, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+        eval.Connect({ line, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
 
         eval.Update();
 
@@ -135,11 +135,11 @@ TEST_CASE("copy to points with points dir")
 
     SECTION("box")
     {
-        auto to_box = std::make_shared<evt::node::Box>();
+        auto to_box = std::make_shared<sop::node::Box>();
         to_box->SetSize({ 6, 6, 6 });
         eval.AddNode(to_box);
 
-        eval.Connect({ to_box, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+        eval.Connect({ to_box, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
 
         eval.Update();
 
@@ -148,27 +148,27 @@ TEST_CASE("copy to points with points dir")
 
     SECTION("plane")
     {
-        auto to_box = std::make_shared<evt::node::Box>();
+        auto to_box = std::make_shared<sop::node::Box>();
         to_box->SetSize({ 6, 6, 6 });
         eval.AddNode(to_box);
 
-        auto group = std::make_shared<evt::node::GroupCreate>();
+        auto group = std::make_shared<sop::node::GroupCreate>();
         group->SetGroupName("Top");
-        group->SetGroupType(evt::GroupType::Primitives);
+        group->SetGroupType(sop::GroupType::Primitives);
         group->EnableKeepByNormals({ 0, 1, 0 }, 10);
         eval.AddNode(group);
 
         eval.Connect({ to_box, 0 }, { group, 0 });
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("Top");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
         eval.Connect({ group, 0 }, { blast, 0 });
 
-        eval.Connect({ blast, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+        eval.Connect({ blast, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
 
         eval.Update();
 
@@ -177,33 +177,33 @@ TEST_CASE("copy to points with points dir")
 
     SECTION("plane with normal")
     {
-        auto to_box = std::make_shared<evt::node::Box>();
+        auto to_box = std::make_shared<sop::node::Box>();
         to_box->SetSize({ 6, 6, 6 });
         eval.AddNode(to_box);
 
-        auto normal = std::make_shared<evt::node::Normal>();
-        normal->SetAttrAddTo(evt::GeoAttrType::Point);
+        auto normal = std::make_shared<sop::node::Normal>();
+        normal->SetAttrAddTo(sop::GeoAttrType::Point);
         eval.AddNode(normal);
 
         eval.Connect({ to_box, 0 }, { normal, 0 });
 
-        auto group = std::make_shared<evt::node::GroupCreate>();
+        auto group = std::make_shared<sop::node::GroupCreate>();
         group->SetGroupName("Top");
-        group->SetGroupType(evt::GroupType::Primitives);
+        group->SetGroupType(sop::GroupType::Primitives);
         group->EnableKeepByNormals({ 0, 1, 0 }, 10);
         eval.AddNode(group);
 
         eval.Connect({ normal, 0 }, { group, 0 });
 
-        auto blast = std::make_shared<evt::node::Blast>();
+        auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("Top");
-        blast->SetGroupType(evt::GroupType::GuessFromGroup);
+        blast->SetGroupType(sop::GroupType::GuessFromGroup);
         blast->SetDeleteNonSelected(true);
         eval.AddNode(blast);
 
         eval.Connect({ group, 0 }, { blast, 0 });
 
-        eval.Connect({ blast, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+        eval.Connect({ blast, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
 
         eval.Update();
 
@@ -215,114 +215,114 @@ TEST_CASE("copy to points with attr")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     eval.AddNode(box);
 
-    auto color = std::make_shared<evt::node::Color>();
-    color->SetAttrAddTo(evt::GeoAttrType::Point);
+    auto color = std::make_shared<sop::node::Color>();
+    color->SetAttrAddTo(sop::GeoAttrType::Point);
     color->SetColor({ 0.3f, 0.4f, 0.5f });
     eval.AddNode(color);
 
     eval.Connect({ box, 0 }, { color, 0 });
 
-    auto add = std::make_shared<evt::node::Add>();
+    auto add = std::make_shared<sop::node::Add>();
     add->SetPoints({
         { 0, 0, 0 },
         { 10, 10, 10 },
     });
     eval.AddNode(add);
 
-    auto copy = std::make_shared<evt::node::CopyToPoints>();
+    auto copy = std::make_shared<sop::node::CopyToPoints>();
     eval.AddNode(copy);
 
-    eval.Connect({ color, 0 }, { copy, evt::node::CopyToPoints::IDX_SRC_PRIM });
-    eval.Connect({ add, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+    eval.Connect({ color, 0 }, { copy, sop::node::CopyToPoints::IDX_SRC_PRIM });
+    eval.Connect({ add, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
 
     eval.Update();
 
     test::check_points_num(copy, 16);
-    test::check_attr_count(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 16);
-    test::check_attr_count(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 16);
-    test::check_attr_count(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 16);
-    test::check_attr_value(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 2, evt::Variable(0.3f));
-    test::check_attr_value(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 7, evt::Variable(0.4f));
-    test::check_attr_value(copy, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 13, evt::Variable(0.5f));
+    test::check_attr_count(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 16);
+    test::check_attr_count(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 16);
+    test::check_attr_count(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 16);
+    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 2, sop::Variable(0.3f));
+    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 7, sop::Variable(0.4f));
+    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 13, sop::Variable(0.5f));
 }
 
 TEST_CASE("foreach primitive")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto src_box = std::make_shared<evt::node::Box>();
+    auto src_box = std::make_shared<sop::node::Box>();
     eval.AddNode(src_box);
 
     // cut top face
-    auto top_face_group = std::make_shared<evt::node::GroupCreate>();
+    auto top_face_group = std::make_shared<sop::node::GroupCreate>();
     top_face_group->SetGroupName("top_face");
-    top_face_group->SetGroupType(evt::GroupType::Primitives);
+    top_face_group->SetGroupType(sop::GroupType::Primitives);
     top_face_group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
     eval.AddNode(top_face_group);
-    evt::make_connecting({ src_box, 0 }, { top_face_group, 0 });
-    auto top_face_blast = std::make_shared<evt::node::Blast>();
+    sop::make_connecting({ src_box, 0 }, { top_face_group, 0 });
+    auto top_face_blast = std::make_shared<sop::node::Blast>();
     top_face_blast->SetGroupName("top_face");
-    top_face_blast->SetGroupType(evt::GroupType::GuessFromGroup);
+    top_face_blast->SetGroupType(sop::GroupType::GuessFromGroup);
     eval.AddNode(top_face_blast);
-    evt::make_connecting({ top_face_group, 0 }, { top_face_blast, 0 });
+    sop::make_connecting({ top_face_group, 0 }, { top_face_blast, 0 });
 
     // cut bottom face
-    auto btm_face_group = std::make_shared<evt::node::GroupCreate>();
+    auto btm_face_group = std::make_shared<sop::node::GroupCreate>();
     btm_face_group->SetGroupName("btm_face");
-    btm_face_group->SetGroupType(evt::GroupType::Primitives);
+    btm_face_group->SetGroupType(sop::GroupType::Primitives);
     btm_face_group->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
     eval.AddNode(btm_face_group);
-    evt::make_connecting({ top_face_blast, 0 }, { btm_face_group, 0 });
-    auto btm_face_blast = std::make_shared<evt::node::Blast>();
+    sop::make_connecting({ top_face_blast, 0 }, { btm_face_group, 0 });
+    auto btm_face_blast = std::make_shared<sop::node::Blast>();
     btm_face_blast->SetGroupName("btm_face");
-    btm_face_blast->SetGroupType(evt::GroupType::GuessFromGroup);
+    btm_face_blast->SetGroupType(sop::GroupType::GuessFromGroup);
     eval.AddNode(btm_face_blast);
-    evt::make_connecting({ btm_face_group, 0 }, { btm_face_blast, 0 });
+    sop::make_connecting({ btm_face_group, 0 }, { btm_face_blast, 0 });
 
-    auto foreach_begin = std::make_shared<evt::node::ForeachPrimBegin>();
+    auto foreach_begin = std::make_shared<sop::node::ForeachPrimBegin>();
     eval.AddNode(foreach_begin);
 
-    evt::make_connecting({ btm_face_blast, 0 }, { foreach_begin, 0 });
+    sop::make_connecting({ btm_face_blast, 0 }, { foreach_begin, 0 });
 
-    auto del = std::make_shared<evt::node::Delete>();
+    auto del = std::make_shared<sop::node::Delete>();
     del->SetFilterExpr("@P.y > 0");
     eval.AddNode(del);
 
-    evt::make_connecting({ foreach_begin, 0 }, { del, 0 });
+    sop::make_connecting({ foreach_begin, 0 }, { del, 0 });
 
-    auto add = std::make_shared<evt::node::Add>();
+    auto add = std::make_shared<sop::node::Add>();
     eval.AddNode(add);
 
-    evt::make_connecting({ del, 0 }, { add, 0 });
+    sop::make_connecting({ del, 0 }, { add, 0 });
 
-    auto carve = std::make_shared<evt::node::Carve>();
+    auto carve = std::make_shared<sop::node::Carve>();
     carve->SetFirstU(0.25f);
     carve->SetSecondU(0.75f);
     eval.AddNode(carve);
 
-    evt::make_connecting({ add, 0 }, { carve, 0 });
+    sop::make_connecting({ add, 0 }, { carve, 0 });
 
-    auto foreach_end = std::make_shared<evt::node::ForeachPrimEnd>();
+    auto foreach_end = std::make_shared<sop::node::ForeachPrimEnd>();
     eval.AddNode(foreach_end);
 
-    evt::make_connecting({ carve, 0 }, { foreach_end, 0 });
+    sop::make_connecting({ carve, 0 }, { foreach_end, 0 });
 
-    auto dst_box = std::make_shared<evt::node::Box>();
+    auto dst_box = std::make_shared<sop::node::Box>();
     dst_box->SetSize({ 0.1f, 0.1f, 0.1f });
     eval.AddNode(dst_box);
 
-    auto copy = std::make_shared<evt::node::CopyToPoints>();
+    auto copy = std::make_shared<sop::node::CopyToPoints>();
     eval.AddNode(copy);
 
-    eval.Connect({ dst_box, 0 },     { copy, evt::node::CopyToPoints::IDX_SRC_PRIM });
-    eval.Connect({ foreach_end, 0 }, { copy, evt::node::CopyToPoints::IDX_TARGET_POS });
+    eval.Connect({ dst_box, 0 },     { copy, sop::node::CopyToPoints::IDX_SRC_PRIM });
+    eval.Connect({ foreach_end, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
 
     eval.Update();
 
@@ -333,30 +333,30 @@ TEST_CASE("merge")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box0 = std::make_shared<evt::node::Box>();
+    auto box0 = std::make_shared<sop::node::Box>();
     const sm::vec3 size0(1, 2, 3);
     box0->SetSize(size0);
     const sm::vec3 pos0(21, 22, 23);
     box0->SetCenter(pos0);
     eval.AddNode(box0);
 
-    auto box1 = std::make_shared<evt::node::Box>();
+    auto box1 = std::make_shared<sop::node::Box>();
     const sm::vec3 size1(11, 12, 13);
     box1->SetSize(size1);
     const sm::vec3 pos1(121, 122, 123);
     box1->SetCenter(pos1);
     eval.AddNode(box1);
 
-    auto box2 = std::make_shared<evt::node::Box>();
+    auto box2 = std::make_shared<sop::node::Box>();
     const sm::vec3 size2(21, 22, 23);
     box2->SetSize(size2);
     const sm::vec3 pos2(221, 222, 223);
     box2->SetCenter(pos2);
     eval.AddNode(box2);
 
-    auto merge = std::make_shared<evt::node::Merge>();
+    auto merge = std::make_shared<sop::node::Merge>();
     merge->AddInputPorts(3 - merge->GetImports().size());
     eval.AddNode(merge);
 
@@ -383,19 +383,19 @@ TEST_CASE("merge 2")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box0 = std::make_shared<evt::node::Box>();
+    auto box0 = std::make_shared<sop::node::Box>();
     eval.AddNode(box0);
 
-    auto box1 = std::make_shared<evt::node::Box>();
+    auto box1 = std::make_shared<sop::node::Box>();
     eval.AddNode(box1);
 
-    auto merge = std::make_shared<evt::node::Merge>();
+    auto merge = std::make_shared<sop::node::Merge>();
     eval.AddNode(merge);
 
-    eval.Connect({ box0, 0 }, { merge, evt::node::Merge::IDX_SRC_A });
-    eval.Connect({ box1, 0 }, { merge, evt::node::Merge::IDX_SRC_B });
+    eval.Connect({ box0, 0 }, { merge, sop::node::Merge::IDX_SRC_A });
+    eval.Connect({ box1, 0 }, { merge, sop::node::Merge::IDX_SRC_B });
 
     SECTION("overlap")
     {
@@ -430,30 +430,30 @@ TEST_CASE("switch")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box0 = std::make_shared<evt::node::Box>();
+    auto box0 = std::make_shared<sop::node::Box>();
     const sm::vec3 size0(1, 2, 3);
     box0->SetSize(size0);
     const sm::vec3 pos0(21, 22, 23);
     box0->SetCenter(pos0);
     eval.AddNode(box0);
 
-    auto box1 = std::make_shared<evt::node::Box>();
+    auto box1 = std::make_shared<sop::node::Box>();
     const sm::vec3 size1(11, 12, 13);
     box1->SetSize(size1);
     const sm::vec3 pos1(121, 122, 123);
     box1->SetCenter(pos1);
     eval.AddNode(box1);
 
-    auto box2 = std::make_shared<evt::node::Box>();
+    auto box2 = std::make_shared<sop::node::Box>();
     const sm::vec3 size2(21, 22, 23);
     box2->SetSize(size2);
     const sm::vec3 pos2(221, 222, 223);
     box2->SetCenter(pos2);
     eval.AddNode(box2);
 
-    auto switch0 = std::make_shared<evt::node::Switch>();
+    auto switch0 = std::make_shared<sop::node::Switch>();
     switch0->AddInputPorts(3 - switch0->GetImports().size());
     eval.AddNode(switch0);
 

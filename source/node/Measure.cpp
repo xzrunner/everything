@@ -1,10 +1,10 @@
-#include "everything/node/Measure.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeometryImpl.h"
+#include "sop/node/Measure.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeometryImpl.h"
 
 #include <SM_Calc.h>
 
-namespace evt
+namespace sop
 {
 namespace node
 {

@@ -1,18 +1,18 @@
-#include "everything/node/Normal.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeometryImpl.h"
-#include "everything/GeoAttrName.h"
+#include "sop/node/Normal.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeometryImpl.h"
+#include "sop/GeoAttrName.h"
 
 #include <SM_Calc.h>
 
 namespace
 {
 
-sm::vec3 CalcPrimNorm(const evt::GeoAttribute::Primitive& prim)
+sm::vec3 CalcPrimNorm(const sop::GeoAttribute::Primitive& prim)
 {
     switch (prim.type)
     {
-    case evt::GeoAttribute::Primitive::Type::PolygonFace:
+    case sop::GeoAttribute::Primitive::Type::PolygonFace:
     {
         assert(prim.vertices.size() > 2);
         auto a = prim.vertices[1]->point->pos - prim.vertices[0]->point->pos;
@@ -21,7 +21,7 @@ sm::vec3 CalcPrimNorm(const evt::GeoAttribute::Primitive& prim)
         norm.Normalize();
         return norm;
     }
-    case evt::GeoAttribute::Primitive::Type::PolygonCurves:
+    case sop::GeoAttribute::Primitive::Type::PolygonCurves:
         return sm::vec3(0, 0, 0);
     default:
         assert(0);
@@ -31,7 +31,7 @@ sm::vec3 CalcPrimNorm(const evt::GeoAttribute::Primitive& prim)
 
 }
 
-namespace evt
+namespace sop
 {
 namespace node
 {

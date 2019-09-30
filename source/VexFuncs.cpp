@@ -1,8 +1,8 @@
-#include "everything/VexFuncs.h"
-#include "everything/EvalContext.h"
-#include "everything/GeometryImpl.h"
-#include "everything/Evaluator.h"
-#include "everything/node/Geometry.h"
+#include "sop/VexFuncs.h"
+#include "sop/EvalContext.h"
+#include "sop/GeometryImpl.h"
+#include "sop/Evaluator.h"
+#include "sop/node/Geometry.h"
 
 #include <vexc/EvalAST.h>
 #include <vexc/StringPool.h>
@@ -11,11 +11,11 @@
 namespace
 {
 
-evt::Node* PathToNode(evt::Node* base_node, const std::string& path, const evt::Evaluator& eval)
+sop::Node* PathToNode(sop::Node* base_node, const std::string& path, const sop::Evaluator& eval)
 {
     std::vector<std::string> tokens;
     cpputil::StringHelper::Split(path, "/", tokens);
-    evt::Node* curr_node = base_node;
+    sop::Node* curr_node = base_node;
     int curr_level = curr_node->GetLevel();
     const int begin_level = curr_level;
     for (size_t i = 0, n = tokens.size(); i < n; ++i)
@@ -40,9 +40,9 @@ evt::Node* PathToNode(evt::Node* base_node, const std::string& path, const evt::
 
         // query child
         assert(curr_node);
-        if (curr_node->get_type() == rttr::type::get<evt::node::Geometry>())
+        if (curr_node->get_type() == rttr::type::get<sop::node::Geometry>())
         {
-            auto child = static_cast<const evt::node::Geometry*>(curr_node)->QueryChild(t);
+            auto child = static_cast<const sop::node::Geometry*>(curr_node)->QueryChild(t);
             if (child) {
                 curr_node = child.get();
                 continue;
@@ -54,7 +54,7 @@ evt::Node* PathToNode(evt::Node* base_node, const std::string& path, const evt::
 
 }
 
-namespace evt
+namespace sop
 {
 
 void SetupVexFuncs()
@@ -73,7 +73,7 @@ void SetupVexFuncs()
         }
 
         auto ctx = static_cast<const EvalContext*>(ud);
-        evt::Node* base_node = const_cast<evt::Node*>(ctx->node);
+        sop::Node* base_node = const_cast<sop::Node*>(ctx->node);
 
         assert(params[0].type == vexc::VarType::String);
         std::string path(vexc::StringPool::VoidToString(params[0].p));
@@ -150,13 +150,13 @@ void SetupVexFuncs()
             return vexc::Variant();
         }
 
-        evt::GeoAttrType type;
+        sop::GeoAttrType type;
         if (attr_class == "point") {
-            type = evt::GeoAttrType::Point;
+            type = sop::GeoAttrType::Point;
         } else if (attr_class == "vertex") {
-            type = evt::GeoAttrType::Vertex;
+            type = sop::GeoAttrType::Vertex;
         } else if (attr_class == "detail" || attr_class == "global") {
-            type = evt::GeoAttrType::Detail;
+            type = sop::GeoAttrType::Detail;
         } else {
             return vexc::Variant();
         }
@@ -177,30 +177,30 @@ void SetupVexFuncs()
             attr_idx = desc.size();
 
             auto new_desc = desc;
-            new_desc.push_back({ attr_name, evt::VarType::Float });
-            const_cast<evt::GeoAttribute&>(attr).SetAttrDesc(type, new_desc);
+            new_desc.push_back({ attr_name, sop::VarType::Float });
+            const_cast<sop::GeoAttribute&>(attr).SetAttrDesc(type, new_desc);
             
             switch (type)
             {
-            case evt::GeoAttrType::Point:
+            case sop::GeoAttrType::Point:
                 for (auto& p : attr.GetPoints()) {
-                    p->vars.push_back(evt::VarValue());
+                    p->vars.push_back(sop::VarValue());
                 }
                 break;
-            case evt::GeoAttrType::Vertex:
+            case sop::GeoAttrType::Vertex:
                 for (auto& v : attr.GetVertices()) {
-                    v->vars.push_back(evt::VarValue());
+                    v->vars.push_back(sop::VarValue());
                 }
                 break;
-            case evt::GeoAttrType::Primitive:
+            case sop::GeoAttrType::Primitive:
                 for (auto& prim : attr.GetPrimtives()) {
-                    prim->vars.push_back(evt::VarValue());
+                    prim->vars.push_back(sop::VarValue());
                 }
                 break;
-            case evt::GeoAttrType::Detail:
+            case sop::GeoAttrType::Detail:
             {
-                auto& detail = const_cast<evt::GeoAttribute::Detail&>(attr.GetDetail());
-                detail.vars.push_back(evt::VarValue());
+                auto& detail = const_cast<sop::GeoAttribute::Detail&>(attr.GetDetail());
+                detail.vars.push_back(sop::VarValue());
             }
                 break;
             default:
@@ -210,30 +210,30 @@ void SetupVexFuncs()
 
         switch (type)
         {
-        case evt::GeoAttrType::Point:
+        case sop::GeoAttrType::Point:
         {
             auto& pts = attr.GetPoints();
             assert(element_num >= 0 && element_num < static_cast<int>(pts.size()));
             pts[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case evt::GeoAttrType::Vertex:
+        case sop::GeoAttrType::Vertex:
         {
             auto& vts = attr.GetVertices();
             assert(element_num >= 0 && element_num < static_cast<int>(vts.size()));
             vts[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case evt::GeoAttrType::Primitive:
+        case sop::GeoAttrType::Primitive:
         {
             auto& prims = attr.GetPrimtives();
             assert(element_num >= 0 && element_num < static_cast<int>(prims.size()));
             prims[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case evt::GeoAttrType::Detail:
+        case sop::GeoAttrType::Detail:
         {
-            auto& detail = const_cast<evt::GeoAttribute::Detail&>(attr.GetDetail());
+            auto& detail = const_cast<sop::GeoAttribute::Detail&>(attr.GetDetail());
             detail.vars[attr_idx].f = value;
         }
             break;
@@ -380,7 +380,7 @@ void SetupVexFuncs()
         std::string path(vexc::StringPool::VoidToString(p.p));
         std::vector<std::string> tokens;
         cpputil::StringHelper::Split(path, "/", tokens);
-        evt::Node* curr_node = const_cast<evt::Node*>(ctx->node);
+        sop::Node* curr_node = const_cast<sop::Node*>(ctx->node);
         int curr_level = curr_node->GetLevel();
         const int begin_level = curr_level;
         for (size_t i = 0, n = tokens.size(); i < n; ++i)

@@ -1,7 +1,7 @@
-#include "everything/node/Merge.h"
-#include "everything/GeometryImpl.h"
+#include "sop/node/Merge.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

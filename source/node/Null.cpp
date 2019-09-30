@@ -1,6 +1,6 @@
-#include "everything/node/Null.h"
+#include "sop/node/Null.h"
 
-namespace evt
+namespace sop
 {
 namespace node
 {

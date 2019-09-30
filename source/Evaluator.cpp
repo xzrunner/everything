@@ -1,5 +1,5 @@
-#include "everything/Evaluator.h"
-#include "everything/EvalContext.h"
+#include "sop/Evaluator.h"
+#include "sop/EvalContext.h"
 
 #include <vexc/EvalAST.h>
 #include <vexc/Parser.h>
@@ -9,7 +9,7 @@
 
 #include <assert.h>
 
-namespace evt
+namespace sop
 {
 
 void Evaluator::AddNode(const NodePtr& node)

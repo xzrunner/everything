@@ -1,0 +1,359 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="nodes">
+      <UniqueIdentifier>{8e014e4d-7270-47da-8f6e-56826ef21831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset">
+      <UniqueIdentifier>{119faea4-0286-4ed1-aad3-25958867e376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry">
+      <UniqueIdentifier>{5d1a28a3-62c5-46d1-8a46-57a4ae60d491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\primitive">
+      <UniqueIdentifier>{f58c101e-a98e-40ca-8f5e-b8266404484b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\manipulate">
+      <UniqueIdentifier>{f030ff3f-7877-44cd-9c75-8aeb1dacfa3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\utility">
+      <UniqueIdentifier>{ba93cdbb-5854-41c6-83f2-0b62189eef29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\polygon">
+      <UniqueIdentifier>{77594dd1-c4b6-4143-b93d-fa1d822447ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\attribute">
+      <UniqueIdentifier>{053f2cb9-efc0-4bb7-8e90-0d3d8a407ec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\nurbs">
+      <UniqueIdentifier>{0f422275-8213-4e24-bfdd-0562582a20b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geo">
+      <UniqueIdentifier>{3703ebce-0a43-46bf-aeb7-78836f68201a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\node">
+      <UniqueIdentifier>{dd04b857-ea2f-4c23-b7b1-883a61f5a1d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{7336f7a8-4519-45c4-9358-12e620238c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\others">
+      <UniqueIdentifier>{da833931-1ea8-46de-8479-9ed2ef8238e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="eval">
+      <UniqueIdentifier>{d2a6f069-4272-41df-abc7-ae5a4eed982d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\group">
+      <UniqueIdentifier>{fffed165-0a5e-44cf-987f-706769cbea8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geo\attr">
+      <UniqueIdentifier>{e81dd3f7-2de2-4311-91ae-af539aaa2660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geo\adaptor">
+      <UniqueIdentifier>{49bd061c-a85d-436e-8c86-d8fcc6879442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geo\group">
+      <UniqueIdentifier>{04b93520-b309-47cd-bb35-7c058d3e4e8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\others\var">
+      <UniqueIdentifier>{be21ea6b-24ff-4342-8879-5f0c3734f99a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\geometry\material">
+      <UniqueIdentifier>{0d24f5ea-67c1-4b80-bc41-c9c3c5b750a9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\sop\node\Curve.h">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Box.h">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\Evaluator.h">
+      <Filter>eval</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Sphere.h">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\typedef.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Transform.h">
+      <Filter>nodes\geometry\manipulate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Merge.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\CopyToPoints.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\PolyExtrude.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Blast.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Boolean.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Knife.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Delete.h">
+      <Filter>nodes\geometry\manipulate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Add.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Carve.h">
+      <Filter>nodes\geometry\nurbs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Line.h">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Sort.h">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Switch.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\Node.h">
+      <Filter>dataset\node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\NodeVar.h">
+      <Filter>dataset\node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\NodeVarType.h">
+      <Filter>dataset\node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimBegin.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimEnd.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Geometry.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\NodeHelper.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeometryImpl.h">
+      <Filter>dataset\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\NodePropsMgr.h">
+      <Filter>dataset\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\VexFuncs.h">
+      <Filter>eval</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\EvalContext.h">
+      <Filter>eval</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\GroupCreate.h">
+      <Filter>nodes\geometry\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\GroupExpression.h">
+      <Filter>nodes\geometry\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Null.h">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\PolyFill.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Measure.h">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Normal.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttribute.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAdaptor.h">
+      <Filter>dataset\geo\adaptor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\Group.h">
+      <Filter>dataset\geo\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GroupMgr.h">
+      <Filter>dataset\geo\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoShape.h">
+      <Filter>dataset\geo\adaptor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrType.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\Variable.h">
+      <Filter>dataset\others\var</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\VarType.h">
+      <Filter>dataset\others\var</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\VarValue.h">
+      <Filter>dataset\others\var</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Color.h">
+      <Filter>nodes\geometry\material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrName.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrHelper.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Fuse.h">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GroupRebuild.h">
+      <Filter>dataset\geo\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrRebuild.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\AttributeWrangle.h">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Primitive.h">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\SOP.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\source\Evaluator.cpp">
+      <Filter>eval</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Box.cpp">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Sphere.cpp">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Transform.cpp">
+      <Filter>nodes\geometry\manipulate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Blast.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\CopyToPoints.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Merge.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\PolyExtrude.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Boolean.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Knife.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Delete.cpp">
+      <Filter>nodes\geometry\manipulate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Add.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Carve.cpp">
+      <Filter>nodes\geometry\nurbs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Line.cpp">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Sort.cpp">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Curve.cpp">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Switch.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Node.cpp">
+      <Filter>dataset\node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Geometry.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\NodeHelper.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeometryImpl.cpp">
+      <Filter>dataset\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\NodePropsMgr.cpp">
+      <Filter>dataset\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\VexFuncs.cpp">
+      <Filter>eval</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\RegistRTTR.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\GroupCreate.cpp">
+      <Filter>nodes\geometry\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\GroupExpression.cpp">
+      <Filter>nodes\geometry\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Null.cpp">
+      <Filter>nodes\geometry\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\PolyFill.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Measure.cpp">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Normal.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAttribute.cpp">
+      <Filter>dataset\geo\attr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAdaptor.cpp">
+      <Filter>dataset\geo\adaptor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GroupMgr.cpp">
+      <Filter>dataset\geo\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Variable.cpp">
+      <Filter>dataset\others\var</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\VarValue.cpp">
+      <Filter>dataset\others\var</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Color.cpp">
+      <Filter>nodes\geometry\material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
+      <Filter>dataset\geo\attr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Fuse.cpp">
+      <Filter>nodes\geometry\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GroupRebuild.cpp">
+      <Filter>dataset\geo\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\GeoAttrRebuild.cpp">
+      <Filter>dataset\geo\attr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\AttributeWrangle.cpp">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Primitive.cpp">
+      <Filter>nodes\geometry\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\SOP.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\sop\GeoAttribute.inl">
+      <Filter>dataset\geo\attr</Filter>
+    </None>
+  </ItemGroup>
+</Project>

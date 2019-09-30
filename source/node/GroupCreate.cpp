@@ -1,12 +1,12 @@
-#include "everything/node/GroupCreate.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
-#include "everything/EvalContext.h"
-#include "everything/Evaluator.h"
+#include "sop/node/GroupCreate.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
+#include "sop/EvalContext.h"
+#include "sop/Evaluator.h"
 
 #include <SM_Calc.h>
 
-namespace evt
+namespace sop
 {
 namespace node
 {

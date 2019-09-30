@@ -1,8 +1,8 @@
-#include "everything/GroupRebuild.h"
-#include "everything/Group.h"
-#include "everything/GeometryImpl.h"
+#include "sop/GroupRebuild.h"
+#include "sop/Group.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 
 GroupRebuild::GroupRebuild(GeometryImpl& geo)

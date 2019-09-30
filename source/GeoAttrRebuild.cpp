@@ -1,7 +1,7 @@
-#include "everything/GeoAttrRebuild.h"
-#include "everything/GeometryImpl.h"
+#include "sop/GeoAttrRebuild.h"
+#include "sop/GeometryImpl.h"
 
-namespace evt
+namespace sop
 {
 
 GeoAttrRebuild::GeoAttrRebuild(GeometryImpl& geo)

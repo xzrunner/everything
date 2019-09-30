@@ -1,15 +1,15 @@
-#include "everything/node/ForeachPrimEnd.h"
-#include "everything/node/ForeachPrimBegin.h"
-#include "everything/Evaluator.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
-#include "everything/GroupRebuild.h"
+#include "sop/node/ForeachPrimEnd.h"
+#include "sop/node/ForeachPrimBegin.h"
+#include "sop/Evaluator.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
+#include "sop/GroupRebuild.h"
 
 #include <queue>
 
 #include <assert.h>
 
-namespace evt
+namespace sop
 {
 namespace node
 {

@@ -1,44 +1,44 @@
 // base
-#include "everything/node/Geometry.h"
+#include "sop/node/Geometry.h"
 // attribute
-#include "everything/node/AttributeWrangle.h"
-#include "everything/node/Measure.h"
-#include "everything/node/Sort.h"
+#include "sop/node/AttributeWrangle.h"
+#include "sop/node/Measure.h"
+#include "sop/node/Sort.h"
 // group
-#include "everything/node/GroupCreate.h"
-#include "everything/node/GroupExpression.h"
+#include "sop/node/GroupCreate.h"
+#include "sop/node/GroupExpression.h"
 // manipulate
-#include "everything/node/Delete.h"
-#include "everything/node/Transform.h"
+#include "sop/node/Delete.h"
+#include "sop/node/Transform.h"
 // material
-#include "everything/node/Color.h"
+#include "sop/node/Color.h"
 // nurbs
-#include "everything/node/Carve.h"
+#include "sop/node/Carve.h"
 // polygon
-#include "everything/node/Add.h"
-#include "everything/node/Boolean.h"
-#include "everything/node/Fuse.h"
-#include "everything/node/Knife.h"
-#include "everything/node/Normal.h"
-#include "everything/node/PolyExtrude.h"
-#include "everything/node/PolyFill.h"
+#include "sop/node/Add.h"
+#include "sop/node/Boolean.h"
+#include "sop/node/Fuse.h"
+#include "sop/node/Knife.h"
+#include "sop/node/Normal.h"
+#include "sop/node/PolyExtrude.h"
+#include "sop/node/PolyFill.h"
 // primitive
-#include "everything/node/Box.h"
-#include "everything/node/Curve.h"
-#include "everything/node/Line.h"
-#include "everything/node/Primitive.h"
-#include "everything/node/Sphere.h"
+#include "sop/node/Box.h"
+#include "sop/node/Curve.h"
+#include "sop/node/Line.h"
+#include "sop/node/Primitive.h"
+#include "sop/node/Sphere.h"
 // utility
-#include "everything/node/Blast.h"
-#include "everything/node/CopyToPoints.h"
-#include "everything/node/ForeachPrimBegin.h"
-#include "everything/node/ForeachPrimEnd.h"
-#include "everything/node/Merge.h"
-#include "everything/node/Null.h"
-#include "everything/node/Switch.h"
+#include "sop/node/Blast.h"
+#include "sop/node/CopyToPoints.h"
+#include "sop/node/ForeachPrimBegin.h"
+#include "sop/node/ForeachPrimEnd.h"
+#include "sop/node/Merge.h"
+#include "sop/node/Null.h"
+#include "sop/node/Switch.h"
 
 #define REGIST_NODE_TYPE(name)                                 \
-	rttr::registration::class_<evt::node::name>("evt::"#name)  \
+	rttr::registration::class_<sop::node::name>("sop::"#name)  \
 		.constructor<>()                                       \
 	;
 
@@ -94,7 +94,7 @@ REGIST_NODE_TYPE(Switch)
 
 }
 
-namespace evt
+namespace sop
 {
 
 void regist_rttr()

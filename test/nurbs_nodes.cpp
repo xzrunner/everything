@@ -1,19 +1,19 @@
 #include "utility.h"
 
-#include <everything/Evaluator.h>
-#include <everything/GeometryImpl.h>
-#include <everything/GeoAttrName.h>
+#include <sop/Evaluator.h>
+#include <sop/GeometryImpl.h>
+#include <sop/GeoAttrName.h>
 
-#include <everything/node/Carve.h>
+#include <sop/node/Carve.h>
 
-#include <everything/node/Line.h>
-#include <everything/node/Color.h>
-#include <everything/node/Box.h>
-#include <everything/node/Normal.h>
-#include <everything/node/GroupCreate.h>
-#include <everything/node/GroupExpression.h>
-#include <everything/node/Blast.h>
-#include <everything/node/Add.h>
+#include <sop/node/Line.h>
+#include <sop/node/Color.h>
+#include <sop/node/Box.h>
+#include <sop/node/Normal.h>
+#include <sop/node/GroupCreate.h>
+#include <sop/node/GroupExpression.h>
+#include <sop/node/Blast.h>
+#include <sop/node/Add.h>
 
 #include <catch/catch.hpp>
 
@@ -21,9 +21,9 @@ TEST_CASE("carve")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto line = std::make_shared<evt::node::Line>();
+    auto line = std::make_shared<sop::node::Line>();
 
     sm::vec3 ori(0, 0, 0);
     sm::vec3 dir(0, 1, 0);
@@ -37,14 +37,14 @@ TEST_CASE("carve")
 
     eval.AddNode(line);
 
-    auto color = std::make_shared<evt::node::Color>();
-    color->SetAttrAddTo(evt::GeoAttrType::Point);
+    auto color = std::make_shared<sop::node::Color>();
+    color->SetAttrAddTo(sop::GeoAttrType::Point);
     color->SetColor({ 0.3f, 0.4f, 0.5f });
     eval.AddNode(color);
 
     eval.Connect({ line, 0 }, { color, 0 });
 
-    auto carve = std::make_shared<evt::node::Carve>();
+    auto carve = std::make_shared<sop::node::Carve>();
     eval.AddNode(carve);
 
     eval.Connect({ color, 0 }, { carve, 0 });
@@ -60,16 +60,16 @@ TEST_CASE("carve")
         test::check_point(carve, 1, sm::vec3(0, 5, 0));
         test::check_point(carve, 2, sm::vec3(0, 10, 0));
 
-        test::check_attr_count(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 3);
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 1, evt::Variable(0.3f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 2, evt::Variable(0.3f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 1, evt::Variable(0.4f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 2, evt::Variable(0.4f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 1, evt::Variable(0.5f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 2, evt::Variable(0.5f));
+        test::check_attr_count(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 3);
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 1, sop::Variable(0.3f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 2, sop::Variable(0.3f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 1, sop::Variable(0.4f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 2, sop::Variable(0.4f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 1, sop::Variable(0.5f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 2, sop::Variable(0.5f));
     }
 
     SECTION("second u")
@@ -83,16 +83,16 @@ TEST_CASE("carve")
         test::check_point(carve, 1, sm::vec3(0, 5, 0));
         test::check_point(carve, 2, sm::vec3(0, 7, 0));
 
-        test::check_attr_count(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 3);
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 0, evt::Variable(0.3f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 1, evt::Variable(0.3f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 2, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 0, evt::Variable(0.4f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 1, evt::Variable(0.4f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 2, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 0, evt::Variable(0.5f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 1, evt::Variable(0.5f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 2, evt::Variable(0.0f));
+        test::check_attr_count(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 3);
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(0.3f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 1, sop::Variable(0.3f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 2, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 0, sop::Variable(0.4f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 1, sop::Variable(0.4f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 2, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 0, sop::Variable(0.5f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 1, sop::Variable(0.5f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 2, sop::Variable(0.0f));
     }
 
     SECTION("first and second u")
@@ -107,16 +107,16 @@ TEST_CASE("carve")
         test::check_point(carve, 1, sm::vec3(0, 5, 0));
         test::check_point(carve, 2, sm::vec3(0, 6, 0));
 
-        test::check_attr_count(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 3);
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 1, evt::Variable(0.3f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 2, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 1, evt::Variable(0.4f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 2, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 1, evt::Variable(0.5f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 2, evt::Variable(0.0f));
+        test::check_attr_count(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 3);
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 1, sop::Variable(0.3f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 2, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 1, sop::Variable(0.4f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 2, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 1, sop::Variable(0.5f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 2, sop::Variable(0.0f));
     }
 
     SECTION("first and second u inv")
@@ -131,25 +131,25 @@ TEST_CASE("carve")
         test::check_point(carve, 1, sm::vec3(0, 5, 0));
         test::check_point(carve, 2, sm::vec3(0, 6, 0));
 
-        test::check_attr_count(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 3);
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 1, evt::Variable(0.3f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_x, 2, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 1, evt::Variable(0.4f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 2, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 1, evt::Variable(0.5f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_z, 2, evt::Variable(0.0f));
+        test::check_attr_count(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 3);
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 1, sop::Variable(0.3f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 2, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 1, sop::Variable(0.4f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 2, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 1, sop::Variable(0.5f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 2, sop::Variable(0.0f));
     }
 
     SECTION("expr fit")
     {
-        auto& props = const_cast<evt::NodePropsMgr&>(carve->GetProps());
-        REQUIRE(props.Size() == evt::node::Carve::MAX_BUILD_IN_PROP);
+        auto& props = const_cast<sop::NodePropsMgr&>(carve->GetProps());
+        REQUIRE(props.Size() == sop::node::Carve::MAX_BUILD_IN_PROP);
 
-        props.SetExpr(evt::node::Carve::FIRST_U,  "fit(3, 0, 10, 0, 1)");
-        props.SetExpr(evt::node::Carve::SECOND_U, "1 - ch(\"domainu1\")");
+        props.SetExpr(sop::node::Carve::FIRST_U,  "fit(3, 0, 10, 0, 1)");
+        props.SetExpr(sop::node::Carve::SECOND_U, "1 - ch(\"domainu1\")");
 
         eval.Update();
 
@@ -158,7 +158,7 @@ TEST_CASE("carve")
         test::check_point(carve, 1, sm::vec3(0, 5, 0));
         test::check_point(carve, 2, sm::vec3(0, 7, 0));
 
-        test::check_attr_count(carve, evt::GeoAttrType::Point, evt::GeoAttrName::col_y, 3);
+        test::check_attr_count(carve, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 3);
     }
 }
 
@@ -166,58 +166,58 @@ TEST_CASE("carve normal")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     eval.AddNode(box);
 
-    auto group = std::make_shared<evt::node::GroupCreate>();
+    auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("Top");
-    group->SetGroupType(evt::GroupType::Primitives);
+    group->SetGroupType(sop::GroupType::Primitives);
     group->EnableKeepByNormals({ 0, 1, 0 }, 10);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
 
-    auto blast = std::make_shared<evt::node::Blast>();
+    auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("Top");
-    blast->SetGroupType(evt::GroupType::GuessFromGroup);
+    blast->SetGroupType(sop::GroupType::GuessFromGroup);
     blast->SetDeleteNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
 
-    auto normal = std::make_shared<evt::node::Normal>();
-    normal->SetAttrAddTo(evt::GeoAttrType::Point);
+    auto normal = std::make_shared<sop::node::Normal>();
+    normal->SetAttrAddTo(sop::GeoAttrType::Point);
     eval.AddNode(normal);
 
     eval.Connect({ blast, 0 }, { normal, 0 });
 
-    auto group_expr = std::make_shared<evt::node::GroupExpression>();
-    group_expr->SetGroupType(evt::GroupType::Points);
-    evt::node::GroupExpression::Instance inst;
+    auto group_expr = std::make_shared<sop::node::GroupExpression>();
+    group_expr->SetGroupType(sop::GroupType::Points);
+    sop::node::GroupExpression::Instance inst;
     inst.group_name = "test0";
     inst.expr_str = "@P.x < 0";
-    inst.merge_op = evt::GroupMerge::Union;
+    inst.merge_op = sop::GroupMerge::Union;
     group_expr->AddInstance(inst);
     eval.AddNode(group_expr);
 
     eval.Connect({ normal, 0 }, { group_expr, 0 });
 
-    auto blast2 = std::make_shared<evt::node::Blast>();
+    auto blast2 = std::make_shared<sop::node::Blast>();
     blast2->SetGroupName("test0");
-    blast2->SetGroupType(evt::GroupType::GuessFromGroup);
+    blast2->SetGroupType(sop::GroupType::GuessFromGroup);
     blast2->SetDeleteNonSelected(true);
     eval.AddNode(blast2);
 
     eval.Connect({ group_expr, 0 }, { blast2, 0 });
 
-    auto add = std::make_shared<evt::node::Add>();
+    auto add = std::make_shared<sop::node::Add>();
     eval.AddNode(add);
 
     eval.Connect({ blast2, 0 }, { add, 0 });
 
-    auto carve = std::make_shared<evt::node::Carve>();
+    auto carve = std::make_shared<sop::node::Carve>();
     eval.AddNode(carve);
 
     eval.Connect({ add, 0 }, { carve, 0 });
@@ -228,13 +228,13 @@ TEST_CASE("carve normal")
 
         eval.Update();
 
-        test::check_attr_count(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, 2);
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, 0, evt::Variable(1.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, 1, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, 1, evt::Variable(1.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, 1, evt::Variable(0.0f));
+        test::check_attr_count(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, 2);
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, 0, sop::Variable(1.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, 1, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, 1, sop::Variable(1.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, 1, sop::Variable(0.0f));
     }
 
     SECTION("end")
@@ -243,12 +243,12 @@ TEST_CASE("carve normal")
 
         eval.Update();
 
-        test::check_attr_count(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, 2);
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, 0, evt::Variable(1.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, 0, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_x, 1, evt::Variable(0.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_y, 1, evt::Variable(1.0f));
-        test::check_attr_value(carve, evt::GeoAttrType::Point, evt::GeoAttrName::norm_z, 1, evt::Variable(0.0f));
+        test::check_attr_count(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, 2);
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, 0, sop::Variable(1.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, 0, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, 1, sop::Variable(0.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, 1, sop::Variable(1.0f));
+        test::check_attr_value(carve, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, 1, sop::Variable(0.0f));
     }
 }

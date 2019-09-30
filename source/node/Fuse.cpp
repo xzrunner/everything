@@ -1,15 +1,15 @@
-#include "everything/node/Fuse.h"
-#include "everything/GeometryImpl.h"
-#include "everything/NodeHelper.h"
-#include "everything/GeoAttrRebuild.h"
-#include "everything/GroupRebuild.h"
+#include "sop/node/Fuse.h"
+#include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
+#include "sop/GeoAttrRebuild.h"
+#include "sop/GroupRebuild.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 #include <SM_Calc.h>
 
-namespace evt
+namespace sop
 {
 namespace node
 {

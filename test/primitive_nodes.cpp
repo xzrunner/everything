@@ -1,11 +1,11 @@
 #include "utility.h"
 
-#include <everything/Evaluator.h>
-#include <everything/GeometryImpl.h>
+#include <sop/Evaluator.h>
+#include <sop/GeometryImpl.h>
 
-#include <everything/node/Box.h>
-#include <everything/node/Curve.h>
-#include <everything/node/Line.h>
+#include <sop/node/Box.h>
+#include <sop/node/Curve.h>
+#include <sop/node/Line.h>
 
 #include <catch/catch.hpp>
 
@@ -13,9 +13,9 @@ TEST_CASE("box")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto box = std::make_shared<evt::node::Box>();
+    auto box = std::make_shared<sop::node::Box>();
     eval.AddNode(box);
 
     const sm::vec3 sz(2, 3, 4);
@@ -30,13 +30,13 @@ TEST_CASE("box")
 
     test::check_aabb(box, -h_sz, h_sz);
 
-    test::check_prop(box, "sizex", evt::Variable(2.0f));
+    test::check_prop(box, "sizex", sop::Variable(2.0f));
 
     const sm::vec3 off(10, 11, 12);
     box->SetCenter(off);
     eval.Update();
     test::check_aabb(box, -h_sz + off, h_sz + off);
-    test::check_prop(box, "ty", evt::Variable(11.0f));
+    test::check_prop(box, "ty", sop::Variable(11.0f));
 
     const sm::vec3 scale(5, 6, 7);
     box->SetScale(scale);
@@ -48,9 +48,9 @@ TEST_CASE("curve")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto curve = std::make_shared<evt::node::Curve>();
+    auto curve = std::make_shared<sop::node::Curve>();
     eval.AddNode(curve);
 
     SECTION("no loop")
@@ -91,9 +91,9 @@ TEST_CASE("line")
 {
     test::init();
 
-    evt::Evaluator eval;
+    sop::Evaluator eval;
 
-    auto line = std::make_shared<evt::node::Line>();
+    auto line = std::make_shared<sop::node::Line>();
     eval.AddNode(line);
 
     sm::vec3 ori(1, 2, 3);
