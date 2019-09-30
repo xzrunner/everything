@@ -25,6 +25,10 @@ public:
     void SetDistance(float dist);
 
 private:
+    void FuseBrush();
+    void FuseShape();
+
+private:
     float m_distance = 0.001f;
 
     RTTR_ENABLE(Node)

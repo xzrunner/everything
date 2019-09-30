@@ -246,7 +246,7 @@ TEST_CASE("boolean 2")
     }
 }
 
-TEST_CASE("fuse")
+TEST_CASE("fuse brush")
 {
     test::init();
 
@@ -315,6 +315,28 @@ TEST_CASE("fuse")
     test::check_halfedge_vertices_num(fuse, 12);
     test::check_halfedge_edges_num(fuse, 40);
     test::check_halfedge_faces_num(fuse, 10);
+}
+
+TEST_CASE("fuse polyline")
+{
+    test::init();
+
+    evt::Evaluator eval;
+
+    auto add = std::make_shared<evt::node::Add>();
+    const sm::vec3 p(0, 1, 0);
+    add->SetPoints({ p, p });
+    eval.AddNode(add);
+
+    auto fuse = std::make_shared<evt::node::Fuse>();
+    eval.AddNode(fuse);
+
+    eval.Connect({ add, 0 }, { fuse, 0 });
+
+    eval.Update();
+
+    test::check_points_num(fuse, 1);
+    test::check_point(fuse, 0, p);
 }
 
 TEST_CASE("knife box")

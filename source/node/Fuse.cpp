@@ -7,6 +7,7 @@
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
+#include <SM_Calc.h>
 
 namespace evt
 {
@@ -23,6 +24,32 @@ void Fuse::Execute(Evaluator& eval)
     }
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
+    switch (m_geo_impl->GetAdaptorType())
+    {
+    case GeoAdaptor::Type::Brush:
+        FuseBrush();
+        break;
+    case GeoAdaptor::Type::Shape:
+        FuseShape();
+        break;
+    default:
+        assert(0);
+    }
+}
+
+void Fuse::SetDistance(float dist)
+{
+    if (m_distance == dist) {
+        return;
+    }
+
+    m_distance = dist;
+
+    SetDirty(true);
+}
+
+void Fuse::FuseBrush()
+{
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {
         return;
@@ -45,15 +72,34 @@ void Fuse::Execute(Evaluator& eval)
     m_geo_impl->UpdateByBrush(*brush_model);
 }
 
-void Fuse::SetDistance(float dist)
+void Fuse::FuseShape()
 {
-    if (m_distance == dist) {
-        return;
+    // todo: group and attr
+
+    auto shapes = m_geo_impl->ToGeoShapes();
+    for (auto& shape : shapes)
+    {
+        if (shape->Type() != GeoShapeType::Polyline) {
+            continue;
+        }
+
+        auto& src = std::static_pointer_cast<GeoPolyline>(shape)->GetVertices();
+        if (src.size() < 2) {
+            continue;
+        }
+
+        std::vector<sm::vec3> dst;
+        dst.push_back(src[0]);
+        for (size_t i = 1, n = src.size(); i < n; ++i)
+        {
+            float dist = sm::dis_pos3_to_pos3(src[i - 1], src[i]);
+            if (dist >= m_distance) {
+                dst.push_back(src[i]);
+            }
+        }
+        shape = std::make_shared<GeoPolyline>(dst);
     }
-
-    m_distance = dist;
-
-    SetDirty(true);
+    m_geo_impl->FromGeoShapes(shapes);
 }
 
 }

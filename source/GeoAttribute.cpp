@@ -363,34 +363,38 @@ void GeoAttribute::FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& s
         case GeoShapeType::Polyline:
         {
             auto& vertices = static_cast<GeoPolyline*>(shape.get())->GetVertices();
-            if (vertices.size() < 2) {
-                return;
-            }
-            auto from_polyline = [&](const std::vector<sm::vec3>& vertices)
+            if (vertices.size() > 1)
             {
-                m_points.reserve(vertices.size());
-                auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonCurves);
-                prim->vertices.reserve(vertices.size());
-                for (auto& v : vertices)
+                auto from_polyline = [&](const std::vector<sm::vec3>& vertices)
                 {
-                    auto dst_p = std::make_shared<GeoAttribute::Point>(v);
-                    m_points.push_back(dst_p);
+                    m_points.reserve(vertices.size());
+                    auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonCurves);
+                    prim->vertices.reserve(vertices.size());
+                    for (auto& v : vertices)
+                    {
+                        auto dst_p = std::make_shared<GeoAttribute::Point>(v);
+                        m_points.push_back(dst_p);
 
-                    auto dst_v = std::make_shared<GeoAttribute::Vertex>();
-                    dst_v->point = dst_p;
-                    dst_v->prim = prim;
-                    m_vertices.push_back(dst_v);
+                        auto dst_v = std::make_shared<GeoAttribute::Vertex>();
+                        dst_v->point = dst_p;
+                        dst_v->prim = prim;
+                        m_vertices.push_back(dst_v);
 
-                    prim->vertices.push_back(dst_v);
+                        prim->vertices.push_back(dst_v);
+                    }
+                    m_primtives.push_back(prim);
+                };
+                if (vertices.front() == vertices.back()) {
+                    auto del_back = vertices;
+                    del_back.pop_back();
+                    from_polyline(del_back);
+                } else {
+                    from_polyline(vertices);
                 }
-                m_primtives.push_back(prim);
-            };
-            if (vertices.front() == vertices.back()) {
-                auto del_back = vertices;
-                del_back.pop_back();
-                from_polyline(del_back);
-            } else {
-                from_polyline(vertices);
+            }
+            else if (vertices.size() == 1)
+            {
+                m_points.push_back(std::make_shared<GeoAttribute::Point>(vertices[0]));
             }
         }
             break;
