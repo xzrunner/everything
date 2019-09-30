@@ -76,62 +76,122 @@ void CopyToPoints::EnableUsePointDir(bool enable)
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)
 {
-    auto& attr = m_geo_impl->GetAttr();
-    auto& to_attr = dst.GetAttr();
-    for (auto& to_p : to_attr.GetPoints())
+    std::shared_ptr<Group> tar_group = nullptr;
+    if (!m_target_group.empty())
     {
-        m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
-            attr.GetVertices().size(), attr.GetPrimtives().size());
-
-        GeoAttribute src_attr(src.GetAttr());
-        for (auto& p : src_attr.GetPoints()) {
-            p->pos += to_p->pos;
+        tar_group = dst.GetGroup().Query(m_target_group);
+        if (!tar_group || tar_group->type != GroupType::Points) {
+            return;
         }
-        attr.Combine(src_attr);
+    }
+
+    auto& pts = dst.GetAttr().GetPoints();
+    if (tar_group) {
+        for (auto i : tar_group->items) {
+            CopyTo(src, *pts[i]);
+        }
+    } else {
+        for (auto& p : pts) {
+            CopyTo(src, *p);
+        }
     }
 }
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const sm::ivec3& norm_idx)
 {
-    auto& attr = m_geo_impl->GetAttr();
-    auto& to_attr = dst.GetAttr();
-    for (auto& to_p : to_attr.GetPoints())
+    std::shared_ptr<Group> tar_group = nullptr;
+    if (!m_target_group.empty())
     {
-        m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
-            attr.GetVertices().size(), attr.GetPrimtives().size());
-
-        sm::vec3 norm;
-        norm.x = to_p->vars[norm_idx.x].f;
-        norm.y = to_p->vars[norm_idx.y].f;
-        norm.z = to_p->vars[norm_idx.z].f;
-
-        auto rot = sm::mat4(sm::Quaternion::CreateFromVectors(BASE_DIR, norm));
-
-        GeoAttribute src_attr(src.GetAttr());
-        for (auto& p : src_attr.GetPoints()) {
-            p->pos = rot * p->pos + to_p->pos;
+        tar_group = dst.GetGroup().Query(m_target_group);
+        if (!tar_group || tar_group->type != GroupType::Points) {
+            return;
         }
-        attr.Combine(src_attr);
+    }
+
+    auto& pts = dst.GetAttr().GetPoints();
+    if (tar_group) {
+        for (auto i : tar_group->items) {
+            CopyTo(src, *pts[i], norm_idx);
+        }
+    } else {
+        for (auto& p : pts) {
+            CopyTo(src, *p, norm_idx);
+        }
     }
 }
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const std::vector<sm::vec3>& norms)
 {
-    auto& attr = m_geo_impl->GetAttr();
-    auto& to_points = dst.GetAttr().GetPoints();
-    assert(to_points.size() == norms.size());
-    for (size_t i = 0, n = to_points.size(); i < n; ++i)
+    std::shared_ptr<Group> tar_group = nullptr;
+    if (!m_target_group.empty())
     {
-        m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
-            attr.GetVertices().size(), attr.GetPrimtives().size());
-
-        GeoAttribute src_attr(src.GetAttr());
-        auto rot = sm::mat4(sm::Quaternion::CreateFromVectors(BASE_DIR, norms[i]));
-        for (auto& p : src_attr.GetPoints()) {
-            p->pos = rot * p->pos + to_points[i]->pos;
+        tar_group = dst.GetGroup().Query(m_target_group);
+        if (!tar_group || tar_group->type != GroupType::Points) {
+            return;
         }
-        attr.Combine(src_attr);
     }
+
+    auto& pts = dst.GetAttr().GetPoints();
+    assert(pts.size() == norms.size());
+    if (tar_group) {
+        for (auto i : tar_group->items) {
+            CopyTo(src, *pts[i], norms[i]);
+        }
+    } else {
+        for (size_t i = 0, n = pts.size(); i < n; ++i) {
+            CopyTo(src, *pts[i], norms[i]);
+        }
+    }
+}
+
+void CopyToPoints::CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst)
+{
+    auto& attr = m_geo_impl->GetAttr();
+
+    m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
+        attr.GetVertices().size(), attr.GetPrimtives().size());
+
+    GeoAttribute src_attr(src.GetAttr());
+    for (auto& p : src_attr.GetPoints()) {
+        p->pos += dst.pos;
+    }
+    attr.Combine(src_attr);
+}
+
+void CopyToPoints::CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst, const sm::ivec3& norm_idx)
+{
+    auto& attr = m_geo_impl->GetAttr();
+
+    m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
+        attr.GetVertices().size(), attr.GetPrimtives().size());
+
+    sm::vec3 norm;
+    norm.x = dst.vars[norm_idx.x].f;
+    norm.y = dst.vars[norm_idx.y].f;
+    norm.z = dst.vars[norm_idx.z].f;
+
+    auto rot = sm::mat4(sm::Quaternion::CreateFromVectors(BASE_DIR, norm));
+
+    GeoAttribute src_attr(src.GetAttr());
+    for (auto& p : src_attr.GetPoints()) {
+        p->pos = rot * p->pos + dst.pos;
+    }
+    attr.Combine(src_attr);
+}
+
+void CopyToPoints::CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst, const sm::vec3& norm)
+{
+    auto& attr = m_geo_impl->GetAttr();
+
+    m_geo_impl->GetGroup().Combine(src.GetGroup(), attr.GetPoints().size(),
+        attr.GetVertices().size(), attr.GetPrimtives().size());
+
+    GeoAttribute src_attr(src.GetAttr());
+    auto rot = sm::mat4(sm::Quaternion::CreateFromVectors(BASE_DIR, norm));
+    for (auto& p : src_attr.GetPoints()) {
+        p->pos = rot * p->pos + dst.pos;
+    }
+    attr.Combine(src_attr);
 }
 
 }

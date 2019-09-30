@@ -1,6 +1,7 @@
 #pragma once
 
 #include "everything/Node.h"
+#include "everything/GeoAttribute.h"
 
 #include <SM_Vector.h>
 
@@ -35,6 +36,9 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
+    void SetSrcGroup(const std::string& group) { m_src_group = group; }
+    void SetTargetGroup(const std::string& group) { m_target_group = group; }
+
     void EnableUsePointDir(bool enable);
 
 private:
@@ -42,7 +46,14 @@ private:
     void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const sm::ivec3& norm_idx);
     void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const std::vector<sm::vec3>& norms);
 
+    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst);
+    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst, const sm::ivec3& norm_idx);
+    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst, const sm::vec3& norm);
+
 private:
+    std::string m_src_group;
+    std::string m_target_group;
+
     bool m_use_pt_dir = false;
 
     RTTR_ENABLE(Node)
