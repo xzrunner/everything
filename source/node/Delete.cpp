@@ -1,9 +1,10 @@
 #include "sop/node/Delete.h"
 #include "sop/GeometryImpl.h"
-#include "sop/GeoShape.h"
 #include "sop/Evaluator.h"
 #include "sop/EvalContext.h"
 #include "sop/NodeHelper.h"
+
+#include <halfedge/Polyline.h>
 
 namespace sop
 {
@@ -41,16 +42,18 @@ void Delete::Execute(Evaluator& eval)
         }
     }
 
-    if (!vertices.empty()) 
+    if (!vertices.empty())
     {
         m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
 
-        std::vector<std::shared_ptr<GeoShape>> shapes;
-        shapes.reserve(vertices.size());
+        std::vector<std::pair<he::TopoID, sm::vec3>> line_vertices;
+        std::vector<std::pair<he::TopoID, std::vector<size_t>>> line_polylines;
+        vertices.reserve(vertices.size());
         for (auto& v : vertices) {
-            shapes.push_back(std::make_shared<GeoPoint>(v));
+            line_vertices.push_back({ he::TopoID(), v });
         }
-        m_geo_impl->FromGeoShapes(shapes);
+        auto line = std::make_shared<he::Polyline>(line_vertices, line_polylines);
+        m_geo_impl->SetTopoLines({ line });
     }
 }
 

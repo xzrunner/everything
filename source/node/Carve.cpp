@@ -1,10 +1,10 @@
 #include "sop/node/Carve.h"
 #include "sop/GeometryImpl.h"
-#include "sop/GeoShape.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeoAttrHelper.h"
 
 #include <SM_Calc.h>
+#include <halfedge/Polyline.h>
 
 namespace sop
 {
@@ -20,19 +20,27 @@ void Carve::Execute(Evaluator& eval)
         return;
     }
 
-    auto prev_shapes = prev_geo->ToGeoShapes();
-    if (prev_shapes.empty()) {
+    auto lines = prev_geo->GetTopoLines();
+    if (lines.empty()) {
         return;
     }
 
     // todo: only support one shape
-    auto& prev_shape = prev_shapes.front();
+    auto& prev_line = lines.front();
     // todo: only support polyline now
-    if (prev_shape->Type() != GeoShapeType::Polyline) {
+    if (prev_line->GetPolylines().Size() == 0) {
         return;
     }
 
-    auto& vertices = static_cast<GeoPolyline*>(prev_shape.get())->GetVertices();
+    std::vector<sm::vec3> vertices;
+    auto polyline = prev_line->GetPolylines().Head();
+    assert(polyline);
+    auto first_edge = polyline->edge;
+    auto curr_edge = first_edge;
+    do {
+        vertices.push_back(curr_edge->vert->position);
+        curr_edge = curr_edge->next;
+    } while (curr_edge && curr_edge != first_edge);
     if (vertices.size() < 2) {
         return;
     }
@@ -138,7 +146,20 @@ void Carve::Execute(Evaluator& eval)
 
     assert(!dst_vertices.empty());
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
-    m_geo_impl->FromGeoShapes({ std::make_shared<GeoPolyline>(dst_vertices) });
+
+    std::vector<std::pair<he::TopoID, sm::vec3>> line_vertices;
+    std::vector<std::pair<he::TopoID, std::vector<size_t>>> line_polylines;
+    line_vertices.reserve(vertices.size());
+    for (auto& v : dst_vertices) {
+        line_vertices.push_back({ he::TopoID(), v });
+    }
+    std::vector<size_t> indices(dst_vertices.size());
+    for (size_t i = 0, n = dst_vertices.size(); i < n; ++i) {
+        indices[i] = i;
+    }
+    line_polylines.push_back({ he::TopoID(), { indices } });
+    auto line = std::make_shared<he::Polyline>(line_vertices, line_polylines);
+    m_geo_impl->SetTopoLines({ line });
 
     // update point attrs
     auto& prev_attr = prev_geo->GetAttr();

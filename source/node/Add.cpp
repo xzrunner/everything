@@ -2,6 +2,8 @@
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
 
+#include <halfedge/Polyline.h>
+
 namespace sop
 {
 namespace node
@@ -29,7 +31,19 @@ void Add::Execute(Evaluator& eval)
     std::copy(m_points.begin(), m_points.end(), std::back_inserter(vertices));
 
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
-    m_geo_impl->FromGeoShapes({ std::make_shared<GeoPolyline>(vertices) });
+    std::vector<std::pair<he::TopoID, sm::vec3>> line_vertices;
+    std::vector<std::pair<he::TopoID, std::vector<size_t>>> line_polylines;
+    line_vertices.reserve(vertices.size());
+    for (auto& v : vertices) {
+        line_vertices.push_back({ he::TopoID(), v });
+    }
+    std::vector<size_t> indices(vertices.size());
+    for (size_t i = 0, n = vertices.size(); i < n; ++i) {
+        indices[i] = i;
+    }
+    line_polylines.push_back({ he::TopoID(), { indices } });
+    auto line = std::make_shared<he::Polyline>(line_vertices, line_polylines);
+    m_geo_impl->SetTopoLines({ line });
 
     // update point attrs
     if (prev_geo)

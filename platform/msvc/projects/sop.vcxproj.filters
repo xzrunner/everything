@@ -178,9 +178,6 @@
     <ClInclude Include="..\..\..\include\sop\GroupMgr.h">
       <Filter>dataset\geo\group</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\GeoShape.h">
-      <Filter>dataset\geo\adaptor</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeoAttrType.h">
       <Filter>dataset\geo\attr</Filter>
     </ClInclude>
@@ -218,6 +215,9 @@
       <Filter>nodes\geometry\primitive</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
+    <ClInclude Include="..\..\..\include\sop\CompTopoPolyline.h">
+      <Filter>dataset\geo\adaptor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -350,6 +350,9 @@
       <Filter>nodes\geometry\primitive</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\SOP.cpp" />
+    <ClCompile Include="..\..\..\source\CompTopoPolyline.cpp">
+      <Filter>dataset\geo\adaptor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\include\sop\GeoAttribute.inl">

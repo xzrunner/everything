@@ -5,6 +5,7 @@
 #include "sop/VarValue.h"
 
 #include <SM_Cube.h>
+#include <halfedge/typedef.h>
 #include <halfedge/TopoID.h>
 
 #include <vector>
@@ -31,7 +32,7 @@ public:
 
         he::TopoID topo_id;
 
-        size_t brush_id = 0;
+        size_t prim_id = 0;
 
     }; // Point
 
@@ -73,7 +74,7 @@ public:
 
         he::TopoID topo_id;
 
-        size_t brush_id = 0;
+        size_t prim_id = 0;
 
     }; // Primitive
 
@@ -91,7 +92,6 @@ public:
 
 public:
     GeoAttribute() {}
-    GeoAttribute(const std::vector<std::shared_ptr<GeoShape>>& shapes);
     GeoAttribute(const GeoAttribute& attr);
     GeoAttribute& operator = (const GeoAttribute& attr);
 
@@ -109,7 +109,7 @@ public:
 
     void Combine(const GeoAttribute& attr);
 
-    void FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes);
+    void SetTopoLines(const std::vector<he::PolylinePtr>& lines);
 
     auto& GetAABB() const { return m_aabb; }
 

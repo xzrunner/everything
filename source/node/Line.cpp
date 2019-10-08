@@ -2,6 +2,8 @@
 #include "sop/GeometryImpl.h"
 #include "sop/GeoAdaptor.h"
 
+#include <halfedge/Polyline.h>
+
 namespace sop
 {
 namespace node
@@ -69,17 +71,27 @@ void Line::BuildModel()
         return;
     }
 
-    std::vector<sm::vec3> vertices;
-    vertices.reserve(m_points);
+    std::vector<std::pair<he::TopoID, sm::vec3>> line_vertices;
+    std::vector<std::pair<he::TopoID, std::vector<size_t>>> line_polylines;
+    line_vertices.reserve(m_points);
+    std::vector<size_t> indices(m_points);
+
     auto& props = m_props.GetProps();
     assert(props[LENGTH].Val().type == VarType::Float);
     const float length = props[LENGTH].Val().f;
     auto dt = m_direction * length / static_cast<float>(m_points - 1);
     auto v = m_origin;
-    for (size_t i = 0; i < m_points; ++i) {
-        vertices.push_back(v);
+    for (size_t i = 0; i < m_points; ++i)
+    {
+        line_vertices.push_back({ he::TopoID(), v });
         v += dt;
+        indices[i] = i;
     }
-    m_geo_impl->FromGeoShapes({ std::make_unique<GeoPolyline>(vertices) });
-}}
+    line_polylines.push_back({ he::TopoID(), { indices } });
+
+    auto line = std::make_shared<he::Polyline>(line_vertices, line_polylines);
+    m_geo_impl->SetTopoLines({ line });
+}
+
+}
 }

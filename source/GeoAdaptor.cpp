@@ -1,9 +1,10 @@
 #include "sop/GeoAdaptor.h"
 #include "sop/GroupMgr.h"
 #include "sop/GeoAttribute.h"
-#include "sop/GeoShape.h"
+#include "sop/CompTopoPolyline.h"
 
 #include <halfedge/Polyhedron.h>
+#include <halfedge/Polyline.h>
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 #include <model/BrushBuilder.h>
@@ -41,7 +42,7 @@ void GeoAdaptor::UpdateByBrush(GeoAttribute& attr, const model::BrushModel& brus
         model::BrushBuilder::PolymeshFromBrush(brush_model);
     UpdateModel(model);
 
-    StoreToAttr(attr, brush_model);
+    BrushToAttr(attr, brush_model);
 }
 
 void GeoAdaptor::StoreBrush(std::unique_ptr<model::BrushModel>& brush_model)
@@ -69,37 +70,18 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
     {
     case Type::Shape:
     {
-        std::vector<std::shared_ptr<GeoShape>> shapes;
+        std::vector<he::PolylinePtr> polylines;
+        AttrToLines(polylines, attr);
 
-        std::set<std::shared_ptr<GeoAttribute::Point>> points;
-        for (auto& p : attr.GetPoints()) {
-            points.insert(p);
-        }
-
-        for (auto& prim : attr.GetPrimtives())
-        {
-            assert(prim->type == GeoAttribute::Primitive::Type::PolygonCurves);
-            std::vector<sm::vec3> vertices;
-            vertices.reserve(prim->vertices.size());
-            for (auto& v : prim->vertices) {
-                points.erase(v->point);
-                vertices.push_back(v->point->pos);
-            }
-            shapes.push_back(std::make_unique<GeoPolyline>(vertices));
-        }
-
-        for (auto& p : points) {
-            shapes.push_back(std::make_unique<GeoPoint>(p->pos));
-        }
-
-        FromGeoShapes(shapes);
+        auto& cpolyline = m_node->GetUniqueComp<CompTopoPolyline>();
+        cpolyline.SetLines(polylines);
     }
         break;
     case Type::Brush:
     {
         auto brush_model = GetBrushModel();
         assert(brush_model);
-        LoadFromAttr(*brush_model, attr);
+        AttrToBrush(*brush_model, attr);
 
         std::shared_ptr<model::Model> model =
             model::BrushBuilder::PolymeshFromBrush(*brush_model);
@@ -111,83 +93,56 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
     }
 }
 
-std::vector<std::shared_ptr<GeoShape>>
-GeoAdaptor::ToGeoShapes() const
+std::vector<he::PolylinePtr>
+GeoAdaptor::GetTopoLines() const
 {
     assert(m_type == Type::Shape);
-
-    std::vector<std::shared_ptr<GeoShape>> ret;
-
-    auto shapes = GetGeoShapes();
-    ret.reserve(shapes.size());
-    for (auto& s : shapes)
-    {
-        auto type = s->get_type();
-        if (type == rttr::type::get<gs::Point3D>())
-        {
-            auto point = std::static_pointer_cast<gs::Point3D>(s);
-            ret.push_back(std::make_unique<GeoPoint>(point->GetPos()));
-        }
-        else if (type == rttr::type::get<gs::Polyline3D>())
-        {
-            auto polyline = std::static_pointer_cast<gs::Polyline3D>(s);
-            if (polyline->GetClosed()) {
-                auto vertices = polyline->GetVertices();
-                vertices.push_back(vertices.front());
-                ret.push_back(std::make_unique<GeoPolyline>(vertices));
-            } else {
-                ret.push_back(std::make_unique<GeoPolyline>(polyline->GetVertices()));
-            }
-        }
-        else
-        {
-            assert(0);
-        }
-    }
-
-    return ret;
+    assert(m_node->HasUniqueComp<CompTopoPolyline>());
+    auto& cpolyline = m_node->GetUniqueComp<CompTopoPolyline>();
+    return cpolyline.GetLines();
 }
 
-void GeoAdaptor::FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes)
+void GeoAdaptor::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
 {
-    if (shapes.empty()) {
-        return;
-    }
-
     assert(m_type == Type::Shape);
 
     std::vector<std::shared_ptr<gs::Shape3D>> gs_shapes;
-    for (auto& s : shapes)
+    for (auto& line : lines)
     {
-        switch (s->Type())
+        auto& pts = line->GetVertices();
+        auto& pls = line->GetPolylines();
+        if (pls.Size() == 0)
         {
-        case GeoShapeType::Point:
-        {
-            auto src = static_cast<GeoPoint*>(s.get());
-            auto dst = std::make_shared<gs::Point3D>(src->GetVertex());
-            gs_shapes.push_back(dst);
+            auto first_point = pts.Head();
+            auto curr_point = first_point;
+            do {
+                gs_shapes.push_back(std::make_shared<gs::Point3D>(curr_point->position));
+                curr_point = curr_point->linked_next;
+            } while (curr_point != first_point);
         }
-            break;
-        case GeoShapeType::Polyline:
+        else
         {
-            auto src = static_cast<GeoPolyline*>(s.get());
-            std::shared_ptr<gs::Polyline3D> dst = nullptr;
-            auto& vts = src->GetVertices();
-            if (vts.front() == vts.back()) {
-                auto del_end = vts;
-                del_end.pop_back();
-                dst = std::make_shared<gs::Polyline3D>(del_end, true);
-            }
-            else {
-                dst = std::make_shared<gs::Polyline3D>(vts, false);
-            }
-            gs_shapes.push_back(dst);
-        }
-            break;
-        default:
-            assert(0);
+            auto first_polyline = pls.Head();
+            auto curr_polyline = first_polyline;
+            do {
+                std::vector<sm::vec3> points;
+                auto first_edge = curr_polyline->edge;
+                auto curr_edge = first_edge;
+                do {
+                    points.push_back(curr_edge->vert->position);
+                    curr_edge = curr_edge->next;
+                } while (curr_edge && curr_edge != first_edge);
+
+                const bool loop = curr_edge == first_edge;
+                gs_shapes.push_back(std::make_shared<gs::Polyline3D>(points, loop));
+
+                curr_polyline = curr_polyline->linked_next;
+            } while (curr_polyline != first_polyline);
         }
     }
+
+    auto& ctopo = m_node->GetUniqueComp<CompTopoPolyline>();
+    ctopo.SetLines(lines);
 
     auto& cshape = m_node->GetSharedComp<n3::CompShape>();
     cshape.SetShapes(gs_shapes);
@@ -216,18 +171,6 @@ model::BrushModel* GeoAdaptor::GetBrushModel() const
     return brush_model;
 }
 
-std::vector<std::shared_ptr<gs::Shape3D>>
-GeoAdaptor::GetGeoShapes() const
-{
-    if (m_type != Type::Shape) {
-        return std::vector<std::shared_ptr<gs::Shape3D>>();
-    }
-
-    assert(m_node->HasSharedComp<n3::CompShape>());
-    auto& cshape = m_node->GetSharedComp<n3::CompShape>();
-    return cshape.GetShapes();
-}
-
 void GeoAdaptor::Init(const Type& type)
 {
     m_type = type;
@@ -236,6 +179,7 @@ void GeoAdaptor::Init(const Type& type)
     case Type::Shape:
         m_node = ns::NodeFactory::Create3D();
         m_node->AddSharedComp<n3::CompShape>();
+        m_node->AddUniqueComp<CompTopoPolyline>();
         break;
     case Type::Brush:
     {
@@ -278,12 +222,12 @@ void GeoAdaptor::UpdateModel(const std::shared_ptr<model::Model>& model)
     caabb.SetAABB(model->aabb);
 }
 
-void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
+void GeoAdaptor::BrushToAttr(GeoAttribute& dst, const model::BrushModel& src)
 {
     dst.Clear();
 
     auto& brushes = src.GetBrushes();
-    size_t brush_id = 0;
+    size_t prim_id = 0;
     for (auto& brush : brushes)
     {
         auto& points = brush.impl->Points();
@@ -294,16 +238,16 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
         for (auto& p : points)
         {
             auto point = std::make_shared<GeoAttribute::Point>(p->pos);
-            point->topo_id  = p->topo_id;
-            point->brush_id = brush_id;
+            point->topo_id = p->topo_id;
+            point->prim_id = prim_id;
             dst.m_points.push_back(point);
         }
 
         for (auto& f : faces)
         {
             auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonFace);
-            prim->topo_id  = f->topo_id;
-            prim->brush_id = brush_id;
+            prim->topo_id = f->topo_id;
+            prim->prim_id = prim_id;
             for (auto& p : f->points)
             {
                 auto v = std::make_shared<GeoAttribute::Vertex>();
@@ -315,13 +259,13 @@ void GeoAdaptor::StoreToAttr(GeoAttribute& dst, const model::BrushModel& src)
             dst.m_primtives.push_back(prim);
         }
 
-        ++brush_id;
+        ++prim_id;
     }
 
     dst.SetupAABB();
 }
 
-void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
+void GeoAdaptor::AttrToBrush(model::BrushModel& dst, const GeoAttribute& src)
 {
     struct Brush
     {
@@ -339,10 +283,10 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
         point->topo_id = p->topo_id;
 
         std::shared_ptr<Brush> b = nullptr;
-        auto itr = brushes.find(p->brush_id);
+        auto itr = brushes.find(p->prim_id);
         if (itr == brushes.end()) {
             b = std::make_shared<Brush>();
-            brushes.insert({ p->brush_id, b });
+            brushes.insert({ p->prim_id, b });
         } else {
             b = itr->second;
         }
@@ -356,7 +300,7 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
         if (prim->vertices.size() < 3) {
             continue;
         }
-        auto itr = brushes.find(prim->brush_id);
+        auto itr = brushes.find(prim->prim_id);
         if (itr == brushes.end()) {
             continue;
         }
@@ -368,7 +312,7 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
         face->topo_id = prim->topo_id;
         for (auto& v : prim->vertices)
         {
-            assert(v->point->brush_id == prim->brush_id);
+            assert(v->point->prim_id == prim->prim_id);
             auto itr = b->pt2idx.find(v->point);
             assert(itr != b->pt2idx.end());
             face->points.push_back(itr->second);
@@ -382,14 +326,134 @@ void GeoAdaptor::LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src)
     }
 
     std::vector<model::BrushModel::Brush> model_brushes;
-    model_brushes.resize(brushes.size());
-    size_t i = 0;
-    for (auto itr : brushes) {
-        model_brushes[i++].impl = std::make_shared<pm3::Polytope>(
+    for (auto itr : brushes)
+    {
+        if (itr.second->faces.empty()) {
+            continue;
+        }
+
+        model::BrushModel::Brush brush;
+        brush.impl = std::make_shared<pm3::Polytope>(
             itr.second->points, itr.second->faces
         );
+        model_brushes.push_back(brush);
     }
     dst.SetBrushes(model_brushes);
+}
+
+void GeoAdaptor::LinesToAttr(GeoAttribute& dst, const std::vector<he::PolylinePtr>& src)
+{
+    dst.Clear();
+
+    size_t prim_id = 0;
+    for (auto& polyline : src)
+    {
+        auto& vts = polyline->GetVertices();
+        auto& pls = polyline->GetPolylines();
+
+        std::map<he::Vertex*, std::shared_ptr<GeoAttribute::Point>> map_pt;
+
+        auto p_off = dst.m_points.size();
+
+        dst.m_points.reserve(vts.Size());
+        auto first_vertex = vts.Head();
+        auto curr_vertex = first_vertex;
+        do {
+            auto point = std::make_shared<GeoAttribute::Point>(curr_vertex->position);
+            point->topo_id = curr_vertex->ids;
+            point->prim_id = prim_id;
+            dst.m_points.push_back(point);
+            map_pt.insert({ curr_vertex, point });
+
+            curr_vertex = curr_vertex->linked_next;
+        } while (curr_vertex != first_vertex);
+
+        dst.m_primtives.reserve(pls.Size());
+        auto first_polyline = pls.Head();
+        auto curr_polyline = first_polyline;
+        do {
+            auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonFace);
+            prim->topo_id = curr_polyline->ids;
+            prim->prim_id = prim_id;
+            dst.m_primtives.push_back(prim);
+
+            auto first_edge = curr_polyline->edge;
+            auto curr_edge = first_edge;
+            do {
+                auto v = std::make_shared<GeoAttribute::Vertex>();
+                auto itr = map_pt.find(curr_edge->vert);
+                assert(itr != map_pt.end());
+                v->point = itr->second;
+                v->prim = prim;
+                prim->vertices.push_back(v);
+                dst.m_vertices.push_back(v);
+
+                curr_edge = curr_edge->next;
+            } while (curr_edge != first_edge);
+
+            curr_polyline = curr_polyline->linked_next;
+        } while (curr_polyline != first_polyline);
+
+        ++prim_id;
+    }
+
+    dst.SetupAABB();
+}
+
+void GeoAdaptor::AttrToLines(std::vector<he::PolylinePtr>& dst, const GeoAttribute& src)
+{
+    struct Polyline
+    {
+        std::vector<std::pair<he::TopoID, sm::vec3>> vertices;
+        std::vector<std::pair<he::TopoID, std::vector<size_t>>> polylines;
+
+        std::map<std::shared_ptr<GeoAttribute::Point>, size_t> pt2idx;
+    };
+    std::map<int, std::shared_ptr<Polyline>> polylines;
+
+    for (auto& p : src.m_points)
+    {
+        std::shared_ptr<Polyline> polyline = nullptr;
+        auto itr = polylines.find(p->prim_id);
+        if (itr == polylines.end()) {
+            polyline = std::make_shared<Polyline>();
+            polylines.insert({ p->prim_id, polyline });
+        } else {
+            polyline = itr->second;
+        }
+
+        polyline->pt2idx.insert({ p, polyline->vertices.size() });
+        polyline->vertices.push_back({ p->topo_id, p->pos });
+    }
+
+    for (auto& prim : src.m_primtives)
+    {
+        auto itr = polylines.find(prim->prim_id);
+        assert(itr != polylines.end());
+        if (itr == polylines.end()) {
+            continue;
+        }
+
+        auto polyline = itr->second;
+
+        std::vector<size_t> dst_indices;
+        dst_indices.reserve(prim->vertices.size());
+        for (auto& v : prim->vertices)
+        {
+            assert(v->point->prim_id == prim->prim_id);
+            auto itr = polyline->pt2idx.find(v->point);
+            assert(itr != polyline->pt2idx.end());
+            dst_indices.push_back(itr->second);
+        }
+        polyline->polylines.push_back({ prim->topo_id, dst_indices });
+    }
+
+    dst.reserve(polylines.size());
+    for (auto& polyline : polylines) {
+        dst.push_back(std::make_shared<he::Polyline>(
+            polyline.second->vertices, polyline.second->polylines
+        ));
+    }
 }
 
 }

@@ -23,16 +23,16 @@ void GeometryImpl::UpdateByAttr()
     m_adaptor.UpdateByAttr(m_attr);
 }
 
-std::vector<std::shared_ptr<GeoShape>>
-GeometryImpl::ToGeoShapes() const
+std::vector<he::PolylinePtr>
+GeometryImpl::GetTopoLines() const
 {
-    return m_adaptor.ToGeoShapes();
+    return m_adaptor.GetTopoLines();
 }
 
-void GeometryImpl::FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes)
+void GeometryImpl::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
 {
-    m_adaptor.FromGeoShapes(shapes);
-    m_attr.FromGeoShapes(shapes);
+    m_adaptor.SetTopoLines(lines);
+    m_attr.SetTopoLines(lines);
 }
 
 }

@@ -1,6 +1,6 @@
 #include "sop/GeoAttribute.h"
-#include "sop/GeoShape.h"
 
+#include <halfedge/Polyline.h>
 #include <SM_Plane.h>
 
 #include <map>
@@ -8,11 +8,6 @@
 
 namespace sop
 {
-
-GeoAttribute::GeoAttribute(const std::vector<std::shared_ptr<GeoShape>>& shapes)
-{
-    FromGeoShapes(shapes);
-}
 
 GeoAttribute::GeoAttribute(const GeoAttribute& attr)
 {
@@ -346,59 +341,59 @@ void GeoAttribute::Combine(const GeoAttribute& attr)
     SetupAABB();
 }
 
-void GeoAttribute::FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes)
+void GeoAttribute::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
 {
     Clear();
 
-    for (auto& shape : shapes)
+    std::map<he::Vertex*, std::shared_ptr<GeoAttribute::Point>> map_pt;
+
+    // Point
+    for (auto line : lines)
     {
-        switch (shape->Type())
-        {
-        case GeoShapeType::Point:
-        {
-            auto& vertex = static_cast<GeoPoint*>(shape.get())->GetVertex();
-            m_points.push_back(std::make_shared<GeoAttribute::Point>(vertex));
-        }
-            break;
-        case GeoShapeType::Polyline:
-        {
-            auto& vertices = static_cast<GeoPolyline*>(shape.get())->GetVertices();
-            if (vertices.size() > 1)
-            {
-                auto from_polyline = [&](const std::vector<sm::vec3>& vertices)
-                {
-                    m_points.reserve(vertices.size());
-                    auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonCurves);
-                    prim->vertices.reserve(vertices.size());
-                    for (auto& v : vertices)
-                    {
-                        auto dst_p = std::make_shared<GeoAttribute::Point>(v);
-                        m_points.push_back(dst_p);
+        auto& vts = line->GetVertices();
+        auto first_point = vts.Head();
+        auto curr_point = first_point;
+        do {
+            auto dst = std::make_shared<GeoAttribute::Point>(curr_point->position);
+            dst->topo_id = curr_point->ids;
+            m_points.push_back(dst);
+            map_pt.insert({ curr_point, dst });
 
-                        auto dst_v = std::make_shared<GeoAttribute::Vertex>();
-                        dst_v->point = dst_p;
-                        dst_v->prim = prim;
-                        m_vertices.push_back(dst_v);
+            curr_point = curr_point->linked_next;
+        } while (curr_point != first_point);
+    }
 
-                        prim->vertices.push_back(dst_v);
-                    }
-                    m_primtives.push_back(prim);
-                };
-                if (vertices.front() == vertices.back()) {
-                    auto del_back = vertices;
-                    del_back.pop_back();
-                    from_polyline(del_back);
-                } else {
-                    from_polyline(vertices);
-                }
-            }
-            else if (vertices.size() == 1)
-            {
-                m_points.push_back(std::make_shared<GeoAttribute::Point>(vertices[0]));
-            }
+    // Polyline
+    for (auto line : lines)
+    {
+        auto& src_lines = line->GetPolylines();
+        auto first_line = src_lines.Head();
+        if (!first_line) {
+            continue;
         }
-            break;
-        }
+        auto curr_line = first_line;
+        do {
+            auto first_edge = curr_line->edge;
+            auto curr_edge = first_edge;
+
+            auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonCurves);
+            do {
+                auto dst_v = std::make_shared<GeoAttribute::Vertex>();
+                auto itr = map_pt.find(curr_edge->vert);
+                assert(itr != map_pt.end());
+                dst_v->point = itr->second;
+                dst_v->prim  = prim;
+                m_vertices.push_back(dst_v);
+                prim->vertices.push_back(dst_v);
+
+                curr_edge = curr_edge->next;
+            } while (curr_edge && curr_edge != first_edge);
+
+            prim->topo_id = curr_line->ids;
+            m_primtives.push_back(prim);
+
+            curr_line = curr_line->linked_next;
+        } while (curr_line && curr_line != first_line);
     }
 
     SetupAABB();
@@ -587,10 +582,10 @@ void GeoAttribute::CombineBrushID(const GeoAttribute& attr)
     // prepare unique set
     std::set<size_t> src, dst;
     for (auto& p : attr.GetPoints()) {
-        src.insert(p->brush_id);
+        src.insert(p->prim_id);
     }
     for (auto& p : GetPoints()) {
-        dst.insert(p->brush_id);
+        dst.insert(p->prim_id);
     }
 
     // next id
@@ -620,13 +615,13 @@ void GeoAttribute::CombineBrushID(const GeoAttribute& attr)
             {
                 auto new_id = next_id++;
                 for (auto& p : GetPoints()) {
-                    if (p->brush_id == *s_itr) {
-                        p->brush_id = new_id;
+                    if (p->prim_id == *s_itr) {
+                        p->prim_id = new_id;
                     }
                 }
                 for (auto& prim : GetPrimtives()) {
-                    if (prim->brush_id == *s_itr) {
-                        prim->brush_id = new_id;
+                    if (prim->prim_id == *s_itr) {
+                        prim->prim_id = new_id;
                     }
                 }
                 ++s_itr;
@@ -667,7 +662,7 @@ void GeoAttribute::CombinePoints(const GeoAttribute& attr)
         auto point = std::make_shared<Point>(p->pos);
         point->vars = vars;
         point->topo_id = p->topo_id;
-        point->brush_id = p->brush_id;
+        point->prim_id = p->prim_id;
         m_points.push_back(point);
     }
 }
@@ -761,7 +756,7 @@ void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
         dst_prim->vertices.reserve(src_prim->vertices.size());
         for (auto& src_v : src_prim->vertices)
         {
-            assert(src_v->point->brush_id == src_prim->brush_id);
+            assert(src_v->point->prim_id == src_prim->prim_id);
             auto itr = vert2idx.find(src_v);
             assert(itr != vert2idx.end());
             auto v = m_vertices[ori_vt_count + itr->second];
@@ -770,7 +765,7 @@ void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
         }
 
         dst_prim->topo_id = src_prim->topo_id;
-        dst_prim->brush_id = src_prim->brush_id;
+        dst_prim->prim_id = src_prim->prim_id;
 
         m_primtives.push_back(dst_prim);
     }
@@ -947,8 +942,8 @@ GeoAttribute::Primitive::operator = (const Primitive& prim)
 {
     type     = prim.type;
     vars     = prim.vars;
-    topo_id  = prim.topo_id;
-    brush_id = prim.brush_id;
+    topo_id = prim.topo_id;
+    prim_id = prim.prim_id;
     return *this;
 }
 

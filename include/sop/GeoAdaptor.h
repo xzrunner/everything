@@ -1,11 +1,11 @@
 #pragma once
 
-#include "sop/GeoShape.h"
-
 #include <SM_Vector.h>
+#include <halfedge/typedef.h>
 #include <node0/typedef.h>
 
 #include <functional>
+#include <vector>
 
 namespace model { class BrushModel; struct Model; }
 namespace gs { class Shape3D; }
@@ -39,21 +39,23 @@ public:
 
     void UpdateByAttr(const GeoAttribute& attr);
 
-    std::vector<std::shared_ptr<GeoShape>> ToGeoShapes() const;
-    void FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes);
+    std::vector<he::PolylinePtr> GetTopoLines() const;
+    void SetTopoLines(const std::vector<he::PolylinePtr>& lines);
 
     // fixme: move to private
 public:
     model::BrushModel* GetBrushModel() const;
-    std::vector<std::shared_ptr<gs::Shape3D>> GetGeoShapes() const;
 
 private:
     void Init(const Type& type);
 
     void UpdateModel(const std::shared_ptr<model::Model>& model);
 
-    static void StoreToAttr(GeoAttribute& dst, const model::BrushModel& src);
-    static void LoadFromAttr(model::BrushModel& dst, const GeoAttribute& src);
+    static void BrushToAttr(GeoAttribute& dst, const model::BrushModel& src);
+    static void AttrToBrush(model::BrushModel& dst, const GeoAttribute& src);
+
+    static void LinesToAttr(GeoAttribute& dst, const std::vector<he::PolylinePtr>& src);
+    static void AttrToLines(std::vector<he::PolylinePtr>& dst, const GeoAttribute& src);
 
 private:
     Type m_type;

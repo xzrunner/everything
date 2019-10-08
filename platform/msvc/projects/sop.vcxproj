@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\sop\CompTopoPolyline.h" />
     <ClInclude Include="..\..\..\include\sop\EvalContext.h" />
     <ClInclude Include="..\..\..\include\sop\Evaluator.h" />
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
@@ -21,7 +22,6 @@
     <ClInclude Include="..\..\..\include\sop\GeoAttrRebuild.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAttrType.h" />
     <ClInclude Include="..\..\..\include\sop\GeometryImpl.h" />
-    <ClInclude Include="..\..\..\include\sop\GeoShape.h" />
     <ClInclude Include="..\..\..\include\sop\Group.h" />
     <ClInclude Include="..\..\..\include\sop\GroupRebuild.h" />
     <ClInclude Include="..\..\..\include\sop\GroupMgr.h" />
@@ -66,6 +66,7 @@
     <ClInclude Include="..\..\..\include\sop\VexFuncs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\source\CompTopoPolyline.cpp" />
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
     <ClCompile Include="..\..\..\source\SOP.cpp" />
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />

@@ -29,16 +29,13 @@ public:
     auto& GetAttr() { return m_attr; }
     auto& GetAttr() const { return m_attr; }
 
-    std::vector<std::shared_ptr<GeoShape>> ToGeoShapes() const;
-    void FromGeoShapes(const std::vector<std::shared_ptr<GeoShape>>& shapes);
+    std::vector<he::PolylinePtr> GetTopoLines() const;
+    void SetTopoLines(const std::vector<he::PolylinePtr>& lines);
 
     // fixme: move to private
 public:
     model::BrushModel* GetBrushModel() const {
         return m_adaptor.GetBrushModel();
-    }
-    std::vector<std::shared_ptr<gs::Shape3D>> GetGeoShapes() const {
-        return m_adaptor.GetGeoShapes();
     }
 
 private:
