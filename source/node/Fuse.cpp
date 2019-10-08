@@ -5,6 +5,7 @@
 #include "sop/GroupRebuild.h"
 
 #include <halfedge/Polyhedron.h>
+#include <halfedge/Polyline.h>
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
 #include <SM_Calc.h>
@@ -74,32 +75,14 @@ void Fuse::FuseBrush()
 
 void Fuse::FuseShape()
 {
-    // todo: group and attr
+    GroupRebuild group_rebuild(*m_geo_impl);
+    GeoAttrRebuild attr_rebuild(*m_geo_impl);
 
-    auto shapes = m_geo_impl->ToGeoShapes();
-    for (auto& shape : shapes)
-    {
-        if (shape->Type() != GeoShapeType::Polyline) {
-            continue;
-        }
-
-        auto& src = std::static_pointer_cast<GeoPolyline>(shape)->GetVertices();
-        if (src.size() < 2) {
-            continue;
-        }
-
-        std::vector<sm::vec3> dst;
-        dst.push_back(src[0]);
-        for (size_t i = 1, n = src.size(); i < n; ++i)
-        {
-            float dist = sm::dis_pos3_to_pos3(src[i - 1], src[i]);
-            if (dist >= m_distance) {
-                dst.push_back(src[i]);
-            }
-        }
-        shape = std::make_shared<GeoPolyline>(dst);
+    auto lines = m_geo_impl->GetTopoLines();
+    for (auto line : lines) {
+        line->Fuse(m_distance);
     }
-    m_geo_impl->FromGeoShapes(shapes);
+    m_geo_impl->SetTopoLines(lines);
 }
 
 }

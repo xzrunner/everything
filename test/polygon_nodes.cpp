@@ -328,15 +328,59 @@ TEST_CASE("fuse polyline")
     add->SetPoints({ p, p });
     eval.AddNode(add);
 
+    auto color = std::make_shared<sop::node::Color>();
+    color->SetColor(sm::vec3(1, 0, 0));
+    eval.AddNode(color);
+
+    eval.Connect({ add, 0 }, { color, 0 });
+
     auto fuse = std::make_shared<sop::node::Fuse>();
     eval.AddNode(fuse);
 
-    eval.Connect({ add, 0 }, { fuse, 0 });
+    eval.Connect({ color, 0 }, { fuse, 0 });
 
     eval.Update();
 
     test::check_points_num(fuse, 1);
     test::check_point(fuse, 0, p);
+    test::check_attr_value(fuse, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(1.0f));
+}
+
+TEST_CASE("fuse polyline2")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto add = std::make_shared<sop::node::Add>();
+    const sm::vec3 p(0, 1, 0);
+    add->SetPoints({ 
+        { 0, 1, 0 },
+        { 0, 2, 0 },
+        { 0, 2, 0 },
+        { 0, 3, 0 },
+        { 0, 4, 0 },
+        { 0, 4, 0 },
+        { 0, 4, 0 },
+    });
+    eval.AddNode(add);
+
+    auto color = std::make_shared<sop::node::Color>();
+    color->SetColor(sm::vec3(1, 0, 0));
+    eval.AddNode(color);
+
+    eval.Connect({ add, 0 }, { color, 0 });
+
+    auto fuse = std::make_shared<sop::node::Fuse>();
+    eval.AddNode(fuse);
+
+    eval.Connect({ color, 0 }, { fuse, 0 });
+
+    eval.Update();
+
+    test::check_points_num(fuse, 4);
+    test::check_point(fuse, 0, p);
+    test::check_attr_value(fuse, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(1.0f));
 }
 
 TEST_CASE("knife box")
