@@ -120,11 +120,49 @@ std::set<NodePtr> ForeachPrimEnd::FindClosureNodes(const NodePtr& begin) const
         }
 
         nodes.insert(n);
-        for (auto& out : n->GetExports()) {
-            for (auto& conn : out.conns) {
-                buf.push(conn.node.lock());
+        for (auto& out : n->GetExports())
+        {
+            for (auto& conn : out.conns)
+            {
+                auto node = conn.node.lock();
+                if (nodes.find(node) == nodes.end()) {
+                    buf.push(node);
+                }
             }
         }
+    }
+
+    // input nodes
+    std::vector<NodePtr> input_nodes;
+    for (auto node : nodes)
+    {
+        buf.push(node);
+        while (!buf.empty())
+        {
+            auto n = buf.front(); buf.pop();
+            assert(n);
+
+            if (n.get() == this || n == begin) {
+                continue;
+            }
+
+            if (nodes.find(n) == nodes.end()) {
+                input_nodes.push_back(n);
+            }
+            for (auto& in : n->GetImports())
+            {
+                for (auto& conn : in.conns)
+                {
+                    auto node = conn.node.lock();
+                    if (nodes.find(node) == nodes.end() && node != begin) {
+                        buf.push(node);
+                    }
+                }
+            }
+        }
+    }
+    for (auto n : input_nodes) {
+        nodes.insert(n);
     }
 
     return nodes;
