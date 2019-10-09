@@ -19,6 +19,7 @@
 #include <sop/node/Carve.h>
 #include <sop/node/Color.h>
 #include <sop/node/Normal.h>
+#include <sop/node/AttributeCreate.h>
 
 #include <catch/catch.hpp>
 
@@ -248,6 +249,73 @@ TEST_CASE("copy to points with attr")
     test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 13, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
 }
+
+TEST_CASE("copy to points with default attr scale")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto add = std::make_shared<sop::node::Add>();
+    add->SetPoints({ { 0, 0, 0 } });
+    eval.AddNode(add);
+
+    auto attr_create = std::make_shared<sop::node::AttributeCreate>();
+    attr_create->AddAttr(sop::GEO_ATTR_PSCALE, sop::GeoAttrType::Point, sop::VarValue(2.0f));
+    eval.AddNode(attr_create);
+
+    eval.Connect({ add, 0 }, { attr_create, 0 });
+
+    auto copy = std::make_shared<sop::node::CopyToPoints>();
+    eval.AddNode(copy);
+
+    eval.Connect({ box, 0 },         { copy, sop::node::CopyToPoints::IDX_SRC_PRIM });
+    eval.Connect({ attr_create, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
+
+    eval.Update();
+
+    test::check_aabb(copy, sm::vec3(-1, -1, -1), sm::vec3(1, 1, 1));
+}
+
+TEST_CASE("copy to points with default attr N up")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    box->SetSize({ 1, 2, 4 });
+    eval.AddNode(box);
+
+    auto add = std::make_shared<sop::node::Add>();
+    add->SetPoints({ { 0, 0, 0 } });
+    eval.AddNode(add);
+
+    auto attr_create = std::make_shared<sop::node::AttributeCreate>();
+    //attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrType::Point, sop::VarValue(sm::vec3(0, 1, 1)));
+    //attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrType::Point, sop::VarValue(sm::vec3(1, 1, 0)));
+    attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrType::Point, sop::VarValue(sm::vec3(0, 0, 1)));
+    attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrType::Point, sop::VarValue(sm::vec3(1, 1, 0)));
+    //attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrType::Point, sop::VarValue(sm::vec3(0, 1, 1)));
+    //attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrType::Point, sop::VarValue(sm::vec3(0, 1, 0)));
+    eval.AddNode(attr_create);
+
+    eval.Connect({ add, 0 }, { attr_create, 0 });
+
+    auto copy = std::make_shared<sop::node::CopyToPoints>();
+    eval.AddNode(copy);
+
+    eval.Connect({ box, 0 }, { copy, sop::node::CopyToPoints::IDX_SRC_PRIM });
+    eval.Connect({ attr_create, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
+
+    eval.Update();
+
+//    test::check_aabb(copy, sm::vec3(-1.10517f, -2.11114f, -2.11114f), sm::vec3(1.10517f, 2.11114f, 2.11114f));
+    test::check_aabb(copy, sm::vec3(-1.06066f, -1.06066f, -2), sm::vec3(1.06066f, 1.06066f, 2));
+//    test::check_aabb(copy, sm::vec3(-0.5f, -2.12132f, -2.12132f), sm::vec3(0.5f, 2.12132f, 2.12132f));
 }
 
 TEST_CASE("foreach primitive")

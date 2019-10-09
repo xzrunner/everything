@@ -3,7 +3,7 @@
 #include "sop/Node.h"
 #include "sop/GeoAttribute.h"
 
-#include <SM_Vector.h>
+#include <SM_Matrix.h>
 
 namespace sop
 {
@@ -43,12 +43,16 @@ public:
 
 private:
     void CopyTo(const GeometryImpl& src, const GeometryImpl& dst);
-    void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const sm::ivec3& norm_idx);
+    void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, size_t norm_idx);
     void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const std::vector<sm::vec3>& norms);
 
-    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst);
-    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst, const sm::ivec3& norm_idx);
-    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst, const sm::vec3& norm);
+    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst,
+        const std::vector<GeoAttribute::VarDesc>& desc);
+    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst,
+        const std::vector<GeoAttribute::VarDesc>& desc, const sm::vec3& norm);
+
+    sm::mat4 CalcMat(const GeoAttribute::Point& pt, const std::vector<GeoAttribute::VarDesc>& desc,
+        const sm::vec3& norm) const;
 
 private:
     std::string m_src_group;
