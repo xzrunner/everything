@@ -17,6 +17,7 @@
     <ClInclude Include="..\..\..\include\sop\CompTopoPolyline.h" />
     <ClInclude Include="..\..\..\include\sop\EvalContext.h" />
     <ClInclude Include="..\..\..\include\sop\Evaluator.h" />
+    <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h" />
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAdaptor.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAttribute.h" />
@@ -69,6 +70,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\CompTopoPolyline.cpp" />
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
+    <ClCompile Include="..\..\..\source\node\AttributeCreate.cpp" />
     <ClCompile Include="..\..\..\source\SOP.cpp" />
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />

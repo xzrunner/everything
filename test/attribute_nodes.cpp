@@ -2,6 +2,7 @@
 
 #include <sop/Evaluator.h>
 
+#include <sop/node/AttributeCreate.h>
 #include <sop/node/Measure.h>
 #include <sop/node/Sort.h>
 
@@ -9,6 +10,28 @@
 #include <sop/node/Box.h>
 
 #include <catch/catch.hpp>
+
+TEST_CASE("attribute create")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto add = std::make_shared<sop::node::Add>();
+    add->SetPoints({ {1, 1, 1} });
+    eval.AddNode(add);
+
+    auto attr_create = std::make_shared<sop::node::AttributeCreate>();
+    attr_create->AddAttr("new_attr", sop::GeoAttrType::Point, sop::GeoAttrVarType::Float, sop::VarValue(0.1f));
+    eval.AddNode(attr_create);
+
+    eval.Connect({ add, 0 }, { attr_create, 0 });
+
+    eval.Update();
+
+    test::check_attr_count(attr_create, sop::GeoAttrType::Point, "new_attr", 1);
+    test::check_attr_value(attr_create, sop::GeoAttrType::Point, "new_attr", 0, sop::Variable(0.1f));
+}
 
 TEST_CASE("measure box")
 {

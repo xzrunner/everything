@@ -221,6 +221,9 @@
     <ClInclude Include="..\..\..\include\sop\GeoAttrDefine.h">
       <Filter>dataset\geo\attr</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h">
+      <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -352,6 +355,9 @@
     <ClCompile Include="..\..\..\source\SOP.cpp" />
     <ClCompile Include="..\..\..\source\CompTopoPolyline.cpp">
       <Filter>dataset\geo\adaptor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\AttributeCreate.cpp">
+      <Filter>nodes\geometry\attribute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

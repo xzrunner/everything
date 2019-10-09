@@ -1,6 +1,7 @@
 // base
 #include "sop/node/Geometry.h"
 // attribute
+#include "sop/node/AttributeCreate.h"
 #include "sop/node/AttributeWrangle.h"
 #include "sop/node/Measure.h"
 #include "sop/node/Sort.h"
@@ -49,6 +50,7 @@ RTTR_REGISTRATION
 REGIST_NODE_TYPE(Geometry)
 
 // attribute
+REGIST_NODE_TYPE(AttributeCreate)
 REGIST_NODE_TYPE(AttributeWrangle)
 REGIST_NODE_TYPE(Measure)
 REGIST_NODE_TYPE(Sort)
