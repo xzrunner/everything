@@ -1,7 +1,7 @@
 #include "sop/node/Color.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeometryImpl.h"
-#include "sop/GeoAttrName.h"
+#include "sop/GeoAttrDefine.h"
 
 namespace sop
 {
@@ -40,12 +40,8 @@ void Color::Execute(Evaluator& eval)
         assert(0);
     }
 
-    std::vector<VarValue> r_vars(num, VarValue(m_color.x));
-    std::vector<VarValue> g_vars(num, VarValue(m_color.y));
-    std::vector<VarValue> b_vars(num, VarValue(m_color.z));
-    attr.AddAttr(m_attr_add_to, { GeoAttrName::col_x, VarType::Float }, r_vars);
-    attr.AddAttr(m_attr_add_to, { GeoAttrName::col_y, VarType::Float }, g_vars);
-    attr.AddAttr(m_attr_add_to, { GeoAttrName::col_z, VarType::Float }, b_vars);
+    std::vector<VarValue> vars(num, VarValue(m_color));
+    attr.AddAttr(m_attr_add_to, GEO_ATTR_CD, vars);
 }
 
 void Color::SetAttrAddTo(GeoAttrType attr)

@@ -1,7 +1,6 @@
 #include "sop/node/Carve.h"
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
-#include "sop/GeoAttrHelper.h"
 
 #include <SM_Calc.h>
 #include <halfedge/Polyline.h>
@@ -102,34 +101,29 @@ void Carve::Execute(Evaluator& eval)
     assert(s_idx_int <= e_idx_int);
 
     // calc normal
-    sm::ivec3 norm_idx;
-    bool has_norm = GeoAttrHelper::QueryNormalIndices(prev_geo->GetAttr(), GeoAttrType::Point, norm_idx);
+    int norm_idx = prev_geo->GetAttr().QueryAttrIdx(GeoAttrType::Point, GEO_ATTR_NORM);
     sm::vec3 s_norm, e_norm;
-    if (has_norm)
+    if (norm_idx >= 0)
     {
         auto& attr = prev_geo->GetAttr();
         if (s_idx_frac == 0)
         {
-            GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, s_idx_int, norm_idx, s_norm);
+            s_norm = *static_cast<const sm::vec3*>(attr.GetPoints()[s_idx_int]->vars[norm_idx].p);
         }
         else
         {
-            sm::vec3 prev, next;
-            bool b_prev = GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, s_idx_int, norm_idx, prev);
-            bool b_next = GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, s_idx_int + 1, norm_idx, next);
-            assert(b_prev && b_next);
+            auto prev = *static_cast<const sm::vec3*>(attr.GetPoints()[s_idx_int]->vars[norm_idx].p);
+            auto next = *static_cast<const sm::vec3*>(attr.GetPoints()[s_idx_int + 1]->vars[norm_idx].p);
             s_norm = prev + (next - prev) * s_idx_frac;
         }
         if (e_idx_frac == 0)
         {
-            GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, e_idx_int, norm_idx, e_norm);
+            e_norm = *static_cast<const sm::vec3*>(attr.GetPoints()[e_idx_int]->vars[norm_idx].p);
         }
         else
         {
-            sm::vec3 prev, next;
-            bool b_prev = GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, e_idx_int, norm_idx, prev);
-            bool b_next = GeoAttrHelper::GetNormal(attr, GeoAttrType::Point, e_idx_int + 1, norm_idx, next);
-            assert(b_prev && b_next);
+            auto prev = *static_cast<const sm::vec3*>(attr.GetPoints()[e_idx_int]->vars[norm_idx].p);
+            auto next = *static_cast<const sm::vec3*>(attr.GetPoints()[e_idx_int + 1]->vars[norm_idx].p);
             e_norm = prev + (next - prev) * e_idx_frac;
         }
     }
@@ -177,8 +171,8 @@ void Carve::Execute(Evaluator& eval)
         pts[idx++]->vars = prev_pts[s_idx_int]->vars;
     }  else  {
         pts[idx++]->vars = default_vars;
-        if (has_norm && s_idx_frac != 0) {
-            GeoAttrHelper::SetNormal(attr, pts[idx - 1]->vars, norm_idx, s_norm);
+        if (norm_idx >= 0 && s_idx_frac != 0) {
+            pts[idx - 1]->vars[norm_idx] = VarValue(s_norm);
         }
     }
     for (size_t i = s_idx_int + 1; i <= e_idx_int; ++i) {
@@ -189,8 +183,8 @@ void Carve::Execute(Evaluator& eval)
             pts[idx++]->vars = prev_pts[e_idx_int]->vars;
         } else {
             pts[idx++]->vars = default_vars;
-            if (has_norm && e_idx_frac != 0) {
-                GeoAttrHelper::SetNormal(attr, pts[idx - 1]->vars, norm_idx, e_norm);
+            if (norm_idx >= 0 && e_idx_frac != 0) {
+                pts[idx - 1]->vars[norm_idx] = VarValue(e_norm);
             }
         }
     }

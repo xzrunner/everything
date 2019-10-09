@@ -11,14 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrDefine.h" />
+    <ClInclude Include="..\..\..\include\sop\GeoAttrVarType.h" />
+    <ClInclude Include="..\..\..\include\sop\geo_attr_cfg.h" />
     <ClInclude Include="..\..\..\include\sop\CompTopoPolyline.h" />
     <ClInclude Include="..\..\..\include\sop\EvalContext.h" />
     <ClInclude Include="..\..\..\include\sop\Evaluator.h" />
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAdaptor.h" />
-    <ClInclude Include="..\..\..\include\sop\GeoAttrHelper.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAttribute.h" />
-    <ClInclude Include="..\..\..\include\sop\GeoAttrName.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAttrRebuild.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAttrType.h" />
     <ClInclude Include="..\..\..\include\sop\GeometryImpl.h" />
@@ -70,7 +71,6 @@
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
     <ClCompile Include="..\..\..\source\SOP.cpp" />
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
-    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttrRebuild.cpp" />
     <ClCompile Include="..\..\..\source\GeometryImpl.cpp" />

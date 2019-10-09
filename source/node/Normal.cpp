@@ -1,7 +1,7 @@
 #include "sop/node/Normal.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeometryImpl.h"
-#include "sop/GeoAttrName.h"
+#include "sop/GeoAttrDefine.h"
 
 #include <SM_Calc.h>
 
@@ -121,10 +121,8 @@ void Normal::AddToPoint()
     case GeoAdaptor::Type::Shape:
     {
         auto& attr = m_geo_impl->GetAttr();
-        std::vector<VarValue> zero_list(attr.GetPoints().size(), VarValue(0.0f));
-        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_x, VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_y, VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_z, VarType::Float }, zero_list);
+        std::vector<VarValue> vars(attr.GetPoints().size(), VarValue(sm::vec3(0, 0, 0)));
+        attr.AddAttr(GeoAttrType::Point, GEO_ATTR_NORM, vars);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -133,18 +131,11 @@ void Normal::AddToPoint()
         auto& attr = m_geo_impl->GetAttr();
         assert(norms.size() == attr.GetPoints().size());
 
-        std::vector<VarValue> x_list(norms.size(), VarValue(0.0f));
-        std::vector<VarValue> y_list(norms.size(), VarValue(0.0f));
-        std::vector<VarValue> z_list(norms.size(), VarValue(0.0f));
-        for (int i = 0, n = norms.size(); i < n; ++i)
-        {
-            x_list[i] = VarValue(norms[i].x);
-            y_list[i] = VarValue(norms[i].y);
-            z_list[i] = VarValue(norms[i].z);
+        std::vector<VarValue> vars;
+        for (auto& norm : norms) {
+            vars.push_back(VarValue(norm));
         }
-        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_x, VarType::Float }, x_list);
-        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_y, VarType::Float }, y_list);
-        attr.AddAttr(GeoAttrType::Point, { GeoAttrName::norm_z, VarType::Float }, z_list);
+        attr.AddAttr(GeoAttrType::Point, GEO_ATTR_NORM, vars);
     }
         break;
     default:
@@ -160,31 +151,23 @@ void Normal::AddToVertex()
     case GeoAdaptor::Type::Shape:
     {
         auto& attr = m_geo_impl->GetAttr();
-        std::vector<VarValue> zero_list(attr.GetVertices().size(), VarValue(0.0f));
-        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_x, VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_y, VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_z, VarType::Float }, zero_list);
+        std::vector<VarValue> vars(attr.GetVertices().size(), VarValue(sm::vec3(0, 0, 0)));
+        attr.AddAttr(GeoAttrType::Vertex, GEO_ATTR_NORM, vars);
     }
         break;
     case GeoAdaptor::Type::Brush:
     {
         auto& attr = m_geo_impl->GetAttr();
         auto& vts = attr.GetVertices();
-        std::vector<VarValue> x_list(vts.size(), VarValue(0.0f));
-        std::vector<VarValue> y_list(vts.size(), VarValue(0.0f));
-        std::vector<VarValue> z_list(vts.size(), VarValue(0.0f));
-        for (int i = 0, n = vts.size(); i < n; ++i)
+        std::vector<VarValue> vars;
+        for (auto& v : vts)
         {
-            auto prim = vts[i]->prim.lock();
+            auto prim = v->prim.lock();
             assert(prim);
             auto norm = CalcPrimNorm(*prim);
-            x_list[i] = VarValue(norm.x);
-            y_list[i] = VarValue(norm.y);
-            z_list[i] = VarValue(norm.z);
+            vars.push_back(VarValue(norm));
         }
-        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_x, VarType::Float }, x_list);
-        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_y, VarType::Float }, y_list);
-        attr.AddAttr(GeoAttrType::Vertex, { GeoAttrName::norm_z, VarType::Float }, z_list);
+        attr.AddAttr(GeoAttrType::Vertex, GEO_ATTR_NORM, vars);
     }
         break;
     default:
@@ -200,31 +183,22 @@ void Normal::AddToPrimitive()
     case GeoAdaptor::Type::Shape:
     {
         auto& attr = m_geo_impl->GetAttr();
-        std::vector<VarValue> zero_list(attr.GetPrimtives().size(), VarValue(0.0f));
-        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_x, VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_y, VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_z, VarType::Float }, zero_list);
+        std::vector<VarValue> vars(attr.GetPrimtives().size(), VarValue(sm::vec3(0, 0, 0)));
+        attr.AddAttr(GeoAttrType::Primitive, GEO_ATTR_NORM, vars);
     }
         break;
     case GeoAdaptor::Type::Brush:
     {
         auto& attr = m_geo_impl->GetAttr();
         auto& prims = attr.GetPrimtives();
-        std::vector<VarValue> x_list(prims.size(), VarValue(0.0f));
-        std::vector<VarValue> y_list(prims.size(), VarValue(0.0f));
-        std::vector<VarValue> z_list(prims.size(), VarValue(0.0f));
-        for (int i = 0, n = prims.size(); i < n; ++i)
+        std::vector<VarValue> vars;
+        for (auto& prim : prims)
         {
-            auto& prim = prims[i];
             assert(prim->vertices.size() > 2);
             auto norm = CalcPrimNorm(*prim);
-            x_list[i] = VarValue(norm.x);
-            y_list[i] = VarValue(norm.y);
-            z_list[i] = VarValue(norm.z);
+            vars.push_back(VarValue(norm));
         }
-        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_x, VarType::Float }, x_list);
-        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_y, VarType::Float }, y_list);
-        attr.AddAttr(GeoAttrType::Primitive, { GeoAttrName::norm_z, VarType::Float }, z_list);
+        attr.AddAttr(GeoAttrType::Primitive, GEO_ATTR_NORM, vars);
     }
         break;
     default:
@@ -240,10 +214,8 @@ void Normal::AddToDetail()
     case GeoAdaptor::Type::Shape:
     {
         auto& attr = m_geo_impl->GetAttr();
-        std::vector<VarValue> zero_list(1, VarValue(0.0f));
-        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_x, VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_y, VarType::Float }, zero_list);
-        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_z, VarType::Float }, zero_list);
+        std::vector<VarValue> vars(1, VarValue(sm::vec3(0, 0, 0)));
+        attr.AddAttr(GeoAttrType::Detail, GEO_ATTR_NORM, vars);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -256,12 +228,8 @@ void Normal::AddToDetail()
             norm = CalcPrimNorm(*prims[0]);
         }
 
-        std::vector<VarValue> x_list(1, VarValue(norm.x));
-        std::vector<VarValue> y_list(1, VarValue(norm.y));
-        std::vector<VarValue> z_list(1, VarValue(norm.z));
-        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_x, VarType::Float }, x_list);
-        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_y, VarType::Float }, y_list);
-        attr.AddAttr(GeoAttrType::Detail, { GeoAttrName::norm_z, VarType::Float }, z_list);
+        std::vector<VarValue> vars(1, VarValue(norm));
+        attr.AddAttr(GeoAttrType::Detail, GEO_ATTR_NORM, vars);
     }
         break;
     default:

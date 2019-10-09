@@ -186,7 +186,7 @@ void GeoAttribute::ChangePointsOrder(const std::vector<size_t>& order)
 }
 
 void GeoAttribute::AddAttr(GeoAttrType type, const VarDesc& var_desc,
-                              const std::vector<VarValue>& var_list)
+                           const std::vector<VarValue>& var_list)
 {
     assert(type >= static_cast<GeoAttrType>(0)
         && type < GeoAttrType::MaxTypeNum);
@@ -314,14 +314,16 @@ Variable GeoAttribute::QueryAttr(GeoAttrType type, const std::string& name, size
 
     switch (descs[attr_idx].type)
     {
-    case VarType::Bool:
+    case GeoAttrVarType::Bool:
         return Variable(val.b);
-    case VarType::Int:
+    case GeoAttrVarType::Int:
         return Variable(val.i);
-    case VarType::Float:
+    case GeoAttrVarType::Float:
         return Variable(val.f);
-    case VarType::Double:
+    case GeoAttrVarType::Double:
         return Variable(val.d);
+    case GeoAttrVarType::Vector:
+        return Variable(*static_cast<const sm::vec3*>(val.p));
     default:
         assert(0);
         return Variable();
@@ -412,17 +414,20 @@ std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrType type) const
     {
         switch (d.type)
         {
-        case VarType::Bool:
+        case GeoAttrVarType::Bool:
             ret.push_back(VarValue(false));
             break;
-        case VarType::Int:
+        case GeoAttrVarType::Int:
             ret.push_back(VarValue(0));
             break;
-        case VarType::Float:
+        case GeoAttrVarType::Float:
             ret.push_back(VarValue(0.0f));
             break;
-        case VarType::Double:
+        case GeoAttrVarType::Double:
             ret.push_back(VarValue(0.0));
+            break;
+        case GeoAttrVarType::Vector:
+            ret.push_back(VarValue(sm::vec3()));
             break;
         default:
             assert(0);
@@ -430,6 +435,17 @@ std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrType type) const
     }
 
     return ret;
+}
+
+int GeoAttribute::QueryAttrIdx(GeoAttrType cls, GeoAttr attr) const
+{
+    auto& desc = GetAttrDesc(cls);
+    for (int i = 0, n = desc.size(); i < n; ++i) {
+        if (desc[i].name == GeoAttrNames[attr]) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void GeoAttribute::Clear()
@@ -957,6 +973,24 @@ sm::vec3 GeoAttribute::Primitive::CalcNormal() const
         vertices[2]->point->pos
     );
     return plane.normal;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// struct GeoAttribute::VarDesc
+//////////////////////////////////////////////////////////////////////////
+
+GeoAttribute::VarDesc::VarDesc(GeoAttr attr)
+    : attr(attr)
+    , name(GeoAttrNames[attr])
+    , type(GeoAttrTypes[attr])
+{
+}
+
+GeoAttribute::VarDesc::VarDesc(const std::string& name, GeoAttrVarType type)
+    : attr(GEO_ATTR_UNKNOWN)
+    , name(name)
+    , type(type)
+{
 }
 
 }

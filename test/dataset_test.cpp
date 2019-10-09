@@ -2,7 +2,7 @@
 
 #include <sop/Evaluator.h>
 #include <sop/GeometryImpl.h>
-#include <sop/GeoAttrName.h>
+#include <sop/GeoAttrDefine.h>
 
 #include <sop/node/Box.h>
 #include <sop/node/Geometry.h>
@@ -329,10 +329,6 @@ TEST_CASE("attr blast")
 
     eval.Update();
 
-    test::check_attr_count(blast, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_x, 1);
-    test::check_attr_count(blast, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_y, 1);
-    test::check_attr_count(blast, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_z, 1);
-    test::check_attr_value(blast, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_x, 0, sop::Variable(0.0f));
-    test::check_attr_value(blast, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_y, 0, sop::Variable(1.0f));
-    test::check_attr_value(blast, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_z, 0, sop::Variable(0.0f));
+    test::check_attr_count(blast, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+    test::check_attr_value(blast, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
 }

@@ -2,7 +2,7 @@
 
 #include <sop/Evaluator.h>
 #include <sop/GeometryImpl.h>
-#include <sop/GeoAttrName.h>
+#include <sop/GeoAttrDefine.h>
 
 #include <sop/node/Blast.h>
 #include <sop/node/CopyToPoints.h>
@@ -243,12 +243,11 @@ TEST_CASE("copy to points with attr")
     eval.Update();
 
     test::check_points_num(copy, 16);
-    test::check_attr_count(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 16);
-    test::check_attr_count(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 16);
-    test::check_attr_count(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 16);
-    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 2, sop::Variable(0.3f));
-    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 7, sop::Variable(0.4f));
-    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 13, sop::Variable(0.5f));
+    test::check_attr_count(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 16);
+    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 13, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+}
 }
 
 TEST_CASE("foreach primitive")

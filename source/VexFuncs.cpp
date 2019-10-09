@@ -177,9 +177,9 @@ void SetupVexFuncs()
             attr_idx = desc.size();
 
             auto new_desc = desc;
-            new_desc.push_back({ attr_name, sop::VarType::Float });
+            new_desc.push_back({ attr_name, sop::GeoAttrVarType::Float });
             const_cast<sop::GeoAttribute&>(attr).SetAttrDesc(type, new_desc);
-            
+
             switch (type)
             {
             case sop::GeoAttrType::Point:

@@ -2,7 +2,7 @@
 
 #include <sop/Evaluator.h>
 #include <sop/GeometryImpl.h>
-#include <sop/GeoAttrName.h>
+#include <sop/GeoAttrDefine.h>
 
 #include <sop/node/Add.h>
 #include <sop/node/Boolean.h>
@@ -70,15 +70,12 @@ TEST_CASE("add to brush with attr")
     eval.Update();
 
     test::check_points_num(add, 10);
-    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 10);
-    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 10);
-    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 10);
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 6, sop::Variable(0.3f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 8, sop::Variable(0.0f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 2, sop::Variable(0.4f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 9, sop::Variable(0.0f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 7, sop::Variable(0.5f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 8, sop::Variable(0.0f));
+    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 10);
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 9, sop::Variable(sm::vec3(0, 0, 0)));
 }
 
 TEST_CASE("add to shape")
@@ -128,15 +125,11 @@ TEST_CASE("add to shape with attr")
     eval.Update();
 
     test::check_points_num(add, 4);
-    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 4);
-    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 4);
-    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 4);
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(0.3f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 2, sop::Variable(0.0f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 1, sop::Variable(0.4f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 3, sop::Variable(0.0f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 0, sop::Variable(0.5f));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 2, sop::Variable(0.0f));
+    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4);
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0, 0, 0)));
 }
 
 TEST_CASE("boolean")
@@ -343,7 +336,7 @@ TEST_CASE("fuse polyline")
 
     test::check_points_num(fuse, 1);
     test::check_point(fuse, 0, p);
-    test::check_attr_value(fuse, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(1.0f));
+    test::check_attr_value(fuse, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
 }
 
 TEST_CASE("fuse polyline2")
@@ -354,7 +347,7 @@ TEST_CASE("fuse polyline2")
 
     auto add = std::make_shared<sop::node::Add>();
     const sm::vec3 p(0, 1, 0);
-    add->SetPoints({ 
+    add->SetPoints({
         { 0, 1, 0 },
         { 0, 2, 0 },
         { 0, 2, 0 },
@@ -380,7 +373,7 @@ TEST_CASE("fuse polyline2")
 
     test::check_points_num(fuse, 4);
     test::check_point(fuse, 0, p);
-    test::check_attr_value(fuse, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 0, sop::Variable(1.0f));
+    test::check_attr_value(fuse, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
 }
 
 TEST_CASE("knife box")
@@ -512,9 +505,7 @@ TEST_CASE("normal box")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, 8);
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, 8);
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, 8);
+        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 8);
     }
 
     SECTION("add to vertex")
@@ -523,9 +514,7 @@ TEST_CASE("normal box")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_x, 24);
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_y, 24);
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_z, 24);
+        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 24);
     }
 
     SECTION("add to primitive")
@@ -534,9 +523,7 @@ TEST_CASE("normal box")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_x, 6);
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_y, 6);
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_z, 6);
+        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 6);
     }
 
     SECTION("add to detail")
@@ -545,12 +532,8 @@ TEST_CASE("normal box")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_x, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_y, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_z, 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_x, 0, sop::Variable(0.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_y, 0, sop::Variable(0.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_z, 0, sop::Variable(0.0f));
+        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 0, 0)));
     }
 }
 
@@ -590,13 +573,9 @@ TEST_CASE("normal plane")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, 4);
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, 4);
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, 4);
+        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
         for (int i = 0; i < 4; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, i, sop::Variable(0.0f));
-            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, i, sop::Variable(1.0f));
-            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, i, sop::Variable(0.0f));
+            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 1, 0)));
         }
     }
 
@@ -606,13 +585,9 @@ TEST_CASE("normal plane")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_x, 4);
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_y, 4);
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_z, 4);
+        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
         for (int i = 0; i < 4; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_x, i, sop::Variable(0.0f));
-            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_y, i, sop::Variable(1.0f));
-            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_z, i, sop::Variable(0.0f));
+            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 1, 0)));
         }
     }
 
@@ -622,12 +597,8 @@ TEST_CASE("normal plane")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_x, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_y, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_z, 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_x, 0, sop::Variable(0.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_y, 0, sop::Variable(1.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_z, 0, sop::Variable(0.0f));
+        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
     }
 
     SECTION("add to detail")
@@ -636,12 +607,8 @@ TEST_CASE("normal plane")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_x, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_y, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_z, 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_x, 0, sop::Variable(0.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_y, 0, sop::Variable(1.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_z, 0, sop::Variable(0.0f));
+        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
     }
 }
 
@@ -671,13 +638,9 @@ TEST_CASE("normal line")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, n);
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, n);
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, n);
+        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], n);
         for (int i = 0; i < n; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_x, i, sop::Variable(0.0f));
-            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_y, i, sop::Variable(0.0f));
-            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrName::norm_z, i, sop::Variable(0.0f));
+            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 0, 0)));
         }
     }
 
@@ -687,13 +650,9 @@ TEST_CASE("normal line")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_x, n);
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_y, n);
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_z, n);
+        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], n);
         for (int i = 0; i < n; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_x, i, sop::Variable(0.0f));
-            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_y, i, sop::Variable(0.0f));
-            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrName::norm_z, i, sop::Variable(0.0f));
+            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 0, 0)));
         }
     }
 
@@ -703,12 +662,8 @@ TEST_CASE("normal line")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_x, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_y, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_z, 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_x, 0, sop::Variable(0.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_y, 0, sop::Variable(0.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrName::norm_z, 0, sop::Variable(0.0f));
+        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 0, 0)));
     }
 
     SECTION("add to detail")
@@ -717,12 +672,8 @@ TEST_CASE("normal line")
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_x, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_y, 1);
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_z, 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_x, 0, sop::Variable(0.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_y, 0, sop::Variable(0.0f));
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrName::norm_z, 0, sop::Variable(0.0f));
+        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0 ,0, 0)));
     }
 }
 
@@ -902,10 +853,10 @@ TEST_CASE("poly fill")
 
         eval.Update();
 
-        test::check_attr_count(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 8);
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrName::col_x, 2, sop::Variable(0.3f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrName::col_y, 5, sop::Variable(0.4f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrName::col_z, 6, sop::Variable(0.5f));
+        test::check_attr_count(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8);
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 
     SECTION("vertex attr rebuild")
@@ -924,10 +875,10 @@ TEST_CASE("poly fill")
 
         eval.Update();
 
-        test::check_attr_count(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrName::col_x, 24);
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrName::col_x, 2, sop::Variable(0.3f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrName::col_y, 5, sop::Variable(0.4f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrName::col_z, 6, sop::Variable(0.5f));
+        test::check_attr_count(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 24);
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 
     SECTION("primitive attr rebuild")
@@ -946,13 +897,11 @@ TEST_CASE("poly fill")
 
         eval.Update();
 
-        test::check_attr_count(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrName::col_x, 6);
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrName::col_x, 1, sop::Variable(0.3f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrName::col_y, 3, sop::Variable(0.4f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrName::col_z, 4, sop::Variable(0.5f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrName::col_z, 5, sop::Variable(0.0f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrName::col_z, 5, sop::Variable(0.0f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrName::col_z, 5, sop::Variable(0.0f));
+        test::check_attr_count(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6);
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0, 0, 0)));
     }
 
     SECTION("detail attr rebuild")
@@ -971,9 +920,7 @@ TEST_CASE("poly fill")
 
         eval.Update();
 
-        test::check_attr_count(poly_fill, sop::GeoAttrType::Detail, sop::GeoAttrName::col_x, 0);
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Detail, sop::GeoAttrName::col_x, 0, sop::Variable(0.3f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Detail, sop::GeoAttrName::col_y, 0, sop::Variable(0.4f));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Detail, sop::GeoAttrName::col_z, 0, sop::Variable(0.5f));
+        test::check_attr_count(poly_fill, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0);
+        test::check_attr_value(poly_fill, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 }

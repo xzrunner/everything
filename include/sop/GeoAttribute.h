@@ -3,6 +3,8 @@
 #include "sop/GeoAttrType.h"
 #include "sop/Variable.h"
 #include "sop/VarValue.h"
+#include "sop/GeoAttrVarType.h"
+#include "sop/GeoAttrDefine.h"
 
 #include <SM_Cube.h>
 #include <halfedge/typedef.h>
@@ -86,8 +88,13 @@ public:
 
     struct VarDesc
     {
-        std::string name;
-        VarType     type;
+        VarDesc(GeoAttr attr);
+        VarDesc(const std::string& name, GeoAttrVarType type);
+
+        GeoAttr        attr = GEO_ATTR_UNKNOWN;
+
+        std::string    name;
+        GeoAttrVarType type;
     };
 
 public:
@@ -121,6 +128,8 @@ public:
     }
 
     std::vector<VarValue> GetDefaultValues(GeoAttrType type) const;
+
+    int QueryAttrIdx(GeoAttrType cls, GeoAttr attr) const;
 
     template<typename T>
     int QueryIndex(const T& i) const;

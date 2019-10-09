@@ -38,8 +38,8 @@ void CopyToPoints::Execute(Evaluator& eval)
     }
     else
     {
-        sm::ivec3 norm_idx;
-        if (!GeoAttrHelper::QueryNormalIndices(dst_geo->GetAttr(), GeoAttrType::Point, norm_idx))
+        int norm_idx = dst_geo->GetAttr().QueryAttrIdx(GeoAttrType::Point, GEO_ATTR_NORM);
+        if (norm_idx < 0)
         {
             auto dst_type = dst_geo->GetAdaptorType();
             switch (dst_type)

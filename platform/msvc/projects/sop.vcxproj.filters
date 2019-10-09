@@ -193,12 +193,6 @@
     <ClInclude Include="..\..\..\include\sop\node\Color.h">
       <Filter>nodes\geometry\material</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\GeoAttrName.h">
-      <Filter>dataset\geo\attr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\GeoAttrHelper.h">
-      <Filter>dataset\geo\attr</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\Fuse.h">
       <Filter>nodes\geometry\polygon</Filter>
     </ClInclude>
@@ -217,6 +211,15 @@
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
     <ClInclude Include="..\..\..\include\sop\CompTopoPolyline.h">
       <Filter>dataset\geo\adaptor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrVarType.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\geo_attr_cfg.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrDefine.h">
+      <Filter>dataset\geo\attr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -330,9 +333,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Color.cpp">
       <Filter>nodes\geometry\material</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\GeoAttrHelper.cpp">
-      <Filter>dataset\geo\attr</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Fuse.cpp">
       <Filter>nodes\geometry\polygon</Filter>
