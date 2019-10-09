@@ -5,12 +5,25 @@ namespace sop
 
 enum class GeoAttrType
 {
-    Point = 0,
-    Vertex,
-    Primitive,
-    Detail,
+    Int,
 
-    MaxTypeNum,
+    // todo
+    Bool,
+    Double,
+
+    Float,
+    Float2,
+    Float3,
+    Float4,
+
+    String,
+
+    Vector,
+    Vector4,
+
+    Matrix2,
+    Matrix3,
+    Matrix4,
 };
 
 }

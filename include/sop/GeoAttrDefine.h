@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sop/GeoAttrVarType.h"
+#include "sop/GeoAttrType.h"
 
 namespace sop
 {
@@ -21,12 +21,12 @@ static const char* GeoAttrNames[] =
     nullptr,
 };
 
-static const GeoAttrVarType GeoAttrTypes[] =
+static const GeoAttrType GeoAttrTypes[] =
 {
-#define GEO_ATTR_INFO(attr, name, type) GeoAttrVarType::type,
+#define GEO_ATTR_INFO(attr, name, type) GeoAttrType::type,
 #include "sop/geo_attr_cfg.h"
 #undef GEO_ATTR_INFO
-    GeoAttrVarType::Int,
+    GeoAttrType::Int,
 };
 
 }

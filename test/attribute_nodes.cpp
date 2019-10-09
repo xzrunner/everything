@@ -22,15 +22,15 @@ TEST_CASE("attribute create")
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    attr_create->AddAttr("new_attr", sop::GeoAttrType::Point, sop::GeoAttrVarType::Float, sop::VarValue(0.1f));
+    attr_create->AddAttr("new_attr", sop::GeoAttrClass::Point, sop::GeoAttrType::Float, sop::VarValue(0.1f));
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });
 
     eval.Update();
 
-    test::check_attr_count(attr_create, sop::GeoAttrType::Point, "new_attr", 1);
-    test::check_attr_value(attr_create, sop::GeoAttrType::Point, "new_attr", 0, sop::Variable(0.1f));
+    test::check_attr_count(attr_create, sop::GeoAttrClass::Point, "new_attr", 1);
+    test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
 }
 
 TEST_CASE("measure box")
@@ -53,8 +53,8 @@ TEST_CASE("measure box")
 
         eval.Update();
 
-        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "perimeter", 6);
-        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "perimeter", 3, sop::Variable(4.0f));
+        test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "perimeter", 6);
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "perimeter", 3, sop::Variable(4.0f));
     }
 
     SECTION("area")
@@ -63,8 +63,8 @@ TEST_CASE("measure box")
 
         eval.Update();
 
-        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "area", 6);
-        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "area", 2, sop::Variable(1.0f));
+        test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "area", 6);
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "area", 2, sop::Variable(1.0f));
     }
 }
 
@@ -94,8 +94,8 @@ TEST_CASE("measure polyline")
 
         eval.Update();
 
-        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "perimeter", 1);
-        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "perimeter", 0, sop::Variable(3.0f));
+        test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "perimeter", 1);
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "perimeter", 0, sop::Variable(3.0f));
     }
 
     SECTION("area")
@@ -104,8 +104,8 @@ TEST_CASE("measure polyline")
 
         eval.Update();
 
-        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "area", 1);
-        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "area", 0, sop::Variable(0.0f));
+        test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "area", 1);
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "area", 0, sop::Variable(0.0f));
     }
 }
 
@@ -130,8 +130,8 @@ TEST_CASE("measure rename")
 
         eval.Update();
 
-        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "test0", 6);
-        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "test0", 3, sop::Variable(4.0f));
+        test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "test0", 6);
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "test0", 3, sop::Variable(4.0f));
     }
 
     SECTION("area")
@@ -141,8 +141,8 @@ TEST_CASE("measure rename")
 
         eval.Update();
 
-        test::check_attr_count(measure, sop::GeoAttrType::Primitive, "test1", 6);
-        test::check_attr_value(measure, sop::GeoAttrType::Primitive, "test1", 2, sop::Variable(1.0f));
+        test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "test1", 6);
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "test1", 2, sop::Variable(1.0f));
     }
 }
 

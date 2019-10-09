@@ -50,8 +50,8 @@ void Add::Execute(Evaluator& eval)
     {
         auto& prev_attr = prev_geo->GetAttr();
         auto& attr = m_geo_impl->GetAttr();
-        attr.SetAttrDesc(GeoAttrType::Point,
-            prev_attr.GetAttrDesc(GeoAttrType::Point));
+        attr.SetAttrDesc(GeoAttrClass::Point,
+            prev_attr.GetAttrDesc(GeoAttrClass::Point));
 
         auto& prev_pts = prev_attr.GetPoints();
         auto& pts = attr.GetPoints();
@@ -61,7 +61,7 @@ void Add::Execute(Evaluator& eval)
         }
         if (pts.size() > prev_pts.size())
         {
-            auto default_vars = prev_attr.GetDefaultValues(GeoAttrType::Point);
+            auto default_vars = prev_attr.GetDefaultValues(GeoAttrClass::Point);
             for (int i = prev_pts.size(), n = pts.size(); i < n; ++i) {
                 pts[i]->vars = default_vars;
             }

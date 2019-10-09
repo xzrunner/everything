@@ -187,10 +187,10 @@ TEST_CASE("attr combine")
 
         eval.Update();
 
-        test::check_attr_count(merge, sop::GeoAttrType::Primitive, "perimeter", 7);
-        test::check_attr_value(merge, sop::GeoAttrType::Primitive, "perimeter", 3, sop::Variable(4.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Primitive, "perimeter", 4, sop::Variable(4.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Primitive, "perimeter", 6, sop::Variable(3.0f));
+        test::check_attr_count(merge, sop::GeoAttrClass::Primitive, "perimeter", 7);
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 3, sop::Variable(4.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 4, sop::Variable(4.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 6, sop::Variable(3.0f));
     }
 
     SECTION("area")
@@ -200,10 +200,10 @@ TEST_CASE("attr combine")
 
         eval.Update();
 
-        test::check_attr_count(merge, sop::GeoAttrType::Primitive, "area", 7);
-        test::check_attr_value(merge, sop::GeoAttrType::Primitive, "area", 2, sop::Variable(1.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Primitive, "area", 3, sop::Variable(1.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Primitive, "area", 6, sop::Variable(0.0f));
+        test::check_attr_count(merge, sop::GeoAttrClass::Primitive, "area", 7);
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 2, sop::Variable(1.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 3, sop::Variable(1.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 6, sop::Variable(0.0f));
     }
 }
 
@@ -246,12 +246,12 @@ setattrib(0, "point", "test1", @ptnum, 0, -@ptnum);
 
         eval.Update();
 
-        test::check_attr_count(merge, sop::GeoAttrType::Point, "test0", 16);
-        test::check_attr_count(merge, sop::GeoAttrType::Point, "test1", 16);
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test0", 3,  sop::Variable(3.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test0", 11, sop::Variable(0.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test1", 5,  sop::Variable(0.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test1", 13, sop::Variable(-5.0f));
+        test::check_attr_count(merge, sop::GeoAttrClass::Point, "test0", 16);
+        test::check_attr_count(merge, sop::GeoAttrClass::Point, "test1", 16);
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 3,  sop::Variable(3.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 11, sop::Variable(0.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 5,  sop::Variable(0.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 13, sop::Variable(-5.0f));
     }
 
     SECTION("same name")
@@ -265,11 +265,11 @@ setattrib(0, "point", "test0", @ptnum, 0, -@ptnum);
 
         eval.Update();
 
-        test::check_attr_count(merge, sop::GeoAttrType::Point, "test0", 16);
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test0", 3,  sop::Variable(3.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test0", 11, sop::Variable(-3.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test0", 5,  sop::Variable(5.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test0", 13, sop::Variable(-5.0f));
+        test::check_attr_count(merge, sop::GeoAttrClass::Point, "test0", 16);
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 3,  sop::Variable(3.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 11, sop::Variable(-3.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 5,  sop::Variable(5.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 13, sop::Variable(-5.0f));
     }
 
     SECTION("part same")
@@ -288,11 +288,11 @@ setattrib(0, "point", "test1", @ptnum, 0, -@ptnum);
 
         eval.Update();
 
-        test::check_attr_count(merge, sop::GeoAttrType::Point, "test0", 16);
-        test::check_attr_count(merge, sop::GeoAttrType::Point, "test1", 16);
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test0", 12, sop::Variable(1.1f));
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test1",  4, sop::Variable(0.0f));
-        test::check_attr_value(merge, sop::GeoAttrType::Point, "test1", 12, sop::Variable(-4.0f));
+        test::check_attr_count(merge, sop::GeoAttrClass::Point, "test0", 16);
+        test::check_attr_count(merge, sop::GeoAttrClass::Point, "test1", 16);
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 12, sop::Variable(1.1f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1",  4, sop::Variable(0.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 12, sop::Variable(-4.0f));
     }
 }
 
@@ -306,7 +306,7 @@ TEST_CASE("attr blast")
     eval.AddNode(box);
 
     auto normal = std::make_shared<sop::node::Normal>();
-    normal->SetAttrAddTo(sop::GeoAttrType::Primitive);
+    normal->SetAttrAddTo(sop::GeoAttrClass::Primitive);
     eval.AddNode(normal);
 
     eval.Connect({ box, 0 }, { normal, 0 });
@@ -329,6 +329,6 @@ TEST_CASE("attr blast")
 
     eval.Update();
 
-    test::check_attr_count(blast, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-    test::check_attr_value(blast, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
+    test::check_attr_count(blast, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+    test::check_attr_value(blast, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
 }

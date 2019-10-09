@@ -41,7 +41,7 @@ void Blast::Execute(Evaluator& eval)
         std::vector<bool> del_flags;
         if (SetupDelFlags(*group, attr.GetPoints().size(), del_flags))
         {
-            attr.RemoveItems(GeoAttrType::Point, del_flags, false);
+            attr.RemoveItems(GeoAttrClass::Point, del_flags, false);
             m_geo_impl->UpdateByAttr();
         }
     }
@@ -52,7 +52,7 @@ void Blast::Execute(Evaluator& eval)
         std::vector<bool> del_flags;
         if (SetupDelFlags(*group, attr.GetVertices().size(), del_flags))
         {
-            attr.RemoveItems(GeoAttrType::Vertex, del_flags, true);
+            attr.RemoveItems(GeoAttrClass::Vertex, del_flags, true);
             m_geo_impl->UpdateByAttr();
         }
     }
@@ -63,7 +63,7 @@ void Blast::Execute(Evaluator& eval)
         std::vector<bool> del_flags;
         if (SetupDelFlags(*group, attr.GetPrimtives().size(), del_flags))
         {
-            attr.RemoveItems(GeoAttrType::Primitive, del_flags, true);
+            attr.RemoveItems(GeoAttrClass::Primitive, del_flags, true);
             m_geo_impl->UpdateByAttr();
         }
     }

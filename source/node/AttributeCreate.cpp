@@ -26,16 +26,16 @@ void AttributeCreate::Execute(Evaluator& eval)
         size_t num = 0;
         switch (attr.cls)
         {
-        case GeoAttrType::Point:
+        case GeoAttrClass::Point:
             num = m_geo_impl->GetAttr().GetPoints().size();
             break;
-        case GeoAttrType::Vertex:
+        case GeoAttrClass::Vertex:
             num = m_geo_impl->GetAttr().GetVertices().size();
             break;
-        case GeoAttrType::Primitive:
+        case GeoAttrClass::Primitive:
             num = m_geo_impl->GetAttr().GetPrimtives().size();
             break;
-        case GeoAttrType::Detail:
+        case GeoAttrClass::Detail:
             num = 1;
             break;
         default:
@@ -47,14 +47,14 @@ void AttributeCreate::Execute(Evaluator& eval)
     }
 }
 
-void AttributeCreate::AddAttr(const std::string& name, GeoAttrType cls, GeoAttrVarType type, VarValue val)
+void AttributeCreate::AddAttr(const std::string& name, GeoAttrClass cls, GeoAttrType type, VarValue val)
 {
     m_attrs.push_back({ name, cls, type, val });
 
     SetDirty(true);
 }
 
-void AttributeCreate::AddAttr(GeoAttr attr, GeoAttrType cls, VarValue val)
+void AttributeCreate::AddAttr(GeoAttr attr, GeoAttrClass cls, VarValue val)
 {
     AddAttr(GeoAttrNames[attr], cls, GeoAttrTypes[attr], val);
 }

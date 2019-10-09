@@ -183,7 +183,7 @@ TEST_CASE("copy to points with points dir")
         eval.AddNode(to_box);
 
         auto normal = std::make_shared<sop::node::Normal>();
-        normal->SetAttrAddTo(sop::GeoAttrType::Point);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Point);
         eval.AddNode(normal);
 
         eval.Connect({ to_box, 0 }, { normal, 0 });
@@ -222,7 +222,7 @@ TEST_CASE("copy to points with attr")
     eval.AddNode(box);
 
     auto color = std::make_shared<sop::node::Color>();
-    color->SetAttrAddTo(sop::GeoAttrType::Point);
+    color->SetAttrAddTo(sop::GeoAttrClass::Point);
     color->SetColor({ 0.3f, 0.4f, 0.5f });
     eval.AddNode(color);
 
@@ -244,10 +244,10 @@ TEST_CASE("copy to points with attr")
     eval.Update();
 
     test::check_points_num(copy, 16);
-    test::check_attr_count(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 16);
-    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(copy, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 13, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_count(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 16);
+    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 13, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
 }
 
 TEST_CASE("copy to points with default attr scale")
@@ -264,7 +264,7 @@ TEST_CASE("copy to points with default attr scale")
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    attr_create->AddAttr(sop::GEO_ATTR_PSCALE, sop::GeoAttrType::Point, sop::VarValue(2.0f));
+    attr_create->AddAttr(sop::GEO_ATTR_PSCALE, sop::GeoAttrClass::Point, sop::VarValue(2.0f));
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });
@@ -295,12 +295,12 @@ TEST_CASE("copy to points with default attr N up")
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    //attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrType::Point, sop::VarValue(sm::vec3(0, 1, 1)));
-    //attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrType::Point, sop::VarValue(sm::vec3(1, 1, 0)));
-    attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrType::Point, sop::VarValue(sm::vec3(0, 0, 1)));
-    attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrType::Point, sop::VarValue(sm::vec3(1, 1, 0)));
-    //attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrType::Point, sop::VarValue(sm::vec3(0, 1, 1)));
-    //attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrType::Point, sop::VarValue(sm::vec3(0, 1, 0)));
+    //attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
+    //attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
+    attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 0, 1)));
+    attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
+    //attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
+    //attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 0)));
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });

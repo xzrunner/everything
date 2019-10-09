@@ -181,7 +181,7 @@ void ForeachPrimEnd::DoOnePass(Evaluator& sub_eval, const NodePtr& begin,
 
         GroupRebuild group_rebuild(*geo_impl);
 
-        geo_impl->GetAttr().RemoveItems(GeoAttrType::Primitive, del_flags, true);
+        geo_impl->GetAttr().RemoveItems(GeoAttrClass::Primitive, del_flags, true);
         geo_impl->UpdateByAttr();
 
         std::static_pointer_cast<node::ForeachPrimBegin>(begin)->SetGeoImpl(geo_impl);

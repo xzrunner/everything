@@ -62,7 +62,7 @@ void CopyToPoints::Execute(Evaluator& eval)
     }
     else
     {
-        int norm_idx = dst_geo->GetAttr().QueryAttrIdx(GeoAttrType::Point, GEO_ATTR_NORM);
+        int norm_idx = dst_geo->GetAttr().QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
         if (norm_idx < 0)
         {
             auto dst_type = dst_geo->GetAdaptorType();
@@ -112,11 +112,11 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)
     auto& pts = dst.GetAttr().GetPoints();
     if (tar_group) {
         for (auto i : tar_group->items) {
-            CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrType::Point));
+            CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point));
         }
     } else {
         for (auto& p : pts) {
-            CopyTo(src, *p, dst.GetAttr().GetAttrDesc(GeoAttrType::Point));
+            CopyTo(src, *p, dst.GetAttr().GetAttrDesc(GeoAttrClass::Point));
         }
     }
 }
@@ -135,12 +135,12 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, size
     auto& pts = dst.GetAttr().GetPoints();
     if (tar_group) {
         for (auto i : tar_group->items) {
-            CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrType::Point),
+            CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point),
                 *static_cast<const sm::vec3*>(pts[i]->vars[norm_idx].p));
         }
     } else {
         for (auto& p : pts) {
-            CopyTo(src, *p, dst.GetAttr().GetAttrDesc(GeoAttrType::Point),
+            CopyTo(src, *p, dst.GetAttr().GetAttrDesc(GeoAttrClass::Point),
                 *static_cast<const sm::vec3*>(p->vars[norm_idx].p));
         }
     }
@@ -161,11 +161,11 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, cons
     assert(pts.size() == norms.size());
     if (tar_group) {
         for (auto i : tar_group->items) {
-            CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrType::Point), norms[i]);
+            CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point), norms[i]);
         }
     } else {
         for (size_t i = 0, n = pts.size(); i < n; ++i) {
-            CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrType::Point), norms[i]);
+            CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point), norms[i]);
         }
     }
 }
@@ -278,7 +278,7 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     // pivot matrix (translate by -pivot)
     int pivot_idx = QueryAttrIdx(desc, GEO_ATTR_PIVOT);
     if (pivot_idx >= 0) {
-        assert(desc[pivot_idx].type == GeoAttrVarType::Vector);
+        assert(desc[pivot_idx].type == GeoAttrType::Vector);
         auto pivot = *static_cast<const sm::vec3*>(pt.vars[pivot_idx].p);
         x_mt = sm::mat4::Translated(-pivot.x, -pivot.y, -pivot.z);
     }
@@ -286,7 +286,7 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     // orient matrix
     int orient_idx = QueryAttrIdx(desc, GEO_ATTR_ORIENT);
     if (orient_idx >= 0) {
-        assert(desc[orient_idx].type == GeoAttrVarType::Float4);
+        assert(desc[orient_idx].type == GeoAttrType::Float4);
         auto orient = *static_cast<const sm::vec4*>(pt.vars[orient_idx].p);
         o_mt = sm::mat4(sm::Quaternion(orient.x, orient.y, orient.z, orient.w));
     }
@@ -294,13 +294,13 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     // scale matrix (scale * pscale)
     int pscale_idx = QueryAttrIdx(desc, GEO_ATTR_PSCALE);
     if (pscale_idx >= 0) {
-        assert(desc[pscale_idx].type == GeoAttrVarType::Float);
+        assert(desc[pscale_idx].type == GeoAttrType::Float);
         auto pscale = pt.vars[pscale_idx].f;
         s_mt = s_mt * sm::mat4::Scaled(pscale, pscale, pscale);
     }
     int scale_idx = QueryAttrIdx(desc, GEO_ATTR_SCALE);
     if (scale_idx >= 0) {
-        assert(desc[scale_idx].type == GeoAttrVarType::Vector);
+        assert(desc[scale_idx].type == GeoAttrType::Vector);
         auto scale = *static_cast<const sm::vec3*>(pt.vars[scale_idx].p);
         s_mt = s_mt * sm::mat4::Scaled(scale.x, scale.y, scale.z);
     }
@@ -309,21 +309,21 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     sm::vec3 N, v, up;
     int norm_idx = QueryAttrIdx(desc, GEO_ATTR_NORM);
     if (norm_idx >= 0) {
-        assert(desc[norm_idx].type == GeoAttrVarType::Vector);
+        assert(desc[norm_idx].type == GeoAttrType::Vector);
         N = *static_cast<const sm::vec3*>(pt.vars[norm_idx].p);
     } else {
         N = norm;
     }
     int spd_idx = QueryAttrIdx(desc, GEO_ATTR_SPD);
     if (spd_idx >= 0) {
-        assert(desc[spd_idx].type == GeoAttrVarType::Vector);
+        assert(desc[spd_idx].type == GeoAttrType::Vector);
         v = *static_cast<const sm::vec3*>(pt.vars[spd_idx].p);
     } else {
         v.MakeInvalid();
     }
     int up_idx = QueryAttrIdx(desc, GEO_ATTR_UP);
     if (up_idx >= 0) {
-        assert(desc[up_idx].type == GeoAttrVarType::Vector);
+        assert(desc[up_idx].type == GeoAttrType::Vector);
         up = *static_cast<const sm::vec3*>(pt.vars[up_idx].p);
     } else {
         up.MakeInvalid();
@@ -341,7 +341,7 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     // rot matrix
     int rot_idx = QueryAttrIdx(desc, GEO_ATTR_ROT);
     if (rot_idx >= 0) {
-        assert(desc[rot_idx].type == GeoAttrVarType::Float4);
+        assert(desc[rot_idx].type == GeoAttrType::Float4);
         auto rot = *static_cast<const sm::vec4*>(pt.vars[rot_idx].p);
         r_mt = sm::mat4(sm::Quaternion(rot.x, rot.y, rot.z, rot.w));
     }
@@ -350,7 +350,7 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     t_mt = t_mt * sm::mat4::Translated(pt.pos.x, pt.pos.y, pt.pos.z);
     int trans_idx = QueryAttrIdx(desc, GEO_ATTR_TRANS);
     if (trans_idx >= 0) {
-        assert(desc[trans_idx].type == GeoAttrVarType::Float);
+        assert(desc[trans_idx].type == GeoAttrType::Float);
         auto trans = *static_cast<const sm::vec4*>(pt.vars[trans_idx].p);
         t_mt = t_mt * sm::mat4::Translated(trans.x, trans.y, trans.z);
     }

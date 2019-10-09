@@ -2,7 +2,7 @@
 
 #include "sop/Node.h"
 #include "sop/Group.h"
-#include "sop/GeoAttrType.h"
+#include "sop/GeoAttrClass.h"
 
 namespace sop
 {

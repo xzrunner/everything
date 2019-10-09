@@ -54,7 +54,7 @@ TEST_CASE("add to brush with attr")
     eval.AddNode(box);
 
     auto color = std::make_shared<sop::node::Color>();
-    color->SetAttrAddTo(sop::GeoAttrType::Point);
+    color->SetAttrAddTo(sop::GeoAttrClass::Point);
     color->SetColor({ 0.3f, 0.4f, 0.5f });
     eval.AddNode(color);
 
@@ -70,12 +70,12 @@ TEST_CASE("add to brush with attr")
     eval.Update();
 
     test::check_points_num(add, 10);
-    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 10);
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8, sop::Variable(sm::vec3(0, 0, 0)));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 9, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_count(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 10);
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 9, sop::Variable(sm::vec3(0, 0, 0)));
 }
 
 TEST_CASE("add to shape")
@@ -109,7 +109,7 @@ TEST_CASE("add to shape with attr")
     eval.AddNode(line);
 
     auto color = std::make_shared<sop::node::Color>();
-    color->SetAttrAddTo(sop::GeoAttrType::Point);
+    color->SetAttrAddTo(sop::GeoAttrClass::Point);
     color->SetColor({ 0.3f, 0.4f, 0.5f });
     eval.AddNode(color);
 
@@ -125,11 +125,11 @@ TEST_CASE("add to shape with attr")
     eval.Update();
 
     test::check_points_num(add, 4);
-    test::check_attr_count(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4);
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0, 0, 0)));
-    test::check_attr_value(add, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_count(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4);
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0, 0, 0)));
 }
 
 TEST_CASE("boolean")
@@ -336,7 +336,7 @@ TEST_CASE("fuse polyline")
 
     test::check_points_num(fuse, 1);
     test::check_point(fuse, 0, p);
-    test::check_attr_value(fuse, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
+    test::check_attr_value(fuse, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
 }
 
 TEST_CASE("fuse polyline2")
@@ -373,7 +373,7 @@ TEST_CASE("fuse polyline2")
 
     test::check_points_num(fuse, 4);
     test::check_point(fuse, 0, p);
-    test::check_attr_value(fuse, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
+    test::check_attr_value(fuse, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
 }
 
 TEST_CASE("knife box")
@@ -501,39 +501,39 @@ TEST_CASE("normal box")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Point);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Point);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 8);
+        test::check_attr_count(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 8);
     }
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Vertex);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Vertex);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 24);
+        test::check_attr_count(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 24);
     }
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Primitive);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Primitive);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 6);
+        test::check_attr_count(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 6);
     }
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Detail);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Detail);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 0, 0)));
+        test::check_attr_count(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 0, 0)));
     }
 }
 
@@ -569,46 +569,46 @@ TEST_CASE("normal plane")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Point);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Point);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
+        test::check_attr_count(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
         for (int i = 0; i < 4; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 1, 0)));
+            test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 1, 0)));
         }
     }
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Vertex);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Vertex);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
+        test::check_attr_count(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
         for (int i = 0; i < 4; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 1, 0)));
+            test::check_attr_value(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 1, 0)));
         }
     }
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Primitive);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Primitive);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
+        test::check_attr_count(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
     }
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Detail);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Detail);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
+        test::check_attr_count(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
     }
 }
 
@@ -634,46 +634,46 @@ TEST_CASE("normal line")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Point);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Point);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], n);
+        test::check_attr_count(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], n);
         for (int i = 0; i < n; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 0, 0)));
+            test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 0, 0)));
         }
     }
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Vertex);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Vertex);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], n);
+        test::check_attr_count(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], n);
         for (int i = 0; i < n; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 0, 0)));
+            test::check_attr_value(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 0, 0)));
         }
     }
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Primitive);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Primitive);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 0, 0)));
+        test::check_attr_count(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 0, 0)));
     }
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddTo(sop::GeoAttrType::Detail);
+        normal->SetAttrAddTo(sop::GeoAttrClass::Detail);
 
         eval.Update();
 
-        test::check_attr_count(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0 ,0, 0)));
+        test::check_attr_count(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
+        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0 ,0, 0)));
     }
 }
 
@@ -840,7 +840,7 @@ TEST_CASE("poly fill")
     SECTION("point attr rebuild")
     {
         auto color = std::make_shared<sop::node::Color>();
-        color->SetAttrAddTo(sop::GeoAttrType::Point);
+        color->SetAttrAddTo(sop::GeoAttrClass::Point);
         color->SetColor({ 0.3f, 0.4f, 0.5f });
         eval.AddNode(color);
 
@@ -853,16 +853,16 @@ TEST_CASE("poly fill")
 
         eval.Update();
 
-        test::check_attr_count(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8);
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_count(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8);
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 
     SECTION("vertex attr rebuild")
     {
         auto color = std::make_shared<sop::node::Color>();
-        color->SetAttrAddTo(sop::GeoAttrType::Vertex);
+        color->SetAttrAddTo(sop::GeoAttrClass::Vertex);
         color->SetColor({ 0.3f, 0.4f, 0.5f });
         eval.AddNode(color);
 
@@ -875,16 +875,16 @@ TEST_CASE("poly fill")
 
         eval.Update();
 
-        test::check_attr_count(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 24);
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_count(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 24);
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 
     SECTION("primitive attr rebuild")
     {
         auto color = std::make_shared<sop::node::Color>();
-        color->SetAttrAddTo(sop::GeoAttrType::Primitive);
+        color->SetAttrAddTo(sop::GeoAttrClass::Primitive);
         color->SetColor({ 0.3f, 0.4f, 0.5f });
         eval.AddNode(color);
 
@@ -897,17 +897,17 @@ TEST_CASE("poly fill")
 
         eval.Update();
 
-        test::check_attr_count(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6);
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0, 0, 0)));
+        test::check_attr_count(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6);
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0, 0, 0)));
     }
 
     SECTION("detail attr rebuild")
     {
         auto color = std::make_shared<sop::node::Color>();
-        color->SetAttrAddTo(sop::GeoAttrType::Detail);
+        color->SetAttrAddTo(sop::GeoAttrClass::Detail);
         color->SetColor({ 0.3f, 0.4f, 0.5f });
         eval.AddNode(color);
 
@@ -920,7 +920,7 @@ TEST_CASE("poly fill")
 
         eval.Update();
 
-        test::check_attr_count(poly_fill, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0);
-        test::check_attr_value(poly_fill, sop::GeoAttrType::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_count(poly_fill, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0);
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 }

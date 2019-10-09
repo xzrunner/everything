@@ -81,7 +81,7 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
         }
     }
 
-    for (int i = 0, n = static_cast<int>(GeoAttrType::MaxTypeNum); i < n; ++i) {
+    for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
         m_var_descs[i] = attr.m_var_descs[i];
     }
 
@@ -90,7 +90,7 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     return *this;
 }
 
-void GeoAttribute::RemoveItems(GeoAttrType type, const std::vector<bool>& del_flags, bool del_unused_pt)
+void GeoAttribute::RemoveItems(GeoAttrClass type, const std::vector<bool>& del_flags, bool del_unused_pt)
 {
     bool dirty = false;
     for (auto f : del_flags) {
@@ -105,7 +105,7 @@ void GeoAttribute::RemoveItems(GeoAttrType type, const std::vector<bool>& del_fl
 
     switch (type)
     {
-    case GeoAttrType::Point:
+    case GeoAttrClass::Point:
     {
         assert(m_points.size() == del_flags.size());
         int idx = 0;
@@ -121,7 +121,7 @@ void GeoAttribute::RemoveItems(GeoAttrType type, const std::vector<bool>& del_fl
         UpdatePointsChanged(del_unused_pt);
     }
         break;
-    case GeoAttrType::Vertex:
+    case GeoAttrClass::Vertex:
     {
         assert(m_vertices.size() == del_flags.size());
         int idx = 0;
@@ -137,7 +137,7 @@ void GeoAttribute::RemoveItems(GeoAttrType type, const std::vector<bool>& del_fl
         UpdateVerticesChanged(del_unused_pt);
     }
         break;
-    case GeoAttrType::Primitive:
+    case GeoAttrClass::Primitive:
     {
         assert(m_primtives.size() == del_flags.size());
         int idx = 0;
@@ -185,11 +185,11 @@ void GeoAttribute::ChangePointsOrder(const std::vector<size_t>& order)
     m_points = points;
 }
 
-void GeoAttribute::AddAttr(GeoAttrType type, const VarDesc& var_desc,
+void GeoAttribute::AddAttr(GeoAttrClass type, const VarDesc& var_desc,
                            const std::vector<VarValue>& var_list)
 {
-    assert(type >= static_cast<GeoAttrType>(0)
-        && type < GeoAttrType::MaxTypeNum);
+    assert(type >= static_cast<GeoAttrClass>(0)
+        && type < GeoAttrClass::MaxTypeNum);
 
     int idx = -1;
     auto& descs = m_var_descs[static_cast<int>(type)];
@@ -205,25 +205,25 @@ void GeoAttribute::AddAttr(GeoAttrType type, const VarDesc& var_desc,
     {
         switch (type)
         {
-        case GeoAttrType::Point:
+        case GeoAttrClass::Point:
             assert(var_list.size() == m_points.size());
             for (int i = 0, n = var_list.size(); i < n; ++i) {
                 m_points[i]->vars[idx] = var_list[i];
             }
             break;
-        case GeoAttrType::Vertex:
+        case GeoAttrClass::Vertex:
             assert(var_list.size() == m_vertices.size());
             for (int i = 0, n = var_list.size(); i < n; ++i) {
                 m_vertices[i]->vars[idx] = var_list[i];
             }
             break;
-        case GeoAttrType::Primitive:
+        case GeoAttrClass::Primitive:
             assert(var_list.size() == m_primtives.size());
             for (int i = 0, n = var_list.size(); i < n; ++i) {
                 m_primtives[i]->vars[idx] = var_list[i];
             }
             break;
-        case GeoAttrType::Detail:
+        case GeoAttrClass::Detail:
             assert(var_list.size() == 1);
             m_detail.vars[idx] = var_list[0];
             break;
@@ -236,25 +236,25 @@ void GeoAttribute::AddAttr(GeoAttrType type, const VarDesc& var_desc,
         descs.push_back(var_desc);
         switch (type)
         {
-        case GeoAttrType::Point:
+        case GeoAttrClass::Point:
             assert(var_list.size() == m_points.size());
             for (int i = 0, n = var_list.size(); i < n; ++i) {
                 m_points[i]->vars.push_back(var_list[i]);
             }
             break;
-        case GeoAttrType::Vertex:
+        case GeoAttrClass::Vertex:
             assert(var_list.size() == m_vertices.size());
             for (int i = 0, n = var_list.size(); i < n; ++i) {
                 m_vertices[i]->vars.push_back(var_list[i]);
             }
             break;
-        case GeoAttrType::Primitive:
+        case GeoAttrClass::Primitive:
             assert(var_list.size() == m_primtives.size());
             for (int i = 0, n = var_list.size(); i < n; ++i) {
                 m_primtives[i]->vars.push_back(var_list[i]);
             }
             break;
-        case GeoAttrType::Detail:
+        case GeoAttrClass::Detail:
             assert(var_list.size() == 1);
             m_detail.vars.push_back(var_list[0]);
             break;
@@ -264,10 +264,10 @@ void GeoAttribute::AddAttr(GeoAttrType type, const VarDesc& var_desc,
     }
 }
 
-Variable GeoAttribute::QueryAttr(GeoAttrType type, const std::string& name, size_t index) const
+Variable GeoAttribute::QueryAttr(GeoAttrClass type, const std::string& name, size_t index) const
 {
-    assert(type >= static_cast<GeoAttrType>(0)
-        && type < GeoAttrType::MaxTypeNum);
+    assert(type >= static_cast<GeoAttrClass>(0)
+        && type < GeoAttrClass::MaxTypeNum);
 
     int attr_idx = -1;
     auto& descs = m_var_descs[static_cast<int>(type)];
@@ -284,28 +284,28 @@ Variable GeoAttribute::QueryAttr(GeoAttrType type, const std::string& name, size
     VarValue val;
     switch (type)
     {
-    case GeoAttrType::Point:
+    case GeoAttrClass::Point:
         if (index >= m_points.size()) {
             return Variable();
         }
-        assert(m_points[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrType::Point)].size());
+        assert(m_points[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrClass::Point)].size());
         val = m_points[index]->vars[attr_idx];
         break;
-    case GeoAttrType::Vertex:
+    case GeoAttrClass::Vertex:
         if (index >= m_vertices.size()) {
             return Variable();
         }
-        assert(m_vertices[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrType::Vertex)].size());
+        assert(m_vertices[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrClass::Vertex)].size());
         val = m_vertices[index]->vars[attr_idx];
         break;
-    case GeoAttrType::Primitive:
+    case GeoAttrClass::Primitive:
         if (index >= m_primtives.size()) {
             return Variable();
         }
-        assert(m_primtives[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrType::Primitive)].size());
+        assert(m_primtives[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrClass::Primitive)].size());
         val = m_primtives[index]->vars[attr_idx];
         break;
-    case GeoAttrType::Detail:
+    case GeoAttrClass::Detail:
         val = m_detail.vars[attr_idx];
         break;
     default:
@@ -314,15 +314,15 @@ Variable GeoAttribute::QueryAttr(GeoAttrType type, const std::string& name, size
 
     switch (descs[attr_idx].type)
     {
-    case GeoAttrVarType::Bool:
+    case GeoAttrType::Bool:
         return Variable(val.b);
-    case GeoAttrVarType::Int:
+    case GeoAttrType::Int:
         return Variable(val.i);
-    case GeoAttrVarType::Float:
+    case GeoAttrType::Float:
         return Variable(val.f);
-    case GeoAttrVarType::Double:
+    case GeoAttrType::Double:
         return Variable(val.d);
-    case GeoAttrVarType::Vector:
+    case GeoAttrType::Vector:
         return Variable(*static_cast<const sm::vec3*>(val.p));
     default:
         assert(0);
@@ -401,12 +401,12 @@ void GeoAttribute::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
     SetupAABB();
 }
 
-std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrType type) const
+std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrClass type) const
 {
     std::vector<VarValue> ret;
 
-    assert(type >= static_cast<GeoAttrType>(0)
-        && type < GeoAttrType::MaxTypeNum);
+    assert(type >= static_cast<GeoAttrClass>(0)
+        && type < GeoAttrClass::MaxTypeNum);
 
     auto& descs = m_var_descs[static_cast<int>(type)];
     ret.reserve(descs.size());
@@ -414,19 +414,19 @@ std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrType type) const
     {
         switch (d.type)
         {
-        case GeoAttrVarType::Bool:
+        case GeoAttrType::Bool:
             ret.push_back(VarValue(false));
             break;
-        case GeoAttrVarType::Int:
+        case GeoAttrType::Int:
             ret.push_back(VarValue(0));
             break;
-        case GeoAttrVarType::Float:
+        case GeoAttrType::Float:
             ret.push_back(VarValue(0.0f));
             break;
-        case GeoAttrVarType::Double:
+        case GeoAttrType::Double:
             ret.push_back(VarValue(0.0));
             break;
-        case GeoAttrVarType::Vector:
+        case GeoAttrType::Vector:
             ret.push_back(VarValue(sm::vec3()));
             break;
         default:
@@ -437,7 +437,7 @@ std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrType type) const
     return ret;
 }
 
-int GeoAttribute::QueryAttrIdx(GeoAttrType cls, GeoAttr attr) const
+int GeoAttribute::QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const
 {
     auto& desc = GetAttrDesc(cls);
     for (int i = 0, n = desc.size(); i < n; ++i) {
@@ -470,7 +470,7 @@ void GeoAttribute::SetupAABB()
     }
 }
 
-void GeoAttribute::CombineAttrDesc(const GeoAttribute& attr, GeoAttrType type,
+void GeoAttribute::CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass type,
                                    std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars)
 {
     auto& d_desc = m_var_descs[static_cast<int>(type)];
@@ -651,7 +651,7 @@ void GeoAttribute::CombinePoints(const GeoAttribute& attr)
 {
     std::vector<uint32_t> indices;
     std::vector<VarValue> default_vars;
-    CombineAttrDesc(attr, GeoAttrType::Point, indices, default_vars);
+    CombineAttrDesc(attr, GeoAttrClass::Point, indices, default_vars);
 
     for (auto& p : m_points)
     {
@@ -687,7 +687,7 @@ void GeoAttribute::CombineVertices(const GeoAttribute& attr)
 {
     std::vector<uint32_t> indices;
     std::vector<VarValue> default_vars;
-    CombineAttrDesc(attr, GeoAttrType::Vertex, indices, default_vars);
+    CombineAttrDesc(attr, GeoAttrClass::Vertex, indices, default_vars);
 
     for (auto& v : m_vertices)
     {
@@ -734,7 +734,7 @@ void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
 {
     std::vector<uint32_t> indices;
     std::vector<VarValue> default_vars;
-    CombineAttrDesc(attr, GeoAttrType::Primitive, indices, default_vars);
+    CombineAttrDesc(attr, GeoAttrClass::Primitive, indices, default_vars);
 
     for (auto& prim : m_primtives)
     {
@@ -791,7 +791,7 @@ void GeoAttribute::CombineDetail(const GeoAttribute& attr)
 {
     std::vector<uint32_t> indices;
     std::vector<VarValue> default_vars;
-    CombineAttrDesc(attr, GeoAttrType::Detail, indices, default_vars);
+    CombineAttrDesc(attr, GeoAttrClass::Detail, indices, default_vars);
 
     std::vector<VarValue> vars;
     vars.reserve(indices.size());
@@ -986,7 +986,7 @@ GeoAttribute::VarDesc::VarDesc(GeoAttr attr)
 {
 }
 
-GeoAttribute::VarDesc::VarDesc(const std::string& name, GeoAttrVarType type)
+GeoAttribute::VarDesc::VarDesc(const std::string& name, GeoAttrType type)
     : attr(GEO_ATTR_UNKNOWN)
     , name(name)
     , type(type)

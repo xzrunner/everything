@@ -23,15 +23,15 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void AddAttr(const std::string& name, GeoAttrType cls, GeoAttrVarType type, VarValue val);
-    void AddAttr(GeoAttr attr, GeoAttrType cls, VarValue val);
+    void AddAttr(const std::string& name, GeoAttrClass cls, GeoAttrType type, VarValue val);
+    void AddAttr(GeoAttr attr, GeoAttrClass cls, VarValue val);
 
 private:
     struct Attr
     {
         std::string    name;
-        GeoAttrType    cls;
-        GeoAttrVarType type;
+        GeoAttrClass    cls;
+        GeoAttrType type;
         VarValue       value;
     };
 

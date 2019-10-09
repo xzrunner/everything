@@ -1,7 +1,7 @@
 #pragma once
 
 #include "sop/Node.h"
-#include "sop/GeoAttrType.h"
+#include "sop/GeoAttrClass.h"
 
 namespace sop
 {
@@ -23,7 +23,7 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetAttrAddTo(GeoAttrType attr);
+    void SetAttrAddTo(GeoAttrClass attr);
 
     static std::vector<sm::vec3> CalcBrushPointsNormal(const GeometryImpl& geo);
 
@@ -34,7 +34,7 @@ private:
     void AddToDetail();
 
 private:
-    GeoAttrType m_attr_add_to = GeoAttrType::Vertex;
+    GeoAttrClass m_attr_add_to = GeoAttrClass::Vertex;
 
     RTTR_ENABLE(Node)
 

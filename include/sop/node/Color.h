@@ -1,7 +1,7 @@
 #pragma once
 
 #include "sop/Node.h"
-#include "sop/GeoAttrType.h"
+#include "sop/GeoAttrClass.h"
 
 #include <SM_Vector.h>
 
@@ -25,12 +25,12 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetAttrAddTo(GeoAttrType attr);
+    void SetAttrAddTo(GeoAttrClass attr);
 
     void SetColor(const sm::vec3& col);
 
 private:
-    GeoAttrType m_attr_add_to = GeoAttrType::Point;
+    GeoAttrClass m_attr_add_to = GeoAttrClass::Point;
 
     sm::vec3 m_color = sm::vec3(1.0f, 1.0f, 1.0f);
 

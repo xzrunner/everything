@@ -101,7 +101,7 @@ void Carve::Execute(Evaluator& eval)
     assert(s_idx_int <= e_idx_int);
 
     // calc normal
-    int norm_idx = prev_geo->GetAttr().QueryAttrIdx(GeoAttrType::Point, GEO_ATTR_NORM);
+    int norm_idx = prev_geo->GetAttr().QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
     sm::vec3 s_norm, e_norm;
     if (norm_idx >= 0)
     {
@@ -158,10 +158,10 @@ void Carve::Execute(Evaluator& eval)
     // update point attrs
     auto& prev_attr = prev_geo->GetAttr();
     auto& attr = m_geo_impl->GetAttr();
-    attr.SetAttrDesc(GeoAttrType::Point,
-        prev_attr.GetAttrDesc(GeoAttrType::Point));
+    attr.SetAttrDesc(GeoAttrClass::Point,
+        prev_attr.GetAttrDesc(GeoAttrClass::Point));
 
-    auto default_vars = prev_attr.GetDefaultValues(GeoAttrType::Point);
+    auto default_vars = prev_attr.GetDefaultValues(GeoAttrClass::Point);
     auto& prev_pts = prev_attr.GetPoints();
     assert(prev_pts.size() == vertices.size());
     auto& pts = attr.GetPoints();

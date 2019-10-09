@@ -24,16 +24,16 @@ void Color::Execute(Evaluator& eval)
     size_t num = 0;
     switch (m_attr_add_to)
     {
-    case GeoAttrType::Point:
+    case GeoAttrClass::Point:
         num = attr.GetPoints().size();
         break;
-    case GeoAttrType::Vertex:
+    case GeoAttrClass::Vertex:
         num = attr.GetVertices().size();
         break;
-    case GeoAttrType::Primitive:
+    case GeoAttrClass::Primitive:
         num = attr.GetPrimtives().size();
         break;
-    case GeoAttrType::Detail:
+    case GeoAttrClass::Detail:
         num = 1;
         break;
     default:
@@ -44,7 +44,7 @@ void Color::Execute(Evaluator& eval)
     attr.AddAttr(m_attr_add_to, GEO_ATTR_CD, vars);
 }
 
-void Color::SetAttrAddTo(GeoAttrType attr)
+void Color::SetAttrAddTo(GeoAttrClass attr)
 {
     if (m_attr_add_to == attr) {
         return;

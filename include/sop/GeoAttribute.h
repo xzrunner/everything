@@ -1,9 +1,9 @@
 #pragma once
 
-#include "sop/GeoAttrType.h"
+#include "sop/GeoAttrClass.h"
 #include "sop/Variable.h"
 #include "sop/VarValue.h"
-#include "sop/GeoAttrVarType.h"
+#include "sop/GeoAttrType.h"
 #include "sop/GeoAttrDefine.h"
 
 #include <SM_Cube.h>
@@ -89,12 +89,12 @@ public:
     struct VarDesc
     {
         VarDesc(GeoAttr attr);
-        VarDesc(const std::string& name, GeoAttrVarType type);
+        VarDesc(const std::string& name, GeoAttrType type);
 
         GeoAttr        attr = GEO_ATTR_UNKNOWN;
 
         std::string    name;
-        GeoAttrVarType type;
+        GeoAttrType type;
     };
 
 public:
@@ -107,12 +107,12 @@ public:
     auto& GetPrimtives() const { return m_primtives; }
     auto& GetDetail() const    { return m_detail; }
 
-    void RemoveItems(GeoAttrType type, const std::vector<bool>& del_flags, bool del_unused_pt);
+    void RemoveItems(GeoAttrClass type, const std::vector<bool>& del_flags, bool del_unused_pt);
 
     void ChangePointsOrder(const std::vector<size_t>& order);
 
-    void AddAttr(GeoAttrType type, const VarDesc& var_desc, const std::vector<VarValue>& var_list);
-    Variable QueryAttr(GeoAttrType type, const std::string& name, size_t index) const;
+    void AddAttr(GeoAttrClass type, const VarDesc& var_desc, const std::vector<VarValue>& var_list);
+    Variable QueryAttr(GeoAttrClass type, const std::string& name, size_t index) const;
 
     void Combine(const GeoAttribute& attr);
 
@@ -120,16 +120,16 @@ public:
 
     auto& GetAABB() const { return m_aabb; }
 
-    auto& GetAttrDesc(GeoAttrType type) const {
+    auto& GetAttrDesc(GeoAttrClass type) const {
         return m_var_descs[static_cast<int>(type)];
     }
-    void SetAttrDesc(GeoAttrType type, const std::vector<VarDesc>& desc) {
+    void SetAttrDesc(GeoAttrClass type, const std::vector<VarDesc>& desc) {
         m_var_descs[static_cast<int>(type)] = desc;
     }
 
-    std::vector<VarValue> GetDefaultValues(GeoAttrType type) const;
+    std::vector<VarValue> GetDefaultValues(GeoAttrClass type) const;
 
-    int QueryAttrIdx(GeoAttrType cls, GeoAttr attr) const;
+    int QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const;
 
     template<typename T>
     int QueryIndex(const T& i) const;
@@ -139,7 +139,7 @@ private:
 
     void SetupAABB();
 
-    void CombineAttrDesc(const GeoAttribute& attr, GeoAttrType type,
+    void CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass type,
         std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars);
 
     void CombineTopoID(const GeoAttribute& attr);
@@ -160,7 +160,7 @@ private:
     std::vector<std::shared_ptr<Primitive>> m_primtives;
     Detail                                  m_detail;
 
-    std::vector<VarDesc> m_var_descs[static_cast<int>(GeoAttrType::MaxTypeNum)];
+    std::vector<VarDesc> m_var_descs[static_cast<int>(GeoAttrClass::MaxTypeNum)];
 
     sm::cube m_aabb;
 

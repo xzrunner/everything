@@ -18,8 +18,8 @@ GeoAttrRebuild::~GeoAttrRebuild()
 void GeoAttrRebuild::Save()
 {
     auto& attr = m_geo.GetAttr();
-    for (int i = 0, n = static_cast<int>(GeoAttrType::MaxTypeNum); i < n; ++i) {
-        m_var_descs[i] = attr.GetAttrDesc(static_cast<GeoAttrType>(i));
+    for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
+        m_var_descs[i] = attr.GetAttrDesc(static_cast<GeoAttrClass>(i));
     }
 
     // points
@@ -53,12 +53,12 @@ void GeoAttrRebuild::Save()
 void GeoAttrRebuild::Load()
 {
     auto& attr = m_geo.GetAttr();
-    for (int i = 0, n = static_cast<int>(GeoAttrType::MaxTypeNum); i < n; ++i) {
-        attr.SetAttrDesc(static_cast<GeoAttrType>(i), m_var_descs[i]);
+    for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
+        attr.SetAttrDesc(static_cast<GeoAttrClass>(i), m_var_descs[i]);
     }
 
     // points
-    auto default_attr_p = attr.GetDefaultValues(GeoAttrType::Point);
+    auto default_attr_p = attr.GetDefaultValues(GeoAttrClass::Point);
     for (auto& p : attr.GetPoints())
     {
         assert(!p->topo_id.Empty());
@@ -71,7 +71,7 @@ void GeoAttrRebuild::Load()
     }
 
     // vertices
-    auto default_attr_v = attr.GetDefaultValues(GeoAttrType::Vertex);
+    auto default_attr_v = attr.GetDefaultValues(GeoAttrClass::Vertex);
     for (auto& v : attr.GetVertices())
     {
         auto& vert_id = v->point->topo_id;
@@ -89,7 +89,7 @@ void GeoAttrRebuild::Load()
     }
 
     // primitives
-    auto default_attr_prim = attr.GetDefaultValues(GeoAttrType::Primitive);
+    auto default_attr_prim = attr.GetDefaultValues(GeoAttrClass::Primitive);
     for (auto& prim : attr.GetPrimtives())
     {
         assert(!prim->topo_id.Empty());

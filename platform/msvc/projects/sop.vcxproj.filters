@@ -178,9 +178,6 @@
     <ClInclude Include="..\..\..\include\sop\GroupMgr.h">
       <Filter>dataset\geo\group</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\GeoAttrType.h">
-      <Filter>dataset\geo\attr</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\Variable.h">
       <Filter>dataset\others\var</Filter>
     </ClInclude>
@@ -212,9 +209,6 @@
     <ClInclude Include="..\..\..\include\sop\CompTopoPolyline.h">
       <Filter>dataset\geo\adaptor</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\GeoAttrVarType.h">
-      <Filter>dataset\geo\attr</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\geo_attr_cfg.h">
       <Filter>dataset\geo\attr</Filter>
     </ClInclude>
@@ -223,6 +217,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h">
       <Filter>nodes\geometry\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrClass.h">
+      <Filter>dataset\geo\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\GeoAttrType.h">
+      <Filter>dataset\geo\attr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

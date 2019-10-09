@@ -96,7 +96,7 @@ void SetupVexFuncs()
         assert(params[3].type == vexc::VarType::Int);
         int attrib_index = params[3].i;
 
-        auto var = geo->GetAttr().QueryAttr(GeoAttrType::Primitive, attrib_name, attrib_index);
+        auto var = geo->GetAttr().QueryAttr(GeoAttrClass::Primitive, attrib_name, attrib_index);
         if (var.type == VarType::Invalid) {
             return vexc::Variant();
         }
@@ -150,13 +150,13 @@ void SetupVexFuncs()
             return vexc::Variant();
         }
 
-        sop::GeoAttrType type;
+        sop::GeoAttrClass type;
         if (attr_class == "point") {
-            type = sop::GeoAttrType::Point;
+            type = sop::GeoAttrClass::Point;
         } else if (attr_class == "vertex") {
-            type = sop::GeoAttrType::Vertex;
+            type = sop::GeoAttrClass::Vertex;
         } else if (attr_class == "detail" || attr_class == "global") {
-            type = sop::GeoAttrType::Detail;
+            type = sop::GeoAttrClass::Detail;
         } else {
             return vexc::Variant();
         }
@@ -177,27 +177,27 @@ void SetupVexFuncs()
             attr_idx = desc.size();
 
             auto new_desc = desc;
-            new_desc.push_back({ attr_name, sop::GeoAttrVarType::Float });
+            new_desc.push_back({ attr_name, sop::GeoAttrType::Float });
             const_cast<sop::GeoAttribute&>(attr).SetAttrDesc(type, new_desc);
 
             switch (type)
             {
-            case sop::GeoAttrType::Point:
+            case sop::GeoAttrClass::Point:
                 for (auto& p : attr.GetPoints()) {
                     p->vars.push_back(sop::VarValue());
                 }
                 break;
-            case sop::GeoAttrType::Vertex:
+            case sop::GeoAttrClass::Vertex:
                 for (auto& v : attr.GetVertices()) {
                     v->vars.push_back(sop::VarValue());
                 }
                 break;
-            case sop::GeoAttrType::Primitive:
+            case sop::GeoAttrClass::Primitive:
                 for (auto& prim : attr.GetPrimtives()) {
                     prim->vars.push_back(sop::VarValue());
                 }
                 break;
-            case sop::GeoAttrType::Detail:
+            case sop::GeoAttrClass::Detail:
             {
                 auto& detail = const_cast<sop::GeoAttribute::Detail&>(attr.GetDetail());
                 detail.vars.push_back(sop::VarValue());
@@ -210,28 +210,28 @@ void SetupVexFuncs()
 
         switch (type)
         {
-        case sop::GeoAttrType::Point:
+        case sop::GeoAttrClass::Point:
         {
             auto& pts = attr.GetPoints();
             assert(element_num >= 0 && element_num < static_cast<int>(pts.size()));
             pts[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case sop::GeoAttrType::Vertex:
+        case sop::GeoAttrClass::Vertex:
         {
             auto& vts = attr.GetVertices();
             assert(element_num >= 0 && element_num < static_cast<int>(vts.size()));
             vts[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case sop::GeoAttrType::Primitive:
+        case sop::GeoAttrClass::Primitive:
         {
             auto& prims = attr.GetPrimtives();
             assert(element_num >= 0 && element_num < static_cast<int>(prims.size()));
             prims[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case sop::GeoAttrType::Detail:
+        case sop::GeoAttrClass::Detail:
         {
             auto& detail = const_cast<sop::GeoAttribute::Detail&>(attr.GetDetail());
             detail.vars[attr_idx].f = value;

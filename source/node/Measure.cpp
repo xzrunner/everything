@@ -28,8 +28,8 @@ void Measure::Execute(Evaluator& eval)
         std::vector<VarValue> val;
         CalcPerimeter(name, val);
 
-        GeoAttribute::VarDesc desc(name, GeoAttrVarType::Float);
-        attr.AddAttr(GeoAttrType::Primitive, desc, val);
+        GeoAttribute::VarDesc desc(name, GeoAttrType::Float);
+        attr.AddAttr(GeoAttrClass::Primitive, desc, val);
     }
         break;
     case Type::Area:
@@ -38,8 +38,8 @@ void Measure::Execute(Evaluator& eval)
         std::vector<VarValue> val;
         CalcArea(name, val);
 
-        GeoAttribute::VarDesc desc(name, GeoAttrVarType::Float);
-        attr.AddAttr(GeoAttrType::Primitive, desc, val);
+        GeoAttribute::VarDesc desc(name, GeoAttrType::Float);
+        attr.AddAttr(GeoAttrClass::Primitive, desc, val);
     }
         break;
     default:

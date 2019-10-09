@@ -48,16 +48,16 @@ void Normal::Execute(Evaluator& eval)
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
     switch (m_attr_add_to)
     {
-    case GeoAttrType::Point:
+    case GeoAttrClass::Point:
         AddToPoint();
         break;
-    case GeoAttrType::Vertex:
+    case GeoAttrClass::Vertex:
         AddToVertex();
         break;
-    case GeoAttrType::Primitive:
+    case GeoAttrClass::Primitive:
         AddToPrimitive();
         break;
-    case GeoAttrType::Detail:
+    case GeoAttrClass::Detail:
         AddToDetail();
         break;
     default:
@@ -65,7 +65,7 @@ void Normal::Execute(Evaluator& eval)
     }
 }
 
-void Normal::SetAttrAddTo(GeoAttrType attr)
+void Normal::SetAttrAddTo(GeoAttrClass attr)
 {
     if (m_attr_add_to == attr) {
         return;
@@ -122,7 +122,7 @@ void Normal::AddToPoint()
     {
         auto& attr = m_geo_impl->GetAttr();
         std::vector<VarValue> vars(attr.GetPoints().size(), VarValue(sm::vec3(0, 0, 0)));
-        attr.AddAttr(GeoAttrType::Point, GEO_ATTR_NORM, vars);
+        attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_NORM, vars);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -135,7 +135,7 @@ void Normal::AddToPoint()
         for (auto& norm : norms) {
             vars.push_back(VarValue(norm));
         }
-        attr.AddAttr(GeoAttrType::Point, GEO_ATTR_NORM, vars);
+        attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_NORM, vars);
     }
         break;
     default:
@@ -152,7 +152,7 @@ void Normal::AddToVertex()
     {
         auto& attr = m_geo_impl->GetAttr();
         std::vector<VarValue> vars(attr.GetVertices().size(), VarValue(sm::vec3(0, 0, 0)));
-        attr.AddAttr(GeoAttrType::Vertex, GEO_ATTR_NORM, vars);
+        attr.AddAttr(GeoAttrClass::Vertex, GEO_ATTR_NORM, vars);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -167,7 +167,7 @@ void Normal::AddToVertex()
             auto norm = CalcPrimNorm(*prim);
             vars.push_back(VarValue(norm));
         }
-        attr.AddAttr(GeoAttrType::Vertex, GEO_ATTR_NORM, vars);
+        attr.AddAttr(GeoAttrClass::Vertex, GEO_ATTR_NORM, vars);
     }
         break;
     default:
@@ -184,7 +184,7 @@ void Normal::AddToPrimitive()
     {
         auto& attr = m_geo_impl->GetAttr();
         std::vector<VarValue> vars(attr.GetPrimtives().size(), VarValue(sm::vec3(0, 0, 0)));
-        attr.AddAttr(GeoAttrType::Primitive, GEO_ATTR_NORM, vars);
+        attr.AddAttr(GeoAttrClass::Primitive, GEO_ATTR_NORM, vars);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -198,7 +198,7 @@ void Normal::AddToPrimitive()
             auto norm = CalcPrimNorm(*prim);
             vars.push_back(VarValue(norm));
         }
-        attr.AddAttr(GeoAttrType::Primitive, GEO_ATTR_NORM, vars);
+        attr.AddAttr(GeoAttrClass::Primitive, GEO_ATTR_NORM, vars);
     }
         break;
     default:
@@ -215,7 +215,7 @@ void Normal::AddToDetail()
     {
         auto& attr = m_geo_impl->GetAttr();
         std::vector<VarValue> vars(1, VarValue(sm::vec3(0, 0, 0)));
-        attr.AddAttr(GeoAttrType::Detail, GEO_ATTR_NORM, vars);
+        attr.AddAttr(GeoAttrClass::Detail, GEO_ATTR_NORM, vars);
     }
         break;
     case GeoAdaptor::Type::Brush:
@@ -229,7 +229,7 @@ void Normal::AddToDetail()
         }
 
         std::vector<VarValue> vars(1, VarValue(norm));
-        attr.AddAttr(GeoAttrType::Detail, GEO_ATTR_NORM, vars);
+        attr.AddAttr(GeoAttrClass::Detail, GEO_ATTR_NORM, vars);
     }
         break;
     default:
