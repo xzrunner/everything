@@ -29,10 +29,10 @@ public:
 private:
     struct Attr
     {
-        std::string    name;
-        GeoAttrClass    cls;
-        GeoAttrType type;
-        VarValue       value;
+        std::string  name;
+        GeoAttrClass cls;
+        GeoAttrType  type;
+        VarValue     value;
     };
 
 private:
