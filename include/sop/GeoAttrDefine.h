@@ -18,7 +18,7 @@ static const char* GeoAttrNames[] =
 #define GEO_ATTR_INFO(attr, name, type) name,
 #include "sop/geo_attr_cfg.h"
 #undef GEO_ATTR_INFO
-    nullptr,
+    "",
 };
 
 static const GeoAttrType GeoAttrTypes[] =
