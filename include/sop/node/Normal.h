@@ -23,7 +23,7 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetAttrAddTo(GeoAttrClass attr);
+    void SetAttrAddTo(GeoAttrClass cls);
 
     static std::vector<sm::vec3> CalcBrushPointsNormal(const GeometryImpl& geo);
 

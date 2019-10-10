@@ -65,13 +65,13 @@ void Normal::Execute(Evaluator& eval)
     }
 }
 
-void Normal::SetAttrAddTo(GeoAttrClass attr)
+void Normal::SetAttrAddTo(GeoAttrClass cls)
 {
-    if (m_attr_add_to == attr) {
+    if (m_attr_add_to == cls) {
         return;
     }
 
-    m_attr_add_to = attr;
+    m_attr_add_to = cls;
 
     SetDirty(true);
 }

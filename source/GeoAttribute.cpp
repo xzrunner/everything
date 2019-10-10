@@ -90,7 +90,7 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     return *this;
 }
 
-void GeoAttribute::RemoveItems(GeoAttrClass type, const std::vector<bool>& del_flags, bool del_unused_pt)
+void GeoAttribute::RemoveItems(GeoAttrClass cls, const std::vector<bool>& del_flags, bool del_unused_pt)
 {
     bool dirty = false;
     for (auto f : del_flags) {
@@ -103,7 +103,7 @@ void GeoAttribute::RemoveItems(GeoAttrClass type, const std::vector<bool>& del_f
         return;
     }
 
-    switch (type)
+    switch (cls)
     {
     case GeoAttrClass::Point:
     {
@@ -185,14 +185,14 @@ void GeoAttribute::ChangePointsOrder(const std::vector<size_t>& order)
     m_points = points;
 }
 
-void GeoAttribute::AddAttr(GeoAttrClass type, const VarDesc& var_desc,
+void GeoAttribute::AddAttr(GeoAttrClass cls, const VarDesc& var_desc,
                            const std::vector<VarValue>& var_list)
 {
-    assert(type >= static_cast<GeoAttrClass>(0)
-        && type < GeoAttrClass::MaxTypeNum);
+    assert(cls >= static_cast<GeoAttrClass>(0)
+        && cls < GeoAttrClass::MaxTypeNum);
 
     int idx = -1;
-    auto& descs = m_var_descs[static_cast<int>(type)];
+    auto& descs = m_var_descs[static_cast<int>(cls)];
     for (int i = 0, n = descs.size(); i < n; ++i) {
         if (descs[i].name == var_desc.name) {
             idx = i;
@@ -203,7 +203,7 @@ void GeoAttribute::AddAttr(GeoAttrClass type, const VarDesc& var_desc,
 
     if (idx >= 0)
     {
-        switch (type)
+        switch (cls)
         {
         case GeoAttrClass::Point:
             assert(var_list.size() == m_points.size());
@@ -234,7 +234,7 @@ void GeoAttribute::AddAttr(GeoAttrClass type, const VarDesc& var_desc,
     else
     {
         descs.push_back(var_desc);
-        switch (type)
+        switch (cls)
         {
         case GeoAttrClass::Point:
             assert(var_list.size() == m_points.size());
@@ -264,13 +264,13 @@ void GeoAttribute::AddAttr(GeoAttrClass type, const VarDesc& var_desc,
     }
 }
 
-Variable GeoAttribute::QueryAttr(GeoAttrClass type, const std::string& name, size_t index) const
+Variable GeoAttribute::QueryAttr(GeoAttrClass cls, const std::string& name, size_t index) const
 {
-    assert(type >= static_cast<GeoAttrClass>(0)
-        && type < GeoAttrClass::MaxTypeNum);
+    assert(cls >= static_cast<GeoAttrClass>(0)
+        && cls < GeoAttrClass::MaxTypeNum);
 
     int attr_idx = -1;
-    auto& descs = m_var_descs[static_cast<int>(type)];
+    auto& descs = m_var_descs[static_cast<int>(cls)];
     for (int i = 0, n = descs.size(); i < n; ++i) {
         if (descs[i].name == name) {
             attr_idx = i;
@@ -282,7 +282,7 @@ Variable GeoAttribute::QueryAttr(GeoAttrClass type, const std::string& name, siz
     }
 
     VarValue val;
-    switch (type)
+    switch (cls)
     {
     case GeoAttrClass::Point:
         if (index >= m_points.size()) {
@@ -401,14 +401,14 @@ void GeoAttribute::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
     SetupAABB();
 }
 
-std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrClass type) const
+std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrClass cls) const
 {
     std::vector<VarValue> ret;
 
-    assert(type >= static_cast<GeoAttrClass>(0)
-        && type < GeoAttrClass::MaxTypeNum);
+    assert(cls >= static_cast<GeoAttrClass>(0)
+        && cls < GeoAttrClass::MaxTypeNum);
 
-    auto& descs = m_var_descs[static_cast<int>(type)];
+    auto& descs = m_var_descs[static_cast<int>(cls)];
     ret.reserve(descs.size());
     for (auto& d : descs)
     {
@@ -470,11 +470,11 @@ void GeoAttribute::SetupAABB()
     }
 }
 
-void GeoAttribute::CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass type,
+void GeoAttribute::CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass cls,
                                    std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars)
 {
-    auto& d_desc = m_var_descs[static_cast<int>(type)];
-    const auto& s_desc = attr.m_var_descs[static_cast<int>(type)];
+    auto& d_desc = m_var_descs[static_cast<int>(cls)];
+    const auto& s_desc = attr.m_var_descs[static_cast<int>(cls)];
 
     indices.clear();
     for (int i = 0, n = d_desc.size(); i < n; ++i) {
@@ -496,7 +496,7 @@ void GeoAttribute::CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass type,
         }
     }
 
-    default_vars = GetDefaultValues(type);
+    default_vars = GetDefaultValues(cls);
 }
 
 void GeoAttribute::CombineTopoID(const GeoAttribute& attr)

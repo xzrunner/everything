@@ -107,12 +107,12 @@ public:
     auto& GetPrimtives() const { return m_primtives; }
     auto& GetDetail() const    { return m_detail; }
 
-    void RemoveItems(GeoAttrClass type, const std::vector<bool>& del_flags, bool del_unused_pt);
+    void RemoveItems(GeoAttrClass cls, const std::vector<bool>& del_flags, bool del_unused_pt);
 
     void ChangePointsOrder(const std::vector<size_t>& order);
 
-    void AddAttr(GeoAttrClass type, const VarDesc& var_desc, const std::vector<VarValue>& var_list);
-    Variable QueryAttr(GeoAttrClass type, const std::string& name, size_t index) const;
+    void AddAttr(GeoAttrClass cls, const VarDesc& var_desc, const std::vector<VarValue>& var_list);
+    Variable QueryAttr(GeoAttrClass cls, const std::string& name, size_t index) const;
 
     void Combine(const GeoAttribute& attr);
 
@@ -120,14 +120,14 @@ public:
 
     auto& GetAABB() const { return m_aabb; }
 
-    auto& GetAttrDesc(GeoAttrClass type) const {
-        return m_var_descs[static_cast<int>(type)];
+    auto& GetAttrDesc(GeoAttrClass cls) const {
+        return m_var_descs[static_cast<int>(cls)];
     }
-    void SetAttrDesc(GeoAttrClass type, const std::vector<VarDesc>& desc) {
-        m_var_descs[static_cast<int>(type)] = desc;
+    void SetAttrDesc(GeoAttrClass cls, const std::vector<VarDesc>& desc) {
+        m_var_descs[static_cast<int>(cls)] = desc;
     }
 
-    std::vector<VarValue> GetDefaultValues(GeoAttrClass type) const;
+    std::vector<VarValue> GetDefaultValues(GeoAttrClass cls) const;
 
     int QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const;
 
@@ -139,7 +139,7 @@ private:
 
     void SetupAABB();
 
-    void CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass type,
+    void CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass cls,
         std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars);
 
     void CombineTopoID(const GeoAttribute& attr);

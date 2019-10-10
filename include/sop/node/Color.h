@@ -25,7 +25,7 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetAttrAddTo(GeoAttrClass attr);
+    void SetAttrAddTo(GeoAttrClass cls);
 
     void SetColor(const sm::vec3& col);
 

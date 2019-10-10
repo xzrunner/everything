@@ -150,20 +150,20 @@ void SetupVexFuncs()
             return vexc::Variant();
         }
 
-        sop::GeoAttrClass type;
+        sop::GeoAttrClass cls;
         if (attr_class == "point") {
-            type = sop::GeoAttrClass::Point;
+            cls = sop::GeoAttrClass::Point;
         } else if (attr_class == "vertex") {
-            type = sop::GeoAttrClass::Vertex;
+            cls = sop::GeoAttrClass::Vertex;
         } else if (attr_class == "detail" || attr_class == "global") {
-            type = sop::GeoAttrClass::Detail;
+            cls = sop::GeoAttrClass::Detail;
         } else {
             return vexc::Variant();
         }
 
         auto& attr = geo->GetAttr();
 
-        auto& desc = attr.GetAttrDesc(type);
+        auto& desc = attr.GetAttrDesc(cls);
         int attr_idx = -1;
         for (int i = 0, n = desc.size(); i < n; ++i) {
             if (desc[i].name == attr_name) {
@@ -178,9 +178,9 @@ void SetupVexFuncs()
 
             auto new_desc = desc;
             new_desc.push_back({ attr_name, sop::GeoAttrType::Float });
-            const_cast<sop::GeoAttribute&>(attr).SetAttrDesc(type, new_desc);
+            const_cast<sop::GeoAttribute&>(attr).SetAttrDesc(cls, new_desc);
 
-            switch (type)
+            switch (cls)
             {
             case sop::GeoAttrClass::Point:
                 for (auto& p : attr.GetPoints()) {
@@ -208,7 +208,7 @@ void SetupVexFuncs()
             }
         }
 
-        switch (type)
+        switch (cls)
         {
         case sop::GeoAttrClass::Point:
         {

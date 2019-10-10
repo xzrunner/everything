@@ -226,7 +226,7 @@ void check_halfedge_faces_num(const sop::NodePtr& node, size_t num)
     REQUIRE(num == n);
 }
 
-void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass type,
+void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass cls,
                       const std::string& name, size_t num)
 {
     if (num == 0) {
@@ -237,9 +237,9 @@ void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass type,
     REQUIRE(geo != nullptr);
     auto& attr = geo->GetAttr();
 
-    auto var = attr.QueryAttr(type, name, 0);
+    auto var = attr.QueryAttr(cls, name, 0);
     REQUIRE(var.type != sop::VarType::Invalid);
-    switch (type)
+    switch (cls)
     {
     case sop::GeoAttrClass::Point:
         REQUIRE(attr.GetPoints().size() == num);
@@ -256,12 +256,12 @@ void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass type,
     }
 }
 
-void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass type,
+void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
                       const std::string& name, size_t idx, const sop::Variable& var)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
-    auto var2 = geo->GetAttr().QueryAttr(type, name, idx);
+    auto var2 = geo->GetAttr().QueryAttr(cls, name, idx);
     REQUIRE(var == var2);
 }
 
