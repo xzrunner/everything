@@ -30,8 +30,8 @@ private:
     struct Attr
     {
         std::string  name;
-        GeoAttrClass cls;
-        GeoAttrType  type;
+        GeoAttrClass cls  = GeoAttrClass::Point;
+        GeoAttrType  type = GeoAttrType::Float;
         VarValue     value;
     };
 
