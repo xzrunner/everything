@@ -86,16 +86,26 @@ public:
 
     }; // Detail
 
-    struct VarDesc
+    class VarDesc
     {
+    public:
         VarDesc(GeoAttr attr);
         VarDesc(const std::string& name, GeoAttrType type);
 
-        GeoAttr        attr = GEO_ATTR_UNKNOWN;
+        auto& GetAttr() const { return m_attr; }
 
-        std::string    name;
-        GeoAttrType type;
-    };
+        auto& GetName() const { return m_name; }
+        auto& GetType() const { return m_type; }
+
+        void SetType(GeoAttrType type) { m_type = type; }
+
+    private:
+        GeoAttr     m_attr = GEO_ATTR_UNKNOWN;
+
+        std::string m_name;
+        GeoAttrType m_type;
+
+    }; // VarDesc
 
 public:
     GeoAttribute() {}

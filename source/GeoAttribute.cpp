@@ -194,9 +194,9 @@ void GeoAttribute::AddAttr(GeoAttrClass cls, const VarDesc& var_desc,
     int idx = -1;
     auto& descs = m_var_descs[static_cast<int>(cls)];
     for (int i = 0, n = descs.size(); i < n; ++i) {
-        if (descs[i].name == var_desc.name) {
+        if (descs[i].GetName() == var_desc.GetName()) {
             idx = i;
-            descs[i].type = var_desc.type;
+            descs[i].SetType(var_desc.GetType());
             break;
         }
     }
@@ -272,7 +272,7 @@ Variable GeoAttribute::QueryAttr(GeoAttrClass cls, const std::string& name, size
     int attr_idx = -1;
     auto& descs = m_var_descs[static_cast<int>(cls)];
     for (int i = 0, n = descs.size(); i < n; ++i) {
-        if (descs[i].name == name) {
+        if (descs[i].GetName() == name) {
             attr_idx = i;
             break;
         }
@@ -312,7 +312,7 @@ Variable GeoAttribute::QueryAttr(GeoAttrClass cls, const std::string& name, size
         return Variable();
     }
 
-    switch (descs[attr_idx].type)
+    switch (descs[attr_idx].GetType())
     {
     case GeoAttrType::Bool:
         return Variable(val.b);
@@ -412,7 +412,7 @@ std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrClass cls) const
     ret.reserve(descs.size());
     for (auto& d : descs)
     {
-        switch (d.type)
+        switch (d.GetType())
         {
         case GeoAttrType::Bool:
             ret.push_back(VarValue(false));
@@ -441,7 +441,7 @@ int GeoAttribute::QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const
 {
     auto& desc = GetAttrDesc(cls);
     for (int i = 0, n = desc.size(); i < n; ++i) {
-        if (desc[i].name == GeoAttrNames[attr]) {
+        if (desc[i].GetName() == GeoAttrNames[attr]) {
             return i;
         }
     }
@@ -485,7 +485,7 @@ void GeoAttribute::CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass cls,
         bool find = false;
         for (int j = 0, m = d_desc.size(); j < m; ++j)
         {
-            if (s_desc[i].name == d_desc[j].name) {
+            if (s_desc[i].GetName() == d_desc[j].GetName()) {
                 indices[j] = (indices[j] & 0xffff0000) | static_cast<uint32_t>(i);
                 find = true;
             }
@@ -980,17 +980,23 @@ sm::vec3 GeoAttribute::Primitive::CalcNormal() const
 //////////////////////////////////////////////////////////////////////////
 
 GeoAttribute::VarDesc::VarDesc(GeoAttr attr)
-    : attr(attr)
-    , name(GeoAttrNames[attr])
-    , type(GeoAttrTypes[attr])
+    : m_attr(attr)
+    , m_name(GeoAttrNames[attr])
+    , m_type(GeoAttrTypes[attr])
 {
 }
 
 GeoAttribute::VarDesc::VarDesc(const std::string& name, GeoAttrType type)
-    : attr(GEO_ATTR_UNKNOWN)
-    , name(name)
-    , type(type)
+    : m_attr(GEO_ATTR_UNKNOWN)
+    , m_name(name)
+    , m_type(type)
 {
+    for (int i = 0; i < GEO_ATTR_UNKNOWN; ++i) {
+        if (GeoAttrNames[i] == name) {
+            m_attr = static_cast<GeoAttr>(i);
+            break;
+        }
+    }
 }
 
 }

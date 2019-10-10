@@ -166,7 +166,7 @@ void SetupVexFuncs()
         auto& desc = attr.GetAttrDesc(cls);
         int attr_idx = -1;
         for (int i = 0, n = desc.size(); i < n; ++i) {
-            if (desc[i].name == attr_name) {
+            if (desc[i].GetName() == attr_name) {
                 attr_idx = i;
                 break;
             }
