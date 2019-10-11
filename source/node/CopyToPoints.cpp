@@ -23,18 +23,26 @@ int QueryAttrIdx(const std::vector<sop::GeoAttribute::VarDesc>& desc, sop::GeoAt
 
 sm::mat4 LookAtUp(const sm::vec3& pos, const sm::vec3& target, const sm::vec3& up)
 {
-    auto n = (target - pos).Normalized();
-    auto v = up.Normalized();
-    auto u = v.Cross(n).Normalized();
-    v = n.Cross(u).Normalized();
+    auto z = (target - pos).Normalized();
+    auto y = up.Normalized();
+    auto x = y.Cross(z).Normalized();
+    y = z.Cross(x).Normalized();
 
     sm::mat4 mat;
     float* m = mat.x;
-    m[0] = u.x; m[4] = u.y; m[8]  = u.z; m[12] = -pos.Dot(u);
-    m[1] = v.x; m[5] = v.y; m[9]  = v.z; m[13] = -pos.Dot(v);
-    m[2] = n.x; m[6] = n.y; m[10] = n.z; m[14] = -pos.Dot(n);
-    m[3] = 0;   m[7] = 0;   m[11] = 0;   m[15] = 1.0;
+    m[0]  = x.x; m[1]  = x.y; m[2]  = x.z; m[3]  = -pos.Dot(x);
+    m[4]  = y.x; m[5]  = y.y; m[6]  = y.z; m[7]  = -pos.Dot(y);
+    m[8]  = z.x; m[9]  = z.y; m[10] = z.z; m[11] = -pos.Dot(z);
+    m[12] = 0;   m[13] = 0;   m[14] = 0;   m[15] = 1.0;
     return mat;
+
+    //sm::mat4 mat;
+    //float* m = mat.x;
+    //m[0] = x.x; m[4] = x.y; m[8]  = x.z; m[12] = -pos.Dot(x);
+    //m[1] = y.x; m[5] = y.y; m[9]  = y.z; m[13] = -pos.Dot(y);
+    //m[2] = z.x; m[6] = z.y; m[10] = z.z; m[14] = -pos.Dot(z);
+    //m[3] = 0;   m[7] = 0;   m[11] = 0;   m[15] = 1.0;
+    //return mat;
 }
 
 }
@@ -322,11 +330,13 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
         up.MakeInvalid();
     }
     if (N.IsValid() && up.IsValid() && N != sm::vec3(0, 0, 0) && up != sm::vec3(0, 0, 0)) {
-        l_mt = LookAtUp(sm::vec3(0, 0, 0), N, up);
+//        l_mt = LookAtUp(sm::vec3(0, 0, 0), N, up);
+        l_mt = sm::mat4::LookAt(sm::vec3(0, 0, 0), N, up);
     } else if (N.IsValid()) {
         l_mt = sm::mat4(sm::Quaternion::CreateFromVectors(Z_DIR, N));
     } else if (v.IsValid() && up.IsValid() && v != sm::vec3(0, 0, 0) && up != sm::vec3(0, 0, 0)) {
-        l_mt = LookAtUp(sm::vec3(0, 0, 0), v, up);
+//        l_mt = LookAtUp(sm::vec3(0, 0, 0), v, up);
+        l_mt = sm::mat4::LookAt(sm::vec3(0, 0, 0), v, up);
     } else if (v.IsValid()) {
         l_mt = sm::mat4(sm::Quaternion::CreateFromVectors(Z_DIR, v));
     }
@@ -350,11 +360,11 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     // todo
 
     if (trans_idx >= 0) {
-        mt = t_mt * m_mt * x_mt;
+        mt = x_mt * m_mt * t_mt;
     } else if (orient_idx >= 0) {
-        mt = t_mt * (r_mt * o_mt) * s_mt * x_mt;
+        mt = x_mt * s_mt * (o_mt * r_mt) * t_mt;
     } else {
-        mt = t_mt * r_mt * l_mt * s_mt * x_mt;
+        mt = x_mt * s_mt * l_mt * r_mt * t_mt;
     }
 
     return mt;
