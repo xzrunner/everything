@@ -5,6 +5,9 @@
 #include "sop/Evaluator.h"
 
 #include <SM_Calc.h>
+#include <model/BrushModel.h>
+#include <polymesh3/Geometry.h>
+#include <halfedge/Polyhedron.h>
 
 namespace sop
 {
@@ -33,6 +36,13 @@ void GroupCreate::Execute(Evaluator& eval)
             SelectAll(*group);
         } else {
             group->items = NodeHelper::SelectGeoByExpr(m_group_type, eval, *this, m_base_group_expr);
+        }
+    }
+    else if (m_keep_in_bounding)
+    {
+        auto b_geo = NodeHelper::GetInputGeo(*this, IDX_BOUNDING_OBJ);
+        if (b_geo) {
+            SelectByBoundings(*group, b_geo);
         }
     }
     else if (m_keep_by_normals)
@@ -99,6 +109,28 @@ void GroupCreate::DisableBaseGroup()
     SetDirty(true);
 }
 
+void GroupCreate::EnableKeepInBounding()
+{
+    if (m_keep_in_bounding) {
+        return;
+    }
+
+    m_keep_in_bounding = true;
+
+    SetDirty(true);
+}
+
+void GroupCreate::DisableKeepInBounding()
+{
+    if (!m_keep_in_bounding) {
+        return;
+    }
+
+    m_keep_in_bounding = false;
+
+    SetDirty(true);
+}
+
 void GroupCreate::EnableKeepByNormals(const sm::vec3& direction, float spread_angle)
 {
     if (m_keep_by_normals &&
@@ -129,6 +161,12 @@ void GroupCreate::SelectByNormals(Group& group)
 {
     switch (m_group_type)
     {
+    case GroupType::Points:
+        break;
+    case GroupType::Vertices:
+        break;
+    case GroupType::Edges:
+        break;
     case GroupType::Primitives:
     {
         auto& prims = m_geo_impl->GetAttr().GetPrimtives();
@@ -142,11 +180,39 @@ void GroupCreate::SelectByNormals(Group& group)
         }
     }
         break;
+    default:
+        assert(0);
+    }
+}
+
+void GroupCreate::SelectByBoundings(Group& group, std::shared_ptr<GeometryImpl>& bounding)
+{
+    auto brush_model = bounding->GetBrushModel();
+    if (!brush_model) {
+        return;
+    }
+
+    auto& brushes = brush_model->GetBrushes();
+    switch (m_group_type)
+    {
     case GroupType::Points:
+    {
+        auto& pts = m_geo_impl->GetAttr().GetPoints();
+        for (size_t i = 0, n = pts.size(); i < n; ++i) {
+            for (auto& b : brushes) {
+                if (b.impl->GetGeometry()->IsContain(pts[i]->pos)) {
+                    group.items.push_back(i);
+                    break;
+                }
+            }
+        }
+    }
+        break;
+    case GroupType::Vertices:
         break;
     case GroupType::Edges:
         break;
-    case GroupType::Vertices:
+    case GroupType::Primitives:
         break;
     default:
         assert(0);

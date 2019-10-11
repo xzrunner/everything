@@ -43,12 +43,17 @@ public:
     void EnableBaseGroup(const std::string& expr);
     void DisableBaseGroup();
 
+    // keep in bounding regions
+    void EnableKeepInBounding();
+    void DisableKeepInBounding();
+
     // keep by normal
     void EnableKeepByNormals(const sm::vec3& direction, float spread_angle);
     void DisableKeepByNormals();
 
 private:
     void SelectByNormals(Group& group);
+    void SelectByBoundings(Group& group, std::shared_ptr<GeometryImpl>& bounding);
     void SelectAll(Group& group);
 
 private:
@@ -57,8 +62,11 @@ private:
     GroupMerge  m_merge_op   = GroupMerge::Replace;
 
     // base group
-    bool m_base_group = false;
+    bool        m_base_group = false;
     std::string m_base_group_expr;
+
+    // keep in bounding regions
+    bool m_keep_in_bounding = false;
 
     // keep by normals
     bool     m_keep_by_normals = false;
