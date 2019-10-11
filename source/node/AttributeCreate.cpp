@@ -16,10 +16,6 @@ void AttributeCreate::Execute(Evaluator& eval)
         return;
     }
 
-    if (m_attrs.empty()) {
-        return;
-    }
-
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
     for (auto& attr : m_attrs)
     {
