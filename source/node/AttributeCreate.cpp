@@ -17,10 +17,11 @@ void AttributeCreate::Execute(Evaluator& eval)
     }
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
-    for (auto& attr : m_attrs)
+
+    for (auto& item : m_items)
     {
         size_t num = 0;
-        switch (attr.cls)
+        switch (item.cls)
         {
         case GeoAttrClass::Point:
             num = m_geo_impl->GetAttr().GetPoints().size();
@@ -38,21 +39,16 @@ void AttributeCreate::Execute(Evaluator& eval)
             assert(0);
         }
 
-        std::vector<VarValue> vars(num, attr.value);
-        m_geo_impl->GetAttr().AddAttr(attr.cls, GeoAttribute::VarDesc(attr.name, attr.type), vars);
+        std::vector<VarValue> vars(num, item.value);
+        m_geo_impl->GetAttr().AddAttr(item.cls, GeoAttribute::VarDesc(item.name, item.type), vars);
     }
 }
 
-void AttributeCreate::AddAttr(const std::string& name, GeoAttrClass cls, GeoAttrType type, VarValue val)
+void AttributeCreate::SetAttrItems(const std::vector<Item>& items)
 {
-    m_attrs.push_back({ name, cls, type, val });
+    m_items = items;
 
     SetDirty(true);
-}
-
-void AttributeCreate::AddAttr(GeoAttr attr, GeoAttrClass cls, VarValue val)
-{
-    AddAttr(GeoAttrNames[attr], cls, GeoAttrTypes[attr], val);
 }
 
 }

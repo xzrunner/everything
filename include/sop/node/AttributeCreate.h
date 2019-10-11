@@ -11,6 +11,15 @@ namespace node
 class AttributeCreate : public Node
 {
 public:
+    struct Item
+    {
+        std::string  name;
+        GeoAttrClass cls  = GeoAttrClass::Point;
+        GeoAttrType  type = GeoAttrType::Float;
+        VarValue     value;
+    };
+
+public:
     AttributeCreate()
     {
         m_imports = {
@@ -23,20 +32,10 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void AddAttr(const std::string& name, GeoAttrClass cls, GeoAttrType type, VarValue val);
-    void AddAttr(GeoAttr attr, GeoAttrClass cls, VarValue val);
+    void SetAttrItems(const std::vector<Item>& items);
 
 private:
-    struct Attr
-    {
-        std::string  name;
-        GeoAttrClass cls  = GeoAttrClass::Point;
-        GeoAttrType  type = GeoAttrType::Float;
-        VarValue     value;
-    };
-
-private:
-    std::vector<Attr> m_attrs;
+    std::vector<Item> m_items;
 
     RTTR_ENABLE(Node)
 
