@@ -301,12 +301,12 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     int pscale_idx = QueryAttrIdx(desc, GEO_ATTR_PSCALE);
     if (pscale_idx >= 0 && desc[pscale_idx].GetType() == GeoAttrType::Float) {
         auto pscale = pt.vars[pscale_idx].f;
-        s_mt = s_mt * sm::mat4::Scaled(pscale, pscale, pscale);
+        s_mt = sm::mat4::Scaled(pscale, pscale, pscale) * s_mt;
     }
     int scale_idx = QueryAttrIdx(desc, GEO_ATTR_SCALE);
     if (scale_idx >= 0 && desc[scale_idx].GetType() == GeoAttrType::Vector) {
         auto scale = *static_cast<const sm::vec3*>(pt.vars[scale_idx].p);
-        s_mt = s_mt * sm::mat4::Scaled(scale.x, scale.y, scale.z);
+        s_mt = sm::mat4::Scaled(scale.x, scale.y, scale.z) * s_mt;
     }
 
     // alignment matrix, defined by N or v and up.
@@ -349,22 +349,22 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute::Point& pt, const std::vector<
     }
 
     // trans matrix (trans + P)
-    t_mt = t_mt * sm::mat4::Translated(pt.pos.x, pt.pos.y, pt.pos.z);
+    t_mt = sm::mat4::Translated(pt.pos.x, pt.pos.y, pt.pos.z) * t_mt;
     int trans_idx = QueryAttrIdx(desc, GEO_ATTR_TRANS);
     if (trans_idx >= 0 && desc[trans_idx].GetType() == GeoAttrType::Float) {
         auto trans = *static_cast<const sm::vec4*>(pt.vars[trans_idx].p);
-        t_mt = t_mt * sm::mat4::Translated(trans.x, trans.y, trans.z);
+        t_mt = sm::mat4::Translated(trans.x, trans.y, trans.z) * t_mt;
     }
 
     // transform matrix
     // todo
 
     if (trans_idx >= 0) {
-        mt = x_mt * m_mt * t_mt;
+        mt = t_mt * m_mt * x_mt;
     } else if (orient_idx >= 0) {
-        mt = x_mt * s_mt * (o_mt * r_mt) * t_mt;
+        mt = t_mt * (r_mt * o_mt) * s_mt * x_mt;
     } else {
-        mt = x_mt * s_mt * l_mt * r_mt * t_mt;
+        mt = t_mt * r_mt * l_mt * s_mt * x_mt;
     }
 
     return mt;

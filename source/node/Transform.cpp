@@ -181,7 +181,7 @@ sm::mat4 Transform::CalcTransformMat(const sm::vec3& translate, const sm::vec3& 
     auto s_mat = sm::mat4::Scaled(scale.x, scale.y, scale.z);
     auto r_mat = sm::mat4::Rotated(rotate.x, rotate.y, rotate.z);
     auto t_mat = sm::mat4::Translated(translate.x, translate.y, translate.z);
-    return s_mat * r_mat * t_mat;
+    return t_mat * r_mat * s_mat;
 }
 
 void Transform::InitProps()
