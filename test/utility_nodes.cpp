@@ -264,7 +264,9 @@ TEST_CASE("copy to points with default attr scale")
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    attr_create->AddAttr(sop::GEO_ATTR_PSCALE, sop::GeoAttrClass::Point, sop::VarValue(2.0f));
+    std::vector<sop::node::AttributeCreate::Item> items;
+    items.emplace_back(sop::GEO_ATTR_PSCALE, sop::GeoAttrClass::Point, sop::VarValue(2.0f));
+    attr_create->SetAttrItems(items);
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });
@@ -295,12 +297,14 @@ TEST_CASE("copy to points with default attr N up")
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    //attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
-    //attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
-    attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 0, 1)));
-    attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
-    //attr_create->AddAttr(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
-    //attr_create->AddAttr(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 0)));
+    std::vector<sop::node::AttributeCreate::Item> items;
+    //items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
+    //items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
+    items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 0, 1)));
+    items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
+    //items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
+    //items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 0)));
+    attr_create->SetAttrItems(items);
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });

@@ -51,5 +51,27 @@ void AttributeCreate::SetAttrItems(const std::vector<Item>& items)
     SetDirty(true);
 }
 
+//////////////////////////////////////////////////////////////////////////
+// struct AttributeCreate::Item
+//////////////////////////////////////////////////////////////////////////
+
+AttributeCreate::Item::
+Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val)
+    : name(name)
+    , cls(cls)
+    , type(type)
+    , value(val)
+{
+}
+
+AttributeCreate::Item::
+Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val)
+    : name(sop::GeoAttrNames[attr])
+    , cls(cls)
+    , type(sop::GeoAttrTypes[attr])
+    , value(val)
+{
+}
+
 }
 }

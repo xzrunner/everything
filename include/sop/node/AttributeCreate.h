@@ -13,6 +13,9 @@ class AttributeCreate : public Node
 public:
     struct Item
     {
+        Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val);
+        Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val);
+
         std::string  name;
         GeoAttrClass cls  = GeoAttrClass::Point;
         GeoAttrType  type = GeoAttrType::Float;

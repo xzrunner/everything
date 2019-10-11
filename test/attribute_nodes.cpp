@@ -22,7 +22,9 @@ TEST_CASE("attribute create")
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    attr_create->AddAttr("new_attr", sop::GeoAttrClass::Point, sop::GeoAttrType::Float, sop::VarValue(0.1f));
+    std::vector<sop::node::AttributeCreate::Item> items;
+    items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f));
+    attr_create->SetAttrItems(items);
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });
