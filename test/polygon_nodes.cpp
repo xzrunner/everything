@@ -728,6 +728,43 @@ TEST_CASE("poly extrude")
     }
 }
 
+TEST_CASE("poly extrude face")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<sop::node::GroupCreate>();
+    group->SetGroupName("top");
+    group->SetGroupType(sop::GroupType::Primitives);
+    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto blast = std::make_shared<sop::node::Blast>();
+    blast->SetGroupName("top");
+    blast->SetGroupType(sop::GroupType::GuessFromGroup);
+    blast->SetDeleteNonSelected(true);
+    eval.AddNode(blast);
+
+    eval.Connect({ group, 0 }, { blast, 0 });
+
+    auto extrude = std::make_shared<sop::node::PolyExtrude>();
+    extrude->SetDistance(0.5f);
+    eval.AddNode(extrude);
+
+    eval.Connect({ blast, 0 }, { extrude, 0 });
+
+    eval.Update();
+
+    test::check_faces_num(extrude, 5);
+    test::check_aabb(extrude, { -0.5f, 0.5f, -0.5f }, { 0.5f, 1, 0.5f });
+}
+
 TEST_CASE("poly fill")
 {
     test::init();
