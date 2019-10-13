@@ -5,6 +5,7 @@
 
 #include <sop/node/GroupCreate.h>
 #include <sop/node/GroupExpression.h>
+#include <sop/node/GroupPromote.h>
 
 #include <sop/node/Box.h>
 #include <sop/node/Blast.h>
@@ -307,4 +308,35 @@ TEST_CASE("group_expression")
             REQUIRE(pos.y == Approx(-0.5f));
         }
     }
+}
+
+TEST_CASE("group promote")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<sop::node::GroupCreate>();
+    group->SetGroupName("Top");
+    group->SetGroupType(sop::GroupType::Primitives);
+    group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto group_promote = std::make_shared<sop::node::GroupPromote>();
+    group_promote->SetGroupName("Top");
+    group_promote->SetSrcGroupType(sop::GroupType::GuessFromGroup);
+    group_promote->SetDstGroupType(sop::GroupType::Points);
+    eval.AddNode(group_promote);
+
+    eval.Connect({ group, 0 }, { group_promote, 0 });
+
+    eval.Update();
+
+    test::check_group_type(group_promote, "Top", sop::GroupType::Points);
+    test::check_group_num(group_promote, "Top", 4);
 }

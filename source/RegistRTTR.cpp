@@ -8,6 +8,7 @@
 // group
 #include "sop/node/GroupCreate.h"
 #include "sop/node/GroupExpression.h"
+#include "sop/node/GroupPromote.h"
 // manipulate
 #include "sop/node/Delete.h"
 #include "sop/node/Transform.h"
@@ -58,6 +59,7 @@ REGIST_NODE_TYPE(Sort)
 // group
 REGIST_NODE_TYPE(GroupCreate)
 REGIST_NODE_TYPE(GroupExpression)
+REGIST_NODE_TYPE(GroupPromote)
 
 // manipulate
 REGIST_NODE_TYPE(Delete)

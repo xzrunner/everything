@@ -2,6 +2,7 @@
 
 #include <sop/typedef.h>
 #include <sop/GeoAttribute.h>
+#include <sop/Group.h>
 
 #include <SM_Vector.h>
 
@@ -37,6 +38,7 @@ void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
     const std::string& name, size_t idx, const sop::Variable& var);
 
 void check_group_num(const sop::NodePtr& node, const std::string& name, size_t num);
+void check_group_type(const sop::NodePtr& node, const std::string& name, sop::GroupType type);
 
 void check_prop(const sop::NodePtr& node, const std::string& key, const sop::Variable& val);
 

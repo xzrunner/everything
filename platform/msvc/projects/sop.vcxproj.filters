@@ -221,6 +221,9 @@
     <ClInclude Include="..\..\..\include\sop\GeoAttrType.h">
       <Filter>dataset\geo\attr</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h">
+      <Filter>nodes\group</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -355,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributeCreate.cpp">
       <Filter>nodes\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\GroupPromote.cpp">
+      <Filter>nodes\group</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
