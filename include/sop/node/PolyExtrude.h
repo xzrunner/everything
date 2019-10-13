@@ -36,7 +36,7 @@ public:
     void SetSideGroupName(const std::string& name) { m_side_group = name; }
 
 private:
-    bool ExtrudeFace(GeoAttribute::Primitive& prim) const;
+    bool ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims) const;
 
 private:
     std::string m_group_name;

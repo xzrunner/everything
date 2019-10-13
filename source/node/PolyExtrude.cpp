@@ -29,24 +29,20 @@ void PolyExtrude::Execute(Evaluator& eval)
     bool dirty = false;
     auto& prims = m_geo_impl->GetAttr().GetPrimtives();
     auto group = m_geo_impl->GetGroup().Query(m_group_name);
+    std::vector<std::shared_ptr<GeoAttribute::Primitive>> edited_prims;
     if (group)
     {
         assert(group->type == GroupType::Primitives);
         for (auto& i : group->items) {
-            if (ExtrudeFace(*prims[i])) {
-                dirty = true;
-            }
+            edited_prims.push_back(prims[i]);
         }
     }
     else
     {
-        for (auto& p : prims) {
-            if (ExtrudeFace(*p)) {
-                dirty = true;
-            }
-        }
+        edited_prims = prims;
     }
-    if (dirty) {
+
+    if (ExtrudeFace(edited_prims)) {
         m_geo_impl->UpdateByBrush(*brush_model);
     }
 }
@@ -95,7 +91,7 @@ void PolyExtrude::SetOutputSide(bool output)
     SetDirty(true);
 }
 
-bool PolyExtrude::ExtrudeFace(GeoAttribute::Primitive& prim) const
+bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims) const
 {
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {
@@ -103,23 +99,37 @@ bool PolyExtrude::ExtrudeFace(GeoAttribute::Primitive& prim) const
     }
 
     auto& brushes = brush_model->GetBrushes();
-    assert(prim.prim_id >= 0 && prim.prim_id < brushes.size());
-    auto poly = brushes[prim.prim_id].impl;
-    if (!poly) {
-        return false;
-    }
-    auto he_poly = poly->GetGeometry();
-    if (!he_poly) {
-        return false;
+    std::vector<std::vector<he::TopoID>> face_ids(brushes.size());
+    for (auto& prim : prims) {
+        assert(prim->prim_id >= 0 && prim->prim_id < brushes.size());
+        face_ids[prim->prim_id].push_back(prim->topo_id);
     }
 
-    if (he_poly->Extrude(m_distance, prim.topo_id,
-        m_output_front, m_output_back, m_output_side)) {
-        poly->BuildFromGeo();
-        return true;
-    } else {
-        return false;
+    bool dirty = false;
+
+    for (int i = 0, n = brushes.size(); i < n; ++i)
+    {
+        if (face_ids[i].empty()) {
+            continue;
+        }
+
+        auto poly = brushes[i].impl;
+        if (!poly) {
+            continue;
+        }
+        auto he_poly = poly->GetGeometry();
+        if (!he_poly) {
+            continue;
+        }
+
+        if (he_poly->Extrude(m_distance, face_ids[i],
+            m_output_front, m_output_back, m_output_side)) {
+            poly->BuildFromGeo();
+            dirty = true;
+        }
     }
+
+    return dirty;
 }
 
 }
