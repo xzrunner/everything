@@ -24,8 +24,7 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetGroupName(const std::string& name) { m_group_name = name; }
-
+    void SetGroupName(const std::string& name);
     void SetGroupType(GroupType type);
 
     void SetDeleteNonSelected(bool del_non_selected);

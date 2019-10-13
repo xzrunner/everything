@@ -47,6 +47,17 @@ void PolyExtrude::Execute(Evaluator& eval)
     }
 }
 
+void PolyExtrude::SetGroupName(const std::string& name)
+{
+    if (m_group_name == name) {
+        return;
+    }
+
+    m_group_name = name;
+
+    SetDirty(true);
+}
+
 void PolyExtrude::SetDistance(float dist)
 {
     if (m_distance == dist) {
@@ -87,6 +98,39 @@ void PolyExtrude::SetOutputSide(bool output)
     }
 
     m_output_side = output;
+
+    SetDirty(true);
+}
+
+void PolyExtrude::SetFrontGroupName(const std::string& name)
+{
+    if (m_front_group == name) {
+        return;
+    }
+
+    m_front_group = name;
+
+    SetDirty(true);
+}
+
+void PolyExtrude::SetBackGroupName(const std::string& name)
+{
+    if (m_back_group == name) {
+        return;
+    }
+
+    m_back_group = name;
+
+    SetDirty(true);
+}
+
+void PolyExtrude::SetSideGroupName(const std::string& name)
+{
+    if (m_side_group == name) {
+        return;
+    }
+
+    m_side_group = name;
 
     SetDirty(true);
 }

@@ -63,7 +63,7 @@ public:
     void SetScale(const sm::vec3& s);
     void SetShear(const sm::vec3& s);
 
-    void SetGroupName(const std::string& name) { m_group_name = name; }
+    void SetGroupName(const std::string& name);
     void SetGroupType(GroupType type);
 
     static sm::mat4 CalcTransformMat(const sm::vec3& translate,

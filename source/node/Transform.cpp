@@ -164,6 +164,17 @@ void Transform::SetShear(const sm::vec3& s)
     }
 }
 
+void Transform::SetGroupName(const std::string& name)
+{
+    if (m_group_name == name) {
+        return;
+    }
+
+    m_group_name = name;
+
+    SetDirty(true);
+}
+
 void Transform::SetGroupType(GroupType type)
 {
     if (m_group_type == type) {

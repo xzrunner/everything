@@ -36,8 +36,8 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetSrcGroup(const std::string& group) { m_src_group = group; }
-    void SetTargetGroup(const std::string& group) { m_target_group = group; }
+    void SetSrcGroup(const std::string& group);
+    void SetTargetGroup(const std::string& group);
 
     void EnableUsePointDir(bool enable);
 

@@ -23,7 +23,7 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetGroupName(const std::string& name) { m_group_name = name; }
+    void SetGroupName(const std::string& name);
 
     void SetDistance(float dist);
 
@@ -31,9 +31,9 @@ public:
     void SetOutputBack(bool output);
     void SetOutputSide(bool output);
 
-    void SetFrontGroupName(const std::string& name) { m_front_group = name; }
-    void SetBackGroupName(const std::string& name) { m_back_group = name; }
-    void SetSideGroupName(const std::string& name) { m_side_group = name; }
+    void SetFrontGroupName(const std::string& name);
+    void SetBackGroupName(const std::string& name);
+    void SetSideGroupName(const std::string& name);
 
 private:
     bool ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims) const;

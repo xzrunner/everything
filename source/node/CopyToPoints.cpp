@@ -87,6 +87,28 @@ void CopyToPoints::Execute(Evaluator& eval)
     m_geo_impl->UpdateByAttr();
 }
 
+void CopyToPoints::SetSrcGroup(const std::string& group)
+{
+    if (m_src_group == group) {
+        return;
+    }
+
+    m_src_group = group;
+
+    SetDirty(true);
+}
+
+void CopyToPoints::SetTargetGroup(const std::string& group)
+{
+    if (m_target_group == group) {
+        return;
+    }
+
+    m_target_group = group;
+
+    SetDirty(true);
+}
+
 void CopyToPoints::EnableUsePointDir(bool enable)
 {
     if (m_use_pt_dir == enable) {
