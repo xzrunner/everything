@@ -10,6 +10,13 @@ namespace sop
 class GeometryImpl;
 class Evaluator;
 
+#define NODE_PROP_SET(prop, val) \
+    if (prop == val) {           \
+        return;                  \
+    }                            \
+    prop = val;                  \
+    SetDirty(true);
+
 class NodeHelper
 {
 public:
@@ -22,7 +29,7 @@ public:
     // begin <= i < end
     static bool CheckPropsType(const Node& node, int begin, int end, VarType type);
 
-    static std::vector<size_t> SelectGeoByExpr(GroupType type, const Evaluator& eval, 
+    static std::vector<size_t> SelectGeoByExpr(GroupType type, const Evaluator& eval,
         const Node& node, const std::string& expr);
 
 }; // NodeHelper

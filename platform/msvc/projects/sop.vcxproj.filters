@@ -224,6 +224,9 @@
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h">
       <Filter>nodes\group</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\PolyFrame.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -364,6 +367,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\Group.cpp">
       <Filter>dataset\geo\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\PolyFrame.cpp">
+      <Filter>nodes\polygon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

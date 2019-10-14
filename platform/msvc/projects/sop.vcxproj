@@ -19,6 +19,7 @@
     <ClInclude Include="..\..\..\include\sop\Evaluator.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h" />
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h" />
+    <ClInclude Include="..\..\..\include\sop\node\PolyFrame.h" />
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAdaptor.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAttribute.h" />
@@ -74,6 +75,7 @@
     <ClCompile Include="..\..\..\source\Group.cpp" />
     <ClCompile Include="..\..\..\source\node\AttributeCreate.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupPromote.cpp" />
+    <ClCompile Include="..\..\..\source\node\PolyFrame.cpp" />
     <ClCompile Include="..\..\..\source\SOP.cpp" />
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
