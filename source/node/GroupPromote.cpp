@@ -27,13 +27,13 @@ void GroupPromote::Execute(Evaluator& eval)
         return;
     }
     if (m_src_type != GroupType::GuessFromGroup &&
-        m_src_type != group->type) {
+        m_src_type != group->GetType()) {
         return;
     }
 
     auto src_type = m_src_type;
     if (m_src_type == GroupType::GuessFromGroup) {
-        src_type = group->type;
+        src_type = group->GetType();
     }
     if (src_type == GroupType::Primitives &&
         m_dst_type == GroupType::Points) {
@@ -76,13 +76,13 @@ void GroupPromote::SetDstGroupType(GroupType type)
 
 void GroupPromote::PrimsToPoints(Group& group)
 {
-    assert(group.type == GroupType::Primitives);
+    assert(group.GetType() == GroupType::Primitives);
 
     auto& attr  = m_geo_impl->GetAttr();
 
     std::set<std::shared_ptr<GeoAttribute::Point>> selected;
     auto& prims = attr.GetPrimtives();
-    for (auto& i : group.items) {
+    for (auto& i : group.GetItems()) {
         assert(i >= 0 && i < prims.size());
         for (auto& v : prims[i]->vertices) {
             selected.insert(v->point);
@@ -90,13 +90,15 @@ void GroupPromote::PrimsToPoints(Group& group)
     }
 
     group.Clear();
-    group.type = GroupType::Points;
+    group.SetType(GroupType::Points);
     auto& pts = attr.GetPoints();
+    std::vector<size_t> items;
     for (size_t i = 0, n = pts.size(); i < n; ++i) {
         if (selected.find(pts[i]) != selected.end()) {
-            group.items.push_back(i);
+            items.push_back(i);
         }
     }
+    group.SetItems(items);
 }
 
 }

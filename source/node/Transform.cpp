@@ -30,8 +30,8 @@ void Transform::Execute(Evaluator& eval)
     auto mat = CalcTransformMat();
     if (group)
     {
-        auto type = m_group_type == GroupType::GuessFromGroup ? group->type : m_group_type;
-        if (type != group->type) {
+        auto type = m_group_type == GroupType::GuessFromGroup ? group->GetType() : m_group_type;
+        if (type != group->GetType()) {
             return;
         }
 
@@ -40,7 +40,7 @@ void Transform::Execute(Evaluator& eval)
         case GroupType::Points:
         {
             auto& pts = m_geo_impl->GetAttr().GetPoints();
-            for (auto i : group->items) {
+            for (auto i : group->GetItems()) {
                 pts[i]->pos = mat * pts[i]->pos;
             }
         }
@@ -50,7 +50,7 @@ void Transform::Execute(Evaluator& eval)
         {
             std::set<std::shared_ptr<GeoAttribute::Point>> pts;
             auto& vts = m_geo_impl->GetAttr().GetVertices();
-            for (auto i : group->items) {
+            for (auto i : group->GetItems()) {
                 pts.insert(vts[i]->point);
             }
             for (auto p : pts) {
@@ -63,7 +63,7 @@ void Transform::Execute(Evaluator& eval)
         {
             std::set<std::shared_ptr<GeoAttribute::Point>> pts;
             auto& prims = m_geo_impl->GetAttr().GetPrimtives();
-            for (auto i : group->items) {
+            for (auto i : group->GetItems()) {
                 for (auto v : prims[i]->vertices) {
                     pts.insert(v->point);
                 }

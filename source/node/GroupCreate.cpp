@@ -27,15 +27,15 @@ void GroupCreate::Execute(Evaluator& eval)
     auto& group_mgr = m_geo_impl->GetGroup();
 
     auto group = std::make_shared<Group>();
-    group->name = m_group_name;
-    group->type = m_group_type;
+    group->SetName(m_group_name);
+    group->SetType(m_group_type);
 
     if (m_base_group)
     {
         if (m_base_group_expr.empty()) {
             SelectAll(*group);
         } else {
-            group->items = NodeHelper::SelectGeoByExpr(m_group_type, eval, *this, m_base_group_expr);
+            group->SetItems(NodeHelper::SelectGeoByExpr(m_group_type, eval, *this, m_base_group_expr));
         }
     }
     else if (m_keep_in_bounding)
@@ -51,7 +51,7 @@ void GroupCreate::Execute(Evaluator& eval)
     }
 
     group_mgr.Add(group, m_merge_op);
-    m_group_name = group->name;
+    m_group_name = group->GetName();
 }
 
 void GroupCreate::SetGroupName(const std::string& name)
@@ -175,7 +175,7 @@ void GroupCreate::SelectByNormals(Group& group)
             auto normal = prims[i]->CalcNormal();
             auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, normal);
             if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
-                group.items.push_back(i);
+                group.Add(i);
             }
         }
     }
@@ -201,7 +201,7 @@ void GroupCreate::SelectByBoundings(Group& group, std::shared_ptr<GeometryImpl>&
         for (size_t i = 0, n = pts.size(); i < n; ++i) {
             for (auto& b : brushes) {
                 if (b.impl->GetGeometry()->IsContain(pts[i]->pos)) {
-                    group.items.push_back(i);
+                    group.Add(i);
                     break;
                 }
             }
@@ -226,19 +226,21 @@ void GroupCreate::SelectAll(Group& group)
     case GroupType::Points:
     {
         auto& pts = m_geo_impl->GetAttr().GetPoints();
-        group.items.resize(pts.size());
+        std::vector<size_t> items(pts.size());
         for (size_t i = 0, n = pts.size(); i < n; ++i) {
-            group.items[i] = i;
+            items[i] = i;
         }
+        group.SetItems(items);
     }
         break;
     case GroupType::Vertices:
     {
         auto& vertices = m_geo_impl->GetAttr().GetVertices();
-        group.items.resize(vertices.size());
+        std::vector<size_t> items(vertices.size());
         for (size_t i = 0, n = vertices.size(); i < n; ++i) {
-            group.items[i] = i;
+            items[i] = i;
         }
+        group.SetItems(items);
     }
         break;
     case GroupType::Edges:
@@ -246,10 +248,11 @@ void GroupCreate::SelectAll(Group& group)
     case GroupType::Primitives:
     {
         auto& prims = m_geo_impl->GetAttr().GetPrimtives();
-        group.items.resize(prims.size());
+        std::vector<size_t> items(prims.size());
         for (size_t i = 0, n = prims.size(); i < n; ++i) {
-            group.items[i] = i;
+            items[i] = i;
         }
+        group.SetItems(items);
     }
         break;
     default:

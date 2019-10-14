@@ -126,14 +126,14 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)
     if (!m_target_group.empty())
     {
         tar_group = dst.GetGroup().Query(m_target_group);
-        if (!tar_group || tar_group->type != GroupType::Points) {
+        if (!tar_group || tar_group->GetType() != GroupType::Points) {
             return;
         }
     }
 
     auto& pts = dst.GetAttr().GetPoints();
     if (tar_group) {
-        for (auto i : tar_group->items) {
+        for (auto i : tar_group->GetItems()) {
             CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point));
         }
     } else {
@@ -149,14 +149,14 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, size
     if (!m_target_group.empty())
     {
         tar_group = dst.GetGroup().Query(m_target_group);
-        if (!tar_group || tar_group->type != GroupType::Points) {
+        if (!tar_group || tar_group->GetType() != GroupType::Points) {
             return;
         }
     }
 
     auto& pts = dst.GetAttr().GetPoints();
     if (tar_group) {
-        for (auto i : tar_group->items) {
+        for (auto i : tar_group->GetItems()) {
             CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point),
                 *static_cast<const sm::vec3*>(pts[i]->vars[norm_idx].p));
         }
@@ -174,7 +174,7 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, cons
     if (!m_target_group.empty())
     {
         tar_group = dst.GetGroup().Query(m_target_group);
-        if (!tar_group || tar_group->type != GroupType::Points) {
+        if (!tar_group || tar_group->GetType() != GroupType::Points) {
             return;
         }
     }
@@ -182,7 +182,7 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, cons
     auto& pts = dst.GetAttr().GetPoints();
     assert(pts.size() == norms.size());
     if (tar_group) {
-        for (auto i : tar_group->items) {
+        for (auto i : tar_group->GetItems()) {
             CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point), norms[i]);
         }
     } else {

@@ -25,8 +25,8 @@ void Blast::Execute(Evaluator& eval)
         return;
     }
 
-    auto type = m_group_type == GroupType::GuessFromGroup ? group->type : m_group_type;
-    if (type != group->type) {
+    auto type = m_group_type == GroupType::GuessFromGroup ? group->GetType() : m_group_type;
+    if (type != group->GetType()) {
         return;
     }
 
@@ -117,14 +117,14 @@ bool Blast::SetupDelFlags(const Group& group, size_t count,
             dirty = true;
         }
         del_flags.resize(count, true);
-        for (auto& f : group.items) {
+        for (auto& f : group.GetItems()) {
             del_flags[f] = false;
         }
     }
     else
     {
         del_flags.resize(count, false);
-        for (auto& f : group.items) {
+        for (auto& f : group.GetItems()) {
             del_flags[f] = true;
             dirty = true;
         }

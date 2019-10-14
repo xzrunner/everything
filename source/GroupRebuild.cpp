@@ -22,13 +22,13 @@ void GroupRebuild::Save()
     {
         GroupDump dump;
         dump.ori = &group;
-        switch (group.type)
+        switch (group.GetType())
         {
         case GroupType::Points:
         {
             auto& pts = m_geo.GetAttr().GetPoints();
-            dump.points.reserve(group.items.size());
-            for (auto i : group.items)
+            dump.points.reserve(group.Size());
+            for (auto i : group.GetItems())
             {
                 auto& p = pts[i];
                 assert(!p->topo_id.Empty());
@@ -39,8 +39,8 @@ void GroupRebuild::Save()
         case GroupType::Vertices:
         {
             auto& vts = m_geo.GetAttr().GetVertices();
-            dump.vertices.reserve(group.items.size());
-            for (auto i : group.items)
+            dump.vertices.reserve(group.Size());
+            for (auto i : group.GetItems())
             {
                 auto& v = vts[i];
                 auto& vert_id = v->point->topo_id;
@@ -56,8 +56,8 @@ void GroupRebuild::Save()
         case GroupType::Primitives:
         {
             auto& prims = m_geo.GetAttr().GetPrimtives();
-            dump.primtives.reserve(group.items.size());
-            for (auto i : group.items)
+            dump.primtives.reserve(group.Size());
+            for (auto i : group.GetItems())
             {
                 auto& prim = prims[i];
                 assert(!prim->topo_id.Empty());
@@ -114,45 +114,48 @@ void GroupRebuild::Load()
 
         auto& dst = const_cast<Group&>(group);
 
-        switch (group.type)
+        switch (group.GetType())
         {
         case GroupType::Points:
         {
-            dst.items.clear();
-            dst.items.reserve(itr->points.size());
+            std::vector<size_t> items;
+            items.reserve(itr->points.size());
             for (auto& p : itr->points)
             {
                 auto itr = p_topo2idx.find(p);
                 if (itr != p_topo2idx.end()) {
-                    dst.items.push_back(itr->second);
+                    items.push_back(itr->second);
                 }
             }
+            dst.SetItems(items);
         }
             break;
         case GroupType::Vertices:
         {
-            dst.items.clear();
-            dst.items.reserve(itr->vertices.size());
+            std::vector<size_t> items;
+            items.reserve(itr->vertices.size());
             for (auto& v : itr->vertices)
             {
                 auto itr = v_topo2idx.find(v);
                 if (itr != v_topo2idx.end()) {
-                    dst.items.push_back(itr->second);
+                    items.push_back(itr->second);
                 }
             }
+            dst.SetItems(items);
         }
             break;
         case GroupType::Primitives:
         {
-            dst.items.clear();
-            dst.items.reserve(itr->primtives.size());
+            std::vector<size_t> items;
+            items.reserve(itr->primtives.size());
             for (auto& prim : itr->primtives)
             {
                 auto itr = prim_topo2idx.find(prim);
                 if (itr != prim_topo2idx.end()) {
-                    dst.items.push_back(itr->second);
+                    items.push_back(itr->second);
                 }
             }
+            dst.SetItems(items);
         }
             break;
         default:

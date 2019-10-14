@@ -362,6 +362,9 @@
     <ClCompile Include="..\..\..\source\node\GroupPromote.cpp">
       <Filter>nodes\group</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\Group.cpp">
+      <Filter>dataset\geo\group</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\include\sop\GeoAttribute.inl">

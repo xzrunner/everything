@@ -32,8 +32,8 @@ void PolyExtrude::Execute(Evaluator& eval)
     std::vector<std::shared_ptr<GeoAttribute::Primitive>> edited_prims;
     if (group)
     {
-        assert(group->type == GroupType::Primitives);
-        for (auto& i : group->items) {
+        assert(group->GetType() == GroupType::Primitives);
+        for (auto& i : group->GetItems()) {
             edited_prims.push_back(prims[i]);
         }
     }

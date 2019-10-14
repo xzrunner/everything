@@ -5,7 +5,7 @@
 namespace sop
 {
 
-struct Group;
+class Group;
 class GeometryImpl;
 
 class GroupRebuild

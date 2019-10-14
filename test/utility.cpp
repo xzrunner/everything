@@ -271,7 +271,7 @@ void check_group_num(const sop::NodePtr& node, const std::string& name, size_t n
     REQUIRE(geo != nullptr);
     auto group = geo->GetGroup().Query(name);
     REQUIRE(group != nullptr);
-    REQUIRE(group->items.size() == num);
+    REQUIRE(group->Size() == num);
 }
 
 void check_group_type(const sop::NodePtr& node, const std::string& name, sop::GroupType type)
@@ -280,7 +280,7 @@ void check_group_type(const sop::NodePtr& node, const std::string& name, sop::Gr
     REQUIRE(geo != nullptr);
     auto group = geo->GetGroup().Query(name);
     REQUIRE(group != nullptr);
-    REQUIRE(group->type == type);
+    REQUIRE(group->GetType() == type);
 }
 
 void check_prop(const sop::NodePtr& node, const std::string& key, const sop::Variable& val)

@@ -28,16 +28,16 @@ void GroupExpression::Execute(Evaluator& eval)
         auto group = group_mgr.Query(inst.group_name);
         if (group)
         {
-            GroupMgr::Merge(inst.merge_op, items, group->items);
+            Group::Merge(inst.merge_op, items, const_cast<std::vector<size_t>&>(group->GetItems()));
         }
         else
         {
             group = std::make_shared<Group>();
-            group->name  = inst.group_name;
-            group->type  = m_group_type;
-            group->items = items;
+            group->SetName(inst.group_name);
+            group->SetType(m_group_type);
+            group->SetItems(items);
             group_mgr.Add(group, inst.merge_op);
-            inst.group_name = group->name;
+            inst.group_name = group->GetName();
         }
     }
 }
