@@ -42,8 +42,21 @@ void PolyExtrude::Execute(Evaluator& eval)
         edited_prims = prims;
     }
 
-    if (ExtrudeFace(edited_prims)) {
+    std::vector<he::Face*> new_faces[he::Polyhedron::ExtrudeMaxCount];
+    if (ExtrudeFace(edited_prims, new_faces))
+    {
         m_geo_impl->UpdateByBrush(*brush_model);
+
+        // update group
+        if (!m_front_group.empty()) {
+            AddToGroup(m_front_group, new_faces[he::Polyhedron::ExtrudeFront]);
+        }
+        if (!m_back_group.empty()) {
+            AddToGroup(m_back_group, new_faces[he::Polyhedron::ExtrudeBack]);
+        }
+        if (!m_side_group.empty()) {
+            AddToGroup(m_side_group, new_faces[he::Polyhedron::ExtrudeSide]);
+        }
     }
 }
 
@@ -135,7 +148,8 @@ void PolyExtrude::SetSideGroupName(const std::string& name)
     SetDirty(true);
 }
 
-bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims) const
+bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims,
+                              std::vector<he::Face*>* new_faces)
 {
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {
@@ -150,6 +164,11 @@ bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Pr
     }
 
     bool dirty = false;
+
+    bool create_face[he::Polyhedron::ExtrudeMaxCount];
+    create_face[he::Polyhedron::ExtrudeFront] = m_output_front;
+    create_face[he::Polyhedron::ExtrudeBack]  = m_output_back;
+    create_face[he::Polyhedron::ExtrudeSide]  = m_output_side;
 
     for (int i = 0, n = brushes.size(); i < n; ++i)
     {
@@ -166,14 +185,58 @@ bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Pr
             continue;
         }
 
-        if (he_poly->Extrude(m_distance, face_ids[i],
-            m_output_front, m_output_back, m_output_side)) {
-            poly->BuildFromGeo();
-            dirty = true;
+        std::vector<he::Face*> faces[he::Polyhedron::ExtrudeMaxCount];
+        if (!he_poly->Extrude(m_distance, face_ids[i], create_face, faces)) {
+            continue;
         }
+
+        for (size_t i = 0; i < he::Polyhedron::ExtrudeMaxCount; ++i) {
+            for (auto& f : faces[i]) {
+                new_faces[i].push_back(f);
+            }
+        }
+
+        poly->BuildFromGeo();
+
+        dirty = true;
     }
 
     return dirty;
+}
+
+void PolyExtrude::AddToGroup(const std::string& group_name, const std::vector<he::Face*>& faces)
+{
+    std::set<size_t> face_ids;
+    for (auto& f : faces) {
+        face_ids.insert(f->ids.UID());
+    }
+
+    std::vector<size_t> items;
+    items.reserve(faces.size());
+    auto& prims = m_geo_impl->GetAttr().GetPrimtives();
+    for (size_t i = 0, n = prims.size(); i < n; ++i) {
+        if (face_ids.find(prims[i]->topo_id.UID()) != face_ids.end()) {
+            items.push_back(i);
+        }
+    }
+
+    auto& group_mgr = m_geo_impl->GetGroup();
+    auto group = group_mgr.Query(group_name);
+    if (group)
+    {
+        assert(group->GetType() == GroupType::Primitives);
+        for (auto& i : items) {
+            group->Add(i);
+        }
+    }
+    else
+    {
+        group = std::make_shared<Group>();
+        group->SetName(group_name);
+        group->SetType(GroupType::Primitives);
+        group->SetItems(items);
+        group_mgr.Add(group, GroupMerge::Replace);
+    }
 }
 
 }

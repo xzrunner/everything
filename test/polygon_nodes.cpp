@@ -755,6 +755,8 @@ TEST_CASE("poly extrude face")
 
     auto extrude = std::make_shared<sop::node::PolyExtrude>();
     extrude->SetDistance(0.5f);
+    extrude->SetFrontGroupName("new_front_faces");
+    extrude->SetSideGroupName("new_side_faces");
     eval.AddNode(extrude);
 
     eval.Connect({ blast, 0 }, { extrude, 0 });
@@ -763,6 +765,10 @@ TEST_CASE("poly extrude face")
 
     test::check_faces_num(extrude, 5);
     test::check_aabb(extrude, { -0.5f, 0.5f, -0.5f }, { 0.5f, 1, 0.5f });
+
+    test::check_group_type(extrude, "new_front_faces", sop::GroupType::Primitives);
+    test::check_group_num(extrude, "new_front_faces", 1);
+    test::check_group_num(extrude, "new_side_faces", 4);
 }
 
 TEST_CASE("poly fill")

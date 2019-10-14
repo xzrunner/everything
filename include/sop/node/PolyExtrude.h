@@ -3,6 +3,8 @@
 #include "sop/Node.h"
 #include "sop/GeoAttribute.h"
 
+namespace he { struct Face; }
+
 namespace sop
 {
 namespace node
@@ -36,7 +38,10 @@ public:
     void SetSideGroupName(const std::string& name);
 
 private:
-    bool ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims) const;
+    bool ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims,
+        std::vector<he::Face*>* new_faces);
+
+    void AddToGroup(const std::string& group_name, const std::vector<he::Face*>& faces);
 
 private:
     std::string m_group_name;
