@@ -30,6 +30,9 @@
     <ClCompile Include="..\..\..\test\funcs_test.cpp">
       <Filter>others</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\test\pyloader_test.cpp">
+      <Filter>serialize</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\test\utility.h" />
@@ -40,6 +43,9 @@
     </Filter>
     <Filter Include="others">
       <UniqueIdentifier>{910e6277-f04f-49ec-8004-fd311e90f75a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="serialize">
+      <UniqueIdentifier>{f36da7f8-4b70-4583-8205-e7f6289fafa4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

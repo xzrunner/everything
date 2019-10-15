@@ -133,6 +133,7 @@
     <ClCompile Include="..\..\..\test\main.cpp" />
     <ClCompile Include="..\..\..\test\polygon_nodes.cpp" />
     <ClCompile Include="..\..\..\test\primitive_nodes.cpp" />
+    <ClCompile Include="..\..\..\test\pyloader_test.cpp" />
     <ClCompile Include="..\..\..\test\utility.cpp" />
     <ClCompile Include="..\..\..\test\utility_nodes.cpp" />
   </ItemGroup>
@@ -193,8 +194,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>..\..\..\..\external\boost\lib;..\..\..\..\external\rttr\lib;..\..\..\..\external\fbxsdk\lib;..\..\..\..\external\tbb\lib;..\..\..\..\external\libpng\lib;..\..\..\..\external\libjpeg\lib;..\..\..\..\external\assimp\lib;..\..\..\..\external\lua\lib;..\..\..\..\external\openvdb\lib;..\..\..\..\external\zlib\lib;..\..\..\..\external\OpenEXR\lib;..\..\..\..\external\gl\lib;..\..\..\..\external\glfw\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rttr_core_d.lib;libfbxsdk.lib;libpng16_static.lib;jpeg.lib;assimp-vc140-mtd.lib;luad.lib;openvdbd.lib;zlibstatic.lib;Half-2_3.lib;OpenGL32.lib;glew32sd.lib;glfw3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\external\boost\lib;..\..\..\..\external\rttr\lib;..\..\..\..\external\fbxsdk\lib;..\..\..\..\external\tbb\lib;..\..\..\..\external\libpng\lib;..\..\..\..\external\libjpeg\lib;..\..\..\..\external\assimp\lib;..\..\..\..\external\lua\lib;..\..\..\..\external\openvdb\lib;..\..\..\..\external\zlib\lib;..\..\..\..\external\OpenEXR\lib;..\..\..\..\external\gl\lib;..\..\..\..\external\glfw\lib;..\..\..\..\external\python27\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>rttr_core_d.lib;libfbxsdk.lib;libpng16_static.lib;jpeg.lib;assimp-vc140-mtd.lib;luad.lib;openvdbd.lib;zlibstatic.lib;Half-2_3.lib;OpenGL32.lib;glew32sd.lib;glfw3d.lib;python27.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -210,8 +211,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\..\..\external\boost\lib;..\..\..\..\external\rttr\lib;..\..\..\..\external\fbxsdk\lib;..\..\..\..\external\tbb\lib;..\..\..\..\external\libpng\lib;..\..\..\..\external\libjpeg\lib;..\..\..\..\external\assimp\lib;..\..\..\..\external\lua\lib;..\..\..\..\external\openvdb\lib;..\..\..\..\external\zlib\lib;..\..\..\..\external\OpenEXR\lib;..\..\..\..\external\gl\lib;..\..\..\..\external\glfw\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rttr_core.lib;libfbxsdk.lib;libpng16_static.lib;jpeg.lib;assimp-vc140-mt.lib;lua.lib;openvdb.lib;zlibstatic.lib;Half-2_3.lib;OpenGL32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\external\boost\lib;..\..\..\..\external\rttr\lib;..\..\..\..\external\fbxsdk\lib;..\..\..\..\external\tbb\lib;..\..\..\..\external\libpng\lib;..\..\..\..\external\libjpeg\lib;..\..\..\..\external\assimp\lib;..\..\..\..\external\lua\lib;..\..\..\..\external\openvdb\lib;..\..\..\..\external\zlib\lib;..\..\..\..\external\OpenEXR\lib;..\..\..\..\external\gl\lib;..\..\..\..\external\glfw\lib;..\..\..\..\external\python27\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>rttr_core.lib;libfbxsdk.lib;libpng16_static.lib;jpeg.lib;assimp-vc140-mt.lib;lua.lib;openvdb.lib;zlibstatic.lib;Half-2_3.lib;OpenGL32.lib;glew32s.lib;glfw3.lib;python27.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

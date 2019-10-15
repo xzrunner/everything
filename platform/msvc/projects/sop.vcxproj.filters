@@ -58,6 +58,9 @@
     <Filter Include="nodes\utility">
       <UniqueIdentifier>{ba93cdbb-5854-41c6-83f2-0b62189eef29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="serialize">
+      <UniqueIdentifier>{a3e15baf-4aee-45aa-a51f-2494595084e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\sop\node\Curve.h">
@@ -227,6 +230,9 @@
     <ClInclude Include="..\..\..\include\sop\node\PolyFrame.h">
       <Filter>nodes\polygon</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\PyLoader.h">
+      <Filter>serialize</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -370,6 +376,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\PolyFrame.cpp">
       <Filter>nodes\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\PyLoader.cpp">
+      <Filter>serialize</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
