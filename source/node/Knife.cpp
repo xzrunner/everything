@@ -42,35 +42,17 @@ void Knife::Execute(Evaluator& eval)
 
 void Knife::SetOrigin(const sm::vec3& origin)
 {
-    if (m_origin == origin) {
-        return;
-    }
-
-    m_origin = origin;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_origin, origin);
 }
 
 void Knife::SetDirection(const sm::vec3& dir)
 {
-    if (m_direction == dir) {
-        return;
-    }
-
-    m_direction = dir;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_direction, dir);
 }
 
 void Knife::SetKeepType(KeepType keep)
 {
-    if (m_keep == keep) {
-        return;
-    }
-
-    m_keep = keep;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_keep, keep);
 }
 
 bool Knife::Clip(pm3::Polytope& poly) const

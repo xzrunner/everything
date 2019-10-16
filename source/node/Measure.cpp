@@ -49,24 +49,12 @@ void Measure::Execute(Evaluator& eval)
 
 void Measure::SetMesureType(Type type)
 {
-    if (m_ms_type == type) {
-        return;
-    }
-
-    m_ms_type = type;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_ms_type, type);
 }
 
 void Measure::SetMesureName(const std::string& name)
 {
-    if (m_ms_name == name) {
-        return;
-    }
-
-    m_ms_name = name;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_ms_name, name);
 }
 
 void Measure::CalcPerimeter(std::string& name, std::vector<VarValue>& val) const

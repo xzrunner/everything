@@ -1,6 +1,7 @@
 #include "sop/node/Line.h"
 #include "sop/GeometryImpl.h"
 #include "sop/GeoAdaptor.h"
+#include "sop/NodeHelper.h"
 
 #include <halfedge/Polyline.h>
 
@@ -17,26 +18,12 @@ void Line::Execute(Evaluator& eval)
 
 void Line::SetOrigin(const sm::vec3& ori)
 {
-    if (m_origin == ori) {
-        return;
-    }
-
-    m_origin = ori;
-    BuildModel();
-
-    SetDirty(true);
+    NODE_PROP_SET(m_origin, ori);
 }
 
 void Line::SetDirection(const sm::vec3& dir)
 {
-    if (m_direction == dir) {
-        return;
-    }
-
-    m_direction = dir;
-    BuildModel();
-
-    SetDirty(true);
+    NODE_PROP_SET(m_direction, dir);
 }
 
 void Line::SetLength(float len)
@@ -48,13 +35,7 @@ void Line::SetLength(float len)
 
 void Line::SetPoints(size_t num)
 {
-    if (m_points == num) {
-        return;
-    }
-
-    m_points = num;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_points, num);
 }
 
 void Line::InitProps()

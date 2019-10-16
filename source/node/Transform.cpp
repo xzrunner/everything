@@ -166,24 +166,12 @@ void Transform::SetShear(const sm::vec3& s)
 
 void Transform::SetGroupName(const std::string& name)
 {
-    if (m_group_name == name) {
-        return;
-    }
-
-    m_group_name = name;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_group_name, name);
 }
 
 void Transform::SetGroupType(GroupType type)
 {
-    if (m_group_type == type) {
-        return;
-    }
-
-    m_group_type = type;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_group_type, type);
 }
 
 sm::mat4 Transform::CalcTransformMat(const sm::vec3& translate, const sm::vec3& rotate,

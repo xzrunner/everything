@@ -76,35 +76,17 @@ void Blast::Execute(Evaluator& eval)
 
 void Blast::SetGroupName(const std::string& name)
 {
-    if (m_group_name == name) {
-        return;
-    }
-
-    m_group_name = name;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_group_name, name);
 }
 
 void Blast::SetGroupType(GroupType type)
 {
-    if (m_group_type == type) {
-        return;
-    }
-
-    m_group_type = type;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_group_type, type);
 }
 
 void Blast::SetDeleteNonSelected(bool del_non_selected)
 {
-    if (m_delete_non_selected == del_non_selected) {
-        return;
-    }
-
-    m_delete_non_selected = del_non_selected;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_delete_non_selected, del_non_selected);
 }
 
 bool Blast::SetupDelFlags(const Group& group, size_t count,

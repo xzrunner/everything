@@ -67,13 +67,7 @@ void Normal::Execute(Evaluator& eval)
 
 void Normal::SetAttrAddTo(GeoAttrClass cls)
 {
-    if (m_attr_add_to == cls) {
-        return;
-    }
-
-    m_attr_add_to = cls;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_attr_add_to, cls);
 }
 
 std::vector<sm::vec3> Normal::CalcBrushPointsNormal(const GeometryImpl& geo)

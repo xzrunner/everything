@@ -46,9 +46,7 @@ void AttributeCreate::Execute(Evaluator& eval)
 
 void AttributeCreate::SetAttrItems(const std::vector<Item>& items)
 {
-    m_items = items;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_items, items);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -71,6 +69,56 @@ Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val)
     , type(sop::GeoAttrTypes[attr])
     , value(val)
 {
+}
+
+bool AttributeCreate::Item::
+operator == (const Item& i) const
+{
+    if (name != i.name ||
+        cls != i.cls ||
+        type != i.type) {
+        return false;
+    }
+
+    switch (type)
+    {
+    case GeoAttrType::Bool:
+        if (value.b != i.value.b) {
+            return false;
+        }
+        break;
+    case GeoAttrType::Int:
+        if (value.i != i.value.i) {
+            return false;
+        }
+        break;
+    case GeoAttrType::Float:
+        if (value.f != i.value.f) {
+            return false;
+        }
+        break;
+    case GeoAttrType::Double:
+        if (value.d != i.value.d) {
+            return false;
+        }
+        break;
+    case GeoAttrType::String:
+        if (strcmp(static_cast<const char*>(value.p),
+                   static_cast<const char*>(i.value.p)) != 0) {
+            return false;
+        }
+        break;
+    case GeoAttrType::Vector:
+        if (*static_cast<const sm::vec3*>(value.p) !=
+            *static_cast<const sm::vec3*>(i.value.p)) {
+            return false;
+        }
+        break;
+    default:
+        assert(0);
+    }
+
+    return true;
 }
 
 }

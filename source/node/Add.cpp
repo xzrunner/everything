@@ -71,13 +71,7 @@ void Add::Execute(Evaluator& eval)
 
 void Add::SetPoints(const std::vector<sm::vec3>& points)
 {
-    if (m_points == points) {
-        return;
-    }
-
-    m_points = points;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_points, points);
 }
 
 }

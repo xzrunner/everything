@@ -39,46 +39,22 @@ void Primitive::Execute(Evaluator& eval)
 
 void Primitive::SetTranslate(const sm::vec3& t)
 {
-    if (m_translate == t) {
-        return;
-    }
-
-    m_translate = t;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_translate, t);
 }
 
 void Primitive::SetRotate(const sm::vec3& r)
 {
-    if (m_rotate == r) {
-        return;
-    }
-
-    m_rotate = r;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_rotate, r);
 }
 
 void Primitive::SetScale(const sm::vec3& s)
 {
-    if (m_scale == s) {
-        return;
-    }
-
-    m_scale = s;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_scale, s);
 }
 
 void Primitive::SetShear(const sm::vec3& s)
 {
-    if (m_shear == s) {
-        return;
-    }
-
-    m_shear = s;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_shear, s);
 }
 
 }

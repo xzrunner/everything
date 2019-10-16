@@ -16,6 +16,8 @@ public:
         Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val);
         Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val);
 
+        bool operator == (const Item& i) const;
+
         std::string  name;
         GeoAttrClass cls  = GeoAttrClass::Point;
         GeoAttrType  type = GeoAttrType::Float;

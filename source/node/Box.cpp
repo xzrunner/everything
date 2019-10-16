@@ -31,7 +31,6 @@ void Box::SetSize(const sm::vec3& size)
     }
 
     if (dirty) {
-        BuildModel();
         SetDirty(true);
     }
 }
@@ -51,7 +50,6 @@ void Box::SetCenter(const sm::vec3& center)
     }
 
     if (dirty) {
-        BuildModel();
         SetDirty(true);
     }
 }

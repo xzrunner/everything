@@ -90,13 +90,7 @@ void Boolean::Execute(Evaluator& eval)
 
 void Boolean::SetOperator(Operator op)
 {
-    if (m_operator == op) {
-        return;
-    }
-
-    m_operator = op;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_operator, op);
 }
 
 void Boolean::SetTreatAs(TreatAs a, TreatAs b)

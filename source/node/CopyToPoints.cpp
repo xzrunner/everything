@@ -89,35 +89,17 @@ void CopyToPoints::Execute(Evaluator& eval)
 
 void CopyToPoints::SetSrcGroup(const std::string& group)
 {
-    if (m_src_group == group) {
-        return;
-    }
-
-    m_src_group = group;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_src_group, group);
 }
 
 void CopyToPoints::SetTargetGroup(const std::string& group)
 {
-    if (m_target_group == group) {
-        return;
-    }
-
-    m_target_group = group;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_target_group, group);
 }
 
 void CopyToPoints::EnableUsePointDir(bool enable)
 {
-    if (m_use_pt_dir == enable) {
-        return;
-    }
-
-    m_use_pt_dir = enable;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_use_pt_dir, enable);
 }
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)

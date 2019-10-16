@@ -53,24 +53,12 @@ void ForeachPrimEnd::Execute(Evaluator& eval)
 
 void ForeachPrimEnd::EnableSinglePass(bool do_single_pass)
 {
-    if (m_do_single_pass == do_single_pass) {
-        return;
-    }
-
-    m_do_single_pass = do_single_pass;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_do_single_pass, do_single_pass);
 }
 
 void ForeachPrimEnd::SetSinglePassOffset(int single_pass_offset)
 {
-    if (m_single_pass_offset == single_pass_offset) {
-        return;
-    }
-
-    m_single_pass_offset = single_pass_offset;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_single_pass_offset, single_pass_offset);
 }
 
 NodePtr ForeachPrimEnd::FindForeachBegin() const

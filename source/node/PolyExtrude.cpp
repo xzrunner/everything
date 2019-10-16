@@ -62,90 +62,42 @@ void PolyExtrude::Execute(Evaluator& eval)
 
 void PolyExtrude::SetGroupName(const std::string& name)
 {
-    if (m_group_name == name) {
-        return;
-    }
-
-    m_group_name = name;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_group_name, name);
 }
 
 void PolyExtrude::SetDistance(float dist)
 {
-    if (m_distance == dist) {
-        return;
-    }
-
-    m_distance = dist;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_distance, dist);
 }
 
 void PolyExtrude::SetOutputFront(bool output)
 {
-    if (m_output_front == output) {
-        return;
-    }
-
-    m_output_front = output;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_output_front, output);
 }
 
 void PolyExtrude::SetOutputBack(bool output)
 {
-    if (m_output_back == output) {
-        return;
-    }
-
-    m_output_back = output;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_output_back, output);
 }
 
 void PolyExtrude::SetOutputSide(bool output)
 {
-    if (m_output_side == output) {
-        return;
-    }
-
-    m_output_side = output;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_output_side, output);
 }
 
 void PolyExtrude::SetFrontGroupName(const std::string& name)
 {
-    if (m_front_group == name) {
-        return;
-    }
-
-    m_front_group = name;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_front_group, name);
 }
 
 void PolyExtrude::SetBackGroupName(const std::string& name)
 {
-    if (m_back_group == name) {
-        return;
-    }
-
-    m_back_group = name;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_back_group, name);
 }
 
 void PolyExtrude::SetSideGroupName(const std::string& name)
 {
-    if (m_side_group == name) {
-        return;
-    }
-
-    m_side_group = name;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_side_group, name);
 }
 
 bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims,

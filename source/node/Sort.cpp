@@ -32,13 +32,7 @@ void Sort::Execute(Evaluator& eval)
 
 void Sort::SetKey(Key key)
 {
-    if (m_key == key) {
-        return;
-    }
-
-    m_key = key;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_key, key);
 }
 
 //////////////////////////////////////////////////////////////////////////

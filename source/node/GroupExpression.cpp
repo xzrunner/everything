@@ -44,13 +44,7 @@ void GroupExpression::Execute(Evaluator& eval)
 
 void GroupExpression::SetGroupType(GroupType type)
 {
-    if (m_group_type == type) {
-        return;
-    }
-
-    m_group_type = type;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_group_type, type);
 }
 
 void GroupExpression::ClearInstances()

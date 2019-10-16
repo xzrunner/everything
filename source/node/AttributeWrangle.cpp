@@ -31,13 +31,7 @@ void AttributeWrangle::Execute(Evaluator& eval)
 
 void AttributeWrangle::SetVexExpr(const std::string& expr)
 {
-    if (m_vex_expr == expr) {
-        return;
-    }
-
-    m_vex_expr = expr;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_vex_expr, expr);
 }
 
 }

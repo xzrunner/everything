@@ -34,12 +34,14 @@ TEST_CASE("box")
 
     const sm::vec3 off(10, 11, 12);
     box->SetCenter(off);
+    eval.MakeDirty(false);
     eval.Update();
     test::check_aabb(box, -h_sz + off, h_sz + off);
     test::check_prop(box, "ty", sop::Variable(11.0f));
 
     const sm::vec3 scale(5, 6, 7);
     box->SetScale(scale);
+    eval.MakeDirty(false);
     eval.Update();
     test::check_aabb(box, -h_sz * scale + off, h_sz * scale + off);
 }

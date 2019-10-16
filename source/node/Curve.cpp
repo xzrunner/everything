@@ -1,5 +1,6 @@
 #include "sop/node/Curve.h"
 #include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
 
 #include <halfedge/Polyline.h>
 
@@ -16,14 +17,7 @@ void Curve::Execute(Evaluator& eval)
 
 void Curve::SetVertices(const std::vector<sm::vec3>& vertices)
 {
-    if (m_vertices == vertices) {
-        return;
-    }
-
-    m_vertices = vertices;
-    BuildModel();
-
-    SetDirty(true);
+    NODE_PROP_SET(m_vertices, vertices);
 }
 
 void Curve::BuildModel()

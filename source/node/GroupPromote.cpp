@@ -43,35 +43,17 @@ void GroupPromote::Execute(Evaluator& eval)
 
 void GroupPromote::SetGroupName(const std::string& name)
 {
-    if (m_group_name == name) {
-        return;
-    }
-
-    m_group_name = name;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_group_name, name);
 }
 
 void GroupPromote::SetSrcGroupType(GroupType type)
 {
-    if (m_src_type == type) {
-        return;
-    }
-
-    m_src_type = type;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_src_type, type);
 }
 
 void GroupPromote::SetDstGroupType(GroupType type)
 {
-    if (m_dst_type == type) {
-        return;
-    }
-
-    m_dst_type = type;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_dst_type, type);
 }
 
 void GroupPromote::PrimsToPoints(Group& group)

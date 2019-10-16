@@ -65,24 +65,12 @@ void GroupCreate::SetGroupName(const std::string& name)
 
 void GroupCreate::SetGroupType(GroupType type)
 {
-    if (m_group_type == type) {
-        return;
-    }
-
-    m_group_type = type;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_group_type, type);
 }
 
 void GroupCreate::SetGroupMerge(GroupMerge merge)
 {
-    if (m_merge_op == merge) {
-        return;
-    }
-
-    m_merge_op = merge;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_merge_op, merge);
 }
 
 void GroupCreate::EnableBaseGroup(const std::string& expr)
@@ -100,35 +88,17 @@ void GroupCreate::EnableBaseGroup(const std::string& expr)
 
 void GroupCreate::DisableBaseGroup()
 {
-    if (!m_base_group) {
-        return;
-    }
-
-    m_base_group = false;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_base_group, false);
 }
 
 void GroupCreate::EnableKeepInBounding()
 {
-    if (m_keep_in_bounding) {
-        return;
-    }
-
-    m_keep_in_bounding = true;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_keep_in_bounding, true);
 }
 
 void GroupCreate::DisableKeepInBounding()
 {
-    if (!m_keep_in_bounding) {
-        return;
-    }
-
-    m_keep_in_bounding = false;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_keep_in_bounding, false);
 }
 
 void GroupCreate::EnableKeepByNormals(const sm::vec3& direction, float spread_angle)
@@ -148,13 +118,7 @@ void GroupCreate::EnableKeepByNormals(const sm::vec3& direction, float spread_an
 
 void GroupCreate::DisableKeepByNormals()
 {
-    if (!m_keep_by_normals) {
-        return;
-    }
-
-    m_keep_by_normals = false;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_keep_by_normals, false);
 }
 
 void GroupCreate::SelectByNormals(Group& group)

@@ -46,24 +46,12 @@ void Color::Execute(Evaluator& eval)
 
 void Color::SetAttrAddTo(GeoAttrClass cls)
 {
-    if (m_attr_add_to == cls) {
-        return;
-    }
-
-    m_attr_add_to = cls;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_attr_add_to, cls);
 }
 
 void Color::SetColor(const sm::vec3& col)
 {
-    if (m_color == col) {
-        return;
-    }
-
-    m_color = col;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_color, col);
 }
 
 }

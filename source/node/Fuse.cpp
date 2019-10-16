@@ -40,13 +40,7 @@ void Fuse::Execute(Evaluator& eval)
 
 void Fuse::SetDistance(float dist)
 {
-    if (m_distance == dist) {
-        return;
-    }
-
-    m_distance = dist;
-
-    SetDirty(true);
+    NODE_PROP_SET(m_distance, dist);
 }
 
 void Fuse::FuseBrush()
