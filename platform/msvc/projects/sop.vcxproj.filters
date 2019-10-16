@@ -61,6 +61,9 @@
     <Filter Include="serialize">
       <UniqueIdentifier>{a3e15baf-4aee-45aa-a51f-2494595084e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="serialize\python">
+      <UniqueIdentifier>{5b9a0881-0262-4d67-90c8-7b2c2b954331}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\sop\node\Curve.h">
@@ -231,7 +234,7 @@
       <Filter>nodes\polygon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\PyLoader.h">
-      <Filter>serialize</Filter>
+      <Filter>serialize\python</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -378,7 +381,7 @@
       <Filter>nodes\polygon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\PyLoader.cpp">
-      <Filter>serialize</Filter>
+      <Filter>serialize\python</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,10 @@
 #include "sop/Evaluator.h"
 #include "sop/EvalContext.h"
+#include "sop/node/Geometry.h"
 
 #include <vexc/EvalAST.h>
 #include <vexc/Parser.h>
+#include <cpputil/StringHelper.h>
 
 #include <stack>
 #include <queue>
@@ -235,10 +237,100 @@ void Evaluator::Rename(const std::string& from, const std::string& to)
     m_nodes_map.insert({ node->GetName(), node });
 }
 
-NodePtr Evaluator::QueryNode(const std::string& name) const
+NodePtr Evaluator::QueryNodeByName(const std::string& name) const
 {
     auto itr = m_nodes_map.find(name);
     return itr == m_nodes_map.end() ? nullptr : itr->second;
+}
+
+NodePtr Evaluator::QueryNodeByPath(const std::string& path) const
+{
+    std::vector<std::string> tokens;
+    cpputil::StringHelper::Split(path, "/", tokens);
+    if (tokens.empty()) {
+        return nullptr;
+    }
+
+    NodePtr curr_node = QueryNodeByName(tokens.front());
+    if (!curr_node) {
+        return nullptr;
+    }
+
+    int curr_level = curr_node->GetLevel();
+    const int begin_level = curr_level;
+    for (size_t i = 1, n = tokens.size(); i < n; ++i)
+    {
+        if (!curr_node && curr_level == begin_level - 1) {
+            curr_node = QueryNodeByName(tokens[i]);
+            if (curr_node) {
+                continue;
+            }
+        }
+
+        if (!curr_node) {
+            return nullptr;
+        }
+
+        auto& t = tokens[i];
+        if (t == "..") {
+            curr_node = curr_node->GetParent();
+            --curr_level;
+            continue;
+        }
+
+        // query child
+        assert(curr_node);
+        if (curr_node->get_type() == rttr::type::get<node::Geometry>())
+        {
+            auto child = std::static_pointer_cast<node::Geometry>(curr_node)->QueryChild(t);
+            if (child) {
+                curr_node = child;
+                continue;
+            }
+        }
+    }
+    return curr_node;
+}
+
+const Node* Evaluator::QueryNodeByPath(const Node* base, const std::string& path) const
+{
+    std::vector<std::string> tokens;
+    cpputil::StringHelper::Split(path, "/", tokens);
+    auto curr_node = base;
+    int curr_level = curr_node->GetLevel();
+    const int begin_level = curr_level;
+    for (size_t i = 0, n = tokens.size(); i < n; ++i)
+    {
+        if (!curr_node && curr_level == begin_level - 1) {
+            curr_node = QueryNodeByName(tokens[i]).get();
+            if (curr_node) {
+                continue;
+            }
+        }
+
+        if (!curr_node) {
+            return nullptr;
+        }
+
+        auto& t = tokens[i];
+        if (t == "..") {
+            curr_node = curr_node->GetParent().get();
+            --curr_level;
+            continue;
+        }
+
+        // query child
+        assert(curr_node);
+        if (curr_node->get_type() == rttr::type::get<node::Geometry>())
+        {
+            auto child = static_cast<const node::Geometry*>(curr_node)->QueryChild(t);
+            if (child) {
+                curr_node = child.get();
+                continue;
+            }
+        }
+    }
+    return curr_node;
 }
 
 void Evaluator::UpdateProps()

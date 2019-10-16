@@ -54,6 +54,12 @@ bool NodePropsMgr::SetValue(size_t idx, const Variable& val)
     return true;
 }
 
+bool NodePropsMgr::SetValue(const std::string& key, const Variable& val)
+{
+    auto idx = QueryIndex(key);
+    return idx < 0 ? false : SetValue(idx, val);
+}
+
 int NodePropsMgr::Add(const std::string& key, const Variable& val)
 {
     for (auto& p : m_props) {
@@ -92,12 +98,18 @@ void NodePropsMgr::Clear()
 
 Variable NodePropsMgr::Query(const std::string& key) const
 {
-    for (auto& p : m_props) {
-        if (p.m_key == key) {
-            return p.m_val;
+    auto idx = QueryIndex(key);
+    return idx < 0 ? Variable() : m_props[idx].m_val;
+}
+
+int NodePropsMgr::QueryIndex(const std::string& key) const
+{
+    for (size_t i = 0, n = m_props.size(); i < n; ++i) {
+        if (m_props[i].m_key == key) {
+            return i;
         }
     }
-    return Variable();
+    return -1;
 }
 
 //////////////////////////////////////////////////////////////////////////

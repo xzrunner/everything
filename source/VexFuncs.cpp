@@ -8,52 +8,6 @@
 #include <vexc/StringPool.h>
 #include <cpputil/StringHelper.h>
 
-namespace
-{
-
-sop::Node* PathToNode(sop::Node* base_node, const std::string& path, const sop::Evaluator& eval)
-{
-    std::vector<std::string> tokens;
-    cpputil::StringHelper::Split(path, "/", tokens);
-    sop::Node* curr_node = base_node;
-    int curr_level = curr_node->GetLevel();
-    const int begin_level = curr_level;
-    for (size_t i = 0, n = tokens.size(); i < n; ++i)
-    {
-        if (!curr_node && curr_level == begin_level - 1) {
-            curr_node = eval.QueryNode(tokens[i]).get();
-            if (curr_node) {
-                continue;
-            }
-        }
-
-        if (!curr_node) {
-            return nullptr;
-        }
-
-        auto& t = tokens[i];
-        if (t == "..") {
-            curr_node = curr_node->GetParent().get();
-            --curr_level;
-            continue;
-        }
-
-        // query child
-        assert(curr_node);
-        if (curr_node->get_type() == rttr::type::get<sop::node::Geometry>())
-        {
-            auto child = static_cast<const sop::node::Geometry*>(curr_node)->QueryChild(t);
-            if (child) {
-                curr_node = child.get();
-                continue;
-            }
-        }
-    }
-    return curr_node;
-}
-
-}
-
 namespace sop
 {
 
@@ -77,7 +31,7 @@ void SetupVexFuncs()
 
         assert(params[0].type == vexc::VarType::String);
         std::string path(vexc::StringPool::VoidToString(params[0].p));
-        auto surface_node = PathToNode(base_node, path, *ctx->eval);
+        auto surface_node = ctx->eval->QueryNodeByPath(base_node, path);
         if (!surface_node) {
             return vexc::Variant();
         }
@@ -386,7 +340,7 @@ void SetupVexFuncs()
         for (size_t i = 0, n = tokens.size(); i < n; ++i)
         {
             if (!curr_node && curr_level == begin_level - 1) {
-                curr_node = ctx->eval->QueryNode(tokens[i]).get();
+                curr_node = ctx->eval->QueryNodeByName(tokens[i]).get();
                 if (curr_node) {
                     continue;
                 }

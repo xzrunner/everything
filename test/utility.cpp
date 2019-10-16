@@ -127,7 +127,10 @@ void get_face_pos(const sop::NodePtr& node, size_t idx, std::function<void(const
 
 void check_aabb(const sop::NodePtr& node, const sm::vec3& min, const sm::vec3& max)
 {
-    auto sn = node->GetGeometry()->GetNode();
+    auto geo = node->GetGeometry();
+    REQUIRE(geo != nullptr);
+
+    auto sn = geo->GetNode();
     auto& caabb = sn->GetUniqueComp<n3::CompAABB>();
     auto& aabb = caabb.GetAABB();
 

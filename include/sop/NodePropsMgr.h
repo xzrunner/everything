@@ -46,6 +46,7 @@ public:
 
     void SetExpr(size_t idx, const std::string& expr);
     bool SetValue(size_t idx, const Variable& val);
+    bool SetValue(const std::string& key, const Variable& val);
 
     int  Add(const std::string& key, const Variable& val);
     bool Remove(const std::string& key);
@@ -56,6 +57,9 @@ public:
     size_t Size() const { return m_props.size(); }
 
     auto& GetProps() const { return m_props; }
+
+private:
+    int QueryIndex(const std::string& key) const;
 
 private:
     size_t m_build_in_count = 0;
