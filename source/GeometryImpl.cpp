@@ -23,7 +23,7 @@ void GeometryImpl::UpdateByAttr()
     m_adaptor.UpdateByAttr(m_attr);
 }
 
-std::vector<he::PolylinePtr>
+const std::vector<he::PolylinePtr>&
 GeometryImpl::GetTopoLines() const
 {
     return m_adaptor.GetTopoLines();

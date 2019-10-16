@@ -72,7 +72,7 @@ void Fuse::FuseShape()
     GroupRebuild group_rebuild(*m_geo_impl);
     GeoAttrRebuild attr_rebuild(*m_geo_impl);
 
-    auto lines = m_geo_impl->GetTopoLines();
+    auto& lines = m_geo_impl->GetTopoLines();
     for (auto line : lines) {
         line->Fuse(m_distance);
     }

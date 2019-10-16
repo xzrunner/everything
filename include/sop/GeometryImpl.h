@@ -29,7 +29,7 @@ public:
     auto& GetAttr() { return m_attr; }
     auto& GetAttr() const { return m_attr; }
 
-    std::vector<he::PolylinePtr> GetTopoLines() const;
+    const std::vector<he::PolylinePtr>& GetTopoLines() const;
     void SetTopoLines(const std::vector<he::PolylinePtr>& lines);
 
     // fixme: move to private

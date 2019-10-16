@@ -18,7 +18,7 @@ public:
     }
     virtual std::unique_ptr<n0::NodeComp> Clone(const n0::SceneNode& node) const override;
 
-    auto GetLines() const { return m_lines; }
+    auto& GetLines() const { return m_lines; }
     void SetLines(const std::vector<he::PolylinePtr>& lines) { m_lines = lines; }
 
     static const char* const TYPE_NAME;

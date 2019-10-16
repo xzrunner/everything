@@ -19,7 +19,7 @@ void Carve::Execute(Evaluator& eval)
         return;
     }
 
-    auto lines = prev_geo->GetTopoLines();
+    auto& lines = prev_geo->GetTopoLines();
     if (lines.empty()) {
         return;
     }
