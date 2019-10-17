@@ -93,7 +93,7 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
     }
 }
 
-std::vector<he::PolylinePtr>
+const std::vector<he::PolylinePtr>&
 GeoAdaptor::GetTopoLines() const
 {
     assert(m_type == Type::Shape);

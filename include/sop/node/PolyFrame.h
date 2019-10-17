@@ -2,6 +2,7 @@
 
 #include "sop/Node.h"
 #include "sop/Group.h"
+#include "sop/GeoAttribute.h"
 
 namespace sop
 {
@@ -44,7 +45,17 @@ public:
     void SetBitangentName(const std::string& name);
 
 private:
-    void CreateTwoEdgesAttrs();
+    void CreateAttrs();
+
+    sm::vec3 CalcPointTangent(const GeoAttribute::Point& pt) const;
+
+    std::vector<sm::vec3> CalcPointsNormal() const;
+    std::vector<sm::vec3> CalcPointsTangent() const;
+
+    std::vector<sm::vec3> CalcShapePointsTangent() const;
+    std::vector<sm::vec3> CalcBrushPointsTangent() const;
+
+    void AddToPointsAttr(const std::string& name, const std::vector<sm::vec3>& val);
 
 private:
     // Primitives or Points
@@ -55,6 +66,8 @@ private:
     std::string m_normal_name;
     std::string m_tangent_name;
     std::string m_bitangent_name;
+
+    bool m_ortho = false;
 
     RTTR_ENABLE(Node)
 

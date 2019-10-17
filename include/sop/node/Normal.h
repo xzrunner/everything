@@ -2,6 +2,7 @@
 
 #include "sop/Node.h"
 #include "sop/GeoAttrClass.h"
+#include "sop/GeoAttribute.h"
 
 namespace sop
 {
@@ -25,13 +26,15 @@ public:
 
     void SetAttrAddTo(GeoAttrClass cls);
 
-    static std::vector<sm::vec3> CalcBrushPointsNormal(const GeometryImpl& geo);
+    static std::vector<sm::vec3> CalcSmoothedPointsNormal(const GeometryImpl& geo);
 
 private:
     void AddToPoint();
     void AddToVertex();
     void AddToPrimitive();
     void AddToDetail();
+
+    static sm::vec3 CalcPrimNorm(const GeoAttribute::Primitive& prim);
 
 private:
     GeoAttrClass m_attr_add_to = GeoAttrClass::Vertex;

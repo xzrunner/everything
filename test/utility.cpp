@@ -260,12 +260,40 @@ void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass cls,
 }
 
 void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
-                      const std::string& name, size_t idx, const sop::Variable& var)
+                      const std::string& name, size_t idx, const sop::Variable& var, bool approx)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
     auto var2 = geo->GetAttr().QueryAttr(cls, name, idx);
-    REQUIRE(var == var2);
+    if (!approx) 
+    {
+        REQUIRE(var == var2);
+    }
+    else
+    {
+        REQUIRE(var.type == var2.type);
+        switch (var.type)
+        {
+
+        case sop::VarType::Float:
+            REQUIRE(var.f == Approx(var2.f));
+            break;
+        case sop::VarType::Float3:
+        {
+            auto v0 = static_cast<const float*>(var.p);
+            auto v1 = static_cast<const float*>(var2.p);
+            REQUIRE(v0[0] == Approx(v1[0]));
+            REQUIRE(v0[1] == Approx(v1[1]));
+            REQUIRE(v0[2] == Approx(v1[2]));
+        }
+            break;
+        case sop::VarType::Double:
+            REQUIRE(var.d == Approx(var2.d));
+            break;
+        default:
+            REQUIRE(var == var2);
+        }
+    }
 }
 
 void check_group_num(const sop::NodePtr& node, const std::string& name, size_t num)

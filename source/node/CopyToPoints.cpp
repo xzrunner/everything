@@ -72,7 +72,7 @@ void CopyToPoints::Execute(Evaluator& eval)
                 CopyTo(*src_geo, *dst_geo);
                 break;
             case GeoAdaptor::Type::Brush:
-                CopyTo(*src_geo, *dst_geo, Normal::CalcBrushPointsNormal(*dst_geo));
+                CopyTo(*src_geo, *dst_geo, Normal::CalcSmoothedPointsNormal(*dst_geo));
                 break;
             default:
                 assert(0);

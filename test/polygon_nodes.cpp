@@ -11,6 +11,7 @@
 #include <sop/node/Normal.h>
 #include <sop/node/PolyExtrude.h>
 #include <sop/node/PolyFill.h>
+#include <sop/node/PolyFrame.h>
 
 #include <sop/node/Box.h>
 #include <sop/node/Line.h>
@@ -18,6 +19,7 @@
 #include <sop/node/Blast.h>
 #include <sop/node/Color.h>
 #include <sop/node/Merge.h>
+#include <sop/node/GroupExpression.h>
 
 #include <catch/catch.hpp>
 
@@ -967,3 +969,192 @@ TEST_CASE("poly fill")
         test::check_attr_value(poly_fill, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 }
+
+TEST_CASE("poly frame shape(2 pts)")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto add = std::make_shared<sop::node::Add>();
+    add->SetPoints({ { 0, 0, 0 }, { 1, 2, 3 } });
+    eval.AddNode(add);
+
+    auto polyframe = std::make_shared<sop::node::PolyFrame>();
+    polyframe->SetEntityType(sop::GroupType::Primitives);
+    polyframe->SetFrameStyle(sop::node::PolyFrame::FrameStyle::TwoEdges);
+    polyframe->SetNormalName("N");
+    polyframe->SetTangentName("T");
+    polyframe->SetBitangentName("B");
+    eval.AddNode(polyframe);
+
+    eval.Connect({ add, 0 }, { polyframe, 0 });
+
+    eval.Update();
+
+    test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "N", 2);
+    test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 2);
+    test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 2);
+
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, sop::Variable(sm::vec3(-0.267261f, -0.534522f, -0.801784f)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, sop::Variable(sm::vec3(-0.267261f, -0.534522f, -0.801784f)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, sop::Variable(sm::vec3(0, 0, 0)));
+}
+
+TEST_CASE("poly frame shape - norm attr (2 pts)")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    box->SetSize({ 1, 2, 4 });
+    eval.AddNode(box);
+
+    auto normal = std::make_shared<sop::node::Normal>();
+    normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+    eval.AddNode(normal);
+
+    eval.Connect({ box, 0 }, { normal, 0 });
+
+    auto group_expr = std::make_shared<sop::node::GroupExpression>();
+    group_expr->SetGroupType(sop::GroupType::Points);
+    sop::node::GroupExpression::Instance inst0;
+    inst0.group_name = "group1";
+    inst0.expr_str = "@P.x < 0 && @P.y > 0";
+    inst0.merge_op = sop::GroupMerge::Replace;
+    group_expr->AddInstance(inst0);
+    eval.AddNode(group_expr);
+    
+    eval.Connect({ normal, 0 }, { group_expr, 0 });
+
+    auto blast = std::make_shared<sop::node::Blast>();
+    blast->SetGroupName("group1");
+    blast->SetGroupType(sop::GroupType::GuessFromGroup);
+    blast->SetDeleteNonSelected(true);
+    eval.AddNode(blast);
+
+    eval.Connect({ group_expr, 0 }, { blast, 0 });
+
+    auto add = std::make_shared<sop::node::Add>();
+    eval.AddNode(add);
+
+    eval.Connect({ blast, 0 }, { add, 0 });
+
+    auto polyframe = std::make_shared<sop::node::PolyFrame>();
+    polyframe->SetEntityType(sop::GroupType::Primitives);
+    polyframe->SetFrameStyle(sop::node::PolyFrame::FrameStyle::TwoEdges);
+    polyframe->SetNormalName("N");
+    polyframe->SetTangentName("T");
+    polyframe->SetBitangentName("B");
+    eval.AddNode(polyframe);
+
+    eval.Connect({ add, 0 }, { polyframe, 0 });
+
+    eval.Update();
+
+    test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "N", 2);
+    test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 2);
+    test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 2);
+
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(-0.57735f, 0.57735f, -0.57735f)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, sop::Variable(sm::vec3(-0.57735f, 0.57735f, 0.57735f)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, sop::Variable(sm::vec3(0, 0, -1)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, sop::Variable(sm::vec3(0, 0, -1)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, sop::Variable(sm::vec3(0.57735f, 0.57735f, 0)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, sop::Variable(sm::vec3(0.57735f, 0.57735f, 0)), true);
+}
+
+TEST_CASE("poly frame shape - calc norm (3 pts)")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto add = std::make_shared<sop::node::Add>();
+    add->SetPoints({ { 0, 0, 0 }, { 1, 1, 1 }, { 0, 0, 2 } });
+    eval.AddNode(add);
+
+    auto polyframe = std::make_shared<sop::node::PolyFrame>();
+    polyframe->SetEntityType(sop::GroupType::Primitives);
+    polyframe->SetNormalName("N");
+    polyframe->SetTangentName("T");
+    polyframe->SetBitangentName("B");
+    eval.AddNode(polyframe);
+
+    eval.Connect({ add, 0 }, { polyframe, 0 });
+
+    SECTION("style first edge")
+    {
+        polyframe->SetFrameStyle(sop::node::PolyFrame::FrameStyle::FirstEdge);
+
+        eval.Update();
+    
+        test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "N", 3);
+        test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 3);
+        test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 3);
+
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 2, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, sop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, sop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 2, sop::Variable(sm::vec3(0.57735f, 0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, sop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, sop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 2, sop::Variable(sm::vec3(0.408248f, 0.408248f, 0.816497f)), true);
+    }
+
+    SECTION("style two edges")
+    {
+        polyframe->SetFrameStyle(sop::node::PolyFrame::FrameStyle::TwoEdges);
+
+        eval.Update();
+
+        test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "N", 3);
+        test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 3);
+        test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 3);
+
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 2, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, sop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, sop::Variable(sm::vec3(0, 0, -1)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 2, sop::Variable(sm::vec3(0.57735f, 0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, sop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, sop::Variable(sm::vec3(0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 2, sop::Variable(sm::vec3(0.408248f, 0.408248f, 0.816497f)), true);
+
+    }
+}
+
+//TEST_CASE("poly frame shape smooth(4 pts)")
+//{
+//    test::init();
+//
+//    sop::Evaluator eval;
+//
+//    auto add = std::make_shared<sop::node::Add>();
+//    add->SetPoints({ { 1.001f, 3, -20 }, { 0, 0, 0 }, { 1, 3, 1 }, { 0, 0, 1 } });
+//    eval.AddNode(add);
+//
+//    auto polyframe = std::make_shared<sop::node::PolyFrame>();
+//    polyframe->SetEntityType(sop::GroupType::Primitives);
+//    polyframe->SetNormalName("N");
+//    polyframe->SetTangentName("T");
+//    polyframe->SetBitangentName("B");
+//    eval.AddNode(polyframe);
+//
+//    eval.Connect({ add, 0 }, { polyframe, 0 });
+//
+//
+//    polyframe->SetFrameStyle(sop::node::PolyFrame::FrameStyle::FirstEdge);
+//
+//    eval.Update();
+//
+//    // todo: how polyframe calc smoothed curve normal ?
+//    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(0, -1, 0)));
+//}

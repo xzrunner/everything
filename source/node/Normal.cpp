@@ -5,32 +5,6 @@
 
 #include <SM_Calc.h>
 
-namespace
-{
-
-sm::vec3 CalcPrimNorm(const sop::GeoAttribute::Primitive& prim)
-{
-    switch (prim.type)
-    {
-    case sop::GeoAttribute::Primitive::Type::PolygonFace:
-    {
-        assert(prim.vertices.size() > 2);
-        auto a = prim.vertices[1]->point->pos - prim.vertices[0]->point->pos;
-        auto b = prim.vertices[2]->point->pos - prim.vertices[0]->point->pos;
-        auto norm = a.Cross(b);
-        norm.Normalize();
-        return norm;
-    }
-    case sop::GeoAttribute::Primitive::Type::PolygonCurves:
-        return sm::vec3(0, 0, 0);
-    default:
-        assert(0);
-        return sm::vec3(0, 0, 0);
-    }
-}
-
-}
-
 namespace sop
 {
 namespace node
@@ -70,12 +44,8 @@ void Normal::SetAttrAddTo(GeoAttrClass cls)
     NODE_PROP_SET(m_attr_add_to, cls);
 }
 
-std::vector<sm::vec3> Normal::CalcBrushPointsNormal(const GeometryImpl& geo)
+std::vector<sm::vec3> Normal::CalcSmoothedPointsNormal(const GeometryImpl& geo)
 {
-    if (geo.GetAdaptorType() != GeoAdaptor::Type::Brush) {
-        return std::vector<sm::vec3>();
-    }
-
     auto& attr = geo.GetAttr();
 
     std::map<std::shared_ptr<GeoAttribute::Point>, size_t> point2idx;
@@ -85,8 +55,7 @@ std::vector<sm::vec3> Normal::CalcBrushPointsNormal(const GeometryImpl& geo)
     }
 
     std::vector<sm::vec3> norms(pts.size(), sm::vec3(0, 0, 0));
-    std::vector<size_t>   norms_count(pts.size(), 0);
-
+    std::vector<size_t>   norm_counts(pts.size(), 0);
     for (auto& prim : attr.GetPrimtives())
     {
         auto norm = CalcPrimNorm(*prim);
@@ -95,14 +64,18 @@ std::vector<sm::vec3> Normal::CalcBrushPointsNormal(const GeometryImpl& geo)
             auto itr = point2idx.find(v->point);
             assert(itr != point2idx.end());
             norms[itr->second] += norm;
-            ++norms_count[itr->second];
+            ++norm_counts[itr->second];
         }
     }
 
-    std::vector<sm::vec3> ret(norms.size(), sm::vec3(0, 0, 1));
+    std::vector<sm::vec3> ret(norms.size(), sm::vec3(0, 0, 0));
     for (int i = 0, n = norms.size(); i < n; ++i) {
-        assert(norms_count[i] > 0);
-        ret[i] = norms[i] / static_cast<float>(norms_count[i]);
+        if (norm_counts[i] > 0) {
+            ret[i] = norms[i] / static_cast<float>(norm_counts[i]);
+            if (ret[i] != sm::vec3(0, 0, 0)) {
+                ret[i].Normalize();
+            }
+        }
     }
     return ret;
 }
@@ -121,7 +94,7 @@ void Normal::AddToPoint()
         break;
     case GeoAdaptor::Type::Brush:
     {
-        auto norms = CalcBrushPointsNormal(*m_geo_impl);
+        auto norms = CalcSmoothedPointsNormal(*m_geo_impl);
         auto& attr = m_geo_impl->GetAttr();
         assert(norms.size() == attr.GetPoints().size());
 
@@ -229,6 +202,59 @@ void Normal::AddToDetail()
     default:
         assert(0);
     }
+}
+
+sm::vec3 Normal::CalcPrimNorm(const sop::GeoAttribute::Primitive& prim)
+{
+    auto& vts = prim.vertices;
+    if (vts.size() < 3) {
+        return sm::vec3(0, 0, 0);
+    }
+
+    sm::vec3 ret(0, 0, 0);
+    switch (prim.type)
+    {
+    case sop::GeoAttribute::Primitive::Type::PolygonFace:
+    {
+        auto a = vts[1]->point->pos - vts[0]->point->pos;
+        auto b = vts[2]->point->pos - vts[0]->point->pos;
+        ret = a.Cross(b);
+        if (ret != sm::vec3(0, 0, 0)) {
+            ret.Normalize();
+        }
+    }
+        break;
+
+    case sop::GeoAttribute::Primitive::Type::PolygonCurves:
+    {
+        sm::vec3 norm_sum(0, 0, 0);
+        size_t norm_count = 0;
+
+        for (size_t i = 1, n = vts.size() - 1; i < n; ++i)
+        {
+            auto a = vts[i]->point->pos - vts[i - 1]->point->pos;
+            auto b = vts[i]->point->pos - vts[i + 1]->point->pos;
+            auto cross = a.Cross(b);
+            if (cross != sm::vec3(0, 0, 0)) 
+            {
+                cross.Normalize();
+                norm_sum += cross;
+                ++norm_count;
+            }
+        }
+        if (norm_count > 0) {
+            ret = norm_sum / static_cast<float>(norm_count);
+            if (ret != sm::vec3(0, 0, 0)) {
+                ret.Normalize();
+            }
+        }
+    }
+        break;
+
+    default:
+        assert(0);
+    }
+    return ret;
 }
 
 }

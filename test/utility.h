@@ -35,7 +35,7 @@ void check_halfedge_faces_num(const sop::NodePtr& node, size_t num);
 void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass cls,
     const std::string& name, size_t num);
 void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
-    const std::string& name, size_t idx, const sop::Variable& var);
+    const std::string& name, size_t idx, const sop::Variable& var, bool approx = false);
 
 void check_group_num(const sop::NodePtr& node, const std::string& name, size_t num);
 void check_group_type(const sop::NodePtr& node, const std::string& name, sop::GroupType type);
