@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sop/Node.h"
+#include "sop/VarBuffer.h"
 
 namespace sop
 {
@@ -22,6 +23,8 @@ struct EvalContext
     int point_idx     = -1;
     //int vertex_idx    = -1;
     //int primitive_idx = -1;
+
+    mutable VarBuffer var_buf;
 
 }; // EvalContext
 

@@ -27,7 +27,7 @@ void SetupVexFuncs()
         }
 
         auto ctx = static_cast<const EvalContext*>(ud);
-        sop::Node* base_node = const_cast<sop::Node*>(ctx->node);
+        Node* base_node = const_cast<Node*>(ctx->node);
 
         assert(params[0].type == vexc::VarType::String);
         std::string path(vexc::StringPool::VoidToString(params[0].p));
@@ -64,12 +64,9 @@ void SetupVexFuncs()
             return vexc::Variant(var.f);
         case VarType::Float3:
         {
-            auto buf = new float[3];
-            memcpy(buf, var.p, sizeof(buf));
             assert(attrib_index >= 0 && attrib_index < 3);
-            vexc::Variant ret(buf[attrib_index]);
-            delete[] buf;
-            return ret;
+            auto v3 = static_cast<const sm::vec3*>(var.p);
+            return vexc::Variant(v3->xyz[attrib_index]);
         }
         case VarType::Double:
             return vexc::Variant(var.d);
@@ -104,13 +101,13 @@ void SetupVexFuncs()
             return vexc::Variant();
         }
 
-        sop::GeoAttrClass cls;
+        GeoAttrClass cls;
         if (attr_class == "point") {
-            cls = sop::GeoAttrClass::Point;
+            cls = GeoAttrClass::Point;
         } else if (attr_class == "vertex") {
-            cls = sop::GeoAttrClass::Vertex;
+            cls = GeoAttrClass::Vertex;
         } else if (attr_class == "detail" || attr_class == "global") {
-            cls = sop::GeoAttrClass::Detail;
+            cls = GeoAttrClass::Detail;
         } else {
             return vexc::Variant();
         }
@@ -131,30 +128,30 @@ void SetupVexFuncs()
             attr_idx = desc.size();
 
             auto new_desc = desc;
-            new_desc.push_back({ attr_name, sop::GeoAttrType::Float });
-            const_cast<sop::GeoAttribute&>(attr).SetAttrDesc(cls, new_desc);
+            new_desc.push_back({ attr_name, GeoAttrType::Float });
+            const_cast<GeoAttribute&>(attr).SetAttrDesc(cls, new_desc);
 
             switch (cls)
             {
-            case sop::GeoAttrClass::Point:
+            case GeoAttrClass::Point:
                 for (auto& p : attr.GetPoints()) {
-                    p->vars.push_back(sop::VarValue());
+                    p->vars.push_back(VarValue());
                 }
                 break;
-            case sop::GeoAttrClass::Vertex:
+            case GeoAttrClass::Vertex:
                 for (auto& v : attr.GetVertices()) {
-                    v->vars.push_back(sop::VarValue());
+                    v->vars.push_back(VarValue());
                 }
                 break;
-            case sop::GeoAttrClass::Primitive:
+            case GeoAttrClass::Primitive:
                 for (auto& prim : attr.GetPrimtives()) {
-                    prim->vars.push_back(sop::VarValue());
+                    prim->vars.push_back(VarValue());
                 }
                 break;
-            case sop::GeoAttrClass::Detail:
+            case GeoAttrClass::Detail:
             {
-                auto& detail = const_cast<sop::GeoAttribute::Detail&>(attr.GetDetail());
-                detail.vars.push_back(sop::VarValue());
+                auto& detail = const_cast<GeoAttribute::Detail&>(attr.GetDetail());
+                detail.vars.push_back(VarValue());
             }
                 break;
             default:
@@ -164,30 +161,30 @@ void SetupVexFuncs()
 
         switch (cls)
         {
-        case sop::GeoAttrClass::Point:
+        case GeoAttrClass::Point:
         {
             auto& pts = attr.GetPoints();
             assert(element_num >= 0 && element_num < static_cast<int>(pts.size()));
             pts[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case sop::GeoAttrClass::Vertex:
+        case GeoAttrClass::Vertex:
         {
             auto& vts = attr.GetVertices();
             assert(element_num >= 0 && element_num < static_cast<int>(vts.size()));
             vts[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case sop::GeoAttrClass::Primitive:
+        case GeoAttrClass::Primitive:
         {
             auto& prims = attr.GetPrimtives();
             assert(element_num >= 0 && element_num < static_cast<int>(prims.size()));
             prims[element_num]->vars[attr_idx].f = value;
         }
             break;
-        case sop::GeoAttrClass::Detail:
+        case GeoAttrClass::Detail:
         {
-            auto& detail = const_cast<sop::GeoAttribute::Detail&>(attr.GetDetail());
+            auto& detail = const_cast<GeoAttribute::Detail&>(attr.GetDetail());
             detail.vars[attr_idx].f = value;
         }
             break;
@@ -243,7 +240,7 @@ void SetupVexFuncs()
         }
 
         auto& aabb = geo->GetAttr().GetAABB();
-        auto v = new sm::vec3(aabb.Center());
+        auto v = ctx->var_buf.Clone(aabb.Center());
         return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
     });
 
@@ -266,7 +263,7 @@ void SetupVexFuncs()
         }
 
         auto& aabb = geo->GetAttr().GetAABB();
-        auto v = new sm::vec3(aabb.max);
+        auto v = ctx->var_buf.Clone(sm::vec3(aabb.max));
         return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
     });
 
@@ -289,7 +286,7 @@ void SetupVexFuncs()
         }
 
         auto& aabb = geo->GetAttr().GetAABB();
-        auto v = new sm::vec3(aabb.min);
+        auto v = ctx->var_buf.Clone(sm::vec3(aabb.min));
         return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
     });
 
@@ -312,7 +309,7 @@ void SetupVexFuncs()
         }
 
         auto& aabb = geo->GetAttr().GetAABB();
-        auto v = new sm::vec3(aabb.Size());
+        auto v = ctx->var_buf.Clone(aabb.Size());
         return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
     });
 
@@ -334,7 +331,7 @@ void SetupVexFuncs()
         std::string path(vexc::StringPool::VoidToString(p.p));
         std::vector<std::string> tokens;
         cpputil::StringHelper::Split(path, "/", tokens);
-        sop::Node* curr_node = const_cast<sop::Node*>(ctx->node);
+        Node* curr_node = const_cast<Node*>(ctx->node);
         int curr_level = curr_node->GetLevel();
         const int begin_level = curr_level;
         for (size_t i = 0, n = tokens.size(); i < n; ++i)
@@ -383,9 +380,9 @@ void SetupVexFuncs()
                 return vexc::Variant(v.f);
             case VarType::Float3:
             {
-                auto buf = new float[3];
-                memcpy(buf, v.p, sizeof(buf));
-                return vexc::Variant(vexc::VarType::Float3, buf);
+                auto v3 = static_cast<const sm::vec3*>(v.p);
+                auto new_v3 = ctx->var_buf.Clone(*v3);
+                return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
             }
             case VarType::Double:
                 return vexc::Variant(v.d);
@@ -404,74 +401,146 @@ void SetupVexFuncs()
         return vexc::Variant();
     });
 
-    // ATTRIBUTE
-
-    vexc::RegistBuildInFunc("@P", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    // GETTER
+    vexc::RegistGetter([](const char* sym, const void* ud)->vexc::Variant
     {
-        auto ctx = static_cast<const EvalContext*>(ud);
-        if (!ctx->node) {
-            return vexc::Variant();
+        if (strcmp(sym, "@P") == 0)
+        {
+            auto ctx = static_cast<const EvalContext*>(ud);
+            if (!ctx->node) {
+                return vexc::Variant();
+            }
+            auto geo = ctx->node->GetGeometry();
+            if (!geo) {
+                return vexc::Variant();
+            }
+            const auto& points = geo->GetAttr().GetPoints();
+            if (ctx->point_idx < 0 || ctx->point_idx >= static_cast<int>(points.size())) {
+                return vexc::Variant();
+            }
+
+            auto v = ctx->var_buf.Clone(points[ctx->point_idx]->pos);
+            return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
         }
-        auto geo = ctx->node->GetGeometry();
-        if (!geo) {
-            return vexc::Variant();
+        else if (strcmp(sym, "@N") == 0 || strcmp(sym, "v@N") == 0)
+        {
+            auto ctx = static_cast<const EvalContext*>(ud);
+            if (!ctx->node) {
+                return vexc::Variant();
+            }
+            auto geo = ctx->node->GetGeometry();
+            if (!geo) {
+                return vexc::Variant();
+            }
+
+            auto& attr = geo->GetAttr();
+            const auto& points = attr.GetPoints();
+            if (ctx->point_idx < 0 || ctx->point_idx >= static_cast<int>(points.size())) {
+                return vexc::Variant();
+            }
+
+            auto norm_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
+            if (norm_idx < 0) {
+                return vexc::Variant();
+            }
+
+            auto v3 = static_cast<const sm::vec3*>(points[ctx->point_idx]->vars[norm_idx].p);
+            auto new_v3 = ctx->var_buf.Clone(*v3);
+            return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
         }
-        const auto& points = geo->GetAttr().GetPoints();
-        if (ctx->point_idx < 0 || ctx->point_idx >= static_cast<int>(points.size())) {
-            return vexc::Variant();
+        else if (strcmp(sym, "@ptnum") == 0)
+        {
+            auto ctx = static_cast<const EvalContext*>(ud);
+            return vexc::Variant(ctx->point_idx);
+        }
+        else if (strcmp(sym, "$SIZEX") == 0)
+        {
+            auto ctx = static_cast<const EvalContext*>(ud);
+            if (!ctx->node) {
+                return vexc::Variant();
+            }
+            auto geo = ctx->node->GetGeometry();
+            if (geo) {
+                return vexc::Variant(geo->GetAttr().GetAABB().Width());
+            } else {
+                return vexc::Variant();
+            }
+        }
+        else if (strcmp(sym, "$SIZEY") == 0)
+        {
+            auto ctx = static_cast<const EvalContext*>(ud);
+            if (!ctx->node) {
+                return vexc::Variant();
+            }
+            auto geo = ctx->node->GetGeometry();
+            if (geo) {
+                return vexc::Variant(geo->GetAttr().GetAABB().Height());
+            } else {
+                return vexc::Variant();
+            }
+        }
+        else if (strcmp(sym, "$SIZEZ") == 0)
+        {
+            auto ctx = static_cast<const EvalContext*>(ud);
+            if (!ctx->node) {
+                return vexc::Variant();
+            }
+            auto geo = ctx->node->GetGeometry();
+            if (geo) {
+                return vexc::Variant(geo->GetAttr().GetAABB().Depth());
+            } else {
+                return vexc::Variant();
+            }
+        }
+        else
+        {
+            assert(0);
         }
 
-        auto v = new sm::vec3(points[ctx->point_idx]->pos);
-        return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
+        return vexc::Variant();
     });
 
-    vexc::RegistBuildInFunc("@ptnum", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    // SETTER
+    vexc::RegistSetter([](const char* sym, vexc::Variant var, const void* ud)
     {
-        auto ctx = static_cast<const EvalContext*>(ud);
-        return vexc::Variant(ctx->point_idx);
-    });
+        if (strcmp(sym, "@up") == 0 || strcmp(sym, "v@up") == 0)
+        {
+            if (var.type != vexc::VarType::Float3) {
+                return;
+            }
 
-    // DESCRIBE
+            auto ctx = static_cast<const EvalContext*>(ud);
+            if (!ctx->node) {
+                return;
+            }
+            auto geo = ctx->node->GetGeometry();
+            if (!geo) {
+                return;
+            }
 
-    vexc::RegistBuildInFunc("$SIZEX", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
-    {
-        auto ctx = static_cast<const EvalContext*>(ud);
-        if (!ctx->node) {
-            return vexc::Variant();
-        }
-        auto geo = ctx->node->GetGeometry();
-        if (geo) {
-            return vexc::Variant(geo->GetAttr().GetAABB().Width());
-        } else {
-            return vexc::Variant();
-        }
-    });
+            auto& attr = geo->GetAttr();
+            const auto& points = attr.GetPoints();
+            if (ctx->point_idx < 0 || ctx->point_idx >= static_cast<int>(points.size())) {
+                return;
+            }
 
-    vexc::RegistBuildInFunc("$SIZEY", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
-    {
-        auto ctx = static_cast<const EvalContext*>(ud);
-        if (!ctx->node) {
-            return vexc::Variant();
+            auto val_r = static_cast<const sm::vec3*>(var.p);
+            auto up_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_UP);
+            if (up_idx >= 0)
+            {
+                auto val_l = static_cast<const sm::vec3*>(points[ctx->point_idx]->vars[up_idx].p);
+                const_cast<sm::vec3&>(*val_l) = *val_r;
+            }
+            else
+            {
+                std::vector<VarValue> vars(points.size(), VarValue(sm::vec3(0, 0, 0)));
+                vars[ctx->point_idx] = VarValue(*val_r);
+                attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_UP, vars);
+            }
         }
-        auto geo = ctx->node->GetGeometry();
-        if (geo) {
-            return vexc::Variant(geo->GetAttr().GetAABB().Height());
-        } else {
-            return vexc::Variant();
-        }
-    });
-
-    vexc::RegistBuildInFunc("$SIZEZ", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
-    {
-        auto ctx = static_cast<const EvalContext*>(ud);
-        if (!ctx->node) {
-            return vexc::Variant();
-        }
-        auto geo = ctx->node->GetGeometry();
-        if (geo) {
-            return vexc::Variant(geo->GetAttr().GetAABB().Depth());
-        } else {
-            return vexc::Variant();
+        else
+        {
+            assert(0);
         }
     });
 }

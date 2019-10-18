@@ -3,11 +3,16 @@
 #include <sop/Evaluator.h>
 
 #include <sop/node/AttributeCreate.h>
+#include <sop/node/AttributeTransfer.h>
+#include <sop/node/AttributeWrangle.h>
 #include <sop/node/Measure.h>
 #include <sop/node/Sort.h>
 
 #include <sop/node/Add.h>
 #include <sop/node/Box.h>
+#include <sop/node/GroupCreate.h>
+#include <sop/node/Blast.h>
+#include <sop/node/Normal.h>
 
 #include <catch/catch.hpp>
 
@@ -33,6 +38,53 @@ TEST_CASE("attribute create")
 
     test::check_attr_count(attr_create, sop::GeoAttrClass::Point, "new_attr", 1);
     test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+}
+
+TEST_CASE("attribute wrangle")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<sop::node::GroupCreate>();
+    group->SetGroupName("top");
+    group->SetGroupType(sop::GroupType::Primitives);
+    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto blast = std::make_shared<sop::node::Blast>();
+    blast->SetGroupName("top");
+    blast->SetGroupType(sop::GroupType::GuessFromGroup);
+    blast->SetDeleteNonSelected(true);
+    eval.AddNode(blast);
+
+    eval.Connect({ group, 0 }, { blast, 0 });
+
+    auto normal = std::make_shared<sop::node::Normal>();
+    normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+    eval.AddNode(normal);
+
+    eval.Connect({ blast, 0 }, { normal, 0 });
+
+    auto attr_wrangle = std::make_shared<sop::node::AttributeWrangle>();
+    attr_wrangle->SetVexExpr("v@up=v@N;");
+    eval.AddNode(attr_wrangle);
+
+    eval.Connect({ normal, 0 }, { attr_wrangle, 0 });
+
+    eval.Update();
+
+    test::check_attr_count(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
+    test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 2, sop::Variable(sm::vec3(0, 1, 0)));
+    test::check_attr_count(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
+    test::check_attr_value(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 2, sop::Variable(sm::vec3(0, 1, 0)));
+    test::check_attr_count(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_UP], 4);
+    test::check_attr_value(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_UP], 1, sop::Variable(sm::vec3(0, 1, 0)));
 }
 
 TEST_CASE("measure box")

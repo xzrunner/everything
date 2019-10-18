@@ -236,6 +236,9 @@
     <ClInclude Include="..\..\..\include\sop\PyLoader.h">
       <Filter>serialize\python</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\VarBuffer.h">
+      <Filter>eval</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
