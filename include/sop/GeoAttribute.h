@@ -117,6 +117,8 @@ public:
     auto& GetPrimtives() const { return m_primtives; }
     auto& GetDetail() const    { return m_detail; }
 
+    size_t GetSize(GeoAttrClass cls) const;
+
     void RemoveItems(GeoAttrClass cls, const std::vector<bool>& del_flags, bool del_unused_pt);
 
     void ChangePointsOrder(const std::vector<size_t>& order);
@@ -140,6 +142,7 @@ public:
     std::vector<VarValue> GetDefaultValues(GeoAttrClass cls) const;
 
     int QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const;
+    int QueryAttrIdx(GeoAttrClass cls, const std::string& name) const;
 
     template<typename T>
     int QueryIndex(const T& i) const;

@@ -40,6 +40,80 @@ TEST_CASE("attribute create")
     test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
 }
 
+TEST_CASE("attribute transfer")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box_t = std::make_shared<sop::node::Box>();
+    eval.AddNode(box_t);
+
+    auto box_f = std::make_shared<sop::node::Box>();
+    eval.AddNode(box_f);
+
+    auto attr_transfer = std::make_shared<sop::node::AttributeTransfer>();
+    eval.AddNode(attr_transfer);
+
+    SECTION("add new one")
+    {
+        auto attr_create = std::make_shared<sop::node::AttributeCreate>();
+        std::vector<sop::node::AttributeCreate::Item> items;
+        items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f));
+        attr_create->SetAttrItems(items);
+        eval.AddNode(attr_create);
+
+        eval.Connect({ box_f, 0 }, { attr_create, 0 });
+
+        attr_transfer->SetCopyAttrs(sop::GeoAttrClass::Point, { "new_attr" });
+
+        eval.Connect({ box_t, 0 }, { attr_transfer, sop::node::AttributeTransfer::IDX_TO_GEO });
+        eval.Connect({ attr_create, 0 }, { attr_transfer, sop::node::AttributeTransfer::IDX_FROM_GEO });
+
+        eval.Update();
+
+        test::check_attr_count(box_t, sop::GeoAttrClass::Point, "new_attr", 0);
+
+        test::check_attr_count(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 8);
+        test::check_attr_value(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+    }
+
+    SECTION("change old")
+    {
+        auto attr_create_f = std::make_shared<sop::node::AttributeCreate>();
+        {
+            std::vector<sop::node::AttributeCreate::Item> items;
+            items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f));
+            attr_create_f->SetAttrItems(items);
+        }
+        eval.AddNode(attr_create_f);
+
+        auto attr_create_t = std::make_shared<sop::node::AttributeCreate>();
+        {
+            std::vector<sop::node::AttributeCreate::Item> items;
+            items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.2f));
+            attr_create_t->SetAttrItems(items);
+        }
+        eval.AddNode(attr_create_t);
+
+        eval.Connect({ box_f, 0 }, { attr_create_f, 0 });
+        eval.Connect({ box_t, 0 }, { attr_create_t, 0 });
+
+        attr_transfer->SetCopyAttrs(sop::GeoAttrClass::Point, { "new_attr" });
+
+        eval.Connect({ attr_create_t, 0 }, { attr_transfer, sop::node::AttributeTransfer::IDX_TO_GEO });
+        eval.Connect({ attr_create_f, 0 }, { attr_transfer, sop::node::AttributeTransfer::IDX_FROM_GEO });
+
+        eval.Update();
+
+        test::check_attr_count(attr_create_t, sop::GeoAttrClass::Point, "new_attr", 8);
+        test::check_attr_value(attr_create_t, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.2f));
+
+        test::check_attr_count(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 8);
+        test::check_attr_value(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+    }
+}
+
 TEST_CASE("attribute wrangle")
 {
     test::init();

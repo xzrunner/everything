@@ -90,6 +90,24 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     return *this;
 }
 
+size_t GeoAttribute::GetSize(GeoAttrClass cls) const
+{
+    switch (cls)
+    {
+    case GeoAttrClass::Point:
+        return m_points.size();
+    case GeoAttrClass::Vertex:
+        return m_vertices.size();
+    case GeoAttrClass::Primitive:
+        return m_primtives.size();
+    case GeoAttrClass::Detail:
+        return 1;
+    default:
+        assert(0);
+        return 0;
+    }
+}
+
 void GeoAttribute::RemoveItems(GeoAttrClass cls, const std::vector<bool>& del_flags, bool del_unused_pt)
 {
     bool dirty = false;
@@ -439,9 +457,14 @@ std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrClass cls) const
 
 int GeoAttribute::QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const
 {
+    return QueryAttrIdx(cls, GeoAttrNames[attr]);
+}
+
+int GeoAttribute::QueryAttrIdx(GeoAttrClass cls, const std::string& name) const
+{
     auto& desc = GetAttrDesc(cls);
     for (int i = 0, n = desc.size(); i < n; ++i) {
-        if (desc[i].GetName() == GeoAttrNames[attr]) {
+        if (desc[i].GetName() == name) {
             return i;
         }
     }

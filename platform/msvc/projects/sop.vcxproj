@@ -18,6 +18,7 @@
     <ClInclude Include="..\..\..\include\sop\EvalContext.h" />
     <ClInclude Include="..\..\..\include\sop\Evaluator.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h" />
+    <ClInclude Include="..\..\..\include\sop\node\AttributeTransfer.h" />
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h" />
     <ClInclude Include="..\..\..\include\sop\node\PolyFrame.h" />
     <ClInclude Include="..\..\..\include\sop\PyLoader.h" />
@@ -76,6 +77,7 @@
     <ClCompile Include="..\..\..\source\Evaluator.cpp" />
     <ClCompile Include="..\..\..\source\Group.cpp" />
     <ClCompile Include="..\..\..\source\node\AttributeCreate.cpp" />
+    <ClCompile Include="..\..\..\source\node\AttributeTransfer.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupPromote.cpp" />
     <ClCompile Include="..\..\..\source\node\PolyFrame.cpp" />
     <ClCompile Include="..\..\..\source\PyLoader.cpp" />

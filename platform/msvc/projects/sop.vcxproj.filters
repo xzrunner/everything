@@ -236,6 +236,9 @@
     <ClInclude Include="..\..\..\include\sop\PyLoader.h">
       <Filter>serialize\python</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\AttributeTransfer.h">
+      <Filter>nodes\attribute</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\VarBuffer.h">
       <Filter>eval</Filter>
     </ClInclude>
@@ -385,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\PyLoader.cpp">
       <Filter>serialize\python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\AttributeTransfer.cpp">
+      <Filter>nodes\attribute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
