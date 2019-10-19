@@ -26,7 +26,7 @@ public:
 
     void SetAttrAddTo(GeoAttrClass cls);
 
-    static std::vector<sm::vec3> CalcSmoothedPointsNormal(const GeometryImpl& geo);
+    static bool CalcSmoothedPointsNormal(const GeometryImpl& geo, std::vector<sm::vec3>& norms);
 
 private:
     void AddToPoint();

@@ -72,7 +72,12 @@ void CopyToPoints::Execute(Evaluator& eval)
                 CopyTo(*src_geo, *dst_geo);
                 break;
             case GeoAdaptor::Type::Brush:
-                CopyTo(*src_geo, *dst_geo, Normal::CalcSmoothedPointsNormal(*dst_geo));
+            {
+                std::vector<sm::vec3> norms;
+                bool succ = Normal::CalcSmoothedPointsNormal(*dst_geo, norms);
+                assert(succ);
+                CopyTo(*src_geo, *dst_geo, norms);
+            }
                 break;
             default:
                 assert(0);

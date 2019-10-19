@@ -82,35 +82,34 @@ void PolyFrame::CreateAttrs()
     }
 }
 
-std::vector<sm::vec3> 
+std::vector<sm::vec3>
 PolyFrame::CalcPointsNormal() const
 {
-    std::vector<sm::vec3> normals;
-
     auto& attr = m_geo_impl->GetAttr();
     auto& pts = attr.GetPoints();
 
-    // prior use attr
-    const int norm_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
-    if (norm_idx >= 0)
+    std::vector<sm::vec3> norms;
+    if (!Normal::CalcSmoothedPointsNormal(*m_geo_impl, norms))
     {
-        normals.resize(pts.size());
-        for (size_t i = 0, n = pts.size(); i < n; ++i) {
-            normals[i] = *static_cast<const sm::vec3*>(pts[i]->vars[norm_idx].p);
+        const int norm_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
+        if (norm_idx >= 0)
+        {
+            norms.resize(pts.size());
+            for (size_t i = 0, n = pts.size(); i < n; ++i) {
+                norms[i] = *static_cast<const sm::vec3*>(pts[i]->vars[norm_idx].p);
+            }
         }
-        return normals;
+        else
+        {
+            norms.resize(pts.size(), sm::vec3(0, 0, 0));
+        }
     }
 
-    normals = Normal::CalcSmoothedPointsNormal(*m_geo_impl);
-    if (normals.empty()) {
-        normals.resize(pts.size(), sm::vec3(0, 0, 0));
-    }
-    assert(normals.size() == pts.size());
-
-    return normals;
+    assert(norms.size() == pts.size());
+    return norms;
 }
 
-std::vector<sm::vec3> 
+std::vector<sm::vec3>
 PolyFrame::CalcPointsTangent() const
 {
     switch (m_geo_impl->GetAdaptorType())
@@ -125,7 +124,7 @@ PolyFrame::CalcPointsTangent() const
     }
 }
 
-std::vector<sm::vec3> 
+std::vector<sm::vec3>
 PolyFrame::CalcShapePointsTangent() const
 {
     auto& attr = m_geo_impl->GetAttr();
@@ -150,7 +149,7 @@ PolyFrame::CalcShapePointsTangent() const
             ts[i] = (vts[i - 1]->point->pos - vts[i]->point->pos).Normalized();
         }
         ts[0] = ts[1];
-        if (m_frame_style == FrameStyle::TwoEdges) 
+        if (m_frame_style == FrameStyle::TwoEdges)
         {
             auto new_ts = ts;
             for (size_t i = 1, n = vts.size() - 1; i < n; ++i) {
@@ -170,7 +169,7 @@ PolyFrame::CalcShapePointsTangent() const
     return tangents;
 }
 
-std::vector<sm::vec3> 
+std::vector<sm::vec3>
 PolyFrame::CalcBrushPointsTangent() const
 {
     // todo

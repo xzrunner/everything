@@ -44,7 +44,7 @@ void Normal::SetAttrAddTo(GeoAttrClass cls)
     NODE_PROP_SET(m_attr_add_to, cls);
 }
 
-std::vector<sm::vec3> Normal::CalcSmoothedPointsNormal(const GeometryImpl& geo)
+bool Normal::CalcSmoothedPointsNormal(const GeometryImpl& geo, std::vector<sm::vec3>& out_norms)
 {
     auto& attr = geo.GetAttr();
 
@@ -68,16 +68,26 @@ std::vector<sm::vec3> Normal::CalcSmoothedPointsNormal(const GeometryImpl& geo)
         }
     }
 
-    std::vector<sm::vec3> ret(norms.size(), sm::vec3(0, 0, 0));
-    for (int i = 0, n = norms.size(); i < n; ++i) {
-        if (norm_counts[i] > 0) {
-            ret[i] = norms[i] / static_cast<float>(norm_counts[i]);
-            if (ret[i] != sm::vec3(0, 0, 0)) {
-                ret[i].Normalize();
+    out_norms.resize(norms.size(), sm::vec3(0, 0, 0));
+    for (int i = 0, n = norms.size(); i < n; ++i)
+    {
+        if (norm_counts[i] == 0)
+        {
+            out_norms.clear();
+            return false;
+        }
+        else
+        {
+            out_norms[i] = norms[i] / static_cast<float>(norm_counts[i]);
+            if (out_norms[i] == sm::vec3(0, 0, 0)) {
+                out_norms.clear();
+                return false;
+            } else {
+                out_norms[i].Normalize();
             }
         }
     }
-    return ret;
+    return true;
 }
 
 void Normal::AddToPoint()
@@ -94,7 +104,9 @@ void Normal::AddToPoint()
         break;
     case GeoAdaptor::Type::Brush:
     {
-        auto norms = CalcSmoothedPointsNormal(*m_geo_impl);
+        std::vector<sm::vec3> norms;
+        bool succ = CalcSmoothedPointsNormal(*m_geo_impl, norms);
+        assert(succ);
         auto& attr = m_geo_impl->GetAttr();
         assert(norms.size() == attr.GetPoints().size());
 
@@ -235,7 +247,7 @@ sm::vec3 Normal::CalcPrimNorm(const sop::GeoAttribute::Primitive& prim)
             auto a = vts[i]->point->pos - vts[i - 1]->point->pos;
             auto b = vts[i]->point->pos - vts[i + 1]->point->pos;
             auto cross = a.Cross(b);
-            if (cross != sm::vec3(0, 0, 0)) 
+            if (cross != sm::vec3(0, 0, 0))
             {
                 cross.Normalize();
                 norm_sum += cross;
