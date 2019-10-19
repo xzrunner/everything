@@ -25,6 +25,7 @@
 #include "sop/node/Normal.h"
 #include "sop/node/PolyExtrude.h"
 #include "sop/node/PolyFill.h"
+#include "sop/node/PolyFrame.h"
 // primitive
 #include "sop/node/Box.h"
 #include "sop/node/Curve.h"
@@ -81,6 +82,7 @@ REGIST_NODE_TYPE(Knife)
 REGIST_NODE_TYPE(Normal)
 REGIST_NODE_TYPE(PolyExtrude)
 REGIST_NODE_TYPE(PolyFill)
+REGIST_NODE_TYPE(PolyFrame)
 
 // primitive
 REGIST_NODE_TYPE(Box)
