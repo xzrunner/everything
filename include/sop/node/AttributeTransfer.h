@@ -31,6 +31,7 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
+    void ClearCopyAttrs();
     void SetCopyAttrs(GeoAttrClass cls, const std::vector<std::string>& attrs);
 
 private:

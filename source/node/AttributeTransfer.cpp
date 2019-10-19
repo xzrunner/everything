@@ -75,6 +75,13 @@ void AttributeTransfer::Execute(Evaluator& eval)
     }
 }
 
+void AttributeTransfer::ClearCopyAttrs()
+{
+    for (auto& attrs : m_attrs) {
+        attrs.clear();
+    }
+}
+
 void AttributeTransfer::SetCopyAttrs(GeoAttrClass cls, const std::vector<std::string>& attrs)
 {
     const int idx = static_cast<int>(cls);
