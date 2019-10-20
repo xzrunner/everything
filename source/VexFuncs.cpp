@@ -8,12 +8,97 @@
 #include <vexc/StringPool.h>
 #include <cpputil/StringHelper.h>
 
+namespace
+{
+
+vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const sop::Variable& var, int idx = -1)
+{
+    switch (var.type)
+    {
+    case sop::VarType::Invalid:
+        return vexc::Variant();
+    case sop::VarType::Bool:
+        return vexc::Variant(var.b);
+    case sop::VarType::Int:
+        return vexc::Variant(var.i);
+    case sop::VarType::Float:
+        return vexc::Variant(var.f);
+    case sop::VarType::Float3:
+    {
+        if (idx != -1)
+        {
+            assert(idx >= 0 && idx < 3);
+            auto v3 = static_cast<const sm::vec3*>(var.p);
+            return vexc::Variant(v3->xyz[idx]);
+        }
+        else
+        {
+            auto v3 = static_cast<const sm::vec3*>(var.p);
+            auto new_v3 = ctx.var_buf.Clone(*v3);
+            return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
+        }
+    }
+    case sop::VarType::Double:
+        return vexc::Variant(var.d);
+    //case VarType::String:
+    //{
+    //    auto str = static_cast<const char*>(v.p);
+    //    auto buf = vexc::StringPool::InsertAndQuery(str, strlen(str));
+    //    return vexc::Variant(vexc::VarType::String, buf);
+    //}
+    default:
+        assert(0);
+        return vexc::Variant();
+    }
+}
+
+}
+
 namespace sop
 {
 
 void SetupVexFuncs()
 {
     // ATTRIBUTES AND INTRINSICS
+
+    vexc::RegistBuildInFunc("point", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    {
+        if (params.size() < 4) {
+            return vexc::Variant();
+        }
+        for (int i = 0; i < 4; ++i) {
+            if (params[i].type == vexc::VarType::Invalid) {
+                return vexc::Variant();
+            }
+        }
+
+        auto ctx = static_cast<const EvalContext*>(ud);
+        Node* base_node = const_cast<Node*>(ctx->node);
+
+        assert(params[0].type == vexc::VarType::String);
+        std::string path(vexc::StringPool::VoidToString(params[0].p));
+        auto surface_node = ctx->eval->QueryNodeByPath(base_node, path);
+        if (!surface_node) {
+            return vexc::Variant();
+        }
+
+        auto geo = surface_node->GetGeometry();
+        if (!geo) {
+            return vexc::Variant();
+        }
+
+        assert(params[1].type == vexc::VarType::Int);
+        int geometry = params[1].i;
+
+        assert(params[2].type == vexc::VarType::String);
+        std::string attrib_name = vexc::StringPool::VoidToString(params[2].p);
+
+        assert(params[3].type == vexc::VarType::Int);
+        int point_num = params[3].i;
+
+        auto var = geo->GetAttr().QueryAttr(GeoAttrClass::Point, attrib_name, point_num);
+        return ToVexcVar(*ctx, var, point_num);
+    });
 
     vexc::RegistBuildInFunc("prim", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
     {
@@ -42,38 +127,16 @@ void SetupVexFuncs()
         }
 
         assert(params[1].type == vexc::VarType::Int);
-        int prim_num = params[1].i;
+        int geometry = params[1].i;
 
         assert(params[2].type == vexc::VarType::String);
         std::string attrib_name = vexc::StringPool::VoidToString(params[2].p);
 
         assert(params[3].type == vexc::VarType::Int);
-        int attrib_index = params[3].i;
+        int prim_num = params[3].i;
 
-        auto var = geo->GetAttr().QueryAttr(GeoAttrClass::Primitive, attrib_name, attrib_index);
-        if (var.type == VarType::Invalid) {
-            return vexc::Variant();
-        }
-        switch (var.type)
-        {
-        case VarType::Bool:
-            return vexc::Variant(var.b);
-        case VarType::Int:
-            return vexc::Variant(var.i);
-        case VarType::Float:
-            return vexc::Variant(var.f);
-        case VarType::Float3:
-        {
-            assert(attrib_index >= 0 && attrib_index < 3);
-            auto v3 = static_cast<const sm::vec3*>(var.p);
-            return vexc::Variant(v3->xyz[attrib_index]);
-        }
-        case VarType::Double:
-            return vexc::Variant(var.d);
-        default:
-            assert(0);
-            return vexc::Variant();
-        }
+        auto var = geo->GetAttr().QueryAttr(GeoAttrClass::Primitive, attrib_name, prim_num);
+        return ToVexcVar(*ctx, var, prim_num);
     });
 
     vexc::RegistBuildInFunc("setattrib", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
@@ -367,35 +430,8 @@ void SetupVexFuncs()
 
             // query prop
             assert(curr_node);
-            auto v = curr_node->GetProps().Query(t);
-            switch (v.type)
-            {
-            case VarType::Invalid:
-                return vexc::Variant();
-            case VarType::Bool:
-                return vexc::Variant(v.b);
-            case VarType::Int:
-                return vexc::Variant(v.i);
-            case VarType::Float:
-                return vexc::Variant(v.f);
-            case VarType::Float3:
-            {
-                auto v3 = static_cast<const sm::vec3*>(v.p);
-                auto new_v3 = ctx->var_buf.Clone(*v3);
-                return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
-            }
-            case VarType::Double:
-                return vexc::Variant(v.d);
-            //case VarType::String:
-            //{
-            //    auto str = static_cast<const char*>(v.p);
-            //    auto buf = vexc::StringPool::InsertAndQuery(str, strlen(str));
-            //    return vexc::Variant(vexc::VarType::String, buf);
-            //}
-            default:
-                assert(0);
-                return vexc::Variant();
-            }
+            auto var = curr_node->GetProps().Query(t);
+            return ToVexcVar(*ctx, var);
         }
 
         return vexc::Variant();

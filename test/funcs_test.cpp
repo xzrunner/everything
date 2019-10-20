@@ -9,6 +9,7 @@
 #include <sop/node/Blast.h>
 #include <sop/node/Measure.h>
 #include <sop/node/Line.h>
+#include <sop/node/AttributeCreate.h>
 
 #include <catch/catch.hpp>
 
@@ -46,6 +47,35 @@ TEST_CASE("getbox")
         REQUIRE(f3[1] == Approx(2));
         REQUIRE(f3[2] == Approx(3));
     }
+}
+
+TEST_CASE("point")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto attr_create = std::make_shared<sop::node::AttributeCreate>();
+    attr_create->SetName("attr_create");
+    std::vector<sop::node::AttributeCreate::Item> items;
+    items.emplace_back("ScaleY", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(2.0f));
+    attr_create->SetAttrItems(items);
+    eval.AddNode(attr_create);
+
+    eval.Connect({ box, 0 }, { attr_create, 0 });
+
+    auto box2 = std::make_shared<sop::node::Box>();
+    auto& box2_props = const_cast<sop::NodePropsMgr&>(box2->GetProps());
+    box2_props.SetExpr(sop::node::Box::SIZE_Y, "point(\"../attr_create/\",0,\"ScaleY\",1)");
+    eval.AddNode(box2);
+
+    eval.Update();
+
+    test::check_aabb(box, sm::vec3(-0.5f, -0.5f, -0.5f), sm::vec3(0.5f, 0.5f, 0.5f));
+    test::check_aabb(box2, sm::vec3(-0.5f, -1, -0.5f), sm::vec3(0.5f, 1, 0.5f));
 }
 
 TEST_CASE("prim")
