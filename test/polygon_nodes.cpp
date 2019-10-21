@@ -134,6 +134,51 @@ TEST_CASE("add to shape with attr")
     test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0, 0, 0)));
 }
 
+TEST_CASE("add with group")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<sop::node::GroupCreate>();
+    group->SetGroupName("top");
+    group->SetGroupType(sop::GroupType::Primitives);
+    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto blast = std::make_shared<sop::node::Blast>();
+    blast->SetGroupName("top");
+    blast->SetGroupType(sop::GroupType::GuessFromGroup);
+    blast->SetDeleteNonSelected(true);
+    eval.AddNode(blast);
+
+    eval.Connect({ group, 0 }, { blast, 0 });
+
+    auto group_left = std::make_shared<sop::node::GroupCreate>();
+    group_left->SetGroupName("left");
+    group_left->SetGroupType(sop::GroupType::Points);
+    group_left->EnableBaseGroup("@P.x < 0");
+    eval.AddNode(group_left);
+
+    eval.Connect({ blast, 0 }, { group_left, 0 });
+
+    auto add = std::make_shared<sop::node::Add>();
+    add->SetGroupName("left");
+    add->SetGroupType(sop::GroupType::GuessFromGroup);
+    eval.AddNode(add);
+
+    eval.Connect({ group_left, 0 }, { add, 0 });
+
+    eval.Update();
+
+    test::check_points_num(add, 2);
+}
+
 TEST_CASE("boolean")
 {
     test::init();
@@ -1028,7 +1073,7 @@ TEST_CASE("poly frame shape - norm attr (2 pts)")
     inst0.merge_op = sop::GroupMerge::Replace;
     group_expr->AddInstance(inst0);
     eval.AddNode(group_expr);
-    
+
     eval.Connect({ normal, 0 }, { group_expr, 0 });
 
     auto blast = std::make_shared<sop::node::Blast>();
@@ -1092,7 +1137,7 @@ TEST_CASE("poly frame shape - calc norm (3 pts)")
         polyframe->SetFrameStyle(sop::node::PolyFrame::FrameStyle::FirstEdge);
 
         eval.Update();
-    
+
         test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "N", 3);
         test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 3);
         test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 3);

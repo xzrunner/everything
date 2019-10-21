@@ -17,19 +17,27 @@ public:
     GeoAttrRebuild(GeometryImpl& geo);
     ~GeoAttrRebuild();
 
+    static void Copy(GeometryImpl& dst, GeometryImpl& src);
+
 private:
-    void Save();
-    void Load();
+    struct Dump
+    {
+        std::map<uint64_t, std::vector<VarValue>> points;
+        std::map<uint64_t, std::vector<VarValue>> vertices;
+        std::map<uint64_t, std::vector<VarValue>> primitives;
+        std::vector<VarValue>                     detail;
+
+        std::vector<GeoAttribute::VarDesc> var_descs[static_cast<int>(GeoAttrClass::MaxTypeNum)];
+    };
+
+private:
+    static void Save(Dump& dst, const GeometryImpl& src);
+    static void Load(GeometryImpl& dst, const Dump& src);
 
 private:
     GeometryImpl& m_geo;
 
-    std::map<uint64_t, std::vector<VarValue>> m_points;
-    std::map<uint64_t, std::vector<VarValue>> m_vertices;
-    std::map<uint64_t, std::vector<VarValue>> m_primitives;
-    std::vector<VarValue>                     m_detail;
-
-    std::vector<GeoAttribute::VarDesc> m_var_descs[static_cast<int>(GeoAttrClass::MaxTypeNum)];
+    Dump m_dump;
 
 }; // GeoAttrRebuild
 

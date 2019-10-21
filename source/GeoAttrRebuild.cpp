@@ -7,25 +7,32 @@ namespace sop
 GeoAttrRebuild::GeoAttrRebuild(GeometryImpl& geo)
     : m_geo(geo)
 {
-    Save();
+    Save(m_dump, m_geo);
 }
 
 GeoAttrRebuild::~GeoAttrRebuild()
 {
-    Load();
+    Load(m_geo, m_dump);
 }
 
-void GeoAttrRebuild::Save()
+void GeoAttrRebuild::Copy(GeometryImpl& dst, GeometryImpl& src)
 {
-    auto& attr = m_geo.GetAttr();
+    Dump tmp;
+    Save(tmp, src);
+    Load(dst, tmp);
+}
+
+void GeoAttrRebuild::Save(Dump& dst, const GeometryImpl& src)
+{
+    auto& attr = src.GetAttr();
     for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
-        m_var_descs[i] = attr.GetAttrDesc(static_cast<GeoAttrClass>(i));
+        dst.var_descs[i] = attr.GetAttrDesc(static_cast<GeoAttrClass>(i));
     }
 
     // points
     for (auto& p : attr.GetPoints()) {
         assert(!p->topo_id.Empty());
-        m_points.insert({ p->topo_id.UID(), p->vars });
+        dst.points.insert({ p->topo_id.UID(), p->vars });
     }
 
     // vertices
@@ -37,24 +44,24 @@ void GeoAttrRebuild::Save()
         auto& face_id = face->topo_id;
         assert(!vert_id.Empty() && !face_id.Empty());
         const uint64_t id = static_cast<uint64_t>(face_id.UID()) << 32 | vert_id.UID();
-        m_vertices.insert({ id, v->vars });
+        dst.vertices.insert({ id, v->vars });
     }
 
     // primitives
     for (auto& prim : attr.GetPrimtives()) {
         assert(!prim->topo_id.Empty());
-        m_primitives.insert({ prim->topo_id.UID(), prim->vars });
+        dst.primitives.insert({ prim->topo_id.UID(), prim->vars });
     }
 
     // detail
-    m_detail = attr.GetDetail().vars;
+    dst.detail = attr.GetDetail().vars;
 }
 
-void GeoAttrRebuild::Load()
+void GeoAttrRebuild::Load(GeometryImpl& dst, const Dump& src)
 {
-    auto& attr = m_geo.GetAttr();
+    auto& attr = dst.GetAttr();
     for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
-        attr.SetAttrDesc(static_cast<GeoAttrClass>(i), m_var_descs[i]);
+        attr.SetAttrDesc(static_cast<GeoAttrClass>(i), src.var_descs[i]);
     }
 
     // points
@@ -62,8 +69,8 @@ void GeoAttrRebuild::Load()
     for (auto& p : attr.GetPoints())
     {
         assert(!p->topo_id.Empty());
-        auto itr = m_points.find(p->topo_id.UID());
-        if (itr != m_points.end()) {
+        auto itr = src.points.find(p->topo_id.UID());
+        if (itr != src.points.end()) {
             p->vars = itr->second;
         } else {
             p->vars = default_attr_p;
@@ -80,8 +87,8 @@ void GeoAttrRebuild::Load()
         auto& face_id = face->topo_id;
         assert(!vert_id.Empty() && !face_id.Empty());
         const uint64_t id = static_cast<uint64_t>(face_id.UID()) << 32 | vert_id.UID();
-        auto itr = m_vertices.find(id);
-        if (itr != m_vertices.end()) {
+        auto itr = src.vertices.find(id);
+        if (itr != src.vertices.end()) {
             v->vars = itr->second;
         } else {
             v->vars = default_attr_v;
@@ -93,8 +100,8 @@ void GeoAttrRebuild::Load()
     for (auto& prim : attr.GetPrimtives())
     {
         assert(!prim->topo_id.Empty());
-        auto itr = m_primitives.find(prim->topo_id.UID());
-        if (itr != m_primitives.end()) {
+        auto itr = src.primitives.find(prim->topo_id.UID());
+        if (itr != src.primitives.end()) {
             prim->vars = itr->second;
         } else {
             prim->vars = default_attr_prim;
@@ -102,7 +109,7 @@ void GeoAttrRebuild::Load()
     }
 
     // detail
-    const_cast<GeoAttribute::Detail&>(attr.GetDetail()).vars = m_detail;
+    const_cast<GeoAttribute::Detail&>(attr.GetDetail()).vars = src.detail;
 }
 
 }
