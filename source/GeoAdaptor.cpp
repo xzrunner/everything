@@ -73,8 +73,7 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
         std::vector<he::PolylinePtr> polylines;
         AttrToLines(polylines, attr);
 
-        auto& cpolyline = m_node->GetUniqueComp<CompTopoPolyline>();
-        cpolyline.SetLines(polylines);
+        SetTopoLines(polylines);
     }
         break;
     case Type::Brush:
