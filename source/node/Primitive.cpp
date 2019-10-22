@@ -57,7 +57,7 @@ void Primitive::Execute(Evaluator& eval)
                 for (auto& v : prim->vertices) {
                     c += v->point->pos;
                 }
-                c /= prim->vertices.size();
+                c /= static_cast<float>(prim->vertices.size());
 
                 for (auto& v : prim->vertices) {
                     v->point->pos = mat * (v->point->pos - c) + c;
