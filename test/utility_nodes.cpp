@@ -267,7 +267,7 @@ TEST_CASE("copy to points with default attr scale")
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
     std::vector<sop::node::AttributeCreate::Item> items;
-    items.emplace_back(sop::GEO_ATTR_PSCALE, sop::GeoAttrClass::Point, sop::VarValue(2.0f));
+    items.emplace_back(sop::GEO_ATTR_PSCALE, sop::GeoAttrClass::Point, sop::VarValue(2.0f), sop::VarValue(0.0f));
     attr_create->SetAttrItems(items);
     eval.AddNode(attr_create);
 
@@ -302,8 +302,8 @@ TEST_CASE("copy to points with default attr N up")
     std::vector<sop::node::AttributeCreate::Item> items;
     //items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
     //items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
-    items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 0, 1)));
-    items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
+    items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 0, 1)), sop::VarValue(sm::vec3(0, 0, 0)));
+    items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)), sop::VarValue(sm::vec3(0, 0, 0)));
     //items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
     //items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 0)));
     attr_create->SetAttrItems(items);

@@ -61,7 +61,7 @@ TEST_CASE("point")
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
     attr_create->SetName("attr_create");
     std::vector<sop::node::AttributeCreate::Item> items;
-    items.emplace_back("ScaleY", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(2.0f));
+    items.emplace_back("ScaleY", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(2.0f), sop::VarValue(0.0f));
     attr_create->SetAttrItems(items);
     eval.AddNode(attr_create);
 

@@ -2,6 +2,7 @@
 
 #include "sop/Node.h"
 #include "sop/GeoAttribute.h"
+#include "sop/Group.h"
 
 namespace sop
 {
@@ -13,8 +14,8 @@ class AttributeCreate : public Node
 public:
     struct Item
     {
-        Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val);
-        Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val);
+        Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val, const VarValue& default_val);
+        Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val, const VarValue& default_val);
 
         bool operator == (const Item& i) const;
 
@@ -22,6 +23,7 @@ public:
         GeoAttrClass cls  = GeoAttrClass::Point;
         GeoAttrType  type = GeoAttrType::Float;
         VarValue     value;
+        VarValue     default_val;
     };
 
 public:

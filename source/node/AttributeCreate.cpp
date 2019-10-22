@@ -84,20 +84,22 @@ void AttributeCreate::SetAttrItems(const std::vector<Item>& items)
 //////////////////////////////////////////////////////////////////////////
 
 AttributeCreate::Item::
-Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val)
+Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val, const VarValue& default_val)
     : name(name)
     , cls(cls)
     , type(type)
     , value(val)
+    , default_val(default_val)
 {
 }
 
 AttributeCreate::Item::
-Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val)
+Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val, const VarValue& default_val)
     : name(sop::GeoAttrNames[attr])
     , cls(cls)
     , type(sop::GeoAttrTypes[attr])
     , value(val)
+    , default_val(default_val)
 {
 }
 
