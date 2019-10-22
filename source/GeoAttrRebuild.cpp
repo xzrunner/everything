@@ -1,28 +1,55 @@
 #include "sop/GeoAttrRebuild.h"
 #include "sop/GeometryImpl.h"
 
+namespace
+{
+
+std::map<uint64_t, std::vector<sop::VarValue>>::const_iterator
+QueryFromCache(const std::map<uint64_t, std::vector<sop::VarValue>>& cache, const he::TopoID& id, bool split)
+{
+    auto itr = cache.find(id.UID());
+    if (itr != cache.end()) {
+        return itr;
+    }
+
+    if (split && id.Path().size() > 1)
+    {
+        he::TopoID pid(id);
+        pid.Pop();
+        itr = cache.find(pid.UID());
+        if (itr != cache.end()) {
+            return itr;
+        }
+    }
+
+    return cache.end();
+}
+
+}
+
 namespace sop
 {
 
-GeoAttrRebuild::GeoAttrRebuild(GeometryImpl& geo)
+GeoAttrRebuild::GeoAttrRebuild(GeometryImpl& geo, bool prim_split)
     : m_geo(geo)
+    , m_prim_split(prim_split)
 {
     Save(m_dump, m_geo);
 }
 
 GeoAttrRebuild::~GeoAttrRebuild()
 {
-    Load(m_geo, m_dump);
+    Load(m_geo, m_dump, m_prim_split);
 }
 
-void GeoAttrRebuild::Copy(GeometryImpl& dst, GeometryImpl& src)
+void GeoAttrRebuild::Copy(GeometryImpl& dst, GeometryImpl& src, bool prim_split)
 {
-    Dump tmp;
+    AttrDump tmp;
     Save(tmp, src);
-    Load(dst, tmp);
+    Load(dst, tmp, prim_split);
 }
 
-void GeoAttrRebuild::Save(Dump& dst, const GeometryImpl& src)
+void GeoAttrRebuild::Save(AttrDump& dst, const GeometryImpl& src)
 {
     auto& attr = src.GetAttr();
     for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
@@ -57,7 +84,7 @@ void GeoAttrRebuild::Save(Dump& dst, const GeometryImpl& src)
     dst.detail = attr.GetDetail().vars;
 }
 
-void GeoAttrRebuild::Load(GeometryImpl& dst, const Dump& src)
+void GeoAttrRebuild::Load(GeometryImpl& dst, const AttrDump& src, bool prim_split)
 {
     auto& attr = dst.GetAttr();
     for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
@@ -69,7 +96,7 @@ void GeoAttrRebuild::Load(GeometryImpl& dst, const Dump& src)
     for (auto& p : attr.GetPoints())
     {
         assert(!p->topo_id.Empty());
-        auto itr = src.points.find(p->topo_id.UID());
+        auto itr = QueryFromCache(src.points, p->topo_id, prim_split);
         if (itr != src.points.end()) {
             p->vars = itr->second;
         } else {
@@ -100,7 +127,7 @@ void GeoAttrRebuild::Load(GeometryImpl& dst, const Dump& src)
     for (auto& prim : attr.GetPrimtives())
     {
         assert(!prim->topo_id.Empty());
-        auto itr = src.primitives.find(prim->topo_id.UID());
+        auto itr = QueryFromCache(src.primitives, prim->topo_id, prim_split);
         if (itr != src.primitives.end()) {
             prim->vars = itr->second;
         } else {

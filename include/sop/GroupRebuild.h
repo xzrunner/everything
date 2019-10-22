@@ -2,6 +2,8 @@
 
 #include "sop/GeoAttribute.h"
 
+#include <set>
+
 namespace sop
 {
 
@@ -11,7 +13,7 @@ class GeometryImpl;
 class GroupRebuild
 {
 public:
-    GroupRebuild(GeometryImpl& geo);
+    GroupRebuild(GeometryImpl& geo, bool prim_split = false);
     ~GroupRebuild();
 
 private:
@@ -25,11 +27,13 @@ private:
 
         std::vector<uint64_t> points;
         std::vector<uint64_t> vertices;
-        std::vector<uint64_t> primtives;
+        std::set<uint32_t> primtives;
     };
 
 private:
     GeometryImpl& m_geo;
+
+    bool m_prim_split;
 
     std::vector<GroupDump> m_groups;
 

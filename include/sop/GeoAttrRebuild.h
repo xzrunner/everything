@@ -14,13 +14,13 @@ class GeometryImpl;
 class GeoAttrRebuild
 {
 public:
-    GeoAttrRebuild(GeometryImpl& geo);
+    GeoAttrRebuild(GeometryImpl& geo, bool prim_split = false);
     ~GeoAttrRebuild();
 
-    static void Copy(GeometryImpl& dst, GeometryImpl& src);
+    static void Copy(GeometryImpl& dst, GeometryImpl& src, bool prim_split = false);
 
 private:
-    struct Dump
+    struct AttrDump
     {
         std::map<uint64_t, std::vector<VarValue>> points;
         std::map<uint64_t, std::vector<VarValue>> vertices;
@@ -31,13 +31,15 @@ private:
     };
 
 private:
-    static void Save(Dump& dst, const GeometryImpl& src);
-    static void Load(GeometryImpl& dst, const Dump& src);
+    static void Save(AttrDump& dst, const GeometryImpl& src);
+    static void Load(GeometryImpl& dst, const AttrDump& src, bool prim_split);
 
 private:
     GeometryImpl& m_geo;
 
-    Dump m_dump;
+    bool m_prim_split;
+
+    AttrDump m_dump;
 
 }; // GeoAttrRebuild
 

@@ -517,6 +517,9 @@ TEST_CASE("knife plane")
         test::check_faces_num(knife, 2);
         test::check_points_num(knife, 6);
         test::check_halfedge_edges_num(knife, 8);
+
+        test::check_group_num(blast, "top", 1);
+        test::check_group_num(knife, "top", 2);
     }
 
     SECTION("dir neg x")
@@ -529,6 +532,9 @@ TEST_CASE("knife plane")
         test::check_faces_num(knife, 2);
         test::check_points_num(knife, 6);
         test::check_halfedge_edges_num(knife, 8);
+
+        test::check_group_num(blast, "top", 1);
+        test::check_group_num(knife, "top", 2);
     }
 }
 

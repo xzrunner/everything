@@ -5,8 +5,9 @@
 namespace sop
 {
 
-GroupRebuild::GroupRebuild(GeometryImpl& geo)
+GroupRebuild::GroupRebuild(GeometryImpl& geo, bool prim_split)
     : m_geo(geo)
+    , m_prim_split(prim_split)
 {
     Save();
 }
@@ -56,12 +57,11 @@ void GroupRebuild::Save()
         case GroupType::Primitives:
         {
             auto& prims = m_geo.GetAttr().GetPrimtives();
-            dump.primtives.reserve(group.Size());
             for (auto i : group.GetItems())
             {
                 auto& prim = prims[i];
                 assert(!prim->topo_id.Empty());
-                dump.primtives.push_back(prim->topo_id.UID());
+                dump.primtives.insert(prim->topo_id.UID());
             }
         }
             break;
@@ -98,13 +98,6 @@ void GroupRebuild::Load()
         auto& face_id = face->topo_id;
         assert(!vert_id.Empty() && !face_id.Empty());
         v_topo2idx.insert({ static_cast<uint64_t>(face_id.UID()) << 32 | vert_id.UID(), i });
-    }
-
-    std::map<uint64_t, size_t> prim_topo2idx;
-    auto& prims = m_geo.GetAttr().GetPrimtives();
-    for (size_t i = 0, n = prims.size(); i < n; ++i) {
-        assert(!prims[i]->topo_id.Empty());
-        prim_topo2idx.insert({ prims[i]->topo_id.UID(), i });
     }
 
     auto itr = m_groups.begin();
@@ -146,13 +139,21 @@ void GroupRebuild::Load()
             break;
         case GroupType::Primitives:
         {
+            auto& prims = m_geo.GetAttr().GetPrimtives();
             std::vector<size_t> items;
-            items.reserve(itr->primtives.size());
-            for (auto& prim : itr->primtives)
+            for (size_t i = 0, n = prims.size(); i < n; ++i)
             {
-                auto itr = prim_topo2idx.find(prim);
-                if (itr != prim_topo2idx.end()) {
-                    items.push_back(itr->second);
+                auto& prim = prims[i];
+                if (itr->primtives.find(prim->topo_id.UID()) != itr->primtives.end()) {
+                    items.push_back(i);
+                }
+                if (m_prim_split)
+                {
+                    he::TopoID pid = prim->topo_id;
+                    pid.Pop();
+                    if (itr->primtives.find(pid.UID()) != itr->primtives.end()) {
+                        items.push_back(i);
+                    }
                 }
             }
             dst.SetItems(items);

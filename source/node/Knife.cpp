@@ -2,6 +2,7 @@
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeoAttrRebuild.h"
+#include "sop/GroupRebuild.h"
 
 #include <halfedge/Polyhedron.h>
 #include <polymesh3/Geometry.h>
@@ -26,7 +27,8 @@ void Knife::Execute(Evaluator& eval)
     auto brush_model = m_geo_impl->GetBrushModel();
     assert(brush_model);
 
-    GeoAttrRebuild attr_rebuild(*m_geo_impl);
+    GeoAttrRebuild attr_rebuild(*m_geo_impl, true);
+    GroupRebuild group_rebuild(*m_geo_impl, true);
 
     bool dirty = false;
     for (auto& brush : brush_model->GetBrushes()) {
