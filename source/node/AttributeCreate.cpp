@@ -18,6 +18,15 @@ void AttributeCreate::Execute(Evaluator& eval)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
+    std::shared_ptr<Group> group = nullptr;
+    if (!m_group_name.empty())
+    {
+        group = m_geo_impl->GetGroup().Query(m_group_name);
+        if (!group) {
+            return;
+        }
+    }
+
     for (auto& item : m_items)
     {
         size_t num = 0;
@@ -39,9 +48,30 @@ void AttributeCreate::Execute(Evaluator& eval)
             assert(0);
         }
 
-        std::vector<VarValue> vars(num, item.value);
+        std::vector<VarValue> vars;
+        if (group)
+        {
+            vars.resize(num, item.default_val);
+            for (auto& i : group->GetItems()) {
+                vars[i] = item.value;
+            }
+        }
+        else
+        {
+            vars.resize(num, item.value);
+        }
         m_geo_impl->GetAttr().AddAttr(item.cls, GeoAttribute::VarDesc(item.name, item.type), vars);
     }
+}
+
+void AttributeCreate::SetGroupName(const std::string& name)
+{
+    NODE_PROP_SET(m_group_name, name);
+}
+
+void AttributeCreate::SetGroupType(GroupType type)
+{
+    NODE_PROP_SET(m_group_type, type);
 }
 
 void AttributeCreate::SetAttrItems(const std::vector<Item>& items)

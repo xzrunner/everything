@@ -37,9 +37,15 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
+    void SetGroupName(const std::string& name);
+    void SetGroupType(GroupType type);
+
     void SetAttrItems(const std::vector<Item>& items);
 
 private:
+    std::string m_group_name;
+    GroupType   m_group_type = GroupType::GuessFromGroup;
+
     std::vector<Item> m_items;
 
     RTTR_ENABLE(Node)
