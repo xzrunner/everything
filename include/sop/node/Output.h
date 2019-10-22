@@ -7,10 +7,10 @@ namespace sop
 namespace node
 {
 
-class Null : public Node
+class Output : public Node
 {
 public:
-    Null()
+    Output()
     {
         m_imports = {
             {{ NodeVarType::Any, "in" }}
@@ -22,9 +22,15 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
+    void SetOutputIdx(int idx) { m_output_idx = idx; }
+    int  GetOutputIdx() const { return m_output_idx; }
+
+private:
+    int m_output_idx = -1;
+
     RTTR_ENABLE(Node)
 
-}; // Null
+}; // Output
 
 }
 }

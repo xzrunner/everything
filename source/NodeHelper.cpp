@@ -3,6 +3,7 @@
 #include "sop/EvalContext.h"
 #include "sop/Evaluator.h"
 #include "sop/GeometryImpl.h"
+#include "sop/node/Geometry.h"
 
 namespace sop
 {
@@ -30,7 +31,16 @@ NodePtr NodeHelper::GetInputNode(const Node& node, size_t idx)
     }
 
     assert(imports[idx].conns.size() == 1);
-    return imports[idx].conns[0].node.lock();
+    auto in_node = imports[idx].conns[0].node.lock();
+    if (in_node->get_type().is_derived_from<node::Geometry>())
+    {
+        const int output_idx = imports[idx].conns[0].idx;
+        return std::static_pointer_cast<node::Geometry>(in_node)->QueryOutput(output_idx);
+    }
+    else 
+    {
+        return in_node;
+    }
 }
 
 std::shared_ptr<GeometryImpl>

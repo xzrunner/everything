@@ -30,8 +30,10 @@ public:
 
     std::shared_ptr<Node> QueryChild(const std::string& name) const;
 
-private:
-    std::set<std::shared_ptr<Node>> m_children;
+    std::shared_ptr<Node> QueryOutput(int idx) const;
+
+protected:
+    std::vector<std::shared_ptr<Node>> m_children;
 
     RTTR_ENABLE(Node)
 

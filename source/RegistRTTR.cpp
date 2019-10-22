@@ -39,6 +39,8 @@
 #include "sop/node/ForeachPrimEnd.h"
 #include "sop/node/Merge.h"
 #include "sop/node/Null.h"
+#include "sop/node/Output.h"
+#include "sop/node/Split.h"
 #include "sop/node/Switch.h"
 
 #define REGIST_NODE_TYPE(name)                                 \
@@ -98,6 +100,8 @@ REGIST_NODE_TYPE(ForeachPrimBegin)
 REGIST_NODE_TYPE(ForeachPrimEnd)
 REGIST_NODE_TYPE(Merge)
 REGIST_NODE_TYPE(Null)
+REGIST_NODE_TYPE(Output)
+REGIST_NODE_TYPE(Split)
 REGIST_NODE_TYPE(Switch)
 
 }

@@ -1,5 +1,6 @@
 #include "sop/node/Geometry.h"
 #include "sop/NodeHelper.h"
+#include "sop/node/Output.h"
 
 namespace sop
 {
@@ -21,11 +22,13 @@ void Geometry::AddChild(const std::shared_ptr<Geometry>& parent,
     if (!parent || !child) {
         return;
     }
-    if (parent->m_children.find(child) != parent->m_children.end()) {
-        return;
+    for (auto& c : parent->m_children) {
+        if (c == child) {
+            return;
+        }
     }
 
-    parent->m_children.insert(child);
+    parent->m_children.push_back(child);
     child->SetParent(parent);
 }
 
@@ -35,6 +38,21 @@ Geometry::QueryChild(const std::string& name) const
     for (auto& c : m_children) {
         if (c->GetName() == name) {
             return c;
+        }
+    }
+    return nullptr;
+}
+
+std::shared_ptr<Node> 
+Geometry::QueryOutput(int idx) const
+{
+    for (auto& c : m_children) 
+    {
+        if (c->get_type() == rttr::type::get<node::Output>()) {
+            auto output = std::static_pointer_cast<node::Output>(c);
+            if (output->GetOutputIdx() == idx) {
+                return c;
+            }
         }
     }
     return nullptr;

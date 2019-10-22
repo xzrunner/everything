@@ -31,6 +31,16 @@ void Node::SetParent(const std::shared_ptr<Node>& node)
     m_level = node->m_level + 1;
 }
 
+void Node::ClearConnections()
+{
+    for (auto& p : m_imports) {
+        p.conns.clear();
+    }
+    for (auto& p : m_exports) {
+        p.conns.clear();
+    }
+}
+
 void make_connecting(const Node::PortAddr& from, const Node::PortAddr& to)
 {
 	{

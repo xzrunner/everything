@@ -1,4 +1,4 @@
-#include "sop/node/Null.h"
+#include "sop/node/Output.h"
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
 
@@ -7,7 +7,7 @@ namespace sop
 namespace node
 {
 
-void Null::Execute(Evaluator& eval)
+void Output::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
 

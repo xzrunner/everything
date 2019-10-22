@@ -242,6 +242,12 @@
     <ClInclude Include="..\..\..\include\sop\VarBuffer.h">
       <Filter>eval</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Split.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Output.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -391,6 +397,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributeTransfer.cpp">
       <Filter>nodes\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Split.cpp">
+      <Filter>nodes\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Output.cpp">
+      <Filter>nodes\utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

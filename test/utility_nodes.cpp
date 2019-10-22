@@ -10,6 +10,8 @@
 #include <sop/node/ForeachPrimEnd.h>
 #include <sop/node/GroupCreate.h>
 #include <sop/node/Merge.h>
+#include <sop/node/Null.h>
+#include <sop/node/Split.h>
 #include <sop/node/Switch.h>
 
 #include <sop/node/Box.h>
@@ -495,6 +497,44 @@ TEST_CASE("merge 2")
         test::check_faces_num(merge, 12);
         test::check_halfedge_faces_num(merge, 12);
     }
+}
+
+TEST_CASE("split")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<sop::node::GroupCreate>();
+    group->SetGroupName("top");
+    group->SetGroupType(sop::GroupType::Primitives);
+    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto split = std::make_shared<sop::node::Split>();
+    split->SetGroupName("top");
+    eval.AddNode(split);
+
+    eval.Connect({ group, 0 }, { split, 0 });
+
+    auto null0 = std::make_shared<sop::node::Null>();
+    auto null1 = std::make_shared<sop::node::Null>();
+    eval.AddNode(null0);
+    eval.AddNode(null1);
+    eval.Connect({ split, sop::node::Split::IDX_OUT_0 }, { null0, 0 });
+    eval.Connect({ split, sop::node::Split::IDX_OUT_1 }, { null1, 0 });
+
+    eval.Update();
+
+    test::check_faces_num(split, 1);
+
+    test::check_faces_num(null0, 1);
+    test::check_faces_num(null1, 5);
 }
 
 TEST_CASE("switch")
