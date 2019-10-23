@@ -57,7 +57,10 @@ void Split::Execute(Evaluator& eval)
     sub_eval.Update();
 
     if (m_children[SUB_OUTPUT_0]) {
-        m_geo_impl = std::make_shared<GeometryImpl>(*m_children[SUB_OUTPUT_0]->GetGeometry());
+        auto out0_geo = m_children[SUB_OUTPUT_0]->GetGeometry();
+        if (out0_geo) {
+            m_geo_impl = std::make_shared<GeometryImpl>(*out0_geo);
+        }
     }
 }
 
