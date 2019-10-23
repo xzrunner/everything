@@ -536,6 +536,24 @@ TEST_CASE("knife plane")
         test::check_group_num(blast, "top", 1);
         test::check_group_num(knife, "top", 2);
     }
+
+    SECTION("knife 2")
+    {
+        knife->SetKeepType(sop::node::Knife::KeepType::KeepAll);
+        knife->SetDirection({ 1, 0, 0 });
+
+        auto knife2 = std::make_shared<sop::node::Knife>();
+        knife2->SetKeepType(sop::node::Knife::KeepType::KeepAll);
+        knife2->SetDirection({ 0, 0, 1 });
+        eval.AddNode(knife2);
+
+        eval.Connect({ knife, 0 }, { knife2, 0 });
+
+        eval.Update();
+
+        test::check_faces_num(knife2, 4);
+        test::check_group_num(knife2, "top", 4);
+    }
 }
 
 TEST_CASE("normal box")
