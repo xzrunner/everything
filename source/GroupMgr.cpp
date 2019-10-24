@@ -1,5 +1,9 @@
 #include "sop/GroupMgr.h"
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include <assert.h>
 
 namespace sop
@@ -80,10 +84,48 @@ void GroupMgr::Add(const std::shared_ptr<Group>& group, GroupMerge merge_op)
 }
 
 std::shared_ptr<Group>
-GroupMgr::Query(const std::string& name) const
+GroupMgr::Query(const std::string& name, size_t max_count, GroupType type) const
 {
     auto itr = m_groups.find(name);
-    return itr == m_groups.end() ? nullptr : itr->second;
+    if (itr != m_groups.end()) 
+    {
+        auto group = itr->second;
+        if (type != GroupType::GuessFromGroup && type != group->GetType()) {
+            return nullptr;
+        } else {
+            return group;
+        }
+    }
+
+    std::vector<std::string> tokens;
+    boost::split(tokens, name, boost::is_any_of(" "));
+
+    std::vector<size_t> indices;
+    indices.reserve(tokens.size());
+    for (auto& str : tokens) 
+    {
+        int i = -1;
+        try {
+            i = boost::lexical_cast<int>(str);
+        } catch (boost::bad_lexical_cast&) {
+            continue;
+        }
+        if (i >= 0 && i < max_count) {
+            indices.push_back(i);
+        }
+    }
+
+    if (indices.empty()) {
+        return nullptr;
+    }
+
+    std::sort(indices.begin(), indices.end());
+    indices.erase(std::unique(indices.begin(), indices.end()), indices.end());
+
+    auto group = std::make_shared<Group>();
+    group->SetType(type);
+    group->SetItems(indices);
+    return group;
 }
 
 void GroupMgr::Rename(const std::string& src, const std::string& dst)

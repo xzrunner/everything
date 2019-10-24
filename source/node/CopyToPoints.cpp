@@ -109,16 +109,17 @@ void CopyToPoints::EnableUsePointDir(bool enable)
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)
 {
+    auto& pts = dst.GetAttr().GetPoints();
+
     std::shared_ptr<Group> tar_group = nullptr;
     if (!m_target_group.empty())
     {
-        tar_group = dst.GetGroup().Query(m_target_group);
-        if (!tar_group || tar_group->GetType() != GroupType::Points) {
+        tar_group = dst.GetGroup().Query(m_target_group, pts.size(), GroupType::Points);
+        if (!tar_group) {
             return;
         }
     }
 
-    auto& pts = dst.GetAttr().GetPoints();
     if (tar_group) {
         for (auto i : tar_group->GetItems()) {
             CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point));
@@ -132,16 +133,17 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, size_t norm_idx)
 {
+    auto& pts = dst.GetAttr().GetPoints();
+
     std::shared_ptr<Group> tar_group = nullptr;
     if (!m_target_group.empty())
     {
-        tar_group = dst.GetGroup().Query(m_target_group);
-        if (!tar_group || tar_group->GetType() != GroupType::Points) {
+        tar_group = dst.GetGroup().Query(m_target_group, pts.size(), GroupType::Points);
+        if (!tar_group) {
             return;
         }
     }
 
-    auto& pts = dst.GetAttr().GetPoints();
     if (tar_group) {
         for (auto i : tar_group->GetItems()) {
             CopyTo(src, *pts[i], dst.GetAttr().GetAttrDesc(GeoAttrClass::Point),
@@ -157,16 +159,17 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, size
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const std::vector<sm::vec3>& norms)
 {
+    auto& pts = dst.GetAttr().GetPoints();
+
     std::shared_ptr<Group> tar_group = nullptr;
     if (!m_target_group.empty())
     {
-        tar_group = dst.GetGroup().Query(m_target_group);
-        if (!tar_group || tar_group->GetType() != GroupType::Points) {
+        tar_group = dst.GetGroup().Query(m_target_group, pts.size(), GroupType::Points);
+        if (!tar_group) {
             return;
         }
     }
 
-    auto& pts = dst.GetAttr().GetPoints();
     assert(pts.size() == norms.size());
     if (tar_group) {
         for (auto i : tar_group->GetItems()) {

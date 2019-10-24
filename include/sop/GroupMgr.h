@@ -19,7 +19,8 @@ public:
         size_t pts_off, size_t vts_off, size_t prim_off);
 
     void Add(const std::shared_ptr<Group>& group, GroupMerge merge_op);
-    std::shared_ptr<Group> Query(const std::string& name) const;
+    std::shared_ptr<Group> Query(const std::string& name, size_t max_count = 0,
+        GroupType type = GroupType::GuessFromGroup) const;
     void Rename(const std::string& src, const std::string& dst);
 
     void Traverse(std::function<bool(const Group&)> func) const;
