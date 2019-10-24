@@ -11,7 +11,7 @@
 namespace
 {
 
-vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const sop::Variable& var, int idx = -1)
+vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const sop::Variable& var, int component = -1)
 {
     switch (var.type)
     {
@@ -25,11 +25,11 @@ vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const sop::Variable& var, i
         return vexc::Variant(var.f);
     case sop::VarType::Float3:
     {
-        if (idx != -1)
+        if (component != -1)
         {
-            assert(idx >= 0 && idx < 3);
+            assert(component >= 0 && component < 3);
             auto v3 = static_cast<const sm::vec3*>(var.p);
-            return vexc::Variant(v3->xyz[idx]);
+            return vexc::Variant(v3->xyz[component]);
         }
         else
         {
@@ -88,16 +88,16 @@ void SetupVexFuncs()
         }
 
         assert(params[1].type == vexc::VarType::Int);
-        int geometry = params[1].i;
+        int point_num = params[1].i;
 
         assert(params[2].type == vexc::VarType::String);
         std::string attrib_name = vexc::StringPool::VoidToString(params[2].p);
 
         assert(params[3].type == vexc::VarType::Int);
-        int point_num = params[3].i;
+        int component = params[3].i;
 
         auto var = geo->GetAttr().QueryAttr(GeoAttrClass::Point, attrib_name, point_num);
-        return ToVexcVar(*ctx, var, point_num);
+        return ToVexcVar(*ctx, var, component);
     });
 
     vexc::RegistBuildInFunc("prim", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
@@ -127,16 +127,16 @@ void SetupVexFuncs()
         }
 
         assert(params[1].type == vexc::VarType::Int);
-        int geometry = params[1].i;
+        int prim_num = params[1].i;
 
         assert(params[2].type == vexc::VarType::String);
         std::string attrib_name = vexc::StringPool::VoidToString(params[2].p);
 
         assert(params[3].type == vexc::VarType::Int);
-        int prim_num = params[3].i;
+        int component = params[3].i;
 
         auto var = geo->GetAttr().QueryAttr(GeoAttrClass::Primitive, attrib_name, prim_num);
-        return ToVexcVar(*ctx, var, prim_num);
+        return ToVexcVar(*ctx, var, component);
     });
 
     vexc::RegistBuildInFunc("setattrib", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
