@@ -336,4 +336,17 @@ TEST_CASE("sort")
         test::check_point(sort, 1, sm::vec3(0, 0, 0));
         test::check_point(sort, 2, sm::vec3(1, -2, 3));
     }
+
+    SECTION("shift")
+    {
+        sort->SetKey(sop::node::Sort::Key::Shift);
+
+        sort->SetPointOffset(1);
+
+        eval.Update();
+
+        test::check_point(sort, 0, sm::vec3(-1, 2, -3));
+        test::check_point(sort, 1, sm::vec3(0, 0, 0));
+        test::check_point(sort, 2, sm::vec3(1, -2, 3));
+    }
 }

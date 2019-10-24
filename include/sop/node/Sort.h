@@ -16,11 +16,24 @@ public:
         NoChange,
         X,
         Y,
-        Z
+        Z,
+        Shift,
+    };
+
+    enum PropID
+    {
+        POINT_OFFSET,
+
+        MAX_BUILD_IN_PROP,
+    };
+
+    static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
+        "pointoffset"
     };
 
 public:
     Sort()
+        : Node(MAX_BUILD_IN_PROP)
     {
         m_imports = {
             {{ NodeVarType::Any, "in" }}
@@ -28,11 +41,18 @@ public:
         m_exports = {
             {{ NodeVarType::Any, "out" }},
         };
+
+        InitProps();
     }
 
     virtual void Execute(Evaluator& eval) override;
 
     void SetKey(Key key);
+
+    void SetPointOffset(int off);
+
+private:
+    void InitProps();
 
 private:
     class PointCmp
