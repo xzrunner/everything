@@ -1,5 +1,6 @@
 #include "sop/node/Merge.h"
 #include "sop/GeometryImpl.h"
+#include "sop/NodeHelper.h"
 
 namespace sop
 {
@@ -11,19 +12,10 @@ void Merge::Execute(Evaluator& eval)
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 
     std::vector<std::shared_ptr<GeometryImpl>> children;
-    for (auto& port : m_imports)
+    children.reserve(m_imports.size());
+    for (size_t i = 0, n = m_imports.size(); i < n; ++i)
     {
-        if (port.conns.empty()) {
-            continue;
-        }
-
-        assert(port.conns.size() == 1);
-        auto src_obj = port.conns[0].node.lock();
-        if (!src_obj) {
-            continue;
-        }
-
-        auto geo = src_obj->GetGeometry();
+        auto geo = NodeHelper::GetInputGeo(*this, i);
         if (geo) {
             children.push_back(geo);
         }
