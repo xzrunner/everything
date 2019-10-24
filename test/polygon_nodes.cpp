@@ -386,6 +386,57 @@ TEST_CASE("fuse polyline")
     test::check_attr_value(fuse, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
 }
 
+TEST_CASE("fuse unique points")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<sop::node::GroupCreate>();
+    group->SetGroupName("top");
+    group->SetGroupType(sop::GroupType::Primitives);
+    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto blast = std::make_shared<sop::node::Blast>();
+    blast->SetGroupName("top");
+    blast->SetGroupType(sop::GroupType::GuessFromGroup);
+    blast->SetDeleteNonSelected(true);
+    eval.AddNode(blast);
+
+    eval.Connect({ group, 0 }, { blast, 0 });
+
+    auto knife0 = std::make_shared<sop::node::Knife>();
+    knife0->SetDirection({ 1, 0, 0 });
+    eval.AddNode(knife0);
+
+    eval.Connect({ blast, 0 }, { knife0, 0 });
+
+    auto knife1 = std::make_shared<sop::node::Knife>();
+    knife1->SetDirection({ 0, 0, 1 });
+    eval.AddNode(knife1);
+
+    eval.Connect({ knife0, 0 }, { knife1, 0 });
+
+    auto fuse = std::make_shared<sop::node::Fuse>();
+    fuse->SetFuseOP(sop::node::Fuse::Operator::UniquePoints);
+    eval.AddNode(fuse);
+
+    eval.Connect({ knife1, 0 }, { fuse, 0 });
+
+    eval.Update();
+
+    test::check_vertices_num(knife1, 16);
+    test::check_points_num(knife1, 9);
+    test::check_vertices_num(fuse, 16);
+    test::check_points_num(fuse, 16);
+}
+
 TEST_CASE("fuse polyline2")
 {
     test::init();

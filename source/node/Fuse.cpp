@@ -25,17 +25,20 @@ void Fuse::Execute(Evaluator& eval)
     }
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
-    switch (m_geo_impl->GetAdaptorType())
+    switch (m_fuse_op)
     {
-    case GeoAdaptor::Type::Brush:
-        FuseBrush();
+    case Operator::Consolidate:
+        Consolidate();
         break;
-    case GeoAdaptor::Type::Shape:
-        FuseShape();
+    case Operator::UniquePoints:
+        UniquePoints();
         break;
-    default:
-        assert(0);
     }
+}
+
+void Fuse::SetFuseOP(Operator op)
+{
+    NODE_PROP_SET(m_fuse_op, op);
 }
 
 void Fuse::SetDistance(float dist)
@@ -43,7 +46,22 @@ void Fuse::SetDistance(float dist)
     NODE_PROP_SET(m_distance, dist);
 }
 
-void Fuse::FuseBrush()
+void Fuse::Consolidate()
+{
+    switch (m_geo_impl->GetAdaptorType())
+    {
+    case GeoAdaptor::Type::Brush:
+        ConsolidateBrush();
+        break;
+    case GeoAdaptor::Type::Shape:
+        ConsolidateShape();
+        break;
+    default:
+        assert(0);
+    }
+}
+
+void Fuse::ConsolidateBrush()
 {
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {
@@ -67,14 +85,69 @@ void Fuse::FuseBrush()
     m_geo_impl->UpdateByBrush(*brush_model);
 }
 
-void Fuse::FuseShape()
+void Fuse::ConsolidateShape()
 {
+    auto& lines = m_geo_impl->GetTopoLines();
+    if (lines.empty()) {
+        return;
+    }
+
     GroupRebuild group_rebuild(*m_geo_impl);
     GeoAttrRebuild attr_rebuild(*m_geo_impl);
 
-    auto& lines = m_geo_impl->GetTopoLines();
     for (auto line : lines) {
         line->Fuse(m_distance);
+    }
+    m_geo_impl->SetTopoLines(lines);
+}
+
+void Fuse::UniquePoints()
+{
+    switch (m_geo_impl->GetAdaptorType())
+    {
+    case GeoAdaptor::Type::Brush:
+        UniquePointsBrush();
+        break;
+    case GeoAdaptor::Type::Shape:
+        UniquePointsShape();
+        break;
+    default:
+        assert(0);
+    }
+}
+
+void Fuse::UniquePointsBrush()
+{
+    auto brush_model = m_geo_impl->GetBrushModel();
+    if (!brush_model) {
+        return;
+    }
+
+    GroupRebuild group_rebuild(*m_geo_impl);
+    GeoAttrRebuild attr_rebuild(*m_geo_impl);
+
+    for (auto& brush : brush_model->GetBrushes())
+    {
+        auto poly = brush.impl;
+        assert(poly);
+        poly->GetGeometry()->UniquePoints();
+        poly->BuildFromGeo();
+    }
+    m_geo_impl->UpdateByBrush(*brush_model);
+}
+
+void Fuse::UniquePointsShape()
+{
+    auto& lines = m_geo_impl->GetTopoLines();
+    if (lines.empty()) {
+        return;
+    }
+
+    GroupRebuild group_rebuild(*m_geo_impl);
+    GeoAttrRebuild attr_rebuild(*m_geo_impl);
+
+    for (auto line : lines) {
+        line->UniquePoints();
     }
     m_geo_impl->SetTopoLines(lines);
 }
