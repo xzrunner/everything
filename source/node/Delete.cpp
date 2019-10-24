@@ -4,8 +4,6 @@
 #include "sop/EvalContext.h"
 #include "sop/NodeHelper.h"
 
-#include <halfedge/Polyline.h>
-
 namespace sop
 {
 namespace node
@@ -14,11 +12,6 @@ namespace node
 void Delete::Execute(Evaluator& eval)
 {
     m_geo_impl.reset();
-
-    // only support points now
-    if (m_entity_type != EntityType::Points) {
-        return;
-    }
 
     auto prev_node = NodeHelper::GetInputNode(*this, 0);
     if (!prev_node) {
@@ -29,32 +22,30 @@ void Delete::Execute(Evaluator& eval)
         return;
     }
 
-    std::vector<sm::vec3> vertices;
+    m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
+
+    // only support points now
+    if (m_entity_type != EntityType::Points) {
+        return;
+    }
+
+    auto& pts = m_geo_impl->GetAttr().GetPoints();
+    std::vector<bool> del_flags(pts.size(), false);
+
     EvalContext eval_ctx(eval, *prev_node);
-    const auto& src_pts = prev_geo->GetAttr().GetPoints();
-    for (int i = 0, n = src_pts.size(); i < n; ++i)
+    for (size_t i = 0, n = pts.size(); i < n; ++i)
     {
         eval_ctx.point_idx = i;
         auto v = eval.CalcExpr(m_filter_expr, eval_ctx);
         assert(v.type == VarType::Bool);
-        if (v.b) {
-            vertices.push_back(src_pts[i]->pos);
+        if ((v.b && !m_delete_non_selected) ||
+            (!v.b && m_delete_non_selected)) {
+            del_flags[i] = true;
         }
     }
 
-    if (!vertices.empty())
-    {
-        m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
-
-        std::vector<std::pair<he::TopoID, sm::vec3>> line_vertices;
-        std::vector<std::pair<he::TopoID, std::vector<size_t>>> line_polylines;
-        vertices.reserve(vertices.size());
-        for (auto& v : vertices) {
-            line_vertices.push_back({ he::TopoID(), v });
-        }
-        auto line = std::make_shared<he::Polyline>(line_vertices, line_polylines);
-        m_geo_impl->SetTopoLines({ line });
-    }
+    m_geo_impl->GetAttr().RemoveItems(GeoAttrClass::Point, del_flags, false);
+    m_geo_impl->UpdateByAttr();
 }
 
 void Delete::SetDelNonSelected(bool del_non_selected)

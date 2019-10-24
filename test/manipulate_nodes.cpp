@@ -28,9 +28,25 @@ TEST_CASE("delete")
 
     eval.Connect({ box, 0 }, { del, 0 });
 
-    eval.Update();
+    SECTION("del selected")
+    {
+        del->SetDelNonSelected(false);
 
-    test::check_points_num(del, 4);
+        eval.Update();
+
+        test::check_points_num(del, 4);
+        REQUIRE(del->GetGeometry()->GetAttr().GetPoints()[0]->pos.y > 0);
+    }
+
+    SECTION("del non selected")
+    {
+        del->SetDelNonSelected(true);
+
+        eval.Update();
+
+        test::check_points_num(del, 4);
+        REQUIRE(del->GetGeometry()->GetAttr().GetPoints()[0]->pos.y < 0);
+    }
 }
 
 TEST_CASE("transform")
