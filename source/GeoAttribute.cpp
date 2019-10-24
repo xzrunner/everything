@@ -284,6 +284,15 @@ void GeoAttribute::AddAttr(GeoAttrClass cls, const VarDesc& var_desc,
 
 Variable GeoAttribute::QueryAttr(GeoAttrClass cls, const std::string& name, size_t index) const
 {
+    if (cls == GeoAttrClass::Point && name == GeoAttrNames[GEO_ATTR_POS])
+    {
+        if (index >= 0 && index < m_points.size()) {
+            return Variable(m_points[index]->pos);
+        } else {
+            return Variable();
+        }
+    }
+
     assert(cls >= static_cast<GeoAttrClass>(0)
         && cls < GeoAttrClass::MaxTypeNum);
 
