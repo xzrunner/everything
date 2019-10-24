@@ -49,19 +49,8 @@ void Primitive::Execute(Evaluator& eval)
             break;
         case GroupType::Primitives:
         {
-            for (auto& i : group->GetItems())
-            {
-                auto prim = attr.GetPrimtives()[i];
-                sm::vec3 c(0, 0, 0);
-                assert(!prim->vertices.empty());
-                for (auto& v : prim->vertices) {
-                    c += v->point->pos;
-                }
-                c /= static_cast<float>(prim->vertices.size());
-
-                for (auto& v : prim->vertices) {
-                    v->point->pos = mat * (v->point->pos - c) + c;
-                }
+            for (auto& i : group->GetItems()) {
+                UpdatePrim(*attr.GetPrimtives()[i], mat);
             }
         }
             break;
@@ -71,9 +60,8 @@ void Primitive::Execute(Evaluator& eval)
     }
     else
     {
-        auto c = m_geo_impl->GetAttr().GetAABB().Center();
-        for (auto& p : attr.GetPoints()) {
-            p->pos = mat * (p->pos - c) + c;
+        for (auto& prim : m_geo_impl->GetAttr().GetPrimtives()) {
+            UpdatePrim(*prim, mat);
         }
     }
 
@@ -103,6 +91,20 @@ void Primitive::SetScale(const sm::vec3& s)
 void Primitive::SetShear(const sm::vec3& s)
 {
     NODE_PROP_SET(m_shear, s);
+}
+
+void Primitive::UpdatePrim(GeoAttribute::Primitive& prim, const sm::mat4& mat)
+{
+    sm::vec3 c(0, 0, 0);
+    assert(!prim.vertices.empty());
+    for (auto& v : prim.vertices) {
+        c += v->point->pos;
+    }
+    c /= static_cast<float>(prim.vertices.size());
+
+    for (auto& v : prim.vertices) {
+        v->point->pos = mat * (v->point->pos - c) + c;
+    }
 }
 
 }

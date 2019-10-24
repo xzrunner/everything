@@ -1,8 +1,10 @@
 #pragma once
 
 #include "sop/Node.h"
+#include "sop/GeoAttribute.h"
 
 #include <SM_Vector.h>
+#include <SM_Matrix.h>
 
 namespace sop
 {
@@ -30,6 +32,9 @@ public:
     void SetRotate(const sm::vec3& r);
     void SetScale(const sm::vec3& s);
     void SetShear(const sm::vec3& s);
+
+private:
+    void UpdatePrim(GeoAttribute::Primitive& prim, const sm::mat4& mat);
 
 private:
     std::string m_group_name;
