@@ -32,6 +32,7 @@ public:
 
 private:
     void PrimsToPoints(Group& group);
+    void PointsToPrims(Group& group);
 
 private:
     std::string m_group_name;

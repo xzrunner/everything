@@ -335,8 +335,19 @@ TEST_CASE("group promote")
 
     eval.Connect({ group, 0 }, { group_promote, 0 });
 
+    auto group_promote2 = std::make_shared<sop::node::GroupPromote>();
+    group_promote2->SetGroupName("Top");
+    group_promote2->SetSrcGroupType(sop::GroupType::GuessFromGroup);
+    group_promote2->SetDstGroupType(sop::GroupType::Primitives);
+    eval.AddNode(group_promote2);
+
+    eval.Connect({ group_promote, 0 }, { group_promote2, 0 });
+
     eval.Update();
 
     test::check_group_type(group_promote, "Top", sop::GroupType::Points);
     test::check_group_num(group_promote, "Top", 4);
+
+    test::check_group_type(group_promote2, "Top", sop::GroupType::Primitives);
+    test::check_group_num(group_promote2, "Top", 5);
 }

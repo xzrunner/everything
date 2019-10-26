@@ -35,9 +35,10 @@ void GroupPromote::Execute(Evaluator& eval)
     if (m_src_type == GroupType::GuessFromGroup) {
         src_type = group->GetType();
     }
-    if (src_type == GroupType::Primitives &&
-        m_dst_type == GroupType::Points) {
+    if (src_type == GroupType::Primitives && m_dst_type == GroupType::Points) {
         PrimsToPoints(*group);
+    } else if (src_type == GroupType::Points && m_dst_type == GroupType::Primitives) {
+        PointsToPrims(*group);
     }
 }
 
@@ -77,6 +78,40 @@ void GroupPromote::PrimsToPoints(Group& group)
     std::vector<size_t> items;
     for (size_t i = 0, n = pts.size(); i < n; ++i) {
         if (selected.find(pts[i]) != selected.end()) {
+            items.push_back(i);
+        }
+    }
+    group.SetItems(items);
+}
+
+void GroupPromote::PointsToPrims(Group& group)
+{
+    assert(group.GetType() == GroupType::Points);
+
+    auto& attr = m_geo_impl->GetAttr();
+
+    std::set<std::shared_ptr<GeoAttribute::Point>> selected;
+    auto& pts = attr.GetPoints();
+    for (auto& i : group.GetItems()) {
+        assert(i >= 0 && i < pts.size());
+        selected.insert(pts[i]);
+    }
+
+    group.Clear();
+    group.SetType(GroupType::Primitives);
+    auto& prims = attr.GetPrimtives();
+    std::vector<size_t> items;
+    for (size_t i = 0, n = prims.size(); i < n; ++i) 
+    {
+        bool find = false;
+        for (auto& v : prims[i]->vertices) {
+            if (selected.find(v->point) != selected.end()) {
+                find = true;
+                break;
+            }
+        }
+
+        if (find) {
             items.push_back(i);
         }
     }
