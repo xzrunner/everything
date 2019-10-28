@@ -22,9 +22,10 @@ void AttributeWrangle::Execute(Evaluator& eval)
  
     EvalContext eval_ctx(eval, *this);
     auto& pts = m_geo_impl->GetAttr().GetPoints();
+    eval_ctx.attr_type = GeoAttrClass::Point;
     for (size_t i = 0, n = pts.size(); i < n; ++i)
     {
-        eval_ctx.point_idx = i;
+        eval_ctx.attr_idx = i;
         eval.RunStatement("{" + m_vex_expr + "}", eval_ctx);
     }
 }

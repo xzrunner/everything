@@ -33,9 +33,10 @@ void Delete::Execute(Evaluator& eval)
     std::vector<bool> del_flags(pts.size(), false);
 
     EvalContext eval_ctx(eval, *prev_node);
+    eval_ctx.attr_type = GeoAttrClass::Point;
     for (size_t i = 0, n = pts.size(); i < n; ++i)
     {
-        eval_ctx.point_idx = i;
+        eval_ctx.attr_idx = i;
         auto v = eval.CalcExpr(m_filter_expr, eval_ctx);
         assert(v.type == VarType::Bool);
         if ((v.b && !m_delete_non_selected) ||

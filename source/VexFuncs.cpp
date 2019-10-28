@@ -52,6 +52,66 @@ vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const sop::Variable& var, i
     }
 }
 
+// ch* funcs
+vexc::Variant eval_channel(const std::vector<vexc::Variant>& params, const void* ud)
+{
+    if (params.empty()) {
+        return vexc::Variant();
+    }
+
+    auto& p = params[0];
+    if (p.type != vexc::VarType::String) {
+        return vexc::Variant();
+    }
+
+    auto ctx = static_cast<const sop::EvalContext*>(ud);
+
+    std::string path(vexc::StringPool::VoidToString(p.p));
+    std::vector<std::string> tokens;
+    cpputil::StringHelper::Split(path, "/", tokens);
+    auto curr_node = const_cast<sop::Node*>(ctx->node);
+    int curr_level = curr_node->GetLevel();
+    const int begin_level = curr_level;
+    for (size_t i = 0, n = tokens.size(); i < n; ++i)
+    {
+        if (!curr_node && curr_level == begin_level - 1) {
+            curr_node = ctx->eval->QueryNodeByName(tokens[i]).get();
+            if (curr_node) {
+                continue;
+            }
+        }
+
+        if (!curr_node) {
+            break;
+        }
+
+        auto& t = tokens[i];
+        if (t == "..") {
+            curr_node = curr_node->GetParent().get();
+            --curr_level;
+            continue;
+        }
+
+        // query child
+        assert(curr_node);
+        if (curr_node->get_type() == rttr::type::get<sop::node::Geometry>())
+        {
+            auto child = static_cast<const sop::node::Geometry*>(curr_node)->QueryChild(t);
+            if (child) {
+                curr_node = child.get();
+                continue;
+            }
+        }
+
+        // query prop
+        assert(curr_node);
+        auto var = curr_node->GetProps().Query(t);
+        return ToVexcVar(*ctx, var);
+    }
+
+    return vexc::Variant();
+}
+
 }
 
 namespace sop
@@ -378,68 +438,19 @@ void SetupVexFuncs()
 
     // NODES
 
-    vexc::RegistBuildInFunc("ch", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
-    {
-        if (params.empty()) {
-            return vexc::Variant();
-        }
+    vexc::RegistBuildInFunc("ch", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant {
+        return eval_channel(params, ud);
+    });
 
-        auto& p = params[0];
-        if (p.type != vexc::VarType::String) {
-            return vexc::Variant();
-        }
-
-        auto ctx = static_cast<const EvalContext*>(ud);
-
-        std::string path(vexc::StringPool::VoidToString(p.p));
-        std::vector<std::string> tokens;
-        cpputil::StringHelper::Split(path, "/", tokens);
-        Node* curr_node = const_cast<Node*>(ctx->node);
-        int curr_level = curr_node->GetLevel();
-        const int begin_level = curr_level;
-        for (size_t i = 0, n = tokens.size(); i < n; ++i)
-        {
-            if (!curr_node && curr_level == begin_level - 1) {
-                curr_node = ctx->eval->QueryNodeByName(tokens[i]).get();
-                if (curr_node) {
-                    continue;
-                }
-            }
-
-            if (!curr_node) {
-                break;
-            }
-
-            auto& t = tokens[i];
-            if (t == "..") {
-                curr_node = curr_node->GetParent().get();
-                --curr_level;
-                continue;
-            }
-
-            // query child
-            assert(curr_node);
-            if (curr_node->get_type() == rttr::type::get<node::Geometry>())
-            {
-                auto child = static_cast<const node::Geometry*>(curr_node)->QueryChild(t);
-                if (child) {
-                    curr_node = child.get();
-                    continue;
-                }
-            }
-
-            // query prop
-            assert(curr_node);
-            auto var = curr_node->GetProps().Query(t);
-            return ToVexcVar(*ctx, var);
-        }
-
-        return vexc::Variant();
+    vexc::RegistBuildInFunc("chs", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant {
+        return eval_channel(params, ud);
     });
 
     // GETTER
     vexc::RegistGetter([](const char* sym, const void* ud)->vexc::Variant
     {
+        assert(strlen(sym) > 0);
+
         if (strcmp(sym, "@P") == 0)
         {
             auto ctx = static_cast<const EvalContext*>(ud);
@@ -450,12 +461,16 @@ void SetupVexFuncs()
             if (!geo) {
                 return vexc::Variant();
             }
-            const auto& points = geo->GetAttr().GetPoints();
-            if (ctx->point_idx < 0 || ctx->point_idx >= static_cast<int>(points.size())) {
+            if (ctx->attr_type != GeoAttrClass::Point) {
                 return vexc::Variant();
             }
 
-            auto v = ctx->var_buf.Clone(points[ctx->point_idx]->pos);
+            const auto& points = geo->GetAttr().GetPoints();
+            if (ctx->attr_idx < 0 || ctx->attr_idx >= static_cast<int>(points.size())) {
+                return vexc::Variant();
+            }
+
+            auto v = ctx->var_buf.Clone(points[ctx->attr_idx]->pos);
             return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
         }
         else if (strcmp(sym, "@N") == 0 || strcmp(sym, "v@N") == 0)
@@ -468,10 +483,13 @@ void SetupVexFuncs()
             if (!geo) {
                 return vexc::Variant();
             }
+            if (ctx->attr_type != GeoAttrClass::Point) {
+                return vexc::Variant();
+            }
 
             auto& attr = geo->GetAttr();
             const auto& points = attr.GetPoints();
-            if (ctx->point_idx < 0 || ctx->point_idx >= static_cast<int>(points.size())) {
+            if (ctx->attr_idx < 0 || ctx->attr_idx >= static_cast<int>(points.size())) {
                 return vexc::Variant();
             }
 
@@ -480,14 +498,33 @@ void SetupVexFuncs()
                 return vexc::Variant();
             }
 
-            auto v3 = static_cast<const sm::vec3*>(points[ctx->point_idx]->vars[norm_idx].p);
+            auto v3 = static_cast<const sm::vec3*>(points[ctx->attr_idx]->vars[norm_idx].p);
             auto new_v3 = ctx->var_buf.Clone(*v3);
             return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
         }
         else if (strcmp(sym, "@ptnum") == 0)
         {
             auto ctx = static_cast<const EvalContext*>(ud);
-            return vexc::Variant(ctx->point_idx);
+            if (ctx->attr_type != GeoAttrClass::Point) {
+                return vexc::Variant();
+            }
+            return vexc::Variant(ctx->attr_idx);
+        }
+        // find from attrs
+        else if (sym[0] == '@')
+        {
+            auto ctx = static_cast<const EvalContext*>(ud);
+            if (!ctx->node) {
+                return vexc::Variant();
+            }
+            auto geo = ctx->node->GetGeometry();
+            if (!geo) {
+                return vexc::Variant();
+            }
+
+            auto attr_name = std::string(&sym[1]);
+            auto var = geo->GetAttr().QueryAttr(ctx->attr_type, attr_name, ctx->attr_idx);
+            return ToVexcVar(*ctx, var);
         }
         else if (strcmp(sym, "$SIZEX") == 0)
         {
@@ -553,10 +590,13 @@ void SetupVexFuncs()
             if (!geo) {
                 return;
             }
+            if (ctx->attr_type != GeoAttrClass::Point) {
+                return;
+            }
 
             auto& attr = geo->GetAttr();
             const auto& points = attr.GetPoints();
-            if (ctx->point_idx < 0 || ctx->point_idx >= static_cast<int>(points.size())) {
+            if (ctx->attr_idx < 0 || ctx->attr_idx >= static_cast<int>(points.size())) {
                 return;
             }
 
@@ -564,13 +604,13 @@ void SetupVexFuncs()
             auto up_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_UP);
             if (up_idx >= 0)
             {
-                auto val_l = static_cast<const sm::vec3*>(points[ctx->point_idx]->vars[up_idx].p);
+                auto val_l = static_cast<const sm::vec3*>(points[ctx->attr_idx]->vars[up_idx].p);
                 const_cast<sm::vec3&>(*val_l) = *val_r;
             }
             else
             {
                 std::vector<VarValue> vars(points.size(), VarValue(sm::vec3(0, 0, 0)));
-                vars[ctx->point_idx] = VarValue(*val_r);
+                vars[ctx->attr_idx] = VarValue(*val_r);
                 attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_UP, vars);
             }
         }

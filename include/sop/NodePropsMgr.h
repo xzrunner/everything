@@ -11,6 +11,7 @@ namespace sop
 
 class Node;
 class Evaluator;
+struct EvalContext;
 
 class NodeProp
 {
@@ -24,6 +25,10 @@ public:
     void Clear();
 
     bool Update(const Evaluator& eval, const std::shared_ptr<Node>& node);
+
+private:
+    static Variable CalcExpr(const Evaluator& eval, const std::shared_ptr<Node>& node,
+        const std::string& expr, const EvalContext& ctx, VarType exp_type);
 
 private:
     std::string m_key;

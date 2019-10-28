@@ -2,6 +2,7 @@
 
 #include "sop/Node.h"
 #include "sop/VarBuffer.h"
+#include "sop/GeoAttrClass.h"
 
 namespace sop
 {
@@ -20,9 +21,8 @@ struct EvalContext
     const Node* node = nullptr;
 
     // geo context
-    int point_idx     = -1;
-    //int vertex_idx    = -1;
-    //int primitive_idx = -1;
+    int          attr_idx  = -1;
+    GeoAttrClass attr_type = GeoAttrClass::MaxTypeNum;
 
     mutable VarBuffer var_buf;
 

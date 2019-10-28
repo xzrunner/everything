@@ -2,6 +2,8 @@
 #include "sop/Evaluator.h"
 #include "sop/EvalContext.h"
 
+#include <vexc/StringPool.h>
+
 namespace sop
 {
 
@@ -129,65 +131,83 @@ void NodeProp::Clear()
 
 bool NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
 {
-    if (m_expr.empty()) {
+    auto var = CalcExpr(eval, node, m_expr, EvalContext(eval, *node), m_val.type);
+    if (var.type == VarType::Invalid) {
         return false;
-    }
-
-    auto val = eval.CalcExpr(m_expr, EvalContext(eval, *node));
-    if (val.type == VarType::Invalid) {
-        return false;
-    }
-
-    if (val.type != m_val.type)
-    {
-        switch (m_val.type)
-        {
-        case VarType::Int:
-        {
-            switch (val.type)
-            {
-            case VarType::Float:
-            {
-                auto tmp = static_cast<int>(val.f);
-                val.i = tmp;
-            }
-                break;
-            default:
-                assert(0);
-                return false;
-            }
+    } else {
+        assert(var.type == m_val.type);
+        if (m_val == var) {
+            return false;
+        } else {
+            m_val = var;
+            return true;
         }
-            break;
-        case VarType::Float:
+    }
+}
+
+Variable NodeProp::CalcExpr(const Evaluator& eval, const std::shared_ptr<Node>& node,
+                            const std::string& expr, const EvalContext& ctx, VarType exp_type)
+{
+    if (expr.empty()) {
+        return Variable();
+    }
+
+    auto val = eval.CalcExpr(expr, EvalContext(eval, *node));
+    if (val.type == VarType::Invalid) {
+        return Variable();
+    }
+    if (val.type == exp_type) {
+        return val;
+    }
+
+    // type conv
+    switch (exp_type)
+    {
+    case sop::VarType::Int:
+    {
+        switch (val.type)
         {
-            switch (val.type)
-            {
-            case VarType::Int:
-            {
-                auto tmp = static_cast<float>(val.i);
-                val.f = tmp;
-            }
-                break;
-            default:
-                assert(0);
-                return false;
-            }
+        case sop::VarType::Float:
+        {
+            auto tmp = static_cast<int>(val.f);
+            val.i = tmp;
         }
             break;
         default:
             assert(0);
-            return false;
+            return Variable();
         }
-        val.type = m_val.type;
+    }
+        break;
+    case sop::VarType::Float:
+    {
+        switch (val.type)
+        {
+        case sop::VarType::Int:
+        {
+            auto tmp = static_cast<float>(val.i);
+            val.f = tmp;
+        }
+            break;
+        case sop::VarType::String:
+        {
+            auto str = vexc::StringPool::VoidToString(val.p);
+            return CalcExpr(eval, node, str, ctx, exp_type);
+        }
+            break;
+        default:
+            assert(0);
+            return Variable();
+        }
+    }
+        break;
+    default:
+        assert(0);
+        return Variable();
     }
 
-    assert(val.type == m_val.type);
-    if (m_val == val) {
-        return false;
-    } else {
-        m_val = val;
-        return true;
-    }
+    val.type = exp_type;
+    return val;
 }
 
 }

@@ -74,17 +74,19 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
     case GroupType::Points:
     {
         EvalContext eval_ctx(eval, node);
+        eval_ctx.attr_type = GeoAttrClass::Point;
+
         auto& pts = node.GetGeometry()->GetAttr().GetPoints();
         for (size_t i = 0, n = pts.size(); i < n; ++i)
         {
-            eval_ctx.point_idx = i;
+            eval_ctx.attr_idx = i;
             auto v = eval.CalcExpr(expr, eval_ctx);
             if (v.type == sop::VarType::Invalid) {
                 continue;
             }
             assert(v.type == VarType::Bool);
             if (v.b) {
-                ret.push_back(i);
+                ret.push_back(i); 
             }
         }
     }
@@ -93,11 +95,13 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
     case GroupType::Vertices:
     {
         EvalContext eval_ctx(eval, node);
+        eval_ctx.attr_type = GeoAttrClass::Point;
+
         auto& attr = node.GetGeometry()->GetAttr();
         auto& vts = attr.GetVertices();
         for (size_t i = 0, n = vts.size(); i < n; ++i)
         {
-            eval_ctx.point_idx = attr.QueryIndex(vts[i]->point);
+            eval_ctx.attr_idx = attr.QueryIndex(vts[i]->point);
             auto v = eval.CalcExpr(expr, eval_ctx);
             if (v.type == sop::VarType::Invalid) {
                 continue;
@@ -113,28 +117,47 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
     case GroupType::Primitives:
     {
         EvalContext eval_ctx(eval, node);
+
         auto& attr = node.GetGeometry()->GetAttr();
         auto& prims = attr.GetPrimtives();
         for (size_t i = 0, n = prims.size(); i < n; ++i)
         {
             auto& prim = prims[i];
-            bool select = true;
-            for (auto& v : prim->vertices)
+            // test prim
             {
-                eval_ctx.point_idx = attr.QueryIndex(v->point);
+                eval_ctx.attr_type = GeoAttrClass::Primitive;
+                eval_ctx.attr_idx  = i;
                 auto v = eval.CalcExpr(expr, eval_ctx);
-                if (v.type == sop::VarType::Invalid) {
-                    select = false;
-                    break;
-                }
-                assert(v.type == VarType::Bool);
-                if (!v.b) {
-                    select = false;
-                    break;
+                if (v.type != sop::VarType::Invalid) 
+                {
+                    assert(v.type == VarType::Bool);
+                    if (v.b) {
+                        ret.push_back(i);
+                        continue;
+                    }
                 }
             }
-            if (select) {
-                ret.push_back(i);
+            // test each points
+            {
+                bool select = true;
+                for (auto& v : prim->vertices)
+                {
+                    eval_ctx.attr_type = GeoAttrClass::Point;
+                    eval_ctx.attr_idx = attr.QueryIndex(v->point);
+                    auto v = eval.CalcExpr(expr, eval_ctx);
+                    if (v.type == sop::VarType::Invalid) {
+                        select = false;
+                        break;
+                    }
+                    assert(v.type == VarType::Bool);
+                    if (!v.b) {
+                        select = false;
+                        break;
+                    }
+                }
+                if (select) {
+                    ret.push_back(i);
+                }
             }
         }
     }
