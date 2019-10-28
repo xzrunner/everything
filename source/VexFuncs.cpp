@@ -205,12 +205,12 @@ void SetupVexFuncs()
             return vexc::Variant();
         }
 
-        auto geohandle   = params[0].ToInt();
+        auto geohandle   = params[0].ToInt(ud);
         auto attr_class  = vexc::StringPool::VoidToString(params[1].p);
         auto attr_name   = vexc::StringPool::VoidToString(params[2].p);
-        auto element_num = params[3].ToInt();
-        auto vertex_num  = params[4].ToInt();
-        auto value       = params[5].ToFloat();
+        auto element_num = params[3].ToInt(ud);
+        auto vertex_num  = params[4].ToInt(ud);
+        auto value       = params[5].ToFloat(ud);
 
         assert(vertex_num == 0);
 
@@ -329,11 +329,11 @@ void SetupVexFuncs()
             }
         }
 
-        auto num     = params[0].ToFloat();
-        auto old_min = params[1].ToFloat();
-        auto old_max = params[2].ToFloat();
-        auto new_min = params[3].ToFloat();
-        auto new_max = params[4].ToFloat();
+        auto num     = params[0].ToFloat(ud);
+        auto old_min = params[1].ToFloat(ud);
+        auto old_max = params[2].ToFloat(ud);
+        auto new_min = params[3].ToFloat(ud);
+        auto new_max = params[4].ToFloat(ud);
 
         if (old_min == old_max) {
             return params[0];
