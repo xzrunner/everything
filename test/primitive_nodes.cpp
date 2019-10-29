@@ -5,6 +5,7 @@
 
 #include <sop/node/Box.h>
 #include <sop/node/Curve.h>
+#include <sop/node/Grid.h>
 #include <sop/node/Line.h>
 
 #include <catch/catch.hpp>
@@ -87,6 +88,24 @@ TEST_CASE("curve")
         test::check_point(curve, 1, sm::vec3(4, 1, 0));
         test::check_aabb(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
     }
+}
+
+TEST_CASE("grid")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto grid = std::make_shared<sop::node::Grid>();
+    grid->SetSize({ 2, 3 });
+    grid->SetColumns(4);
+    grid->SetRows(6);
+    eval.AddNode(grid);
+
+    eval.Update();
+
+    test::check_points_num(grid, 24);
+    test::check_aabb(grid, { -1, 0, -1.5f }, { 1, 0, 1.5f });
 }
 
 TEST_CASE("line")

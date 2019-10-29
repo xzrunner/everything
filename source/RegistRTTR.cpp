@@ -29,6 +29,7 @@
 // primitive
 #include "sop/node/Box.h"
 #include "sop/node/Curve.h"
+#include "sop/node/Grid.h"
 #include "sop/node/Line.h"
 #include "sop/node/Primitive.h"
 #include "sop/node/Sphere.h"
@@ -89,6 +90,7 @@ REGIST_NODE_TYPE(PolyFrame)
 // primitive
 REGIST_NODE_TYPE(Box)
 REGIST_NODE_TYPE(Curve)
+REGIST_NODE_TYPE(Grid)
 REGIST_NODE_TYPE(Line)
 REGIST_NODE_TYPE(Primitive)
 REGIST_NODE_TYPE(Sphere)
