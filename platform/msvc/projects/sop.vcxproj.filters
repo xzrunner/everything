@@ -248,6 +248,9 @@
     <ClInclude Include="..\..\..\include\sop\node\Output.h">
       <Filter>nodes\utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Peak.h">
+      <Filter>nodes\manipulate</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\Grid.h">
       <Filter>nodes\primitive</Filter>
     </ClInclude>
@@ -406,6 +409,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Output.cpp">
       <Filter>nodes\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Peak.cpp">
+      <Filter>nodes\manipulate</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Grid.cpp">
       <Filter>nodes\primitive</Filter>

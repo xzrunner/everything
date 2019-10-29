@@ -4,10 +4,12 @@
 #include <sop/GeometryImpl.h>
 
 #include <sop/node/Delete.h>
+#include <sop/node/Peak.h>
 #include <sop/node/Transform.h>
 
 #include <sop/node/Box.h>
 #include <sop/node/GroupCreate.h>
+#include <sop/node/GroupExpression.h>
 
 #include <catch/catch.hpp>
 
@@ -47,6 +49,87 @@ TEST_CASE("delete")
         test::check_points_num(del, 4);
         REQUIRE(del->GetGeometry()->GetAttr().GetPoints()[0]->pos.y < 0);
     }
+}
+
+TEST_CASE("peak prims all")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto peak = std::make_shared<sop::node::Peak>();
+    peak->SetDistance(1.0f);
+    eval.AddNode(peak);
+
+    eval.Connect({ box, 0 }, { peak, 0 });
+
+    eval.Update();
+
+    test::check_aabb(peak, { -1.5f, -1.5f, -1.5f, }, { 1.5f, 1.5f, 1.5f });
+}
+
+TEST_CASE("peak prims group")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto group = std::make_shared<sop::node::GroupCreate>();
+    group->SetGroupName("top");
+    group->SetGroupType(sop::GroupType::Primitives);
+    group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+    eval.AddNode(group);
+
+    eval.Connect({ box, 0 }, { group, 0 });
+
+    auto peak = std::make_shared<sop::node::Peak>();
+    peak->SetGroupName("top");
+    peak->SetDistance(1.0f);
+    eval.AddNode(peak);
+
+    eval.Connect({ group, 0 }, { peak, 0 });
+
+    eval.Update();
+
+    test::check_aabb(peak, { -0.5f, -0.5f, -0.5f, }, { 0.5f, 1.5f, 0.5f });
+}
+
+TEST_CASE("peak points group")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto group_expr = std::make_shared<sop::node::GroupExpression>();
+    sop::node::GroupExpression::Instance inst0;
+    inst0.group_name = "top";
+    inst0.expr_str = "@P.y > 0";
+    inst0.merge_op = sop::GroupMerge::Replace;
+    group_expr->AddInstance(inst0);
+    group_expr->SetGroupType(sop::GroupType::Points);
+    eval.AddNode(group_expr);
+
+    eval.Connect({ box, 0 }, { group_expr, 0 });
+
+    auto peak = std::make_shared<sop::node::Peak>();
+    peak->SetGroupName("top");
+    peak->SetDistance(1.0f);
+    eval.AddNode(peak);
+
+    eval.Connect({ group_expr, 0 }, { peak, 0 });
+
+    eval.Update();
+
+    test::check_aabb(peak, { -1.07735f, -0.5f, -1.07735f, }, { 1.07735f, 1.07735f, 1.07735f });
 }
 
 TEST_CASE("transform")

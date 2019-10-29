@@ -22,6 +22,7 @@
     <ClInclude Include="..\..\..\include\sop\node\Grid.h" />
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h" />
     <ClInclude Include="..\..\..\include\sop\node\Output.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Peak.h" />
     <ClInclude Include="..\..\..\include\sop\node\PolyFrame.h" />
     <ClInclude Include="..\..\..\include\sop\node\Split.h" />
     <ClInclude Include="..\..\..\include\sop\PyLoader.h" />
@@ -84,6 +85,7 @@
     <ClCompile Include="..\..\..\source\node\Grid.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupPromote.cpp" />
     <ClCompile Include="..\..\..\source\node\Output.cpp" />
+    <ClCompile Include="..\..\..\source\node\Peak.cpp" />
     <ClCompile Include="..\..\..\source\node\PolyFrame.cpp" />
     <ClCompile Include="..\..\..\source\node\Split.cpp" />
     <ClCompile Include="..\..\..\source\PyLoader.cpp" />

@@ -12,6 +12,7 @@
 #include "sop/node/GroupPromote.h"
 // manipulate
 #include "sop/node/Delete.h"
+#include "sop/node/Peak.h"
 #include "sop/node/Transform.h"
 // material
 #include "sop/node/Color.h"
@@ -69,6 +70,7 @@ REGIST_NODE_TYPE(GroupPromote)
 
 // manipulate
 REGIST_NODE_TYPE(Delete)
+REGIST_NODE_TYPE(Peak)
 REGIST_NODE_TYPE(Transform)
 
 // material
