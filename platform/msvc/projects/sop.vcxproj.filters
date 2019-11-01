@@ -64,6 +64,9 @@
     <Filter Include="serialize\python">
       <UniqueIdentifier>{5b9a0881-0262-4d67-90c8-7b2c2b954331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nodes\export">
+      <UniqueIdentifier>{bb5344ed-18b8-4369-baa4-9eed4ba3b6e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\sop\node\Curve.h">
@@ -254,6 +257,9 @@
     <ClInclude Include="..\..\..\include\sop\node\Grid.h">
       <Filter>nodes\primitive</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\File.h">
+      <Filter>nodes\export</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -415,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Grid.cpp">
       <Filter>nodes\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\File.cpp">
+      <Filter>nodes\export</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

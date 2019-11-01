@@ -6,6 +6,8 @@
 #include "sop/node/AttributeWrangle.h"
 #include "sop/node/Measure.h"
 #include "sop/node/Sort.h"
+// export
+#include "sop/node/File.h"
 // group
 #include "sop/node/GroupCreate.h"
 #include "sop/node/GroupExpression.h"
@@ -62,6 +64,9 @@ REGIST_NODE_TYPE(AttributeTransfer)
 REGIST_NODE_TYPE(AttributeWrangle)
 REGIST_NODE_TYPE(Measure)
 REGIST_NODE_TYPE(Sort)
+
+// export
+REGIST_NODE_TYPE(File)
 
 // group
 REGIST_NODE_TYPE(GroupCreate)
