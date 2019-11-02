@@ -25,10 +25,16 @@ void File::Execute(Evaluator& eval)
         return;
     }
 
+    std::vector<sm::vec3> normals;
+    std::vector<sm::vec2> texcoords;
+
     auto brush_model = std::make_unique<model::BrushModel>();
     std::vector<model::BrushModel::Brush> brushes;
     for (auto& src : meshes)
     {
+        std::copy(src->normals.begin(), src->normals.end(), std::back_inserter(normals));
+        std::copy(src->texcoords.begin(), src->texcoords.end(), std::back_inserter(texcoords));
+
         std::vector<pm3::PointPtr> points;
         points.reserve(src->vertices.size());
         for (auto& s : src->vertices)
@@ -64,6 +70,29 @@ void File::Execute(Evaluator& eval)
 
     m_geo_impl->UpdateByBrush(*brush_model);
     m_geo_impl->StoreBrush(brush_model);
+
+    // set norm and uv attr
+    auto& attr = m_geo_impl->GetAttr();
+    if (!normals.empty())
+    {
+        assert(normals.size() == attr.GetPoints().size());
+        std::vector<VarValue> vars;
+        vars.reserve(normals.size());
+        for (auto& norm : normals) {
+            vars.push_back(VarValue(norm));
+        }
+        attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_NORM, vars);
+    }
+    if (!texcoords.empty())
+    {
+        assert(texcoords.size() == attr.GetPoints().size());
+        std::vector<VarValue> vars;
+        vars.reserve(texcoords.size());
+        for (auto& tc : texcoords) {
+            vars.push_back(VarValue(sm::vec3(tc.x, tc.y, 0)));
+        }
+        attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_UV, vars);
+    }
 }
 
 void File::SetFilepath(const std::string& filepath)
