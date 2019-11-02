@@ -261,6 +261,7 @@ void GeoAdaptor::BrushToAttr(GeoAttribute& dst, const model::BrushModel& src)
         ++prim_id;
     }
 
+    dst.SetupPointIndices();
     dst.SetupAABB();
 }
 
@@ -396,6 +397,7 @@ void GeoAdaptor::LinesToAttr(GeoAttribute& dst, const std::vector<he::PolylinePt
         ++prim_id;
     }
 
+    dst.SetupPointIndices();
     dst.SetupAABB();
 }
 

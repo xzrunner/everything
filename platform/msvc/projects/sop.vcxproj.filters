@@ -426,9 +426,4 @@
       <Filter>nodes\export</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\include\sop\GeoAttribute.inl">
-      <Filter>dataset\geo\attr</Filter>
-    </None>
-  </ItemGroup>
 </Project>

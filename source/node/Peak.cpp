@@ -104,7 +104,7 @@ void Peak::TranslatePoints(float dist, const std::shared_ptr<Group>& group)
     assert(m_geo_impl);
     auto& attr = m_geo_impl->GetAttr();
     auto norm_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
-    if (norm_idx >= 0) 
+    if (norm_idx >= 0)
     {
         auto& pts = attr.GetPoints();
         if (group)
@@ -152,7 +152,7 @@ void Peak::TranslateVertices(float dist, const std::shared_ptr<Group>& group)
     assert(m_geo_impl);
     auto& attr = m_geo_impl->GetAttr();
     auto norm_idx = attr.QueryAttrIdx(GeoAttrClass::Vertex, GEO_ATTR_NORM);
-    if (norm_idx >= 0) 
+    if (norm_idx >= 0)
     {
         auto& vts = attr.GetVertices();
         if (group)
@@ -182,12 +182,12 @@ void Peak::TranslateVertices(float dist, const std::shared_ptr<Group>& group)
             assert(norms.size() == vts.size());
             if (group) {
                 for (auto& i : group->GetItems()) {
-                    auto idx = attr.QueryIndex(vts[i]->point);
+                    auto idx = vts[i]->point->attr_idx;
                     vts[i]->point->pos += norms[idx] * dist;
                 }
             } else {
                 for (auto& v : vts) {
-                    auto idx = attr.QueryIndex(v->point);
+                    auto idx = v->point->attr_idx;
                     v->point->pos += norms[idx] * dist;
                 }
             }

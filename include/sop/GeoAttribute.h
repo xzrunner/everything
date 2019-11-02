@@ -32,6 +32,8 @@ public:
 
         std::vector<VarValue> vars;
 
+        size_t attr_idx = 0;
+
         he::TopoID topo_id;
 
         size_t prim_id = 0;
@@ -144,12 +146,10 @@ public:
     int QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const;
     int QueryAttrIdx(GeoAttrClass cls, const std::string& name) const;
 
-    template<typename T>
-    int QueryIndex(const T& i) const;
-
 private:
     void Clear();
 
+    void SetupPointIndices();
     void SetupAABB();
 
     void CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass cls,
@@ -182,5 +182,3 @@ private:
 }; // GeoAttribute
 
 }
-
-#include "sop/GeoAttribute.inl"

@@ -37,7 +37,7 @@ NodePtr NodeHelper::GetInputNode(const Node& node, size_t idx)
         const int output_idx = imports[idx].conns[0].idx;
         return std::static_pointer_cast<node::Geometry>(in_node)->QueryOutput(output_idx);
     }
-    else 
+    else
     {
         return in_node;
     }
@@ -86,7 +86,7 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
             }
             assert(v.type == VarType::Bool);
             if (v.b) {
-                ret.push_back(i); 
+                ret.push_back(i);
             }
         }
     }
@@ -101,7 +101,7 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
         auto& vts = attr.GetVertices();
         for (size_t i = 0, n = vts.size(); i < n; ++i)
         {
-            eval_ctx.attr_idx = attr.QueryIndex(vts[i]->point);
+            eval_ctx.attr_idx = vts[i]->point->attr_idx;
             auto v = eval.CalcExpr(expr, eval_ctx);
             if (v.type == sop::VarType::Invalid) {
                 continue;
@@ -128,7 +128,7 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
                 eval_ctx.attr_type = GeoAttrClass::Primitive;
                 eval_ctx.attr_idx  = i;
                 auto v = eval.CalcExpr(expr, eval_ctx);
-                if (v.type != sop::VarType::Invalid) 
+                if (v.type != sop::VarType::Invalid)
                 {
                     assert(v.type == VarType::Bool);
                     if (v.b) {
@@ -143,7 +143,7 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
                 for (auto& v : prim->vertices)
                 {
                     eval_ctx.attr_type = GeoAttrClass::Point;
-                    eval_ctx.attr_idx = attr.QueryIndex(v->point);
+                    eval_ctx.attr_idx = v->point->attr_idx;
                     auto v = eval.CalcExpr(expr, eval_ctx);
                     if (v.type == sop::VarType::Invalid) {
                         select = false;

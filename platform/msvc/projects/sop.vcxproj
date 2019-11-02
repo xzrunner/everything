@@ -134,9 +134,6 @@
     <ClCompile Include="..\..\..\source\VarValue.cpp" />
     <ClCompile Include="..\..\..\source\VexFuncs.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\include\sop\GeoAttribute.inl" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>5.sop</ProjectName>
     <ProjectGuid>{A1C0A31A-8FA7-4835-AFD5-77F44C93E040}</ProjectGuid>
