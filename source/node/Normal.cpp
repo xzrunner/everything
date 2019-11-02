@@ -111,6 +111,7 @@ void Normal::AddToPoint()
         assert(norms.size() == attr.GetPoints().size());
 
         std::vector<VarValue> vars;
+        vars.reserve(norms.size());
         for (auto& norm : norms) {
             vars.push_back(VarValue(norm));
         }

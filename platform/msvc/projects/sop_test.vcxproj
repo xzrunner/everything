@@ -136,6 +136,7 @@
     <ClCompile Include="..\..\..\test\pyloader_test.cpp" />
     <ClCompile Include="..\..\..\test\utility.cpp" />
     <ClCompile Include="..\..\..\test\utility_nodes.cpp" />
+    <ClCompile Include="..\..\..\test\vex_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\test\utility.h" />

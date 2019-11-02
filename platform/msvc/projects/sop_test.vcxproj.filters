@@ -33,6 +33,9 @@
     <ClCompile Include="..\..\..\test\pyloader_test.cpp">
       <Filter>serialize</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\test\vex_test.cpp">
+      <Filter>others</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\test\utility.h" />
