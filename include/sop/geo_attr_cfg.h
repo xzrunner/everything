@@ -51,7 +51,7 @@ GEO_ATTR_INFO(GEO_ATTR_CD, "Cd", Vector)
 //
 
 // The UV coordinates of the point/vertex. The first two elements of this vector contain the current U and V coordinates. Note that uv is Houdini¡¯s conventional attribute name for storing texture coordinates. You can store texture coordinates in other attributes, so you can have multiple UV layouts on the same geometry. Most texture-related nodes have a field to let you specify the name of the UV attribute to use.
-GEO_ATTR_INFO(GEO_ATTR_UV,       "uv",       Vector)
+GEO_ATTR_INFO(GEO_ATTR_UV,       "uv",       Float3)
 // The node path to the material to use to shade this primitive. Overrides the object¡¯s material.
 GEO_ATTR_INFO(GEO_ATTR_MATERIAL, "material", String)
 
