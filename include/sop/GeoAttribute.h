@@ -52,6 +52,8 @@ public:
 
         std::vector<VarValue> vars;
 
+        size_t attr_idx = 0;
+
     }; // Vertex
 
     // In Houdini, primitives refer to a unit of geometry, lower-level than an object but above points.
@@ -75,6 +77,8 @@ public:
         Type type = Type::PolygonFace;
 
         std::vector<VarValue> vars;
+
+        size_t attr_idx = 0;
 
         he::TopoID topo_id;
 
@@ -149,7 +153,7 @@ public:
 private:
     void Clear();
 
-    void SetupPointIndices();
+    void SetupAttrIndices();
     void SetupAABB();
 
     void CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass cls,

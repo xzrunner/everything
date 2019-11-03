@@ -202,7 +202,7 @@ void GeoAttribute::ChangePointsOrder(const std::vector<size_t>& order)
 
     m_points = points;
 
-    SetupPointIndices();
+    SetupAttrIndices();
 }
 
 void GeoAttribute::AddAttr(GeoAttrClass cls, const VarDesc& var_desc,
@@ -369,7 +369,7 @@ void GeoAttribute::Combine(const GeoAttribute& attr)
     CombinePrimitives(attr);
     CombineDetail(attr);
 
-    SetupPointIndices();
+    SetupAttrIndices();
     SetupAABB();
 }
 
@@ -428,7 +428,7 @@ void GeoAttribute::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
         } while (curr_line && curr_line != first_line);
     }
 
-    SetupPointIndices();
+    SetupAttrIndices();
     SetupAABB();
 }
 
@@ -498,10 +498,16 @@ void GeoAttribute::Clear()
     m_aabb.MakeEmpty();
 }
 
-void GeoAttribute::SetupPointIndices()
+void GeoAttribute::SetupAttrIndices()
 {
     for (size_t i = 0, n = m_points.size(); i < n; ++i) {
         m_points[i]->attr_idx = i;
+    }
+    for (size_t i = 0, n = m_vertices.size(); i < n; ++i) {
+        m_vertices[i]->attr_idx = i;
+    }
+    for (size_t i = 0, n = m_primtives.size(); i < n; ++i) {
+        m_primtives[i]->attr_idx = i;
     }
 }
 
@@ -878,7 +884,7 @@ void GeoAttribute::UpdatePointsChanged(bool del_unused_pt)
         UpdateVerticesChanged(del_unused_pt);
     }
 
-    SetupPointIndices();
+    SetupAttrIndices();
     SetupAABB();
 }
 
@@ -972,14 +978,16 @@ GeoAttribute::Point::Point(const sm::vec3& pos)
 //////////////////////////////////////////////////////////////////////////
 
 GeoAttribute::Vertex::Vertex(const Vertex& vert)
-    : vars(vert.vars)
 {
+    operator = (vert);
 }
 
 GeoAttribute::Vertex&
 GeoAttribute::Vertex::operator = (const Vertex& vert)
 {
-    vars = vert.vars;
+    vars     = vert.vars;
+    attr_idx = vert.attr_idx;
+
     return *this;
 }
 
@@ -1002,8 +1010,9 @@ GeoAttribute::Primitive::operator = (const Primitive& prim)
 {
     type     = prim.type;
     vars     = prim.vars;
-    topo_id = prim.topo_id;
-    prim_id = prim.prim_id;
+    attr_idx = prim.attr_idx;
+    topo_id  = prim.topo_id;
+    prim_id  = prim.prim_id;
     return *this;
 }
 
