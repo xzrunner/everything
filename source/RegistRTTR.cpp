@@ -18,6 +18,7 @@
 #include "sop/node/Transform.h"
 // material
 #include "sop/node/Color.h"
+#include "sop/node/UVUnwrap.h"
 // nurbs
 #include "sop/node/Carve.h"
 // polygon
@@ -80,6 +81,7 @@ REGIST_NODE_TYPE(Transform)
 
 // material
 REGIST_NODE_TYPE(Color)
+REGIST_NODE_TYPE(UVUnwrap)
 
 // NURBs
 REGIST_NODE_TYPE(Carve)

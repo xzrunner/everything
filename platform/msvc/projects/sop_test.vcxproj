@@ -129,6 +129,7 @@
     <ClCompile Include="..\..\..\test\funcs_test.cpp" />
     <ClCompile Include="..\..\..\test\group_nodes.cpp" />
     <ClCompile Include="..\..\..\test\manipulate_nodes.cpp" />
+    <ClCompile Include="..\..\..\test\material_nodes.cpp" />
     <ClCompile Include="..\..\..\test\nurbs_nodes.cpp" />
     <ClCompile Include="..\..\..\test\main.cpp" />
     <ClCompile Include="..\..\..\test\polygon_nodes.cpp" />
@@ -195,8 +196,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>..\..\..\..\external\boost\lib;..\..\..\..\external\rttr\lib;..\..\..\..\external\fbxsdk\lib;..\..\..\..\external\tbb\lib;..\..\..\..\external\libpng\lib;..\..\..\..\external\libjpeg\lib;..\..\..\..\external\assimp\lib;..\..\..\..\external\lua\lib;..\..\..\..\external\openvdb\lib;..\..\..\..\external\zlib\lib;..\..\..\..\external\OpenEXR\lib;..\..\..\..\external\gl\lib;..\..\..\..\external\glfw\lib;..\..\..\..\external\python27\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rttr_core_d.lib;libfbxsdk.lib;libpng16_static.lib;jpeg.lib;assimp-vc140-mtd.lib;luad.lib;openvdbd.lib;zlibstatic.lib;Half-2_3.lib;OpenGL32.lib;glew32sd.lib;glfw3d.lib;python27.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\external\boost\lib;..\..\..\..\external\rttr\lib;..\..\..\..\external\fbxsdk\lib;..\..\..\..\external\tbb\lib;..\..\..\..\external\libpng\lib;..\..\..\..\external\libjpeg\lib;..\..\..\..\external\assimp\lib;..\..\..\..\external\lua\lib;..\..\..\..\external\openvdb\lib;..\..\..\..\external\zlib\lib;..\..\..\..\external\OpenEXR\lib;..\..\..\..\external\gl\lib;..\..\..\..\external\glfw\lib;..\..\..\..\external\python27\libs;..\..\..\..\external\geogram\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>rttr_core_d.lib;libfbxsdk.lib;libpng16_static.lib;jpeg.lib;assimp-vc140-mtd.lib;luad.lib;openvdbd.lib;Half-2_3.lib;OpenGL32.lib;glew32sd.lib;glfw3d.lib;python27.lib;geogramd.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -212,8 +213,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\..\..\external\boost\lib;..\..\..\..\external\rttr\lib;..\..\..\..\external\fbxsdk\lib;..\..\..\..\external\tbb\lib;..\..\..\..\external\libpng\lib;..\..\..\..\external\libjpeg\lib;..\..\..\..\external\assimp\lib;..\..\..\..\external\lua\lib;..\..\..\..\external\openvdb\lib;..\..\..\..\external\zlib\lib;..\..\..\..\external\OpenEXR\lib;..\..\..\..\external\gl\lib;..\..\..\..\external\glfw\lib;..\..\..\..\external\python27\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rttr_core.lib;libfbxsdk.lib;libpng16_static.lib;jpeg.lib;assimp-vc140-mt.lib;lua.lib;openvdb.lib;zlibstatic.lib;Half-2_3.lib;OpenGL32.lib;glew32s.lib;glfw3.lib;python27.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\external\boost\lib;..\..\..\..\external\rttr\lib;..\..\..\..\external\fbxsdk\lib;..\..\..\..\external\tbb\lib;..\..\..\..\external\libpng\lib;..\..\..\..\external\libjpeg\lib;..\..\..\..\external\assimp\lib;..\..\..\..\external\lua\lib;..\..\..\..\external\openvdb\lib;..\..\..\..\external\zlib\lib;..\..\..\..\external\OpenEXR\lib;..\..\..\..\external\gl\lib;..\..\..\..\external\glfw\lib;..\..\..\..\external\python27\libs;..\..\..\..\external\geogram\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>rttr_core.lib;libfbxsdk.lib;libpng16_static.lib;jpeg.lib;assimp-vc140-mt.lib;lua.lib;openvdb.lib;Half-2_3.lib;OpenGL32.lib;glew32s.lib;glfw3.lib;python27.lib;geogram.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
