@@ -110,7 +110,7 @@ GroupMgr::Query(const std::string& name, size_t max_count, GroupType type) const
         } catch (boost::bad_lexical_cast&) {
             continue;
         }
-        if (i >= 0 && i < max_count) {
+        if (i >= 0 && i < static_cast<int>(max_count)) {
             indices.push_back(i);
         }
     }
