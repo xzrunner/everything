@@ -458,6 +458,7 @@ std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrClass cls) const
             ret.push_back(VarValue(0.0));
             break;
         case GeoAttrType::Vector:
+        case GeoAttrType::Float3:
             ret.push_back(VarValue(sm::vec3()));
             break;
         default:
