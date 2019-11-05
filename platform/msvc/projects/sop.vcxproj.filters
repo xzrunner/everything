@@ -269,6 +269,9 @@
     <ClInclude Include="..\..\..\include\sop\GeogramHelper.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\AttributePromote.h">
+      <Filter>nodes\attribute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -442,6 +445,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeogramHelper.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\AttributePromote.cpp">
+      <Filter>nodes\attribute</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

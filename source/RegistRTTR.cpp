@@ -2,6 +2,7 @@
 #include "sop/node/Geometry.h"
 // attribute
 #include "sop/node/AttributeCreate.h"
+#include "sop/node/AttributePromote.h"
 #include "sop/node/AttributeTransfer.h"
 #include "sop/node/AttributeWrangle.h"
 #include "sop/node/Measure.h"
@@ -62,6 +63,7 @@ REGIST_NODE_TYPE(Geometry)
 
 // attribute
 REGIST_NODE_TYPE(AttributeCreate)
+REGIST_NODE_TYPE(AttributePromote)
 REGIST_NODE_TYPE(AttributeTransfer)
 REGIST_NODE_TYPE(AttributeWrangle)
 REGIST_NODE_TYPE(Measure)

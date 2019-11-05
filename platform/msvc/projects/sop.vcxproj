@@ -19,6 +19,7 @@
     <ClInclude Include="..\..\..\include\sop\Evaluator.h" />
     <ClInclude Include="..\..\..\include\sop\GeogramHelper.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h" />
+    <ClInclude Include="..\..\..\include\sop\node\AttributePromote.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributeTransfer.h" />
     <ClInclude Include="..\..\..\include\sop\node\File.h" />
     <ClInclude Include="..\..\..\include\sop\node\Grid.h" />
@@ -86,6 +87,7 @@
     <ClCompile Include="..\..\..\source\Group.cpp" />
     <ClCompile Include="..\..\..\source\GeogramHelper.cpp" />
     <ClCompile Include="..\..\..\source\node\AttributeCreate.cpp" />
+    <ClCompile Include="..\..\..\source\node\AttributePromote.cpp" />
     <ClCompile Include="..\..\..\source\node\AttributeTransfer.cpp" />
     <ClCompile Include="..\..\..\source\node\File.cpp" />
     <ClCompile Include="..\..\..\source\node\Grid.cpp" />

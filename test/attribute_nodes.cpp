@@ -3,6 +3,7 @@
 #include <sop/Evaluator.h>
 
 #include <sop/node/AttributeCreate.h>
+#include <sop/node/AttributePromote.h>
 #include <sop/node/AttributeTransfer.h>
 #include <sop/node/AttributeWrangle.h>
 #include <sop/node/Measure.h>
@@ -38,6 +39,64 @@ TEST_CASE("attribute create")
 
     test::check_attr_count(attr_create, sop::GeoAttrClass::Point, "new_attr", 1);
     test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+}
+
+TEST_CASE("attribute promote")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    auto attr_create = std::make_shared<sop::node::AttributeCreate>();
+    eval.AddNode(attr_create);
+
+    eval.Connect({ box, 0 }, { attr_create, 0 });
+
+    auto attr_promote = std::make_shared<sop::node::AttributePromote>();
+    eval.AddNode(attr_promote);
+
+    eval.Connect({ attr_create, 0 }, { attr_promote, 0 });
+
+    SECTION("vertex to point")
+    {
+        std::vector<sop::node::AttributeCreate::Item> items;
+        items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Vertex, sop::VarValue(0.1f), sop::VarValue(0.0f));
+        attr_create->SetAttrItems(items);
+
+        attr_promote->SetAttrName("new_attr");
+        attr_promote->SetPromoteType(sop::GeoAttrClass::Vertex, sop::GeoAttrClass::Point);
+
+        eval.Update();
+
+        test::check_attr_count(attr_create, sop::GeoAttrClass::Vertex, "new_attr", 24);
+        test::check_attr_value(attr_create, sop::GeoAttrClass::Vertex, "new_attr", 0, sop::Variable(0.1f));
+
+        test::check_attr_count(attr_promote, sop::GeoAttrClass::Vertex, "new_attr", 0);
+        test::check_attr_count(attr_promote, sop::GeoAttrClass::Point, "new_attr", 8);
+        test::check_attr_value(attr_promote, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+    }
+
+    SECTION("point to vertex")
+    {
+        std::vector<sop::node::AttributeCreate::Item> items;
+        items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
+        attr_create->SetAttrItems(items);
+
+        attr_promote->SetAttrName("new_attr");
+        attr_promote->SetPromoteType(sop::GeoAttrClass::Point, sop::GeoAttrClass::Vertex);
+
+        eval.Update();
+
+        test::check_attr_count(attr_create, sop::GeoAttrClass::Point, "new_attr", 8);
+        test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+
+        test::check_attr_count(attr_promote, sop::GeoAttrClass::Point, "new_attr", 0);
+        test::check_attr_count(attr_promote, sop::GeoAttrClass::Vertex, "new_attr", 24);
+        test::check_attr_value(attr_promote, sop::GeoAttrClass::Vertex, "new_attr", 0, sop::Variable(0.1f));
+    }
 }
 
 TEST_CASE("attribute transfer")
