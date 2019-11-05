@@ -21,38 +21,50 @@ void Sort::Execute(Evaluator& eval)
     auto& attr = m_geo_impl->GetAttr();
     auto& pts = attr.GetPoints();
 
+    std::vector<size_t> order;
+
     switch (m_key)
     {
     case Key::X:
     case Key::Y:
     case Key::Z:
     {
-        std::vector<size_t> order;
         order.resize(pts.size());
         for (size_t i = 0, n = pts.size(); i < n; ++i) {
             order[i] = i;
         }
         std::sort(order.begin(), order.end(), PointCmp(pts, m_key));
-        attr.ChangePointsOrder(order);
     }
         break;
     case Key::Shift:
     {
         assert(m_props.GetProps()[POINT_OFFSET].Val().type == VarType::Int);
         const int p_off = m_props.GetProps()[POINT_OFFSET].Val().i;
-        std::vector<size_t> order(pts.size(), 0);
+        order.resize(pts.size(), 0);
         for (int i = 0, n = pts.size(); i < n; ++i) {
             order[i] = (i + n - p_off) % n;
         }
-        attr.ChangePointsOrder(order);
     }
         break;
+    }
+
+    if (!order.empty())
+    {
+        if (m_point_reverse) {
+            std::reverse(order.begin(), order.end());
+        }
+        attr.ChangePointsOrder(order);
     }
 }
 
 void Sort::SetKey(Key key)
 {
     NODE_PROP_SET(m_key, key);
+}
+
+void Sort::SetPointReverse(bool reverse)
+{
+    NODE_PROP_SET(m_point_reverse, reverse);
 }
 
 void Sort::SetPointOffset(int off)

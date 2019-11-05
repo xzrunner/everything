@@ -49,6 +49,8 @@ public:
 
     void SetKey(Key key);
 
+    void SetPointReverse(bool reverse);
+
     void SetPointOffset(int off);
 
 private:
@@ -71,6 +73,8 @@ private:
 
 private:
     Key m_key = Key::NoChange;
+
+    bool m_point_reverse = false;
 
     RTTR_ENABLE(Node)
 
