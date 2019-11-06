@@ -352,6 +352,7 @@ Variable GeoAttribute::QueryAttr(GeoAttrClass cls, const std::string& name, size
     case GeoAttrType::Double:
         return Variable(val.d);
     case GeoAttrType::Vector:
+    case GeoAttrType::Float3:
         return Variable(*static_cast<const sm::vec3*>(val.p));
     default:
         assert(0);

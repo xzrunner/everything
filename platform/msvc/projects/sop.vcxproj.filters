@@ -272,6 +272,9 @@
     <ClInclude Include="..\..\..\include\sop\node\AttributePromote.h">
       <Filter>nodes\attribute</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\UVTransform.h">
+      <Filter>nodes\material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -448,6 +451,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributePromote.cpp">
       <Filter>nodes\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\UVTransform.cpp">
+      <Filter>nodes\material</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
