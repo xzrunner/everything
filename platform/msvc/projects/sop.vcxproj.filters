@@ -275,6 +275,9 @@
     <ClInclude Include="..\..\..\include\sop\node\UVTransform.h">
       <Filter>nodes\material</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\UVQuickShade.h">
+      <Filter>nodes\material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -453,6 +456,9 @@
       <Filter>nodes\attribute</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\UVTransform.cpp">
+      <Filter>nodes\material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\UVQuickShade.cpp">
       <Filter>nodes\material</Filter>
     </ClCompile>
   </ItemGroup>

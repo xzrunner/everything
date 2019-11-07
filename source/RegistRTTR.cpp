@@ -20,6 +20,7 @@
 // material
 #include "sop/node/Color.h"
 #include "sop/node/UVLayout.h"
+#include "sop/node/UVQuickShade.h"
 #include "sop/node/UVTransform.h"
 #include "sop/node/UVUnwrap.h"
 // nurbs
@@ -86,6 +87,7 @@ REGIST_NODE_TYPE(Transform)
 // material
 REGIST_NODE_TYPE(Color)
 REGIST_NODE_TYPE(UVLayout)
+REGIST_NODE_TYPE(UVQuickShade)
 REGIST_NODE_TYPE(UVTransform)
 REGIST_NODE_TYPE(UVUnwrap)
 

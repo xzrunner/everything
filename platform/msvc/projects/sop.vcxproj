@@ -29,6 +29,7 @@
     <ClInclude Include="..\..\..\include\sop\node\PolyFrame.h" />
     <ClInclude Include="..\..\..\include\sop\node\Split.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVLayout.h" />
+    <ClInclude Include="..\..\..\include\sop\node\UVQuickShade.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVTransform.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.h" />
     <ClInclude Include="..\..\..\include\sop\PyLoader.h" />
@@ -98,6 +99,7 @@
     <ClCompile Include="..\..\..\source\node\PolyFrame.cpp" />
     <ClCompile Include="..\..\..\source\node\Split.cpp" />
     <ClCompile Include="..\..\..\source\node\UVLayout.cpp" />
+    <ClCompile Include="..\..\..\source\node\UVQuickShade.cpp" />
     <ClCompile Include="..\..\..\source\node\UVTransform.cpp" />
     <ClCompile Include="..\..\..\source\node\UVUnwrap.cpp" />
     <ClCompile Include="..\..\..\source\PyLoader.cpp" />
