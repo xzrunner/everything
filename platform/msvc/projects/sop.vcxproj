@@ -21,6 +21,7 @@
     <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributePromote.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributeTransfer.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Dungeon.h" />
     <ClInclude Include="..\..\..\include\sop\node\File.h" />
     <ClInclude Include="..\..\..\include\sop\node\Grid.h" />
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="..\..\..\source\node\AttributeCreate.cpp" />
     <ClCompile Include="..\..\..\source\node\AttributePromote.cpp" />
     <ClCompile Include="..\..\..\source\node\AttributeTransfer.cpp" />
+    <ClCompile Include="..\..\..\source\node\Dungeon.cpp" />
     <ClCompile Include="..\..\..\source\node\File.cpp" />
     <ClCompile Include="..\..\..\source\node\Grid.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupPromote.cpp" />
@@ -189,7 +191,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\halfedge\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;..\..\..\..\external\python27\include;..\..\..\..\external\python27\include\python27;..\..\..\..\external\eigen\include;..\..\..\..\external\geogram\src\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\halfedge\include;..\..\..\..\dungeon\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;..\..\..\..\external\python27\include;..\..\..\..\external\python27\include\python27;..\..\..\..\external\eigen\include;..\..\..\..\external\geogram\src\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -203,7 +205,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\halfedge\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;..\..\..\..\external\python27\include;..\..\..\..\external\python27\include\python27;..\..\..\..\external\eigen\include;..\..\..\..\external\geogram\src\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\halfedge\include;..\..\..\..\dungeon\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;..\..\..\..\external\python27\include;..\..\..\..\external\python27\include\python27;..\..\..\..\external\eigen\include;..\..\..\..\external\geogram\src\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>

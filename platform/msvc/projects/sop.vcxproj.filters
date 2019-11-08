@@ -67,6 +67,9 @@
     <Filter Include="nodes\export">
       <UniqueIdentifier>{bb5344ed-18b8-4369-baa4-9eed4ba3b6e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nodes\primitive\extern">
+      <UniqueIdentifier>{96c2271c-d891-431e-8581-db8fd9dca2d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\sop\node\Curve.h">
@@ -278,6 +281,9 @@
     <ClInclude Include="..\..\..\include\sop\node\UVQuickShade.h">
       <Filter>nodes\material</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Dungeon.h">
+      <Filter>nodes\primitive\extern</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -460,6 +466,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\UVQuickShade.cpp">
       <Filter>nodes\material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Dungeon.cpp">
+      <Filter>nodes\primitive\extern</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

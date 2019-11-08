@@ -41,6 +41,8 @@
 #include "sop/node/Line.h"
 #include "sop/node/Primitive.h"
 #include "sop/node/Sphere.h"
+// primitive extern
+#include "sop/node/Dungeon.h"
 // utility
 #include "sop/node/Blast.h"
 #include "sop/node/CopyToPoints.h"
@@ -111,6 +113,8 @@ REGIST_NODE_TYPE(Grid)
 REGIST_NODE_TYPE(Line)
 REGIST_NODE_TYPE(Primitive)
 REGIST_NODE_TYPE(Sphere)
+// primitive extern
+REGIST_NODE_TYPE(Dungeon)
 
 // utility
 REGIST_NODE_TYPE(Blast)
