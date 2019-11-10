@@ -135,8 +135,8 @@ operator == (const Item& i) const
         }
         break;
     case GeoAttrType::String:
-        if (strcmp(static_cast<const char*>(value.p),
-                   static_cast<const char*>(i.value.p)) != 0) {
+        if (value.p == nullptr || i.value.p == nullptr ||
+            strcmp(static_cast<const char*>(value.p), static_cast<const char*>(i.value.p)) != 0) {
             return false;
         }
         break;
