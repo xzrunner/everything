@@ -284,6 +284,15 @@
     <ClInclude Include="..\..\..\include\sop\node\Dungeon.h">
       <Filter>nodes\primitive\extern</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\PyParmTemplate.h">
+      <Filter>serialize\python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\PyCommonTypes.h">
+      <Filter>serialize\python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\PyNode.h">
+      <Filter>serialize\python</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -469,6 +478,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Dungeon.cpp">
       <Filter>nodes\primitive\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\PyParmTemplate.cpp">
+      <Filter>serialize\python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\PyCommonTypes.cpp">
+      <Filter>serialize\python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\PyNode.cpp">
+      <Filter>serialize\python</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

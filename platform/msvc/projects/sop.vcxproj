@@ -33,7 +33,10 @@
     <ClInclude Include="..\..\..\include\sop\node\UVQuickShade.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVTransform.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.h" />
+    <ClInclude Include="..\..\..\include\sop\PyCommonTypes.h" />
     <ClInclude Include="..\..\..\include\sop\PyLoader.h" />
+    <ClInclude Include="..\..\..\include\sop\PyNode.h" />
+    <ClInclude Include="..\..\..\include\sop\PyParmTemplate.h" />
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAdaptor.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAttribute.h" />
@@ -104,7 +107,10 @@
     <ClCompile Include="..\..\..\source\node\UVQuickShade.cpp" />
     <ClCompile Include="..\..\..\source\node\UVTransform.cpp" />
     <ClCompile Include="..\..\..\source\node\UVUnwrap.cpp" />
+    <ClCompile Include="..\..\..\source\PyCommonTypes.cpp" />
     <ClCompile Include="..\..\..\source\PyLoader.cpp" />
+    <ClCompile Include="..\..\..\source\PyNode.cpp" />
+    <ClCompile Include="..\..\..\source\PyParmTemplate.cpp" />
     <ClCompile Include="..\..\..\source\SOP.cpp" />
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
