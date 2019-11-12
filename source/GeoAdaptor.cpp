@@ -96,23 +96,38 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
 
         auto& prims = attr.GetPrimtives();
 
-        std::vector<std::vector<sm::vec2>> texcoords;
-        texcoords.resize(prims.size());
+        std::vector<std::vector<std::vector<sm::vec2>>> texcoords;
+        texcoords.resize(brush_model->GetBrushes().size());
+
+        std::map<size_t, size_t> brush_id2idx;
+        for (auto& prim : prims) {
+            if (brush_id2idx.find(prim->prim_id) == brush_id2idx.end()) {
+                brush_id2idx.insert({ prim->prim_id, 0 });
+            }
+        }
+        size_t idx = 0;
+        for (auto& itr : brush_id2idx) {
+            itr.second = idx++;
+        }
 
         auto attr_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
         if (attr_idx >= 0)
         {
             auto& pts = attr.GetPoints();
-            for (size_t i = 0, n = prims.size(); i < n; ++i)
+
+            for (auto& prim : prims)
             {
-                auto& prim = prims[i];
-                texcoords[i].resize(prim->vertices.size());
+                std::vector<sm::vec2> uvs(prim->vertices.size());
                 for (size_t j = 0, m = prim->vertices.size(); j < m; ++j)
                 {
                     auto& v = prim->vertices[j];
                     auto uv = static_cast<const sm::vec3*>(pts[v->point->attr_idx]->vars[attr_idx].p);
-                    texcoords[i][j].Set(uv->x, uv->y);
+                    uvs[j].Set(uv->x, uv->y);
                 }
+
+                auto b_idx = brush_id2idx.find(prim->prim_id);
+                assert(b_idx != brush_id2idx.end());
+                texcoords[b_idx->second].push_back(uvs);
             }
         }
         else
@@ -121,28 +136,34 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
             if (attr_idx >= 0)
             {
                 auto& vts = attr.GetVertices();
-                for (size_t i = 0, n = prims.size(); i < n; ++i)
+                for (auto& prim : prims)
                 {
-                    auto& prim = prims[i];
-                    texcoords[i].resize(prim->vertices.size());
+                    std::vector<sm::vec2> uvs(prim->vertices.size());
                     for (size_t j = 0, m = prim->vertices.size(); j < m; ++j)
                     {
                         auto& v = prim->vertices[j];
                         auto uv = static_cast<const sm::vec3*>(vts[v->attr_idx]->vars[attr_idx].p);
-                        texcoords[i][j].Set(uv->x, uv->y);
+                        uvs[j].Set(uv->x, uv->y);
                     }
+
+                    auto b_idx = brush_id2idx.find(prim->prim_id);
+                    assert(b_idx != brush_id2idx.end());
+                    texcoords[b_idx->second].push_back(uvs);
                 }
             }
             else
             {
-                for (size_t i = 0, n = prims.size(); i < n; ++i) {
-                    texcoords[i].resize(prims[i]->vertices.size(), sm::vec2(0, 0));
+                for (auto& prim : prims)
+                {
+                    auto b_idx = brush_id2idx.find(prim->prim_id);
+                    assert(b_idx != brush_id2idx.end());
+                    texcoords[b_idx->second].push_back({ prim->vertices.size(), sm::vec2(0, 0) });
                 }
             }
         }
 
         std::shared_ptr<model::Model> model =
-            model::BrushBuilder::PolymeshFromBrush(*brush_model, { texcoords });
+            model::BrushBuilder::PolymeshFromBrush(*brush_model, texcoords);
         UpdateModel(model);
     }
         break;
