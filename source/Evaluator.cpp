@@ -1,6 +1,7 @@
 #include "sop/Evaluator.h"
 #include "sop/EvalContext.h"
 #include "sop/node/Geometry.h"
+#include "sop/node/ObjectMerge.h"
 
 #include <vexc/EvalAST.h>
 #include <vexc/Parser.h>
@@ -393,20 +394,35 @@ void Evaluator::TopologicalSorting()
     for (int i = 0, n = nodes.size(); i < n; ++i)
     {
         auto& node = nodes[i];
-        for (auto& port : node->GetImports())
+        if (node->get_type() == rttr::type::get<node::ObjectMerge>())
         {
-            if (port.conns.empty()) {
-                continue;
+            for (auto& obj : std::static_pointer_cast<node::ObjectMerge>(node)->GetObjects()) {
+                for (int j = 0, m = nodes.size(); j < m; ++j) {
+                    if (obj == nodes[j]) {
+                        in_deg[i]++;
+                        out_nodes[j].push_back(i);
+                        break;
+                    }
+                }
             }
+        }
+        else
+        {
+            for (auto& port : node->GetImports())
+            {
+                if (port.conns.empty()) {
+                    continue;
+                }
 
-            assert(port.conns.size() == 1);
-            auto from = port.conns[0].node.lock();
-            assert(from);
-            for (int j = 0, m = nodes.size(); j < m; ++j) {
-                if (from == nodes[j]) {
-                    in_deg[i]++;
-                    out_nodes[j].push_back(i);
-                    break;
+                assert(port.conns.size() == 1);
+                auto from = port.conns[0].node.lock();
+                assert(from);
+                for (int j = 0, m = nodes.size(); j < m; ++j) {
+                    if (from == nodes[j]) {
+                        in_deg[i]++;
+                        out_nodes[j].push_back(i);
+                        break;
+                    }
                 }
             }
         }
