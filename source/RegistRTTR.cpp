@@ -7,8 +7,9 @@
 #include "sop/node/AttributeWrangle.h"
 #include "sop/node/Measure.h"
 #include "sop/node/Sort.h"
-// export
+// import
 #include "sop/node/File.h"
+#include "sop/node/ObjectMerge.h"
 // group
 #include "sop/node/GroupCreate.h"
 #include "sop/node/GroupExpression.h"
@@ -28,6 +29,7 @@
 // polygon
 #include "sop/node/Add.h"
 #include "sop/node/Boolean.h"
+#include "sop/node/Divide.h"
 #include "sop/node/Fuse.h"
 #include "sop/node/Knife.h"
 #include "sop/node/Normal.h"
@@ -43,6 +45,8 @@
 #include "sop/node/Sphere.h"
 // primitive extern
 #include "sop/node/Dungeon.h"
+// rigging
+#include "sop/node/Lattice.h"
 // utility
 #include "sop/node/Blast.h"
 #include "sop/node/CopyToPoints.h"
@@ -51,6 +55,7 @@
 #include "sop/node/Merge.h"
 #include "sop/node/Null.h"
 #include "sop/node/Output.h"
+#include "sop/node/Python.h"
 #include "sop/node/Split.h"
 #include "sop/node/Switch.h"
 
@@ -73,8 +78,9 @@ REGIST_NODE_TYPE(AttributeWrangle)
 REGIST_NODE_TYPE(Measure)
 REGIST_NODE_TYPE(Sort)
 
-// export
+// import
 REGIST_NODE_TYPE(File)
+REGIST_NODE_TYPE(ObjectMerge)
 
 // group
 REGIST_NODE_TYPE(GroupCreate)
@@ -99,6 +105,7 @@ REGIST_NODE_TYPE(Carve)
 // polygon
 REGIST_NODE_TYPE(Add)
 REGIST_NODE_TYPE(Boolean)
+REGIST_NODE_TYPE(Divide)
 REGIST_NODE_TYPE(Fuse)
 REGIST_NODE_TYPE(Knife)
 REGIST_NODE_TYPE(Normal)
@@ -116,6 +123,9 @@ REGIST_NODE_TYPE(Sphere)
 // primitive extern
 REGIST_NODE_TYPE(Dungeon)
 
+// rigging
+REGIST_NODE_TYPE(Lattice)
+
 // utility
 REGIST_NODE_TYPE(Blast)
 REGIST_NODE_TYPE(CopyToPoints)
@@ -124,6 +134,7 @@ REGIST_NODE_TYPE(ForeachPrimEnd)
 REGIST_NODE_TYPE(Merge)
 REGIST_NODE_TYPE(Null)
 REGIST_NODE_TYPE(Output)
+REGIST_NODE_TYPE(Python)
 REGIST_NODE_TYPE(Split)
 REGIST_NODE_TYPE(Switch)
 

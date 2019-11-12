@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\..\test\material_nodes.cpp">
       <Filter>nodes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\test\import_nodes.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\test\utility.h" />

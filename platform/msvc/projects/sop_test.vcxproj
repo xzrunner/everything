@@ -20,6 +20,9 @@
     <ProjectReference Include="..\..\..\..\cpputil\platform\msvc\projects\cpputil.vcxproj">
       <Project>{bbf1c418-2ee6-4059-bad6-be93a7ce5b90}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\dungeon\platform\msvc\projects\dungeon.vcxproj">
+      <Project>{b5e9df4c-1827-470c-b4eb-0ba1b2dc37be}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\emitter\platform\msvc\projects\emitter.vcxproj">
       <Project>{dbef5985-8371-4d60-bde1-0cd58f8017f8}</Project>
     </ProjectReference>
@@ -128,6 +131,7 @@
     <ClCompile Include="..\..\..\test\dataset_test.cpp" />
     <ClCompile Include="..\..\..\test\funcs_test.cpp" />
     <ClCompile Include="..\..\..\test\group_nodes.cpp" />
+    <ClCompile Include="..\..\..\test\import_nodes.cpp" />
     <ClCompile Include="..\..\..\test\manipulate_nodes.cpp" />
     <ClCompile Include="..\..\..\test\material_nodes.cpp" />
     <ClCompile Include="..\..\..\test\nurbs_nodes.cpp" />

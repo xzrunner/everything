@@ -64,11 +64,14 @@
     <Filter Include="serialize\python">
       <UniqueIdentifier>{5b9a0881-0262-4d67-90c8-7b2c2b954331}</UniqueIdentifier>
     </Filter>
-    <Filter Include="nodes\export">
-      <UniqueIdentifier>{bb5344ed-18b8-4369-baa4-9eed4ba3b6e7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="nodes\primitive\extern">
       <UniqueIdentifier>{96c2271c-d891-431e-8581-db8fd9dca2d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\import">
+      <UniqueIdentifier>{bb5344ed-18b8-4369-baa4-9eed4ba3b6e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\rigging">
+      <UniqueIdentifier>{5c508275-c4a4-496e-b4ca-164d3d3cc863}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -264,7 +267,7 @@
       <Filter>nodes\primitive</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\File.h">
-      <Filter>nodes\export</Filter>
+      <Filter>nodes\import</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\UVLayout.h">
       <Filter>nodes\material</Filter>
@@ -290,8 +293,20 @@
     <ClInclude Include="..\..\..\include\sop\PyCommonTypes.h">
       <Filter>serialize\python</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\PyNode.h">
+    <ClInclude Include="..\..\..\include\sop\PyNodeProxy.h">
       <Filter>serialize\python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\ObjectMerge.h">
+      <Filter>nodes\import</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Lattice.h">
+      <Filter>nodes\rigging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Divide.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Python.h">
+      <Filter>nodes\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -459,7 +474,7 @@
       <Filter>nodes\primitive</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\File.cpp">
-      <Filter>nodes\export</Filter>
+      <Filter>nodes\import</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\UVLayout.cpp">
       <Filter>nodes\material</Filter>
@@ -485,8 +500,20 @@
     <ClCompile Include="..\..\..\source\PyCommonTypes.cpp">
       <Filter>serialize\python</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\PyNode.cpp">
+    <ClCompile Include="..\..\..\source\PyNodeProxy.cpp">
       <Filter>serialize\python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\ObjectMerge.cpp">
+      <Filter>nodes\import</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Lattice.cpp">
+      <Filter>nodes\rigging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Divide.cpp">
+      <Filter>nodes\polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Python.cpp">
+      <Filter>nodes\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
