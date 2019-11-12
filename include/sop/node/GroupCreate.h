@@ -19,8 +19,22 @@ public:
         IDX_BOUNDING_OBJ,
     };
 
+    enum PropID
+    {
+        DIR_X,
+        DIR_Y,
+        DIR_Z,
+
+        MAX_BUILD_IN_PROP,
+    };
+
+    static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
+        "dirx", "diry", "dirz"
+    };
+
 public:
     GroupCreate()
+        : Node(MAX_BUILD_IN_PROP)
     {
         m_imports = {
             {{ NodeVarType::Any, "src" }},
@@ -29,6 +43,8 @@ public:
         m_exports = {
             {{ NodeVarType::Any, "out" }},
         };
+
+        InitProps();
     }
 
     virtual void Execute(Evaluator& eval) override;
@@ -52,6 +68,8 @@ public:
     void DisableKeepByNormals();
 
 private:
+    void InitProps();
+
     void SelectByNormals(Group& group);
     void SelectByBoundings(Group& group, std::shared_ptr<GeometryImpl>& bounding);
     void SelectAll(Group& group);
@@ -70,7 +88,6 @@ private:
 
     // keep by normals
     bool     m_keep_by_normals = false;
-    sm::vec3 m_direction       = sm::vec3(0, 0, 1);
     float    m_spread_angle    = 180;
 
     RTTR_ENABLE(Node)

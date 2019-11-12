@@ -28,9 +28,7 @@ void Primitive::Execute(Evaluator& eval)
         }
     }
 
-    auto mat = Transform::CalcTransformMat(
-        m_translate, m_rotate * SM_DEG_TO_RAD, m_scale, m_shear
-    );
+    auto mat = CalcTransformMat();
 
     auto& attr = m_geo_impl->GetAttr();
     if (group)
@@ -75,22 +73,97 @@ void Primitive::SetGroupName(const std::string& name)
 
 void Primitive::SetTranslate(const sm::vec3& t)
 {
-    NODE_PROP_SET(m_translate, t);
+    bool dirty = false;
+
+    if (m_props.SetValue(TRANS_X, Variable(t.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(TRANS_Y, Variable(t.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(TRANS_Z, Variable(t.z))) {
+        dirty = true;
+    }
+
+    if (dirty) {
+        SetDirty(true);
+    }
 }
 
 void Primitive::SetRotate(const sm::vec3& r)
 {
-    NODE_PROP_SET(m_rotate, r);
+    bool dirty = false;
+
+    if (m_props.SetValue(ROT_X, Variable(r.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(ROT_Y, Variable(r.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(ROT_Z, Variable(r.z))) {
+        dirty = true;
+    }
+
+    if (dirty) {
+        SetDirty(true);
+    }
 }
 
 void Primitive::SetScale(const sm::vec3& s)
 {
-    NODE_PROP_SET(m_scale, s);
+    bool dirty = false;
+
+    if (m_props.SetValue(SCALE_X, Variable(s.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SCALE_Y, Variable(s.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SCALE_Z, Variable(s.z))) {
+        dirty = true;
+    }
+
+    if (dirty) {
+        SetDirty(true);
+    }
 }
 
 void Primitive::SetShear(const sm::vec3& s)
 {
-    NODE_PROP_SET(m_shear, s);
+    bool dirty = false;
+
+    if (m_props.SetValue(SHEAR_X, Variable(s.x))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SHEAR_Y, Variable(s.y))) {
+        dirty = true;
+    }
+    if (m_props.SetValue(SHEAR_Z, Variable(s.z))) {
+        dirty = true;
+    }
+
+    if (dirty) {
+        SetDirty(true);
+    }
+}
+
+void Primitive::InitProps()
+{
+    m_props.Assign(TRANS_X, PropNames[TRANS_X], Variable(0.0f));
+    m_props.Assign(TRANS_Y, PropNames[TRANS_Y], Variable(0.0f));
+    m_props.Assign(TRANS_Z, PropNames[TRANS_Z], Variable(0.0f));
+
+    m_props.Assign(ROT_X, PropNames[ROT_X], Variable(0.0f));
+    m_props.Assign(ROT_Y, PropNames[ROT_Y], Variable(0.0f));
+    m_props.Assign(ROT_Z, PropNames[ROT_Z], Variable(0.0f));
+
+    m_props.Assign(SCALE_X, PropNames[SCALE_X], Variable(1.0f));
+    m_props.Assign(SCALE_Y, PropNames[SCALE_Y], Variable(1.0f));
+    m_props.Assign(SCALE_Z, PropNames[SCALE_Z], Variable(1.0f));
+
+    m_props.Assign(SHEAR_X, PropNames[SHEAR_X], Variable(0.0f));
+    m_props.Assign(SHEAR_Y, PropNames[SHEAR_Y], Variable(0.0f));
+    m_props.Assign(SHEAR_Z, PropNames[SHEAR_Z], Variable(0.0f));
 }
 
 void Primitive::UpdatePrim(GeoAttribute::Primitive& prim, const sm::mat4& mat)
@@ -105,6 +178,33 @@ void Primitive::UpdatePrim(GeoAttribute::Primitive& prim, const sm::mat4& mat)
     for (auto& v : prim.vertices) {
         v->point->pos = mat * (v->point->pos - c) + c;
     }
+}
+
+sm::mat4 Primitive::CalcTransformMat() const
+{
+    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VarType::Float));
+
+    auto& props = m_props.GetProps();
+
+    auto scale = sm::vec3(
+        props[SCALE_X].Val().f,
+        props[SCALE_Y].Val().f,
+        props[SCALE_Z].Val().f
+    );
+
+    auto rotate = sm::vec3(
+        props[ROT_X].Val().f,
+        props[ROT_Y].Val().f,
+        props[ROT_Z].Val().f
+    ) * SM_DEG_TO_RAD;
+
+    auto translate = sm::vec3(
+        props[TRANS_X].Val().f,
+        props[TRANS_Y].Val().f,
+        props[TRANS_Z].Val().f
+    );
+
+    return Transform::CalcTransformMat(translate, rotate, scale, sm::vec3(0, 0, 0));
 }
 
 }

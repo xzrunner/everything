@@ -20,11 +20,15 @@ public:
         ORIGINX_Y,
         ORIGINX_Z,
 
+        DIR_X,
+        DIR_Y,
+        DIR_Z,
+
         MAX_BUILD_IN_PROP,
     };
 
     static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
-        "originx", "originy", "originz",
+        "originx", "originy", "originz", "dirx", "diry", "dirz",
     };
 
 public:
@@ -62,8 +66,6 @@ private:
     bool Clip(pm3::Polytope& poly) const;
 
 private:
-    sm::vec3 m_direction = sm::vec3(0, 1, 0);
-
     KeepType m_keep = KeepType::KeepAll;
 
     RTTR_ENABLE(Node)

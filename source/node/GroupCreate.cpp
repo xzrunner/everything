@@ -103,14 +103,25 @@ void GroupCreate::DisableKeepInBounding()
 
 void GroupCreate::EnableKeepByNormals(const sm::vec3& direction, float spread_angle)
 {
+    bool dir_dirty = false;
+
+    if (m_props.SetValue(DIR_X, Variable(direction.x))) {
+        dir_dirty = true;
+    }
+    if (m_props.SetValue(DIR_Y, Variable(direction.y))) {
+        dir_dirty = true;
+    }
+    if (m_props.SetValue(DIR_Z, Variable(direction.z))) {
+        dir_dirty = true;
+    }
+
     if (m_keep_by_normals &&
-        m_direction == direction &&
+        !dir_dirty &&
         m_spread_angle == spread_angle) {
         return;
     }
 
     m_keep_by_normals = true;
-    m_direction       = direction;
     m_spread_angle    = spread_angle;
 
     SetDirty(true);
@@ -119,6 +130,13 @@ void GroupCreate::EnableKeepByNormals(const sm::vec3& direction, float spread_an
 void GroupCreate::DisableKeepByNormals()
 {
     NODE_PROP_SET(m_keep_by_normals, false);
+}
+
+void GroupCreate::InitProps()
+{
+    m_props.Assign(DIR_X, PropNames[DIR_X], Variable(0.0f));
+    m_props.Assign(DIR_Y, PropNames[DIR_Y], Variable(0.0f));
+    m_props.Assign(DIR_Z, PropNames[DIR_Z], Variable(1.0f));
 }
 
 void GroupCreate::SelectByNormals(Group& group)
@@ -137,7 +155,9 @@ void GroupCreate::SelectByNormals(Group& group)
         for (size_t i = 0, n = prims.size(); i < n; ++i)
         {
             auto normal = prims[i]->CalcNormal();
-            auto angle = sm::get_angle(sm::vec3(0, 0, 0), m_direction, normal);
+            auto& props = m_props.GetProps();
+            const sm::vec3 dir = sm::vec3(props[DIR_X].Val().f, props[DIR_Y].Val().f, props[DIR_Z].Val().f) * 0.5f;
+            auto angle = sm::get_angle(sm::vec3(0, 0, 0), dir, normal);
             if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
                 group.Add(i);
             }
