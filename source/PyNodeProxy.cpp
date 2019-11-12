@@ -1,15 +1,14 @@
 #define BOOST_PYTHON_STATIC_MODULE
 #define BOOST_PYTHON_STATIC_LIB
 
-#include "sop/PyNode.h"
-#include "sop/PyParmTemplate.h"
-#include "sop/NodePropsMgr.h"
-#include "sop/Node.h"
+#include "sop/PyNodeProxy.h"
 #include "sop/Evaluator.h"
 #include "sop/node/Geometry.h"
 
 // attribute
 #include "sop/node/AttributeCreate.h"
+#include "sop/node/AttributePromote.h"
+#include "sop/node/AttributeTransfer.h"
 #include "sop/node/AttributeWrangle.h"
 #include "sop/node/Sort.h"
 #include "sop/node/Measure.h"
@@ -17,20 +16,27 @@
 #include "sop/node/GroupCreate.h"
 #include "sop/node/GroupExpression.h"
 #include "sop/node/GroupPromote.h"
+// import
+#include "sop/node/ObjectMerge.h"
 // manipulate
 #include "sop/node/Delete.h"
+#include "sop/node/Peak.h"
 #include "sop/node/Transform.h"
 // material
 #include "sop/node/Color.h"
+#include "sop/node/UVTransform.h"
+#include "sop/node/UVUnwrap.h"
 // nurbs
 #include "sop/node/Carve.h"
 // polygon
 #include "sop/node/Add.h"
 #include "sop/node/Boolean.h"
+#include "sop/node/Divide.h"
 #include "sop/node/Fuse.h"
 #include "sop/node/Knife.h"
 #include "sop/node/Normal.h"
 #include "sop/node/PolyExtrude.h"
+#include "sop/node/PolyFill.h"
 #include "sop/node/PolyFrame.h"
 // primitive
 #include "sop/node/Box.h"
@@ -38,11 +44,16 @@
 #include "sop/node/Line.h"
 #include "sop/node/Primitive.h"
 #include "sop/node/Sphere.h"
+// rigging
+#include "sop/node/Lattice.h"
 // utility
 #include "sop/node/Blast.h"
 #include "sop/node/CopyToPoints.h"
 #include "sop/node/Merge.h"
 #include "sop/node/ForeachPrimEnd.h"
+#include "sop/node/Output.h"
+#include "sop/node/Python.h"
+#include "sop/node/Split.h"
 #include "sop/node/Switch.h"
 
 using namespace boost::python;
@@ -50,35 +61,6 @@ using namespace sop::py;
 
 namespace
 {
-
-ParmTemplateGroup hou_create_parm_template_group()
-{
-    return ParmTemplateGroup();
-}
-
-Color hou_create_color(const list& rgb)
-{
-    Color col;
-    col.r = boost::python::extract<float>(rgb[0]);
-    col.g = boost::python::extract<float>(rgb[1]);
-    col.b = boost::python::extract<float>(rgb[2]);
-    return col;
-}
-
-Keyframe hou_create_keyframe()
-{
-    return Keyframe();
-}
-
-StringKeyframe hou_create_stringkeyframe()
-{
-    return StringKeyframe();
-}
-
-sm::vec2 hou_create_vec2(float x, float y)
-{
-    return sm::vec2(x, y);
-}
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(hou_node_create_node_overloads, NodeProxy::CreateNode, 2, 5)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(hou_node_set_input_overloads, NodeProxy::SetInput, 2, 3)
@@ -90,69 +72,10 @@ namespace sop
 namespace py
 {
 
-//////////////////////////////////////////////////////////////////////////
-// class Parm
-//////////////////////////////////////////////////////////////////////////
+Evaluator* NodeProxy::m_eval = nullptr;
 
-void Parm::Set(float val)
-{
-    assert(m_node);
-    auto& props = const_cast<NodePropsMgr&>(m_node->GetProps());
-    props.SetValue(m_name, Variable(val));
-}
-
-void Parm::Set(const std::string& val)
-{
-    assert(m_node);
-    auto& props = const_cast<NodePropsMgr&>(m_node->GetProps());
-    props.SetValue(m_name, Variable(val));
-}
-
-void ParmTuple::Set(const boost::python::tuple& val)
-{
-    assert(m_node);
-    auto& props = const_cast<NodePropsMgr&>(m_node->GetProps());
-    auto var = props.Query(m_name + "x");
-    assert(var.type != VarType::Invalid);
-    switch (var.type)
-    {
-    case VarType::Float:
-        props.SetValue(m_name + "x", Variable(boost::python::extract<float>(val[0])));
-        props.SetValue(m_name + "y", Variable(boost::python::extract<float>(val[1])));
-        props.SetValue(m_name + "z", Variable(boost::python::extract<float>(val[2])));
-        break;
-    default:
-        assert(0);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// class ParmTuple
-//////////////////////////////////////////////////////////////////////////
-
-Parm ParmTuple::GetItem(size_t i)
-{
-    switch (i)
-    {
-    case 0:
-        return Parm(m_name + "x", m_node);
-    case 1:
-        return Parm(m_name + "y", m_node);
-    case 2:
-        return Parm(m_name + "z", m_node);
-    default:
-        assert(0);
-        return Parm("", nullptr);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// class NodeProxy
-//////////////////////////////////////////////////////////////////////////
-
-NodeProxy::NodeProxy(const NodePtr& node, Evaluator& eval)
+NodeProxy::NodeProxy(const NodePtr& node)
     : m_node(node)
-    , m_eval(eval)
 {
 }
 
@@ -172,6 +95,10 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
     // attribute
     else if (type == "attribcreate::2.0") {
         child = std::make_shared<node::AttributeCreate>();
+    }  else if (type == "attribtransfer") {
+        child = std::make_shared<node::AttributeTransfer>();
+    } else if (type == "attribpromote") {
+        child = std::make_shared<node::AttributePromote>();
     } else if (type == "attribwrangle") {
         child = std::make_shared<node::AttributeWrangle>();
     } else if (type == "measure") {
@@ -187,11 +114,25 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
     } else if (type == "grouppromote") {
         child = std::make_shared<node::GroupPromote>();
     }
+    // import
+    else if (type == "object_merge") {
+        child = std::make_shared<node::ObjectMerge>();
+    }
     // manipulate
     else if (type == "delete") {
         child = std::make_shared<node::Delete>();
+    } else if (type == "peak") {
+        child = std::make_shared<node::Peak>();
     } else if (type == "xform") {
         child = std::make_shared<node::Transform>();
+    }
+    // material
+    else if (type == "color") {
+        child = std::make_shared<node::Color>();
+    } else if (type == "uvtransform::2.0") {
+        child = std::make_shared<node::UVTransform>();
+    } else if (type == "uvunwrap") {
+        child = std::make_shared<node::UVUnwrap>();
     }
     // nurbs
     else if (type == "carve") {
@@ -200,6 +141,10 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
     // polygon
     else if (type == "add") {
         child = std::make_shared<node::Add>();
+    } else if (type == "boolean::2.0") {
+        child = std::make_shared<node::Boolean>();
+    } else if (type == "divide") {
+        child = std::make_shared<node::Divide>();
     } else if (type == "fuse") {
         child = std::make_shared<node::Fuse>();
     } else if (type == "knife") {
@@ -208,6 +153,8 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
         child = std::make_shared<node::Normal>();
     } else if (type == "polyextrude::2.0") {
         child = std::make_shared<node::PolyExtrude>();
+    } else if (type == "polyfill") {
+        child = std::make_shared<node::PolyFill>();
     } else if (type == "polyframe") {
         child = std::make_shared<node::PolyFrame>();
     }
@@ -219,6 +166,10 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
     } else if (type == "primitive") {
         child = std::make_shared<node::Primitive>();
     }
+    // rigging
+    else if (type == "lattice") {
+        child = std::make_shared<node::Lattice>();
+    }
     // utility
     else if (type == "blast") {
         child = std::make_shared<node::Blast>();
@@ -228,7 +179,13 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
         child = std::make_shared<node::ForeachPrimEnd>();
     } else if (type == "merge") {
         child = std::make_shared<node::Merge>();
-    }  else if (type == "switch") {
+    } else if (type == "output") {
+        child = std::make_shared<node::Output>();
+    } else if (type == "python") {
+        child = std::make_shared<node::Python>();
+    } else if (type == "split") {
+        child = std::make_shared<node::Split>();
+    } else if (type == "switch") {
         child = std::make_shared<node::Switch>();
     }
     // unknown
@@ -238,20 +195,23 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
     }
     assert(child);
 
-    m_eval.AddNode(child);
+    assert(m_eval);
+    m_eval->AddNode(child);
 
     child->SetName(name);
     node::Geometry::AddChild(parent, child);
 
-    return std::make_shared<NodeProxy>(child, m_eval);
+    return std::make_shared<NodeProxy>(child);
 }
+
 std::shared_ptr<NodeProxy> NodeProxy::CreateNetworkBox(const std::string& name)
 {
-    return std::make_shared<NodeProxy>(nullptr, m_eval);
+    return std::make_shared<NodeProxy>(nullptr);
 }
+
 std::shared_ptr<NodeProxy> NodeProxy::FindNetworkBox(const std::string& name)
 {
-    assert(0);
+//    assert(0);
     return nullptr;
 }
 
@@ -260,11 +220,12 @@ std::shared_ptr<NodeProxy> NodeProxy::GetParent()
     if (m_node) {
         auto p = m_node->GetParent();
         if (p) {
-            return std::make_shared<NodeProxy>(p, m_eval);
+            return std::make_shared<NodeProxy>(p);
         }
     }
     return nullptr;
 }
+
 std::shared_ptr<NodeProxy> NodeProxy::GetChild(const std::string& name)
 {
     assert(m_node);
@@ -273,7 +234,7 @@ std::shared_ptr<NodeProxy> NodeProxy::GetChild(const std::string& name)
 
     auto child = parent->QueryChild(name);
     if (child) {
-        return std::make_shared<NodeProxy>(child, m_eval);
+        return std::make_shared<NodeProxy>(child);
     } else {
         return nullptr;
     }
@@ -281,57 +242,22 @@ std::shared_ptr<NodeProxy> NodeProxy::GetChild(const std::string& name)
 
 void NodeProxy::SetInput(int input_index, const std::shared_ptr<NodeProxy>& item_to_become_input, int output_index)
 {
-    if (m_node && item_to_become_input->m_node) {
-        make_connecting({ item_to_become_input->m_node, output_index }, { m_node, input_index });
+    if (!m_node || !item_to_become_input->m_node) {
+        return;
     }
+
+    if (input_index >= m_node->GetImports().size() &&
+        m_node->get_type() == rttr::type::get<node::Merge>()) {
+        int num = input_index - m_node->GetImports().size() + 1;
+        std::static_pointer_cast<node::Merge>(m_node)->AddInputPorts(num);
+    }
+
+    make_connecting({ item_to_become_input->m_node, output_index }, { m_node, input_index });
 }
 
-void BindNode()
+void BindNodeProxy()
 {
-    // types
-
-    void(Parm::*ParmSet0)(float)              = &Parm::Set;
-    void(Parm::*ParmSet1)(const std::string&) = &Parm::Set;
-    void(Parm::*ParmSetKeyframe0)(const Keyframe&)       = &Parm::SetKeyframe;
-    void(Parm::*ParmSetKeyframe1)(const StringKeyframe&) = &Parm::SetKeyframe;
-    class_<Parm>("Parm", init<const std::string&, const NodePtr&>())
-        .def("setKeyframe", ParmSetKeyframe0)
-        .def("setKeyframe", ParmSetKeyframe1)
-        .def("set", ParmSet0)
-        .def("set", ParmSet1)
-    ;
-    class_<ParmTuple>("ParmTuple", init<const std::string&, const NodePtr&>())
-        .def("setAutoscope", &ParmTuple::SetAutoscope)
-        .def("set", &ParmTuple::Set)
-        .def("__getitem__", &ParmTuple::GetItem, return_value_policy<return_by_value>())
-    ;
-
-    class_<sm::vec2>("Vector2", init<float, float>());
-    def("Vector2", hou_create_vec2);
-
-    class_<ParmTemplateGroup>("ParmTemplateGroup")
-        .def("append", &ParmTemplateGroup::Append)
-    ;
-    def("ParmTemplateGroup", hou_create_parm_template_group);
-
-    class_<Color>("Color");
-    def("Color", hou_create_color);
-
-    class_<Keyframe>("Keyframe")
-        .def("setTime", &Keyframe::SetTime)
-        .def("setExpression", &Keyframe::SetExpression)
-        .def("interpretAccelAsRatio", &Keyframe::InterpretAccelAsRatio)
-    ;
-    def("Keyframe", hou_create_keyframe);
-
-    class_<StringKeyframe>("StringKeyframe")
-        .def("setTime", &StringKeyframe::SetTime)
-        .def("setExpression", &StringKeyframe::SetExpression)
-    ;
-    def("StringKeyframe", hou_create_stringkeyframe);
-
-    // node
-    class_<NodeProxy>("NodeProxy", init<const NodePtr&, Evaluator&>())
+    class_<NodeProxy>("NodeProxy", init<const NodePtr&>())
         .def("createNode", &NodeProxy::CreateNode, hou_node_create_node_overloads(
             args("type", "name", "run_init_scripts", "load_contents", "exact_type_name")
         ))

@@ -4,7 +4,7 @@
 #include "sop/PyLoader.h"
 #include "sop/PyCommonTypes.h"
 #include "sop/PyParmTemplate.h"
-#include "sop/PyNode.h"
+#include "sop/PyNodeProxy.h"
 #include "sop/Evaluator.h"
 
 #include <fstream>
@@ -21,9 +21,10 @@ sop::Evaluator* EVAL = nullptr;
 
 std::shared_ptr<NodeProxy> hou_get_node(const std::string& path)
 {
+    assert(EVAL);
     auto node = EVAL->QueryNodeByPath(path);
     if (node) {
-        return std::make_shared<NodeProxy>(node, *EVAL);
+        return std::make_shared<NodeProxy>(node);
     } else {
         return nullptr;
     }
@@ -31,11 +32,17 @@ std::shared_ptr<NodeProxy> hou_get_node(const std::string& path)
 
 BOOST_PYTHON_MODULE(hou)
 {
-    BindCommonTypes();
-    BindParmTemplate();
-    BindNode();
+    static bool binded = false;
+    if (!binded) {
+        BindCommonTypes();
+        BindParmTemplate();
+        BindNodeProxy();
 
-    def("node", hou_get_node);
+        register_ptr_to_python<std::shared_ptr<NodeProxy>>();
+        def("node", hou_get_node);
+
+        binded = true;
+    }
 }
 
 }
@@ -47,16 +54,21 @@ PyLoader::PyLoader(Evaluator& eval)
     : m_eval(eval)
 {
     static bool inited = false;
+    Py_Initialize();
+    PyImport_AppendInittab("hou", &inithou);
+//    Py_Initialize();
+
     if (!inited)
     {
-        Py_Initialize();
+//        PyImport_AppendInittab("hou", &inithou);
+//        Py_Initialize();
 
-        PyImport_AppendInittab("hou", &inithou);
-        PyRun_SimpleString(R"(
-import hou
-)");
+        //import("hou");
+//        PyRun_SimpleString(R"(
+//import hou
+//)");
 
-        register_ptr_to_python<std::shared_ptr<NodeProxy>>();
+
         inited = true;
     }
 }
@@ -68,6 +80,11 @@ PyLoader::~PyLoader()
 
 void PyLoader::RunFile(const std::string& filepath)
 {
+//    import("hou");
+    PyRun_SimpleString(R"(
+import hou
+)");
+
     PrepareContext();
 
     std::ifstream fin(filepath);
@@ -82,10 +99,24 @@ void PyLoader::RunFile(const std::string& filepath)
     PyRun_SimpleString(buffer.str().c_str());
 
     fin.close();
+
+//    PyRun_SimpleString(R"(
+//import sys
+//del sys.modules['hou']
+//)");
+    PyRun_SimpleString(R"(
+del hou
+)");
+//    PyRun_SimpleString(R"(
+//import sys
+//sys.modules['hou'].__dict__.clear()
+//)");
+//    import("sys").attr("modules")["hou"].del();
 }
 
 void PyLoader::PrepareContext()
 {
+    NodeProxy::SetContext(&m_eval);
     EVAL = &m_eval;
 }
 

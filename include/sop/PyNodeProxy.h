@@ -17,89 +17,10 @@ class Evaluator;
 namespace py
 {
 
-class Keyframe;
-class StringKeyframe;
-
-class Parm
-{
-public:
-    Parm(const std::string& name, const sop::NodePtr& node)
-        : m_name(name)
-        , m_node(node)
-    {
-    }
-
-    void SetKeyframe(const Keyframe& k) {}
-    void SetKeyframe(const StringKeyframe& k) {}
-    void Set(float val);
-    void Set(const std::string& val);
-
-private:
-    std::string m_name;
-
-    sop::NodePtr m_node = nullptr;
-
-}; // Parm
-
-class ParmTuple
-{
-public:
-    ParmTuple(const std::string& name, const sop::NodePtr& node)
-        : m_name(name)
-        , m_node(node)
-    {
-    }
-
-    void SetAutoscope(const boost::python::tuple& bool_values) {}
-    void Set(const boost::python::tuple& val);
-    Parm GetItem(size_t i);
-
-private:
-    std::string m_name;
-
-    sop::NodePtr m_node = nullptr;
-
-//    Parm m_parms[3];
-
-}; // ParmTuple
-
-class FolderParmTemplate;
-
-class ParmTemplateGroup
-{
-public:
-    void Append(const FolderParmTemplate& parm) {}
-
-}; // ParmTemplateGroup
-
-class Color
-{
-public:
-    float r, g, b;
-
-}; // Color
-
-class Keyframe
-{
-public:
-    void SetTime(float time) {}
-    void SetExpression(const std::string& expression, ExprLanguage language) {}
-    void InterpretAccelAsRatio(bool on) {}
-
-}; // Keyframe
-
-class StringKeyframe
-{
-public:
-    void SetTime(float time) {}
-    void SetExpression(const std::string& expression, ExprLanguage language) {}
-
-}; // StringKeyframe
-
 class NodeProxy
 {
 public:
-    NodeProxy(const sop::NodePtr& node, Evaluator& eval);
+    NodeProxy(const NodePtr& node);
 
     std::shared_ptr<NodeProxy> CreateNode(const std::string& type, const std::string& name,
         bool run_init_scripts = false, bool load_contents = false, bool exact_type_name = false);
@@ -138,14 +59,16 @@ public:
     Parm GetParm(const std::string& name) { return Parm(name, m_node); }
     boost::python::list IndirectInputs() { return boost::python::list(); }
 
-private:
-    sop::NodePtr m_node = nullptr;
+    static void SetContext(Evaluator* ctx) { m_eval = ctx; }
 
-    Evaluator& m_eval;
+private:
+    NodePtr m_node = nullptr;
+
+    static Evaluator* m_eval;
 
 }; // NodeProxy
 
-void BindNode();
+void BindNodeProxy();
 
 }
 }
