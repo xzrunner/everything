@@ -46,9 +46,25 @@ bool NodePropsMgr::SetValue(size_t idx, const Variable& val)
     }
 
     auto& p = m_props[idx];
-    assert(p.m_val.type == val.type);
-    if (p.m_val == val) {
-        return false;
+    if (p.m_val.type != val.type)
+    {
+        if (val.type == VarType::Float && p.m_val.type == VarType::Int) {
+            auto i = static_cast<int>(val.f);
+            if (p.m_val.i == i) {
+                return false;
+            } else {
+                p.m_val.i = i;
+                return true;
+            }
+        } else {
+            assert(0);
+        }
+    }
+    else
+    {
+        if (p.m_val == val) {
+            return false;
+        }
     }
 
     p.m_val = val;
