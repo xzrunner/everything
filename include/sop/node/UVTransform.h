@@ -16,30 +16,16 @@ class UVTransform : public Node
 public:
     enum PropID
     {
-        TRANS_X,
-        TRANS_Y,
-        TRANS_Z,
-
-        ROT_X,
-        ROT_Y,
-        ROT_Z,
-
-        SCALE_X,
-        SCALE_Y,
-        SCALE_Z,
-
-        SHEAR_X,
-        SHEAR_Y,
-        SHEAR_Z,
+        TRANS,
+        ROT,
+        SCALE,
+        SHEAR,
 
         MAX_BUILD_IN_PROP,
     };
 
     static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
-        "tx", "ty", "tz",
-        "rx", "ry", "rz",
-        "sx", "sy", "sz",
-        "shear1", "shear2", "shear3"
+        "t", "r", "s", "shear"
     };
 
 public:
@@ -65,9 +51,6 @@ public:
 
     void SetGroupName(const std::string& name);
     void SetGroupType(GroupType type);
-
-    static sm::mat4 CalcTransformMat(const sm::vec3& translate,
-        const sm::vec3& rotate, const sm::vec3& scale, const sm::vec3& shear);
 
 private:
     void InitProps();

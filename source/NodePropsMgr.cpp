@@ -26,20 +26,20 @@ void NodePropsMgr::Assign(size_t idx, const std::string& key, const Variable& va
     p.m_val = val;
 }
 
-void NodePropsMgr::SetExpr(size_t idx, const std::string& expr)
+void NodePropsMgr::SetExpr(size_t idx, const std::string& expr, size_t comp_idx)
 {
     if (idx < 0 || idx >= m_props.size()) {
         return;
     }
 
     auto& p = m_props[idx];
-    if (p.m_expr == expr) {
+    if (p.m_expr[comp_idx] == expr) {
         return;
     }
-    p.m_expr = expr;
+    p.m_expr[comp_idx] = expr;
 }
 
-bool NodePropsMgr::SetValue(size_t idx, const Variable& val)
+bool NodePropsMgr::SetValue(size_t idx, const Variable& val, bool float_cast)
 {
     if (idx < 0 || idx >= m_props.size()) {
         return false;
@@ -48,17 +48,37 @@ bool NodePropsMgr::SetValue(size_t idx, const Variable& val)
     auto& p = m_props[idx];
     if (p.m_val.type != val.type)
     {
-        if (val.type == VarType::Float && p.m_val.type == VarType::Int) {
-            auto i = static_cast<int>(val.f);
-            if (p.m_val.i == i) {
-                return false;
-            } else {
-                p.m_val.i = i;
-                return true;
+        if (float_cast && val.type == VarType::Float)
+        {
+            switch (p.m_val.type)
+            {
+            case VarType::Int:
+            {
+                auto i = static_cast<int>(val.f);
+                assert(fabs(val.f - i) < FLT_EPSILON);
+                if (p.m_val.i == i) {
+                    return false;
+                } else {
+                    p.m_val.i = i;
+                    return true;
+                }
             }
-        } else {
-            assert(0);
+                break;
+            case VarType::Bool:
+            {
+                assert(val.f == 0.0f || val.f == 1.0f);
+                auto b = val.f == 1.0f ? true : false;
+                if (p.m_val.b == b) {
+                    return false;
+                } else {
+                    p.m_val.b = b;
+                    return true;
+                }
+            }
+                break;
+            }
         }
+        assert(0);
     }
     else
     {
@@ -116,8 +136,35 @@ void NodePropsMgr::Clear()
 
 Variable NodePropsMgr::Query(const std::string& key) const
 {
+    if (key.empty()) {
+        return Variable();
+    }
+
     auto idx = QueryIndex(key);
-    return idx < 0 ? Variable() : m_props[idx].m_val;
+    if (idx >= 0) {
+        return m_props[idx].m_val;
+    }
+
+    if (key.back() == 'x' ||
+        key.back() == 'y' ||
+        key.back() == 'z')
+    {
+        auto idx = QueryIndex(key.substr(0, key.size() - 1));
+        if (idx >= 0)
+        {
+            assert(m_props[idx].m_val.type == VarType::Float3);
+            auto v3 = static_cast<const sm::vec3*>(m_props[idx].m_val.p);
+            if (key.back() == 'x') {
+                return Variable(v3->x);
+            } else if (key.back() == 'y') {
+                return Variable(v3->y);
+            } else if (key.back() == 'z') {
+                return Variable(v3->z);
+            }
+        }
+    }
+
+    return Variable();
 }
 
 int NodePropsMgr::QueryIndex(const std::string& key) const
@@ -139,7 +186,9 @@ void NodeProp::Clear()
     m_key.clear();
     m_val.type = VarType::Invalid;
 
-    m_expr.clear();
+    for (auto& e : m_expr) {
+        e.clear();
+    }
 
     m_from.clear();
     m_to.clear();
@@ -147,16 +196,46 @@ void NodeProp::Clear()
 
 bool NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)
 {
-    auto var = CalcExpr(eval, node, m_expr, EvalContext(eval, *node), m_val.type);
-    if (var.type == VarType::Invalid) {
-        return false;
-    } else {
-        assert(var.type == m_val.type);
-        if (m_val == var) {
+    if (m_val.type == VarType::Float3)
+    {
+        auto v3 = static_cast<const sm::vec3*>(m_val.p);
+        Variable var3[3];
+        var3[0] = CalcExpr(eval, node, m_expr[0], EvalContext(eval, *node), VarType::Float);
+        var3[1] = CalcExpr(eval, node, m_expr[1], EvalContext(eval, *node), VarType::Float);
+        var3[2] = CalcExpr(eval, node, m_expr[2], EvalContext(eval, *node), VarType::Float);
+        if (var3[0].type != VarType::Invalid ||
+            var3[1].type != VarType::Invalid ||
+            var3[2].type != VarType::Invalid) {
+            sm::vec3 new_v3 = *v3;
+            for (size_t i = 0; i < 3; ++i) {
+                if (var3[i].type != VarType::Invalid) {
+                    assert(var3[i].type == VarType::Float);
+                    new_v3.xyz[i] = var3[i].f;
+                }
+            }
+            if (new_v3 != *v3) {
+                m_val = Variable(new_v3);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    else
+    {
+        auto var = CalcExpr(eval, node, m_expr[0], EvalContext(eval, *node), m_val.type);
+        if (var.type == VarType::Invalid) {
             return false;
         } else {
-            m_val = var;
-            return true;
+            assert(var.type == m_val.type);
+            if (m_val == var) {
+                return false;
+            } else {
+                m_val = var;
+                return true;
+            }
         }
     }
 }

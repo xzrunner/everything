@@ -22,7 +22,7 @@ TEST_CASE("single quotes")
 
     auto box2 = std::make_shared<sop::node::Box>();
     auto& prop_mgr = const_cast<sop::NodePropsMgr&>(box2->GetProps());
-    prop_mgr.SetExpr(sop::node::Box::SIZE_X, "`ch(\"../box0/sizex\")`");
+    prop_mgr.SetExpr(sop::node::Box::SIZE, "`ch(\"../box0/sizex\")`", 0);
     eval.AddNode(box2);
 
     eval.Connect({ box, 0 }, { box2, 0 });

@@ -34,7 +34,7 @@ private:
     std::string m_key;
     Variable    m_val;
 
-    std::string m_expr;
+    std::string m_expr[3];
 
     std::vector<std::weak_ptr<NodeProp>> m_from, m_to;
 
@@ -49,8 +49,8 @@ public:
 
     void Assign(size_t idx, const std::string& key, const Variable& val);
 
-    void SetExpr(size_t idx, const std::string& expr);
-    bool SetValue(size_t idx, const Variable& val);
+    void SetExpr(size_t idx, const std::string& expr, size_t comp_idx = 0);
+    bool SetValue(size_t idx, const Variable& val, bool float_cast = false);
     bool SetValue(const std::string& key, const Variable& val);
 
     int  Add(const std::string& key, const Variable& val);
@@ -63,7 +63,6 @@ public:
 
     auto& GetProps() const { return m_props; }
 
-private:
     int QueryIndex(const std::string& key) const;
 
 private:

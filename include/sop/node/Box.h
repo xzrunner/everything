@@ -16,20 +16,14 @@ class Box : public Node
 public:
     enum PropID
     {
-        SIZE_X,
-        SIZE_Y,
-        SIZE_Z,
-
-        POS_X,
-        POS_Y,
-        POS_Z,
+        SIZE,
+        POS,
 
         MAX_BUILD_IN_PROP,
     };
 
     static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
-        "sizex", "sizey", "sizez",
-        "tx", "ty", "tz"
+        "size", "t"
     };
 
 public:

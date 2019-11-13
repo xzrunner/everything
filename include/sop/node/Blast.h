@@ -12,7 +12,21 @@ namespace node
 class Blast : public Node
 {
 public:
+    enum PropID
+    {
+        GROUP,
+        DEL_NON_SEL,
+
+        MAX_BUILD_IN_PROP,
+    };
+
+    static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
+        "group", "negate"
+    };
+
+public:
     Blast()
+        : Node(MAX_BUILD_IN_PROP)
     {
         m_imports = {
             {{ NodeVarType::Any, "in" }}
@@ -20,6 +34,8 @@ public:
         m_exports = {
             {{ NodeVarType::Any, "out" }},
         };
+
+        InitProps();
     }
 
     virtual void Execute(Evaluator& eval) override;
@@ -30,14 +46,13 @@ public:
     void SetDeleteNonSelected(bool del_non_selected);
 
 private:
+    void InitProps();
+
     bool SetupDelFlags(const Group& group, size_t count,
         std::vector<bool>& del_flags) const;
 
 private:
-    std::string m_group_name;
-    GroupType   m_group_type = GroupType::GuessFromGroup;
-
-    bool m_delete_non_selected = false;
+    GroupType m_group_type = GroupType::GuessFromGroup;
 
     RTTR_ENABLE(Node)
 

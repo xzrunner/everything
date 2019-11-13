@@ -69,7 +69,7 @@ TEST_CASE("point")
 
     auto box2 = std::make_shared<sop::node::Box>();
     auto& box2_props = const_cast<sop::NodePropsMgr&>(box2->GetProps());
-    box2_props.SetExpr(sop::node::Box::SIZE_Y, "point(\"../attr_create/\",0,\"ScaleY\",1)");
+    box2_props.SetExpr(sop::node::Box::SIZE, "point(\"../attr_create/\",0,\"ScaleY\",1)", 1);
     eval.AddNode(box2);
 
     eval.Update();
@@ -97,7 +97,7 @@ TEST_CASE("prim")
 
     auto box2 = std::make_shared<sop::node::Box>();
     auto& box2_props = const_cast<sop::NodePropsMgr&>(box2->GetProps());
-    box2_props.SetExpr(sop::node::Box::SIZE_X, "prim(\"../measure1/\",0,\"Perim\",0)");
+    box2_props.SetExpr(sop::node::Box::SIZE, "prim(\"../measure1/\",0,\"Perim\",0)", 0);
     eval.AddNode(box2);
 
     eval.Update();

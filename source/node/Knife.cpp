@@ -44,38 +44,14 @@ void Knife::Execute(Evaluator& eval)
 
 void Knife::SetOrigin(const sm::vec3& ori)
 {
-    bool dirty = false;
-
-    if (m_props.SetValue(ORIGINX_X, Variable(ori.x))) {
-        dirty = true;
-    }
-    if (m_props.SetValue(ORIGINX_Y, Variable(ori.y))) {
-        dirty = true;
-    }
-    if (m_props.SetValue(ORIGINX_Z, Variable(ori.z))) {
-        dirty = true;
-    }
-
-    if (dirty) {
+    if (m_props.SetValue(ORIGINX, Variable(ori))) {
         SetDirty(true);
     }
 }
 
 void Knife::SetDirection(const sm::vec3& dir)
 {
-    bool dirty = false;
-
-    if (m_props.SetValue(DIR_X, Variable(dir.x))) {
-        dirty = true;
-    }
-    if (m_props.SetValue(DIR_Y, Variable(dir.y))) {
-        dirty = true;
-    }
-    if (m_props.SetValue(DIR_Z, Variable(dir.z))) {
-        dirty = true;
-    }
-
-    if (dirty) {
+    if (m_props.SetValue(DIR, Variable(dir))) {
         SetDirty(true);
     }
 }
@@ -87,13 +63,8 @@ void Knife::SetKeepType(KeepType keep)
 
 void Knife::InitProps()
 {
-    m_props.Assign(ORIGINX_X, PropNames[ORIGINX_X], Variable(0.0f));
-    m_props.Assign(ORIGINX_Y, PropNames[ORIGINX_Y], Variable(0.0f));
-    m_props.Assign(ORIGINX_Z, PropNames[ORIGINX_Z], Variable(0.0f));
-
-    m_props.Assign(DIR_X, PropNames[DIR_X], Variable(0.0f));
-    m_props.Assign(DIR_Y, PropNames[DIR_Y], Variable(1.0f));
-    m_props.Assign(DIR_Z, PropNames[DIR_Z], Variable(0.0f));
+    m_props.Assign(ORIGINX, PropNames[ORIGINX], Variable(sm::vec3(0.0f, 0.0f, 0.0f)));
+    m_props.Assign(DIR,     PropNames[DIR],     Variable(sm::vec3(0.0f, 1.0f, 0.0f)));
 }
 
 bool Knife::Clip(pm3::Polytope& poly) const
@@ -114,22 +85,15 @@ bool Knife::Clip(pm3::Polytope& poly) const
         assert(0);
     }
 
-    assert(NodeHelper::CheckPropsType(*this, 0, MAX_BUILD_IN_PROP, VarType::Float));
     auto& props = m_props.GetProps();
 
-    auto origin = sm::vec3(
-        props[ORIGINX_X].Val().f,
-        props[ORIGINX_Y].Val().f,
-        props[ORIGINX_Z].Val().f
-    );
+    assert(props[ORIGINX].Val().type == VarType::Float3);
+    auto origin = static_cast<const sm::vec3*>(props[ORIGINX].Val().p);
 
-    auto dir = sm::vec3(
-        props[DIR_X].Val().f,
-        props[DIR_Y].Val().f,
-        props[DIR_Z].Val().f
-    );
+    assert(props[DIR].Val().type == VarType::Float3);
+    auto dir = static_cast<const sm::vec3*>(props[DIR].Val().p);
 
-    sm::Plane plane(dir, origin);
+    sm::Plane plane(*dir, *origin);
     if (poly.GetGeometry()->Clip(plane, keep)) {
         poly.BuildFromGeo();
         return true;

@@ -21,15 +21,30 @@ public:
 
     enum PropID
     {
-        DIR_X,
-        DIR_Y,
-        DIR_Z,
+        NAME,
+        TYPE,
+        MERGE,
+
+        // base
+        BASE_ON,
+        BASE_GROUP,
+
+        // bounding
+        BOUNDING_ON,
+
+        // normals
+        NORMAL_ON,
+        DIR,
+        ANGLE,
 
         MAX_BUILD_IN_PROP,
     };
 
     static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
-        "dirx", "diry", "dirz"
+        "groupname", "groupbase", "mergeop",
+        "groupbase", "basegroup",
+        "groupbounding",
+        "groupnormal", "dir", "angle",
     };
 
 public:
@@ -49,8 +64,7 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void  SetGroupName(const std::string& name);
-    auto& GetGroupName() const { return m_group_name; }
+    void SetGroupName(const std::string& name);
 
     void SetGroupType(GroupType type);
     void SetGroupMerge(GroupMerge merge);
@@ -74,21 +88,7 @@ private:
     void SelectByBoundings(Group& group, std::shared_ptr<GeometryImpl>& bounding);
     void SelectAll(Group& group);
 
-private:
-    std::string m_group_name;
-    GroupType   m_group_type = GroupType::Primitives;
-    GroupMerge  m_merge_op   = GroupMerge::Replace;
-
-    // base group
-    bool        m_base_group = false;
-    std::string m_base_group_expr;
-
-    // keep in bounding regions
-    bool m_keep_in_bounding = false;
-
-    // keep by normals
-    bool     m_keep_by_normals = false;
-    float    m_spread_angle    = 180;
+    GroupMerge GetMergeOP() const;
 
     RTTR_ENABLE(Node)
 

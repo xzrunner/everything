@@ -27,121 +27,164 @@ void GroupCreate::Execute(Evaluator& eval)
     auto& group_mgr = m_geo_impl->GetGroup();
 
     auto group = std::make_shared<Group>();
-    group->SetName(m_group_name);
-    group->SetType(m_group_type);
 
-    if (m_base_group)
+    auto& props = m_props.GetProps();
+    assert(props[NAME].Val().type == VarType::String);
+    group->SetName(static_cast<const char*>(props[NAME].Val().p));
+    assert(props[TYPE].Val().type == VarType::Int);
+    auto group_type = static_cast<GroupType>(props[TYPE].Val().i);
+    group->SetType(group_type);
+
+    assert(props[BASE_ON].Val().type == VarType::Bool);
+    assert(props[BOUNDING_ON].Val().type == VarType::Bool);
+    assert(props[NORMAL_ON].Val().type == VarType::Bool);
+    if (props[BASE_ON].Val().b)
     {
-        if (m_base_group_expr.empty()) {
+        assert(props[BASE_GROUP].Val().type == VarType::String);
+        std::string expr = static_cast<const char*>(props[BASE_GROUP].Val().p);
+        if (expr.empty()) {
             SelectAll(*group);
         } else {
-            group->SetItems(NodeHelper::SelectGeoByExpr(m_group_type, eval, *this, m_base_group_expr));
+            group->SetItems(NodeHelper::SelectGeoByExpr(group_type, eval, *this, expr));
         }
     }
-    else if (m_keep_in_bounding)
+    else if (props[BOUNDING_ON].Val().b)
     {
         auto b_geo = NodeHelper::GetInputGeo(*this, IDX_BOUNDING_OBJ);
         if (b_geo) {
             SelectByBoundings(*group, b_geo);
         }
     }
-    else if (m_keep_by_normals)
+    else if (props[NORMAL_ON].Val().b)
     {
         SelectByNormals(*group);
     }
 
-    group_mgr.Add(group, m_merge_op);
-    m_group_name = group->GetName();
+    group_mgr.Add(group, GetMergeOP());
+    m_props.SetValue(NAME, Variable(group->GetName()));
 }
 
 void GroupCreate::SetGroupName(const std::string& name)
 {
-    if (m_group_name == name) {
-        return;
+    if (m_props.SetValue(NAME, Variable(name))) {
+        SetDirty(true);
     }
-
-    m_group_name = name;
 }
 
 void GroupCreate::SetGroupType(GroupType type)
 {
-    NODE_PROP_SET(m_group_type, type);
+    if (m_props.SetValue(TYPE, Variable(static_cast<int>(type)))) {
+        SetDirty(true);
+    }
 }
 
 void GroupCreate::SetGroupMerge(GroupMerge merge)
 {
-    NODE_PROP_SET(m_merge_op, merge);
+    std::string str = "replace";
+    switch (merge)
+    {
+    case GroupMerge::Replace:
+        str = "replace";
+        break;
+    case GroupMerge::Union:
+        str = "union";
+        break;
+    default:
+        assert(0);
+    }
+
+    if (m_props.SetValue(MERGE, Variable(str))) {
+        SetDirty(true);
+    }
 }
 
 void GroupCreate::EnableBaseGroup(const std::string& expr)
 {
-    if (m_base_group &&
-        m_base_group_expr == expr) {
+    auto& props = m_props.GetProps();
+    assert(props[BASE_ON].Val().type == VarType::Bool 
+        && props[BASE_GROUP].Val().type == VarType::String);
+    if (props[BASE_ON].Val().b &&
+        static_cast<const char*>(props[BASE_GROUP].Val().p) == expr) {
         return;
     }
 
-    m_base_group      = true;
-    m_base_group_expr = expr;
+    m_props.SetValue(BASE_ON,    Variable(true));
+    m_props.SetValue(BASE_GROUP, Variable(expr));
 
     SetDirty(true);
 }
 
 void GroupCreate::DisableBaseGroup()
 {
-    NODE_PROP_SET(m_base_group, false);
+    if (m_props.SetValue(BASE_ON, Variable(false))) {
+        SetDirty(true);
+    }
 }
 
 void GroupCreate::EnableKeepInBounding()
 {
-    NODE_PROP_SET(m_keep_in_bounding, true);
+    if (m_props.SetValue(BOUNDING_ON, Variable(true))) {
+        SetDirty(true);
+    }
 }
 
 void GroupCreate::DisableKeepInBounding()
 {
-    NODE_PROP_SET(m_keep_in_bounding, false);
+    if (m_props.SetValue(BOUNDING_ON, Variable(false))) {
+        SetDirty(true);
+    }
 }
 
 void GroupCreate::EnableKeepByNormals(const sm::vec3& direction, float spread_angle)
 {
     bool dir_dirty = false;
-
-    if (m_props.SetValue(DIR_X, Variable(direction.x))) {
-        dir_dirty = true;
-    }
-    if (m_props.SetValue(DIR_Y, Variable(direction.y))) {
-        dir_dirty = true;
-    }
-    if (m_props.SetValue(DIR_Z, Variable(direction.z))) {
+    if (m_props.SetValue(DIR, Variable(direction))) {
         dir_dirty = true;
     }
 
-    if (m_keep_by_normals &&
+    auto& props = m_props.GetProps();
+    assert(props[NORMAL_ON].Val().type == VarType::Bool
+        && props[ANGLE].Val().type == VarType::Float);
+    if (props[NORMAL_ON].Val().b &&
         !dir_dirty &&
-        m_spread_angle == spread_angle) {
+        props[ANGLE].Val().f == spread_angle) {
         return;
     }
 
-    m_keep_by_normals = true;
-    m_spread_angle    = spread_angle;
+    m_props.SetValue(NORMAL_ON, Variable(true));
+    m_props.SetValue(ANGLE,     Variable(spread_angle));
 
     SetDirty(true);
 }
 
 void GroupCreate::DisableKeepByNormals()
 {
-    NODE_PROP_SET(m_keep_by_normals, false);
+    if (m_props.SetValue(NORMAL_ON, Variable(false))) {
+        SetDirty(true);
+    }
 }
 
 void GroupCreate::InitProps()
 {
-    m_props.Assign(DIR_X, PropNames[DIR_X], Variable(0.0f));
-    m_props.Assign(DIR_Y, PropNames[DIR_Y], Variable(0.0f));
-    m_props.Assign(DIR_Z, PropNames[DIR_Z], Variable(1.0f));
+    m_props.Assign(NAME,  PropNames[NAME],  Variable(std::string()));
+    m_props.Assign(TYPE,  PropNames[TYPE],  Variable(static_cast<int>(GroupType::Primitives)));
+    m_props.Assign(MERGE, PropNames[MERGE], Variable(std::string("replace")));
+
+    m_props.Assign(BASE_ON,    PropNames[BASE_ON],    Variable(false));
+    m_props.Assign(BASE_GROUP, PropNames[BASE_GROUP], Variable(std::string()));
+
+    m_props.Assign(BOUNDING_ON, PropNames[BOUNDING_ON], Variable(false));
+
+    m_props.Assign(NORMAL_ON, PropNames[NORMAL_ON], Variable(false));
+    m_props.Assign(DIR,       PropNames[DIR],       Variable(sm::vec3(0.0f, 0.0f, 1.0f)));
+    m_props.Assign(ANGLE,     PropNames[ANGLE],     Variable(180.0f));
 }
 
 void GroupCreate::SelectByNormals(Group& group)
 {
-    switch (m_group_type)
+    auto& props = m_props.GetProps();
+    assert(props[TYPE].Val().type == VarType::Int);
+    switch (static_cast<GroupType>(props[TYPE].Val().i))
     {
     case GroupType::Points:
         break;
@@ -151,14 +194,16 @@ void GroupCreate::SelectByNormals(Group& group)
         break;
     case GroupType::Primitives:
     {
+        assert(props[DIR].Val().type == VarType::Float3);
+        auto dir = static_cast<const sm::vec3*>(props[DIR].Val().p);
+
         auto& prims = m_geo_impl->GetAttr().GetPrimtives();
         for (size_t i = 0, n = prims.size(); i < n; ++i)
         {
             auto normal = prims[i]->CalcNormal();
-            auto& props = m_props.GetProps();
-            const sm::vec3 dir = sm::vec3(props[DIR_X].Val().f, props[DIR_Y].Val().f, props[DIR_Z].Val().f) * 0.5f;
-            auto angle = sm::get_angle(sm::vec3(0, 0, 0), dir, normal);
-            if (angle <= m_spread_angle * SM_DEG_TO_RAD) {
+            auto angle = sm::get_angle(sm::vec3(0, 0, 0), *dir, normal);
+            assert(props[ANGLE].Val().type == VarType::Float);
+            if (angle <= props[ANGLE].Val().f * SM_DEG_TO_RAD) {
                 group.Add(i);
             }
         }
@@ -177,7 +222,9 @@ void GroupCreate::SelectByBoundings(Group& group, std::shared_ptr<GeometryImpl>&
     }
 
     auto& brushes = brush_model->GetBrushes();
-    switch (m_group_type)
+    auto& props = m_props.GetProps();
+    assert(props[TYPE].Val().type == VarType::Int);
+    switch (static_cast<GroupType>(props[TYPE].Val().i))
     {
     case GroupType::Points:
     {
@@ -205,7 +252,9 @@ void GroupCreate::SelectByBoundings(Group& group, std::shared_ptr<GeometryImpl>&
 
 void GroupCreate::SelectAll(Group& group)
 {
-    switch (m_group_type)
+    auto& props = m_props.GetProps();
+    assert(props[TYPE].Val().type == VarType::Int);
+    switch (static_cast<GroupType>(props[TYPE].Val().i))
     {
     case GroupType::Points:
     {
@@ -241,6 +290,21 @@ void GroupCreate::SelectAll(Group& group)
         break;
     default:
         assert(0);
+    }
+}
+
+GroupMerge GroupCreate::GetMergeOP() const
+{
+    auto& props = m_props.GetProps();
+    assert(props[MERGE].Val().type == VarType::String);
+    auto str = static_cast<const char*>(props[MERGE].Val().p);
+    if (strcmp(str, "replace")) {
+        return GroupMerge::Replace;
+    } else if (strcmp(str, "union")) {
+        return GroupMerge::Union;
+    } else {
+        assert(0);
+        return GroupMerge::Replace;
     }
 }
 

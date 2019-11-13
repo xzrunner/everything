@@ -20,7 +20,9 @@ void Blast::Execute(Evaluator& eval)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
-    auto group = m_geo_impl->GetGroup().Query(m_group_name);
+    auto& props = m_props.GetProps();
+    assert(props[GROUP].Val().type == VarType::String);
+    auto group = m_geo_impl->GetGroup().Query(static_cast<const char*>(props[GROUP].Val().p));
     if (!group) {
         return;
     }
@@ -76,7 +78,9 @@ void Blast::Execute(Evaluator& eval)
 
 void Blast::SetGroupName(const std::string& name)
 {
-    NODE_PROP_SET(m_group_name, name);
+    if (m_props.SetValue(GROUP, Variable(name))) {
+        SetDirty(true);
+    }
 }
 
 void Blast::SetGroupType(GroupType type)
@@ -86,14 +90,24 @@ void Blast::SetGroupType(GroupType type)
 
 void Blast::SetDeleteNonSelected(bool del_non_selected)
 {
-    NODE_PROP_SET(m_delete_non_selected, del_non_selected);
+    if (m_props.SetValue(DEL_NON_SEL, Variable(del_non_selected))) {
+        SetDirty(true);
+    }
+}
+
+void Blast::InitProps()
+{
+    m_props.Assign(GROUP, PropNames[GROUP], Variable(std::string()));
+    m_props.Assign(DEL_NON_SEL, PropNames[DEL_NON_SEL], Variable(false));
 }
 
 bool Blast::SetupDelFlags(const Group& group, size_t count,
                           std::vector<bool>& del_flags) const
 {
     bool dirty = false;
-    if (m_delete_non_selected)
+    auto& props = m_props.GetProps();
+    assert(props[DEL_NON_SEL].Val().type == VarType::Bool);
+    if (props[DEL_NON_SEL].Val().b)
     {
         if (count > 0) {
             dirty = true;

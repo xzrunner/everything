@@ -16,19 +16,14 @@ class Knife : public Node
 public:
     enum PropID
     {
-        ORIGINX_X,
-        ORIGINX_Y,
-        ORIGINX_Z,
-
-        DIR_X,
-        DIR_Y,
-        DIR_Z,
+        ORIGINX,
+        DIR,
 
         MAX_BUILD_IN_PROP,
     };
 
     static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
-        "originx", "originy", "originz", "dirx", "diry", "dirz",
+        "origin", "dir"
     };
 
 public:

@@ -86,10 +86,10 @@ TEST_CASE("parent node prop")
     SECTION("direct props")
     {
         auto& box_props = const_cast<sop::NodePropsMgr&>(box->GetProps());
-        box_props.SetExpr(sop::node::Box::SIZE_X, "ch(\"../BoxLength\")");
-        box_props.SetExpr(sop::node::Box::SIZE_Y, "ch(\"../BoxHeight\")");
-        box_props.SetExpr(sop::node::Box::SIZE_Z, "ch(\"../BoxWidth\")");
-        box_props.SetExpr(sop::node::Box::POS_Y,  "ch(\"sizey\")/2");
+        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../BoxLength\")", 0);
+        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../BoxHeight\")", 1);
+        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../BoxWidth\")", 2);
+        box_props.SetExpr(sop::node::Box::POS,  "ch(\"sizey\")/2", 1);
 
         eval.Update();
 
@@ -99,10 +99,10 @@ TEST_CASE("parent node prop")
     SECTION("node to props")
     {
         auto& box_props = const_cast<sop::NodePropsMgr&>(box->GetProps());
-        box_props.SetExpr(sop::node::Box::SIZE_X, "ch(\"../../geo/BoxLength\")");
-        box_props.SetExpr(sop::node::Box::SIZE_Y, "ch(\"../../geo/BoxHeight\")");
-        box_props.SetExpr(sop::node::Box::SIZE_Z, "ch(\"../../geo/BoxWidth\")");
-        box_props.SetExpr(sop::node::Box::POS_Y,  "ch(\"sizey\")/2");
+        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../../geo/BoxLength\")", 0);
+        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../../geo/BoxHeight\")", 1);
+        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../../geo/BoxWidth\")", 2);
+        box_props.SetExpr(sop::node::Box::POS,  "ch(\"sizey\")/2", 1);
 
         eval.Update();
 
@@ -126,9 +126,9 @@ TEST_CASE("use other's prop")
 
     auto box = std::make_shared<sop::node::Box>();
     auto& box_props = const_cast<sop::NodePropsMgr&>(box->GetProps());
-    box_props.SetExpr(sop::node::Box::SIZE_X, "ch(\"../controller/Width\")");
-    box_props.SetExpr(sop::node::Box::SIZE_Y, "ch(\"../controller/Height\")");
-    box_props.SetExpr(sop::node::Box::SIZE_Z, "ch(\"../controller/Length\")");
+    box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../controller/Width\")", 0);
+    box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../controller/Height\")", 1);
+    box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../controller/Length\")", 2);
     eval.AddNode(box);
 
     eval.Connect({ null, 0 }, { box, 0 });
