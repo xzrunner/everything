@@ -115,7 +115,7 @@ REGIST_NODE_TYPE(PolyFrame, polyframe)
 
 // primitive
 REGIST_NODE_TYPE(Box, box)
-REGIST_NODE_TYPE(Curve, line)
+REGIST_NODE_TYPE(Curve, curve)
 REGIST_NODE_TYPE(Grid, grid)
 REGIST_NODE_TYPE(Line, line)
 REGIST_NODE_TYPE(Primitive, primitive)
