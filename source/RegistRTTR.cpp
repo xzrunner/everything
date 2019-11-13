@@ -59,8 +59,8 @@
 #include "sop/node/Split.h"
 #include "sop/node/Switch.h"
 
-#define REGIST_NODE_TYPE(name)                                 \
-	rttr::registration::class_<sop::node::name>("sop::"#name)  \
+#define REGIST_NODE_TYPE(type, name)                           \
+	rttr::registration::class_<sop::node::type>("sop::"#name)  \
 		.constructor<>()                                       \
 	;
 
@@ -68,75 +68,75 @@ RTTR_REGISTRATION
 {
 
 // base
-REGIST_NODE_TYPE(Geometry)
+REGIST_NODE_TYPE(Geometry, geometry)
 
 // attribute
-REGIST_NODE_TYPE(AttributeCreate)
-REGIST_NODE_TYPE(AttributePromote)
-REGIST_NODE_TYPE(AttributeTransfer)
-REGIST_NODE_TYPE(AttributeWrangle)
-REGIST_NODE_TYPE(Measure)
-REGIST_NODE_TYPE(Sort)
-
-// import
-REGIST_NODE_TYPE(File)
-REGIST_NODE_TYPE(ObjectMerge)
+REGIST_NODE_TYPE(AttributeCreate, attribcreate::2.0)
+REGIST_NODE_TYPE(AttributePromote, attribpromote)
+REGIST_NODE_TYPE(AttributeTransfer, attribtransfer)
+REGIST_NODE_TYPE(AttributeWrangle, attribwrangle)
+REGIST_NODE_TYPE(Measure, measure)
+REGIST_NODE_TYPE(Sort, sort)
 
 // group
-REGIST_NODE_TYPE(GroupCreate)
-REGIST_NODE_TYPE(GroupExpression)
-REGIST_NODE_TYPE(GroupPromote)
+REGIST_NODE_TYPE(GroupCreate, groupcreate)
+REGIST_NODE_TYPE(GroupExpression, groupexpression)
+REGIST_NODE_TYPE(GroupPromote, grouppromote)
+
+// import
+REGIST_NODE_TYPE(File, file)
+REGIST_NODE_TYPE(ObjectMerge, object_merge)
 
 // manipulate
-REGIST_NODE_TYPE(Delete)
-REGIST_NODE_TYPE(Peak)
-REGIST_NODE_TYPE(Transform)
+REGIST_NODE_TYPE(Delete, delete)
+REGIST_NODE_TYPE(Peak, peak)
+REGIST_NODE_TYPE(Transform, xform)
 
 // material
-REGIST_NODE_TYPE(Color)
-REGIST_NODE_TYPE(UVLayout)
-REGIST_NODE_TYPE(UVQuickShade)
-REGIST_NODE_TYPE(UVTransform)
-REGIST_NODE_TYPE(UVUnwrap)
+REGIST_NODE_TYPE(Color, color)
+REGIST_NODE_TYPE(UVLayout, uvlayout)
+REGIST_NODE_TYPE(UVQuickShade, uvquickshade)
+REGIST_NODE_TYPE(UVTransform, uvtransform::2.0)
+REGIST_NODE_TYPE(UVUnwrap, uvunwrap)
 
 // NURBs
-REGIST_NODE_TYPE(Carve)
+REGIST_NODE_TYPE(Carve, carve)
 
 // polygon
-REGIST_NODE_TYPE(Add)
-REGIST_NODE_TYPE(Boolean)
-REGIST_NODE_TYPE(Divide)
-REGIST_NODE_TYPE(Fuse)
-REGIST_NODE_TYPE(Knife)
-REGIST_NODE_TYPE(Normal)
-REGIST_NODE_TYPE(PolyExtrude)
-REGIST_NODE_TYPE(PolyFill)
-REGIST_NODE_TYPE(PolyFrame)
+REGIST_NODE_TYPE(Add, add)
+REGIST_NODE_TYPE(Boolean, boolean::2.0)
+REGIST_NODE_TYPE(Divide, divide)
+REGIST_NODE_TYPE(Fuse, fuse)
+REGIST_NODE_TYPE(Knife, knife)
+REGIST_NODE_TYPE(Normal, normal)
+REGIST_NODE_TYPE(PolyExtrude, polyextrude::2.0)
+REGIST_NODE_TYPE(PolyFill, polyfill)
+REGIST_NODE_TYPE(PolyFrame, polyframe)
 
 // primitive
-REGIST_NODE_TYPE(Box)
-REGIST_NODE_TYPE(Curve)
-REGIST_NODE_TYPE(Grid)
-REGIST_NODE_TYPE(Line)
-REGIST_NODE_TYPE(Primitive)
-REGIST_NODE_TYPE(Sphere)
+REGIST_NODE_TYPE(Box, box)
+REGIST_NODE_TYPE(Curve, line)
+REGIST_NODE_TYPE(Grid, grid)
+REGIST_NODE_TYPE(Line, line)
+REGIST_NODE_TYPE(Primitive, primitive)
+REGIST_NODE_TYPE(Sphere, sphere)
 // primitive extern
-REGIST_NODE_TYPE(Dungeon)
+REGIST_NODE_TYPE(Dungeon, dungeon)
 
 // rigging
-REGIST_NODE_TYPE(Lattice)
+REGIST_NODE_TYPE(Lattice, lattice)
 
 // utility
-REGIST_NODE_TYPE(Blast)
-REGIST_NODE_TYPE(CopyToPoints)
-REGIST_NODE_TYPE(ForeachPrimBegin)
-REGIST_NODE_TYPE(ForeachPrimEnd)
-REGIST_NODE_TYPE(Merge)
-REGIST_NODE_TYPE(Null)
-REGIST_NODE_TYPE(Output)
-REGIST_NODE_TYPE(Python)
-REGIST_NODE_TYPE(Split)
-REGIST_NODE_TYPE(Switch)
+REGIST_NODE_TYPE(Blast, blast)
+REGIST_NODE_TYPE(CopyToPoints, copytopoints)
+REGIST_NODE_TYPE(ForeachPrimBegin, block_begin)
+REGIST_NODE_TYPE(ForeachPrimEnd, block_end)
+REGIST_NODE_TYPE(Merge, merge)
+REGIST_NODE_TYPE(Null, null)
+REGIST_NODE_TYPE(Output, output)
+REGIST_NODE_TYPE(Python, python)
+REGIST_NODE_TYPE(Split, split)
+REGIST_NODE_TYPE(Switch, switch)
 
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sop/typedef.h"
+#include "sop/PyParmValue.h"
 #include "sop/PyCommonTypes.h"
 
 #include <SM_Vector.h>
@@ -60,6 +61,9 @@ public:
     boost::python::list IndirectInputs() { return boost::python::list(); }
 
     static void SetContext(Evaluator* ctx) { m_eval = ctx; }
+
+private:
+    NodePtr CreateNodeByName(const std::string& name) const;
 
 private:
     NodePtr m_node = nullptr;
