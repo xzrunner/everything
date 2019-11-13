@@ -91,7 +91,7 @@ void NodeProxy::SetInput(int input_index, const std::shared_ptr<NodeProxy>& item
         return;
     }
 
-    if (input_index >= m_node->GetImports().size() &&
+    if (input_index >= static_cast<int>(m_node->GetImports().size()) &&
         m_node->get_type() == rttr::type::get<node::Merge>()) {
         int num = input_index - m_node->GetImports().size() + 1;
         std::static_pointer_cast<node::Merge>(m_node)->AddInputPorts(num);
