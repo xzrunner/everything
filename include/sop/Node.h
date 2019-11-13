@@ -22,6 +22,12 @@ public:
 
     virtual void AddInputPorts(size_t num) {}
 
+    virtual void SetParm(const std::string& key, const Variable& val)
+    {
+        auto type = get_type().get_name().to_string();
+        printf("setparm %s, %s\n", type.c_str(), key.c_str());
+    }
+
     struct Port;
     void SetImports(const std::vector<Port>& imports) { m_imports = imports; }
     void SetExports(const std::vector<Port>& exports) { m_exports = exports; }

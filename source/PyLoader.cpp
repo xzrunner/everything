@@ -33,16 +33,14 @@ std::shared_ptr<NodeProxy> hou_get_node(const std::string& path)
 
 BOOST_PYTHON_MODULE(hou)
 {
-    static bool binded = false;
-    if (!binded) {
     BindCommonTypes();
     BindParmTemplate();
 
     BindParmValue();
     BindNodeProxy();
 
-        binded = true;
-    }
+    register_ptr_to_python<std::shared_ptr<NodeProxy>>();
+    def("node", hou_get_node);
 }
 
 }
@@ -54,20 +52,11 @@ PyLoader::PyLoader(Evaluator& eval)
     : m_eval(eval)
 {
     static bool inited = false;
-    Py_Initialize();
     PyImport_AppendInittab("hou", &inithou);
-//    Py_Initialize();
 
     if (!inited)
     {
-//        PyImport_AppendInittab("hou", &inithou);
-//        Py_Initialize();
-
-        //import("hou");
-//        PyRun_SimpleString(R"(
-//import hou
-//)");
-
+        Py_Initialize();
 
         inited = true;
     }
@@ -83,6 +72,8 @@ void PyLoader::RunFile(const std::string& filepath)
 //    import("hou");
     PyRun_SimpleString(R"(
 import hou
+hou_parent = None
+hou_node = None
 )");
 
     PrepareContext();
@@ -96,7 +87,12 @@ import hou
     std::stringstream buffer;
     buffer << fin.rdbuf();
 
-    PyRun_SimpleString(buffer.str().c_str());
+    try {
+        PyRun_SimpleString(buffer.str().c_str());
+//        exec(buffer.str().c_str());
+    } catch (...) {
+        boost::python::handle_exception();
+    }
 
     fin.close();
 
@@ -107,6 +103,7 @@ import hou
     PyRun_SimpleString(R"(
 del hou
 )");
+
 //    PyRun_SimpleString(R"(
 //import sys
 //sys.modules['hou'].__dict__.clear()
