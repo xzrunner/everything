@@ -4,6 +4,7 @@
 #include "sop/PyLoader.h"
 #include "sop/PyCommonTypes.h"
 #include "sop/PyParmTemplate.h"
+#include "sop/PyParmValue.h"
 #include "sop/PyNodeProxy.h"
 #include "sop/Evaluator.h"
 
@@ -34,12 +35,11 @@ BOOST_PYTHON_MODULE(hou)
 {
     static bool binded = false;
     if (!binded) {
-        BindCommonTypes();
-        BindParmTemplate();
-        BindNodeProxy();
+    BindCommonTypes();
+    BindParmTemplate();
 
-        register_ptr_to_python<std::shared_ptr<NodeProxy>>();
-        def("node", hou_get_node);
+    BindParmValue();
+    BindNodeProxy();
 
         binded = true;
     }

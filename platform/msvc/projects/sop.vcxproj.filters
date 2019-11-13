@@ -308,6 +308,9 @@
     <ClInclude Include="..\..\..\include\sop\node\Python.h">
       <Filter>nodes\utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\PyParmValue.h">
+      <Filter>serialize\python</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -514,6 +517,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Python.cpp">
       <Filter>nodes\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\PyParmValue.cpp">
+      <Filter>serialize\python</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

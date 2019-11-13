@@ -41,6 +41,7 @@
     <ClInclude Include="..\..\..\include\sop\PyLoader.h" />
     <ClInclude Include="..\..\..\include\sop\PyNodeProxy.h" />
     <ClInclude Include="..\..\..\include\sop\PyParmTemplate.h" />
+    <ClInclude Include="..\..\..\include\sop\PyParmValue.h" />
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAdaptor.h" />
     <ClInclude Include="..\..\..\include\sop\GeoAttribute.h" />
@@ -119,6 +120,7 @@
     <ClCompile Include="..\..\..\source\PyLoader.cpp" />
     <ClCompile Include="..\..\..\source\PyNodeProxy.cpp" />
     <ClCompile Include="..\..\..\source\PyParmTemplate.cpp" />
+    <ClCompile Include="..\..\..\source\PyParmValue.cpp" />
     <ClCompile Include="..\..\..\source\SOP.cpp" />
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp" />
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp" />
