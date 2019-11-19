@@ -94,6 +94,11 @@ void Peak::SetDistance(float dist)
     }
 }
 
+void Peak::SetUpdateNorm(bool update_norm)
+{
+    NODE_PROP_SET(m_update_normals, update_norm);
+}
+
 void Peak::InitProps()
 {
     m_props.Assign(DIST, PropNames[DIST], Variable(0.0f));

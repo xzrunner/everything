@@ -43,6 +43,8 @@ public:
 
     void SetDistance(float dist);
 
+    void SetUpdateNorm(bool update_norm);
+
 private:
     void InitProps();
 
@@ -55,7 +57,7 @@ private:
     GroupType   m_group_type = GroupType::GuessFromGroup;
 
     // recompute point normals
-    bool m_update_normals = false;
+    bool m_update_normals = true;
 
     RTTR_ENABLE(Node)
 
