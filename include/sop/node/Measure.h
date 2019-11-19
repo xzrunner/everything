@@ -15,6 +15,8 @@ public:
     {
         Perimeter,
         Area,
+        Curvature,
+        Volume,
     };
 
 public:
