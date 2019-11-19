@@ -130,9 +130,6 @@
     <ClInclude Include="..\..\..\include\sop\Node.h">
       <Filter>dataset\node</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\NodeVar.h">
-      <Filter>dataset\node</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\NodeVarType.h">
       <Filter>dataset\node</Filter>
     </ClInclude>

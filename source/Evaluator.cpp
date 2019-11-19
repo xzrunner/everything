@@ -80,29 +80,29 @@ void Evaluator::PropChanged(const NodePtr& node)
     m_dirty = true;
 }
 
-void Evaluator::Connect(const Node::PortAddr& from, const Node::PortAddr& to)
+void Evaluator::Connect(const hdiop::NodePortAddr& from, const hdiop::NodePortAddr& to)
 {
-    make_connecting(from, to);
+    hdiop::make_connecting<NodeVarType>(from, to);
 
     auto node = to.node.lock();
-    assert(node);
-    SetTreeDirty(node);
+    assert(node && node->get_type().is_derived_from<Node>());
+    SetTreeDirty(std::static_pointer_cast<Node>(node));
 
     m_dirty = true;
 }
 
-void Evaluator::Disconnect(const Node::PortAddr& from, const Node::PortAddr& to)
+void Evaluator::Disconnect(const hdiop::NodePortAddr& from, const hdiop::NodePortAddr& to)
 {
-    disconnect(from, to);
+    hdiop::disconnect<NodeVarType>(from, to);
 
     auto node = to.node.lock();
-    assert(node);
-    SetTreeDirty(node);
+    assert(node && node->get_type().is_derived_from<Node>());
+    SetTreeDirty(std::static_pointer_cast<Node>(node));
 
     m_dirty = true;
 }
 
-void Evaluator::RebuildConnections(const std::vector<std::pair<Node::PortAddr, Node::PortAddr>>& conns)
+void Evaluator::RebuildConnections(const std::vector<std::pair<hdiop::NodePortAddr, hdiop::NodePortAddr>>& conns)
 {
     // update dirty
     for (auto itr : m_nodes_map) {
@@ -115,20 +115,20 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<Node::PortAddr, N
     for (auto itr : m_nodes_map)
     {
         for (auto& in : itr.second->GetImports()) {
-            const_cast<Node::Port&>(in).conns.clear();
+            const_cast<hdiop::NodePort<sop::NodeVarType>&>(in).conns.clear();
         }
         for (auto& out : itr.second->GetExports()) {
-            const_cast<Node::Port&>(out).conns.clear();
+            const_cast<hdiop::NodePort<sop::NodeVarType>&>(out).conns.clear();
         }
     }
 
     // add conns
     for (auto& conn : conns)
     {
-        auto t_node = conn.second.node.lock();
-        assert(t_node);
-        SetTreeDirty(t_node);
-        make_connecting(conn.first, conn.second);
+        auto node = conn.second.node.lock();
+        assert(node && node->get_type().is_derived_from<Node>());
+        SetTreeDirty(std::static_pointer_cast<Node>(node));
+        hdiop::make_connecting<NodeVarType>(conn.first, conn.second);
     }
 
     m_dirty = true;
@@ -459,10 +459,13 @@ void Evaluator::SetTreeDirty(const NodePtr& root)
     {
         auto n = buf.front(); buf.pop();
         n->SetDirty(true);
-        for (auto& port : n->GetExports()) {
-            for (auto& conn : port.conns) {
+        for (auto& port : n->GetExports())
+        {
+            for (auto& conn : port.conns)
+            {
                 auto node = conn.node.lock();
-                buf.push(node.get());
+                assert(node && node->get_type().is_derived_from<Node>());
+                buf.push(std::static_pointer_cast<Node>(node).get());
             }
         }
     }

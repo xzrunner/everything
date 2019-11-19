@@ -39,7 +39,8 @@ NodePtr NodeHelper::GetInputNode(const Node& node, size_t idx)
     }
     else
     {
-        return in_node;
+        assert(in_node->get_type().is_derived_from<Node>());
+        return std::static_pointer_cast<Node>(in_node);
     }
 }
 

@@ -339,12 +339,12 @@ TEST_CASE("foreach primitive")
     top_face_group->SetGroupType(sop::GroupType::Primitives);
     top_face_group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
     eval.AddNode(top_face_group);
-    sop::make_connecting({ src_box, 0 }, { top_face_group, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ src_box, 0 }, { top_face_group, 0 });
     auto top_face_blast = std::make_shared<sop::node::Blast>();
     top_face_blast->SetGroupName("top_face");
     top_face_blast->SetGroupType(sop::GroupType::GuessFromGroup);
     eval.AddNode(top_face_blast);
-    sop::make_connecting({ top_face_group, 0 }, { top_face_blast, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ top_face_group, 0 }, { top_face_blast, 0 });
 
     // cut bottom face
     auto btm_face_group = std::make_shared<sop::node::GroupCreate>();
@@ -352,40 +352,40 @@ TEST_CASE("foreach primitive")
     btm_face_group->SetGroupType(sop::GroupType::Primitives);
     btm_face_group->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
     eval.AddNode(btm_face_group);
-    sop::make_connecting({ top_face_blast, 0 }, { btm_face_group, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ top_face_blast, 0 }, { btm_face_group, 0 });
     auto btm_face_blast = std::make_shared<sop::node::Blast>();
     btm_face_blast->SetGroupName("btm_face");
     btm_face_blast->SetGroupType(sop::GroupType::GuessFromGroup);
     eval.AddNode(btm_face_blast);
-    sop::make_connecting({ btm_face_group, 0 }, { btm_face_blast, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ btm_face_group, 0 }, { btm_face_blast, 0 });
 
     auto foreach_begin = std::make_shared<sop::node::ForeachPrimBegin>();
     eval.AddNode(foreach_begin);
 
-    sop::make_connecting({ btm_face_blast, 0 }, { foreach_begin, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ btm_face_blast, 0 }, { foreach_begin, 0 });
 
     auto del = std::make_shared<sop::node::Delete>();
     del->SetFilterExpr("@P.y > 0");
     eval.AddNode(del);
 
-    sop::make_connecting({ foreach_begin, 0 }, { del, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ foreach_begin, 0 }, { del, 0 });
 
     auto add = std::make_shared<sop::node::Add>();
     eval.AddNode(add);
 
-    sop::make_connecting({ del, 0 }, { add, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ del, 0 }, { add, 0 });
 
     auto carve = std::make_shared<sop::node::Carve>();
     carve->SetFirstU(0.25f);
     carve->SetSecondU(0.75f);
     eval.AddNode(carve);
 
-    sop::make_connecting({ add, 0 }, { carve, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ add, 0 }, { carve, 0 });
 
     auto foreach_end = std::make_shared<sop::node::ForeachPrimEnd>();
     eval.AddNode(foreach_end);
 
-    sop::make_connecting({ carve, 0 }, { foreach_end, 0 });
+    hdiop::make_connecting<sop::NodeVarType>({ carve, 0 }, { foreach_end, 0 });
 
     auto dst_box = std::make_shared<sop::node::Box>();
     dst_box->SetSize({ 0.1f, 0.1f, 0.1f });

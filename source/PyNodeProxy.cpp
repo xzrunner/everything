@@ -97,7 +97,7 @@ void NodeProxy::SetInput(int input_index, const std::shared_ptr<NodeProxy>& item
         std::static_pointer_cast<node::Merge>(m_node)->AddInputPorts(num);
     }
 
-    make_connecting({ item_to_become_input->m_node, output_index }, { m_node, input_index });
+    hdiop::make_connecting<NodeVarType>({ item_to_become_input->m_node, output_index }, { m_node, input_index });
 }
 
 NodePtr NodeProxy::CreateNodeByName(const std::string& name) const

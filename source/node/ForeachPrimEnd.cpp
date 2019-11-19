@@ -5,6 +5,8 @@
 #include "sop/NodeHelper.h"
 #include "sop/GroupRebuild.h"
 
+#include <hdiop/typedef.h>
+
 #include <queue>
 
 #include <assert.h>
@@ -63,7 +65,7 @@ void ForeachPrimEnd::SetSinglePassOffset(int single_pass_offset)
 
 NodePtr ForeachPrimEnd::FindForeachBegin() const
 {
-    std::queue<NodePtr> buf;
+    std::queue<hdiop::NodePtr> buf;
     assert(m_imports.size() == 1);
     if (m_imports[0].conns.empty()) {
         return nullptr;
@@ -76,13 +78,14 @@ NodePtr ForeachPrimEnd::FindForeachBegin() const
     while (!buf.empty())
     {
         auto n = buf.front(); buf.pop();
-        assert(n);
+        assert(n && n->get_type().is_derived_from<Node>());
+        auto sop_n = std::static_pointer_cast<Node>(n);
 
-        if (n->get_type() == rttr::type::get<node::ForeachPrimBegin>()) {
-            return n;
+        if (sop_n->get_type() == rttr::type::get<node::ForeachPrimBegin>()) {
+            return sop_n;
         }
 
-        for (auto& in : n->GetImports()) {
+        for (auto& in : sop_n->GetImports()) {
             for (auto& conn : in.conns) {
                 buf.push(conn.node.lock());
             }
@@ -113,8 +116,10 @@ std::set<NodePtr> ForeachPrimEnd::FindClosureNodes(const NodePtr& begin) const
             for (auto& conn : out.conns)
             {
                 auto node = conn.node.lock();
-                if (nodes.find(node) == nodes.end()) {
-                    buf.push(node);
+                assert(node && node->get_type().is_derived_from<Node>());
+                auto sop_n = std::static_pointer_cast<Node>(node);
+                if (nodes.find(sop_n) == nodes.end()) {
+                    buf.push(sop_n);
                 }
             }
         }
@@ -142,8 +147,10 @@ std::set<NodePtr> ForeachPrimEnd::FindClosureNodes(const NodePtr& begin) const
                 for (auto& conn : in.conns)
                 {
                     auto node = conn.node.lock();
-                    if (nodes.find(node) == nodes.end() && node != begin) {
-                        buf.push(node);
+                    assert(node && node->get_type().is_derived_from<Node>());
+                    auto sop_n = std::static_pointer_cast<Node>(node);
+                    if (nodes.find(sop_n) == nodes.end() && node != begin) {
+                        buf.push(sop_n);
                     }
                 }
             }
