@@ -4,6 +4,7 @@
 #include "sop/node/AttributeCreate.h"
 #include "sop/node/AttributePromote.h"
 #include "sop/node/AttributeTransfer.h"
+#include "sop/node/AttributeVOP.h"
 #include "sop/node/AttributeWrangle.h"
 #include "sop/node/Measure.h"
 #include "sop/node/Sort.h"
@@ -74,6 +75,7 @@ REGIST_NODE_TYPE(Geometry, geometry)
 REGIST_NODE_TYPE(AttributeCreate, attribcreate::2.0)
 REGIST_NODE_TYPE(AttributePromote, attribpromote)
 REGIST_NODE_TYPE(AttributeTransfer, attribtransfer)
+REGIST_NODE_TYPE(AttributeVOP, attribvop)
 REGIST_NODE_TYPE(AttributeWrangle, attribwrangle)
 REGIST_NODE_TYPE(Measure, measure)
 REGIST_NODE_TYPE(Sort, sort)

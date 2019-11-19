@@ -125,6 +125,9 @@
     <ProjectReference Include="..\..\..\..\volume\platform\msvc\projects\volume.vcxproj">
       <Project>{e9e3c6d8-5b33-4afc-b1a1-0c1541bf8ddf}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\vop\platform\msvc\projects\vop.vcxproj">
+      <Project>{ee9ef814-c26a-45d3-a14e-323235c09d34}</Project>
+    </ProjectReference>
     <ProjectReference Include="sop.vcxproj">
       <Project>{a1c0a31a-8fa7-4835-afd5-77f44c93e040}</Project>
     </ProjectReference>
