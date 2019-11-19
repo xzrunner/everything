@@ -25,6 +25,9 @@ void Knife::Execute(Evaluator& eval)
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
     auto brush_model = m_geo_impl->GetBrushModel();
+    if (!brush_model) {
+        return;
+    }
     assert(brush_model);
 
     GeoAttrRebuild attr_rebuild(*m_geo_impl, true);
