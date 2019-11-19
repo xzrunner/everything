@@ -74,18 +74,22 @@ void Split::InitSubNodes()
     m_children.resize(SUB_MAX_COUNT);
 
     auto blast0 = std::make_shared<Blast>();
+    blast0->SetName("blast1");
     blast0->SetDeleteNonSelected(true);
     m_children[SUB_BLAST_0] = blast0;
 
     auto output0 = std::make_shared<Output>();
+    output0->SetName("output1");
     output0->SetOutputIdx(0);
     m_children[SUB_OUTPUT_0] = output0;
 
     auto blast1 = std::make_shared<Blast>();
+    blast1->SetName("blast2");
     blast1->SetDeleteNonSelected(false);
     m_children[SUB_BLAST_1] = blast1;
 
     auto output1 = std::make_shared<Output>();
+    output1->SetName("output2");
     output1->SetOutputIdx(1);
     m_children[SUB_OUTPUT_1] = output1;
 }
