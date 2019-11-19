@@ -41,7 +41,24 @@ void Delete::Execute(Evaluator& eval)
         assert(v.type == VarType::Bool);
         if ((v.b && !m_delete_non_selected) ||
             (!v.b && m_delete_non_selected)) {
-            del_flags[i] = true;
+            bool b = false;
+            if (v.type == VarType::Float) {
+                if (v.f == 0.0f) {
+                    b = false;
+                } else if (v.f == 1.0f) {
+                    b = true;
+                } else {
+                    assert(0);
+                }
+            } else if (v.type == VarType::Bool) {
+                b = v.b;
+            } else {
+                assert(0);
+            }
+            if ((b && !m_delete_non_selected) ||
+                (!b && m_delete_non_selected)) {
+                del_flags[i] = true;
+            }
         }
     }
 
