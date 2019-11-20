@@ -23,10 +23,17 @@ public:
         Subtract,
     };
 
-    enum class TreatAs
+    enum class GeoType
     {
         Solid,
         Surface,
+    };
+
+    enum class SubType
+    {
+        AMinusB,
+        BMinusA,
+        Both,
     };
 
 public:
@@ -45,13 +52,13 @@ public:
 
     void SetOperator(Operator op);
 
-    void SetTreatAs(TreatAs a, TreatAs b);
+    void SetGeoType(GeoType a, GeoType b);
 
 private:
     Operator m_operator = Operator::Intersect;
 
-    TreatAs m_a_type = TreatAs::Solid;
-    TreatAs m_b_type = TreatAs::Solid;
+    GeoType m_a_type = GeoType::Solid;
+    GeoType m_b_type = GeoType::Solid;
 
     RTTR_ENABLE(Node)
 

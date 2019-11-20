@@ -10,6 +10,14 @@ namespace node
 class UVUnwrap : public Node
 {
 public:
+    enum class ScaleType
+    {
+        None,
+        Uniform,
+        Stretch,
+    };
+
+public:
     UVUnwrap()
     {
         m_imports = {

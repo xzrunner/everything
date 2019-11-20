@@ -29,7 +29,7 @@ TEST_CASE("attribute create")
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
     std::vector<sop::node::AttributeCreate::Item> items;
-    items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
+    items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
     attr_create->SetAttrItems(items);
     eval.AddNode(attr_create);
 
@@ -63,7 +63,7 @@ TEST_CASE("attribute promote")
     SECTION("vertex to point")
     {
         std::vector<sop::node::AttributeCreate::Item> items;
-        items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Vertex, sop::VarValue(0.1f), sop::VarValue(0.0f));
+        items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Vertex, sop::VarValue(0.1f), sop::VarValue(0.0f));
         attr_create->SetAttrItems(items);
 
         attr_promote->SetAttrName("new_attr");
@@ -82,7 +82,7 @@ TEST_CASE("attribute promote")
     SECTION("point to vertex")
     {
         std::vector<sop::node::AttributeCreate::Item> items;
-        items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
+        items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
         attr_create->SetAttrItems(items);
 
         attr_promote->SetAttrName("new_attr");
@@ -118,7 +118,7 @@ TEST_CASE("attribute transfer")
     {
         auto attr_create = std::make_shared<sop::node::AttributeCreate>();
         std::vector<sop::node::AttributeCreate::Item> items;
-        items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
+        items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
         attr_create->SetAttrItems(items);
         eval.AddNode(attr_create);
 
@@ -142,7 +142,7 @@ TEST_CASE("attribute transfer")
         auto attr_create_f = std::make_shared<sop::node::AttributeCreate>();
         {
             std::vector<sop::node::AttributeCreate::Item> items;
-            items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
+            items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
             attr_create_f->SetAttrItems(items);
         }
         eval.AddNode(attr_create_f);
@@ -150,7 +150,7 @@ TEST_CASE("attribute transfer")
         auto attr_create_t = std::make_shared<sop::node::AttributeCreate>();
         {
             std::vector<sop::node::AttributeCreate::Item> items;
-            items.emplace_back("new_attr", sop::GeoAttrType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.2f), sop::VarValue(0.0f));
+            items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.2f), sop::VarValue(0.0f));
             attr_create_t->SetAttrItems(items);
         }
         eval.AddNode(attr_create_t);

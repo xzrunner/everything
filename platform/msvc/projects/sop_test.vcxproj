@@ -44,9 +44,6 @@
     <ProjectReference Include="..\..\..\..\halfedge\platform\msvc\projects\halfedge.vcxproj">
       <Project>{d9b1b541-5bcc-4a5f-8a7a-2ced3cead3dd}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\hdiop\platform\msvc\projects\hdiop.vcxproj">
-      <Project>{0120800f-d01f-4106-bd08-64fbcdff9ebd}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\js\platform\msvc\projects\js.vcxproj">
       <Project>{68c18da9-79bb-43a5-9e0c-79740aea954b}</Project>
     </ProjectReference>

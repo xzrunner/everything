@@ -10,6 +10,15 @@ namespace node
 class ForeachPrimBegin : public Node
 {
 public:
+    enum class Method
+    {
+        Feedback,
+        PieceOrPoint,
+        Metadata,
+        Input,
+    };
+
+public:
     ForeachPrimBegin()
     {
         m_imports = {

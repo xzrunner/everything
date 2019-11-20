@@ -13,6 +13,13 @@ namespace node
 class PolyExtrude : public Node
 {
 public:
+    enum class Extrusion
+    {
+        PrimEdgeNorm,
+        PointNorm,
+    };
+
+public:
     PolyExtrude()
     {
         m_imports = {

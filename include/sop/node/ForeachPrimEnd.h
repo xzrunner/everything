@@ -11,6 +11,26 @@ namespace node
 class ForeachPrimEnd : public Node
 {
 public:
+    enum class IterMethod
+    {
+        AutoDetectFromInputs,
+        ByPiecesOrPoints,
+        ByCount,
+    };
+
+    enum class GatherMethod
+    {
+        Feedback,
+        Merge,
+    };
+
+    enum class PieceElements
+    {
+        Primitives,
+        Points,
+    };
+
+public:
     ForeachPrimEnd()
     {
         m_imports = {

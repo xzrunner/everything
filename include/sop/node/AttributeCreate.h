@@ -12,18 +12,44 @@ namespace node
 class AttributeCreate : public Node
 {
 public:
+    enum class ItemType
+    {
+        Float,
+        Integer,
+        Vector,
+        String,
+        FloatArray,
+        IntegerArray,
+        StringArray,
+    };
+
+    enum class ItemFltInfo
+    {
+        Guess,
+        None,
+        Position,
+        Vector,
+        Normal,
+        Color,
+        Quaternion,
+        TransformMatrix,
+        TextureCoordinate,
+    };
+
     struct Item
     {
-        Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val, const VarValue& default_val);
-        Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val, const VarValue& default_val);
+        Item() {}
+        Item(const std::string& name, ItemType type, GeoAttrClass cls, const VarValue& val, const VarValue& default_val);
 
         bool operator == (const Item& i) const;
 
         std::string  name;
         GeoAttrClass cls  = GeoAttrClass::Point;
-        GeoAttrType  type = GeoAttrType::Float;
+        ItemType     type = ItemType::Float;
         VarValue     value;
         VarValue     default_val;
+        std::string  string;
+        ItemFltInfo  flt_info = ItemFltInfo::Guess;
     };
 
 public:

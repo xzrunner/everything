@@ -60,7 +60,28 @@ void AttributeCreate::Execute(Evaluator& eval)
         {
             vars.resize(num, item.value);
         }
-        m_geo_impl->GetAttr().AddAttr(item.cls, GeoAttribute::VarDesc(item.name, item.type), vars);
+
+        GeoAttrType type;
+        switch (item.type)
+        {
+        case sop::node::AttributeCreate::ItemType::Float:
+            type = GeoAttrType::Float;
+            break;
+        case sop::node::AttributeCreate::ItemType::Integer:
+            type = GeoAttrType::Int;
+            break;
+        case sop::node::AttributeCreate::ItemType::Vector:
+            type = GeoAttrType::Vector;
+            break;
+        case sop::node::AttributeCreate::ItemType::String:
+            type = GeoAttrType::String;
+            break;
+        default:
+            assert(0);
+        }
+        m_geo_impl->GetAttr().AddAttr(item.cls, GeoAttribute::VarDesc(item.name, type), vars);
+    }
+}
     }
 }
 
@@ -84,20 +105,10 @@ void AttributeCreate::SetAttrItems(const std::vector<Item>& items)
 //////////////////////////////////////////////////////////////////////////
 
 AttributeCreate::Item::
-Item(const std::string& name, GeoAttrType type, GeoAttrClass cls, const VarValue& val, const VarValue& default_val)
+Item(const std::string& name, ItemType type, GeoAttrClass cls, const VarValue& val, const VarValue& default_val)
     : name(name)
     , cls(cls)
     , type(type)
-    , value(val)
-    , default_val(default_val)
-{
-}
-
-AttributeCreate::Item::
-Item(sop::GeoAttr attr, GeoAttrClass cls, const VarValue& val, const VarValue& default_val)
-    : name(sop::GeoAttrNames[attr])
-    , cls(cls)
-    , type(sop::GeoAttrTypes[attr])
     , value(val)
     , default_val(default_val)
 {
@@ -114,38 +125,29 @@ operator == (const Item& i) const
 
     switch (type)
     {
-    case GeoAttrType::Bool:
-        if (value.b != i.value.b) {
-            return false;
-        }
-        break;
-    case GeoAttrType::Int:
-        if (value.i != i.value.i) {
-            return false;
-        }
-        break;
-    case GeoAttrType::Float:
+    case sop::node::AttributeCreate::ItemType::Float:
         if (value.f != i.value.f) {
             return false;
         }
         break;
-    case GeoAttrType::Double:
-        if (value.d != i.value.d) {
+    case sop::node::AttributeCreate::ItemType::Integer:
+        if (value.i != i.value.i) {
             return false;
         }
         break;
-    case GeoAttrType::String:
-        if (value.p == nullptr || i.value.p == nullptr ||
-            strcmp(static_cast<const char*>(value.p), static_cast<const char*>(i.value.p)) != 0) {
-            return false;
-        }
-        break;
-    case GeoAttrType::Vector:
+    case sop::node::AttributeCreate::ItemType::Vector:
         if (*static_cast<const sm::vec3*>(value.p) !=
             *static_cast<const sm::vec3*>(i.value.p)) {
             return false;
         }
         break;
+    case sop::node::AttributeCreate::ItemType::String:
+        if (value.p == nullptr || i.value.p == nullptr ||
+            strcmp(static_cast<const char*>(value.p), static_cast<const char*>(i.value.p)) != 0) {
+            return false;
+        }
+        break;
+
     default:
         assert(0);
     }

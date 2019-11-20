@@ -10,6 +10,17 @@ namespace node
 class PolyFill : public Node
 {
 public:
+    enum class Mode
+    {
+        SinglePolygon,
+        Triangles,
+        TriangleFan,
+        QuadrilateralFan,
+        Quadrilaterals,
+        QuadrilateralGrid,
+    };
+
+public:
     PolyFill()
     {
         m_imports = {

@@ -17,6 +17,13 @@ public:
         Faces,
     };
 
+    enum class Operation
+    {
+        Pattern,
+        Range,
+        Expression,
+    };
+
 public:
     Delete()
     {

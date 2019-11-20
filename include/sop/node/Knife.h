@@ -14,6 +14,13 @@ namespace node
 class Knife : public Node
 {
 public:
+    enum class KeepType
+    {
+        KeepAbove,
+        KeepBelow,
+        KeepAll,
+    };
+
     enum PropID
     {
         ORIGINX,
@@ -46,13 +53,6 @@ public:
     void SetDirection(const sm::vec3& dir);
 
 public:
-    enum class KeepType
-    {
-        KeepAbove,
-        KeepBelow,
-        KeepAll,
-    };
-
     void SetKeepType(KeepType keep);
 
 private:

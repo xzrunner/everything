@@ -13,6 +13,14 @@ namespace node
 class GroupCreate : public Node
 {
 public:
+    enum class BoundingType
+    {
+        Box,
+        Sphere,
+        Object,
+        Volume,
+    };
+
     enum InPortIdx
     {
         IDX_SOURCE_OBJ = 0,
