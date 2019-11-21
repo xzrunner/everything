@@ -68,8 +68,10 @@ TEST_CASE("point")
     eval.Connect({ box, 0 }, { attr_create, 0 });
 
     auto box2 = std::make_shared<sop::node::Box>();
-    auto& box2_props = const_cast<sop::NodePropsMgr&>(box2->GetProps());
-    box2_props.SetExpr(sop::node::Box::SIZE, "point(\"../attr_create/\",0,\"ScaleY\",1)", 1);
+    auto& box2_parms = const_cast<sop::NodeParmsMgr&>(box2->GetParms());
+    //box2_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+    //    "point(\"../attr_create/\",0,\"ScaleY\",1)", 1);
+    box2_parms.SetExpr("sizey", "point(\"../attr_create/\",0,\"ScaleY\",1)");
     eval.AddNode(box2);
 
     eval.Update();
@@ -96,8 +98,10 @@ TEST_CASE("prim")
     eval.Connect({ box, 0 }, { measure, 0 });
 
     auto box2 = std::make_shared<sop::node::Box>();
-    auto& box2_props = const_cast<sop::NodePropsMgr&>(box2->GetProps());
-    box2_props.SetExpr(sop::node::Box::SIZE, "prim(\"../measure1/\",0,\"Perim\",0)", 0);
+    auto& box2_parms = const_cast<sop::NodeParmsMgr&>(box2->GetParms());
+    //box2_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size), 
+    //    "prim(\"../measure1/\",0,\"Perim\",0)", 0);
+    box2_parms.SetExpr("sizex", "prim(\"../measure1/\",0,\"Perim\",0)");
     eval.AddNode(box2);
 
     eval.Update();

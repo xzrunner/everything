@@ -3,7 +3,7 @@
 
 #include "sop/PyParmValue.h"
 #include "sop/PyCommonTypes.h"
-#include "sop/NodePropsMgr.h"
+#include "sop/NodeParmsMgr.h"
 #include "sop/Node.h"
 
 using namespace boost::python;
@@ -21,39 +21,30 @@ namespace py
 void Parm::Set(float val)
 {
     assert(m_node);
-    auto& props = const_cast<NodePropsMgr&>(m_node->GetProps());
+    auto& parms = const_cast<NodeParmsMgr&>(m_node->GetParms());
     Variable v(val);
-    auto idx = props.QueryIndex(m_name);
-    if (idx < 0) {
+    if (!parms.SetValue(m_name, v, true)) {
         m_node->SetParm(m_name, v);
-    } else {
-        props.SetValue(idx, v, true);
     }
 }
 
 void Parm::Set(const std::string& val)
 {
     assert(m_node);
-    auto& props = const_cast<NodePropsMgr&>(m_node->GetProps());
+    auto& parms = const_cast<NodeParmsMgr&>(m_node->GetParms());
     Variable v(val);
-    auto idx = props.QueryIndex(m_name);
-    if (idx < 0) {
+    if (!parms.SetValue(m_name, v, true)) {
         m_node->SetParm(m_name, v);
-    } else {
-        props.SetValue(idx, v, true);
     }
 }
 
 void Parm::Set(int val)
 {
     assert(m_node);
-    auto& props = const_cast<NodePropsMgr&>(m_node->GetProps());
+    auto& parms = const_cast<NodeParmsMgr&>(m_node->GetParms());
     Variable v(val);
-    auto idx = props.QueryIndex(m_name);
-    if (idx < 0) {
+    if (!parms.SetValue(m_name, v, true)) {
         m_node->SetParm(m_name, v);
-    } else {
-        props.SetValue(idx, v, true);
     }
 }
 
@@ -64,22 +55,19 @@ void Parm::Set(int val)
 void ParmTuple::Set(const boost::python::tuple& val)
 {
     assert(m_node);
-    auto& props = const_cast<NodePropsMgr&>(m_node->GetProps());
+    auto& parms = const_cast<NodeParmsMgr&>(m_node->GetParms());
 
     sm::vec3 v3;
     for (size_t i = 0; i < 3; ++i) {
         v3.xyz[i] = boost::python::extract<float>(val[i]);
     }
     Variable v(v3);
-    if (!props.SetValue(m_name, v)) {
+    if (!parms.SetValue(m_name, v)) {
         m_node->SetParm(m_name, v);
     }
 
-    auto idx = props.QueryIndex(m_name);
-    if (idx < 0) {
+    if (!parms.SetValue(m_name, v, true)) {
         m_node->SetParm(m_name, v);
-    } else {
-        props.SetValue(idx, v, true);
     }
 }
 

@@ -30,15 +30,13 @@ TEST_CASE("node prop")
 
     auto& props = const_cast<sop::NodePropsMgr&>(box->GetProps());
 
-    REQUIRE(props.Size() == sop::node::Box::MAX_BUILD_IN_PROP);
-
     props.Add("prop0", sop::Variable(1.1f));
     props.Add("prop1", sop::Variable(2));
     props.Add("prop2", sop::Variable(sm::vec3(4, 5, 6)));
     props.Add("prop3", sop::Variable(true));
     props.Add("prop4", sop::Variable("zz"));
 
-    REQUIRE(props.Size() == sop::node::Box::MAX_BUILD_IN_PROP + 5);
+    REQUIRE(props.Size() == 5);
 
     test::check_prop(box, "prop0", sop::Variable(1.1f));
     test::check_prop(box, "prop1", sop::Variable(2));
@@ -49,12 +47,12 @@ TEST_CASE("node prop")
     props.Remove("prop2");
     test::check_prop(box, "prop2", sop::Variable());
 
-    REQUIRE(props.Size() == sop::node::Box::MAX_BUILD_IN_PROP + 4);
+    REQUIRE(props.Size() == 4);
 
     props.Clear();
     test::check_prop(box, "prop3", sop::Variable());
 
-    REQUIRE(props.Size() == sop::node::Box::MAX_BUILD_IN_PROP);
+    REQUIRE(props.Size() == 0);
 }
 
 TEST_CASE("parent node prop")
@@ -85,11 +83,19 @@ TEST_CASE("parent node prop")
 
     SECTION("direct props")
     {
-        auto& box_props = const_cast<sop::NodePropsMgr&>(box->GetProps());
-        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../BoxLength\")", 0);
-        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../BoxHeight\")", 1);
-        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../BoxWidth\")", 2);
-        box_props.SetExpr(sop::node::Box::POS,  "ch(\"sizey\")/2", 1);
+        auto& box_parms = const_cast<sop::NodeParmsMgr&>(box->GetParms());
+        //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+        //    "ch(\"../BoxLength\")", 0);
+        //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+        //    "ch(\"../BoxHeight\")", 1);
+        //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+        //    "ch(\"../BoxWidth\")",  2);
+        //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Center),
+        //    "ch(\"sizey\")/2",      1);
+        box_parms.SetExpr("sizex", "ch(\"../BoxLength\")");
+        box_parms.SetExpr("sizey", "ch(\"../BoxHeight\")");
+        box_parms.SetExpr("sizez", "ch(\"../BoxWidth\")");
+        box_parms.SetExpr("ty", "ch(\"sizey\")/2");
 
         eval.Update();
 
@@ -98,11 +104,19 @@ TEST_CASE("parent node prop")
 
     SECTION("node to props")
     {
-        auto& box_props = const_cast<sop::NodePropsMgr&>(box->GetProps());
-        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../../geo/BoxLength\")", 0);
-        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../../geo/BoxHeight\")", 1);
-        box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../../geo/BoxWidth\")", 2);
-        box_props.SetExpr(sop::node::Box::POS,  "ch(\"sizey\")/2", 1);
+        auto& box_parms = const_cast<sop::NodeParmsMgr&>(box->GetParms());
+        //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+        //    "ch(\"../../geo/BoxLength\")", 0);
+        //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+        //    "ch(\"../../geo/BoxHeight\")", 1);
+        //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+        //    "ch(\"../../geo/BoxWidth\")",  2);
+        //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Center),
+        //    "ch(\"sizey\")/2",             1);
+        box_parms.SetExpr("sizex", "ch(\"../../geo/BoxLength\")");
+        box_parms.SetExpr("sizey", "ch(\"../../geo/BoxHeight\")");
+        box_parms.SetExpr("sizez", "ch(\"../../geo/BoxWidth\")");
+        box_parms.SetExpr("ty", "ch(\"sizey\")/2");
 
         eval.Update();
 
@@ -125,10 +139,16 @@ TEST_CASE("use other's prop")
     eval.AddNode(null);
 
     auto box = std::make_shared<sop::node::Box>();
-    auto& box_props = const_cast<sop::NodePropsMgr&>(box->GetProps());
-    box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../controller/Width\")", 0);
-    box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../controller/Height\")", 1);
-    box_props.SetExpr(sop::node::Box::SIZE, "ch(\"../controller/Length\")", 2);
+    auto& box_parms = const_cast<sop::NodeParmsMgr&>(box->GetParms());
+    //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+    //    "ch(\"../controller/Width\")",  0);
+    //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+    //    "ch(\"../controller/Height\")", 1);
+    //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
+    //    "ch(\"../controller/Length\")", 2);
+    box_parms.SetExpr("sizex", "ch(\"../controller/Width\")");
+    box_parms.SetExpr("sizey", "ch(\"../controller/Height\")");
+    box_parms.SetExpr("sizez", "ch(\"../controller/Length\")");
     eval.AddNode(box);
 
     eval.Connect({ null, 0 }, { box, 0 });

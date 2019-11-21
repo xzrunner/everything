@@ -7,32 +7,11 @@
     <Filter Include="dataset">
       <UniqueIdentifier>{119faea4-0286-4ed1-aad3-25958867e376}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dataset\geo">
-      <UniqueIdentifier>{3703ebce-0a43-46bf-aeb7-78836f68201a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="dataset\node">
       <UniqueIdentifier>{dd04b857-ea2f-4c23-b7b1-883a61f5a1d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utility">
-      <UniqueIdentifier>{7336f7a8-4519-45c4-9358-12e620238c03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dataset\others">
-      <UniqueIdentifier>{da833931-1ea8-46de-8479-9ed2ef8238e0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="eval">
       <UniqueIdentifier>{d2a6f069-4272-41df-abc7-ae5a4eed982d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dataset\geo\attr">
-      <UniqueIdentifier>{e81dd3f7-2de2-4311-91ae-af539aaa2660}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dataset\geo\adaptor">
-      <UniqueIdentifier>{49bd061c-a85d-436e-8c86-d8fcc6879442}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dataset\geo\group">
-      <UniqueIdentifier>{04b93520-b309-47cd-bb35-7c058d3e4e8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dataset\others\var">
-      <UniqueIdentifier>{be21ea6b-24ff-4342-8879-5f0c3734f99a}</UniqueIdentifier>
     </Filter>
     <Filter Include="nodes\attribute">
       <UniqueIdentifier>{053f2cb9-efc0-4bb7-8e90-0d3d8a407ec7}</UniqueIdentifier>
@@ -72,6 +51,27 @@
     </Filter>
     <Filter Include="nodes\rigging">
       <UniqueIdentifier>{5c508275-c4a4-496e-b4ca-164d3d3cc863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\variable">
+      <UniqueIdentifier>{be21ea6b-24ff-4342-8879-5f0c3734f99a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\parameters">
+      <UniqueIdentifier>{6d52b5e1-9159-465a-be04-ae206f8e7160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geometry">
+      <UniqueIdentifier>{3703ebce-0a43-46bf-aeb7-78836f68201a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geometry\attr">
+      <UniqueIdentifier>{e81dd3f7-2de2-4311-91ae-af539aaa2660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geometry\adaptor">
+      <UniqueIdentifier>{49bd061c-a85d-436e-8c86-d8fcc6879442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset\geometry\group">
+      <UniqueIdentifier>{04b93520-b309-47cd-bb35-7c058d3e4e8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools">
+      <UniqueIdentifier>{7336f7a8-4519-45c4-9358-12e620238c03}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -143,13 +143,10 @@
       <Filter>nodes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\NodeHelper.h">
-      <Filter>utility</Filter>
+      <Filter>tools</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeometryImpl.h">
-      <Filter>dataset\geo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\NodePropsMgr.h">
-      <Filter>dataset\others</Filter>
+      <Filter>dataset\geometry</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\VexFuncs.h">
       <Filter>eval</Filter>
@@ -176,25 +173,25 @@
       <Filter>nodes\polygon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeoAttribute.h">
-      <Filter>dataset\geo\attr</Filter>
+      <Filter>dataset\geometry\attr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeoAdaptor.h">
-      <Filter>dataset\geo\adaptor</Filter>
+      <Filter>dataset\geometry\adaptor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\Group.h">
-      <Filter>dataset\geo\group</Filter>
+      <Filter>dataset\geometry\group</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GroupMgr.h">
-      <Filter>dataset\geo\group</Filter>
+      <Filter>dataset\geometry\group</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\Variable.h">
-      <Filter>dataset\others\var</Filter>
+      <Filter>dataset\variable</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\VarType.h">
-      <Filter>dataset\others\var</Filter>
+      <Filter>dataset\variable</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\VarValue.h">
-      <Filter>dataset\others\var</Filter>
+      <Filter>dataset\variable</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\Color.h">
       <Filter>nodes\material</Filter>
@@ -203,10 +200,10 @@
       <Filter>nodes\polygon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GroupRebuild.h">
-      <Filter>dataset\geo\group</Filter>
+      <Filter>dataset\geometry\group</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeoAttrRebuild.h">
-      <Filter>dataset\geo\attr</Filter>
+      <Filter>dataset\geometry\attr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\AttributeWrangle.h">
       <Filter>nodes\attribute</Filter>
@@ -216,22 +213,22 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\SOP.h" />
     <ClInclude Include="..\..\..\include\sop\CompTopoPolyline.h">
-      <Filter>dataset\geo\adaptor</Filter>
+      <Filter>dataset\geometry\adaptor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\geo_attr_cfg.h">
-      <Filter>dataset\geo\attr</Filter>
+      <Filter>dataset\geometry\attr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeoAttrDefine.h">
-      <Filter>dataset\geo\attr</Filter>
+      <Filter>dataset\geometry\attr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h">
       <Filter>nodes\attribute</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeoAttrClass.h">
-      <Filter>dataset\geo\attr</Filter>
+      <Filter>dataset\geometry\attr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeoAttrType.h">
-      <Filter>dataset\geo\attr</Filter>
+      <Filter>dataset\geometry\attr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h">
       <Filter>nodes\group</Filter>
@@ -270,7 +267,7 @@
       <Filter>nodes\material</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GeogramHelper.h">
-      <Filter>utility</Filter>
+      <Filter>tools</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\AttributePromote.h">
       <Filter>nodes\attribute</Filter>
@@ -310,6 +307,24 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\AttributeVOP.h">
       <Filter>nodes\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\NodePropsMgr.h">
+      <Filter>dataset\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\ParmType.h">
+      <Filter>dataset\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Box.parm.h">
+      <Filter>nodes\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node_parms_gen.h">
+      <Filter>dataset\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\NodeParmsMgr.h">
+      <Filter>dataset\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\RTTRInfo.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -374,19 +389,16 @@
       <Filter>nodes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\NodeHelper.cpp">
-      <Filter>utility</Filter>
+      <Filter>tools</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeometryImpl.cpp">
-      <Filter>dataset\geo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\NodePropsMgr.cpp">
-      <Filter>dataset\others</Filter>
+      <Filter>dataset\geometry</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\VexFuncs.cpp">
       <Filter>eval</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp">
-      <Filter>utility</Filter>
+      <Filter>tools</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp">
       <Filter>nodes\group</Filter>
@@ -407,19 +419,19 @@
       <Filter>nodes\polygon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAttribute.cpp">
-      <Filter>dataset\geo\attr</Filter>
+      <Filter>dataset\geometry\attr</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAdaptor.cpp">
-      <Filter>dataset\geo\adaptor</Filter>
+      <Filter>dataset\geometry\adaptor</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GroupMgr.cpp">
-      <Filter>dataset\geo\group</Filter>
+      <Filter>dataset\geometry\group</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\Variable.cpp">
-      <Filter>dataset\others\var</Filter>
+      <Filter>dataset\variable</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\VarValue.cpp">
-      <Filter>dataset\others\var</Filter>
+      <Filter>dataset\variable</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Color.cpp">
       <Filter>nodes\material</Filter>
@@ -428,10 +440,10 @@
       <Filter>nodes\polygon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GroupRebuild.cpp">
-      <Filter>dataset\geo\group</Filter>
+      <Filter>dataset\geometry\group</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeoAttrRebuild.cpp">
-      <Filter>dataset\geo\attr</Filter>
+      <Filter>dataset\geometry\attr</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributeWrangle.cpp">
       <Filter>nodes\attribute</Filter>
@@ -441,7 +453,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\SOP.cpp" />
     <ClCompile Include="..\..\..\source\CompTopoPolyline.cpp">
-      <Filter>dataset\geo\adaptor</Filter>
+      <Filter>dataset\geometry\adaptor</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributeCreate.cpp">
       <Filter>nodes\attribute</Filter>
@@ -450,7 +462,7 @@
       <Filter>nodes\group</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\Group.cpp">
-      <Filter>dataset\geo\group</Filter>
+      <Filter>dataset\geometry\group</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\PolyFrame.cpp">
       <Filter>nodes\polygon</Filter>
@@ -483,7 +495,7 @@
       <Filter>nodes\material</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\GeogramHelper.cpp">
-      <Filter>utility</Filter>
+      <Filter>tools</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributePromote.cpp">
       <Filter>nodes\attribute</Filter>
@@ -523,6 +535,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributeVOP.cpp">
       <Filter>nodes\attribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\NodePropsMgr.cpp">
+      <Filter>dataset\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\NodeParmsMgr.cpp">
+      <Filter>dataset\parameters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

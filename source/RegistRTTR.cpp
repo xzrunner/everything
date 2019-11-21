@@ -1,3 +1,6 @@
+#include "sop/ParmType.h"
+#include "sop/RTTRInfo.h"
+
 // base
 #include "sop/node/Geometry.h"
 // attribute
@@ -287,7 +290,22 @@ rttr::registration::enumeration<sop::node::PolyFrame::FrameStyle>("sop_poly_fram
 );
 
 // primitive
-REGIST_NODE_TYPE(Box, box)
+//REGIST_NODE_TYPE(Box, box)
+rttr::registration::class_<sop::node::Box>("sop::box")
+    .constructor<>()
+    .property("size", &sop::node::Box::GetSize, &sop::node::Box::SetSize)
+    (
+	    rttr::metadata(sop::PropMeta::ParmType, sop::ParmType::Vector3)
+    )
+    .property("t", &sop::node::Box::GetCenter, &sop::node::Box::SetCenter)
+    (
+	    rttr::metadata(sop::PropMeta::ParmType, sop::ParmType::Vector3)
+    )
+    .property("scale", &sop::node::Box::GetScale, &sop::node::Box::SetScale)
+    (
+	    rttr::metadata(sop::PropMeta::ParmType, sop::ParmType::Vector3)
+    )
+;
 REGIST_NODE_TYPE(Curve, curve)
 REGIST_NODE_TYPE(Grid, grid)
 REGIST_NODE_TYPE(Line, line)

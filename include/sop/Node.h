@@ -2,6 +2,7 @@
 
 #include "sop/NodeVarType.h"
 #include "sop/NodePropsMgr.h"
+#include "sop/NodeParmsMgr.h"
 
 #include <hdiop/NodeImpl.h>
 #include <node0/typedef.h>
@@ -35,6 +36,7 @@ public:
     auto GetParent() const { return m_parent.lock(); }
 
     auto& GetProps() const { return m_props; }
+    auto& GetParms() const { return m_parms; }
 
     auto GetLevel() const { return m_level; }
 
@@ -42,6 +44,7 @@ protected:
     std::shared_ptr<GeometryImpl> m_geo_impl = nullptr;
 
     NodePropsMgr m_props;
+    NodeParmsMgr m_parms;
 
 private:
     std::weak_ptr<Node> m_parent;

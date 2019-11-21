@@ -1,6 +1,5 @@
 #include "sop/node/Box.h"
 #include "sop/GeometryImpl.h"
-#include "sop/NodeHelper.h"
 
 #include <polymesh3/Geometry.h>
 #include <model/BrushModel.h>
@@ -14,36 +13,6 @@ void Box::Execute(Evaluator& eval)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
     BuildModel();
-}
-
-void Box::SetSize(const sm::vec3& size)
-{
-    if (m_props.SetValue(SIZE, Variable(size))) {
-        SetDirty(true);
-    }
-}
-
-void Box::SetCenter(const sm::vec3& center)
-{
-    if (m_props.SetValue(POS, Variable(center))) {
-        SetDirty(true);
-    }
-}
-
-void Box::SetScale(const sm::vec3& scale)
-{
-    if (m_scale == scale) {
-        return;
-    }
-
-    m_scale = scale;
-    BuildModel();
-}
-
-void Box::InitProps()
-{
-    m_props.Assign(SIZE, PropNames[SIZE], Variable(sm::vec3(1.0f, 1.0f, 1.0f)));
-    m_props.Assign(POS,  PropNames[POS],  Variable(sm::vec3(0.0f, 0.0f, 0.0f)));
 }
 
 void Box::BuildModel()
@@ -72,19 +41,15 @@ Box::BuildBrush() const
     std::vector<pm3::FacePtr> faces;
     faces.reserve(face_num);
 
-    auto& props = m_props.GetProps();
-    const sm::vec3 s = m_scale;
-    assert(props[SIZE].Val().type == VarType::Float3);
-    const sm::vec3 h_sz = *static_cast<const sm::vec3*>(props[SIZE].Val().p) * 0.5f;
-    assert(props[POS].Val().type == VarType::Float3);
-    const sm::vec3 c = *static_cast<const sm::vec3*>(props[POS].Val().p);
-
-    if (fabs(h_sz.x) < FLT_EPSILON ||
-        fabs(h_sz.y) < FLT_EPSILON ||
-        fabs(h_sz.z) < FLT_EPSILON) {
+    if (fabs(m_size.x) < FLT_EPSILON ||
+        fabs(m_size.y) < FLT_EPSILON ||
+        fabs(m_size.z) < FLT_EPSILON) {
         return nullptr;
     }
 
+    auto h_sz = m_size * 0.5f;
+    auto& s = m_scale;
+    auto& c = m_pos;
     const float xmin = -h_sz.x * s.x + c.x;
     const float xmax =  h_sz.x * s.x + c.x;
     const float ymin = -h_sz.y * s.y + c.y;

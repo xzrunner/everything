@@ -106,6 +106,9 @@ vexc::Variant eval_channel(const std::vector<vexc::Variant>& params, const void*
         // query prop
         assert(curr_node);
         auto var = curr_node->GetProps().Query(t);
+        if (var.type == sop::VarType::Invalid) {
+            var = curr_node->GetParms().Query(t);
+        }
         return ToVexcVar(*ctx, var);
     }
 
