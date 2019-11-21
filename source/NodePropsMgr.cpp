@@ -190,8 +190,8 @@ void NodeProp::Clear()
         e.clear();
     }
 
-    m_from.clear();
-    m_to.clear();
+    //m_from.clear();
+    //m_to.clear();
 }
 
 bool NodeProp::Update(const Evaluator& eval, const std::shared_ptr<Node>& node)

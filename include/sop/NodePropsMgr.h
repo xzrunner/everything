@@ -36,7 +36,7 @@ private:
 
     std::string m_expr[3];
 
-    std::vector<std::weak_ptr<NodeProp>> m_from, m_to;
+//    std::vector<std::weak_ptr<NodeProp>> m_from, m_to;
 
     friend class NodePropsMgr;
 
