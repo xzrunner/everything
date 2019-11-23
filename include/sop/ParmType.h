@@ -7,6 +7,7 @@ enum class ParmType
 {
     Unsupported,
 
+    Boolean,
     Integer,
     Float,
     Vector3,

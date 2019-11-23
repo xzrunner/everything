@@ -74,16 +74,5 @@ void AttributePromote::Execute(Evaluator& eval)
     }
 }
 
-void AttributePromote::SetAttrName(const std::string& name)
-{
-    NODE_PROP_SET(m_attr_name, name);
-}
-
-void AttributePromote::SetPromoteType(GeoAttrClass from, GeoAttrClass to)
-{
-    NODE_PROP_SET(m_from_type, from);
-    NODE_PROP_SET(m_to_type, to);
-}
-
 }
 }

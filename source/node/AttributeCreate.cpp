@@ -27,10 +27,11 @@ void AttributeCreate::Execute(Evaluator& eval)
         }
     }
 
-    for (auto& item : m_items)
+    assert(IsNumberValid());
+    for (size_t i = 0, n = m_item_names.size(); i < n; ++i)
     {
         size_t num = 0;
-        switch (item.cls)
+        switch (m_item_classes[i])
         {
         case GeoAttrClass::Point:
             num = m_geo_impl->GetAttr().GetPoints().size();
@@ -49,26 +50,113 @@ void AttributeCreate::Execute(Evaluator& eval)
         }
 
         std::vector<VarValue> vars;
-        if (group)
+        // int
+        if (m_item_types[i] == ItemType::Integer && m_item_comp_sizes[i] == 1)
         {
-            vars.resize(num, item.default_val);
-            for (auto& i : group->GetItems()) {
-                vars[i] = item.value;
+            if (group)
+            {
+                vars.resize(num, VarValue(static_cast<int>(m_item_default_vals[i].x)));
+                for (auto& i : group->GetItems()) {
+                    vars[i] = VarValue(static_cast<int>(m_item_values[i].x));
+                }
+            }
+            else
+            {
+                vars.resize(num, VarValue(static_cast<int>(m_item_values[i].x)));
             }
         }
+        // float
+        else if (m_item_types[i] == ItemType::Float && m_item_comp_sizes[i] == 1)
+        {
+            if (group)
+            {
+                vars.resize(num, VarValue(static_cast<float>(m_item_default_vals[i].x)));
+                for (auto& i : group->GetItems()) {
+                    vars[i] = VarValue(static_cast<float>(m_item_values[i].x));
+                }
+            }
+            else
+            {
+                vars.resize(num, VarValue(static_cast<float>(m_item_values[i].x)));
+            }
+        }
+        // float3
+        else if ((m_item_types[i] == ItemType::Float || m_item_types[i] == ItemType::Vector)
+              && m_item_comp_sizes[i] == 3)
+        {
+            if (group)
+            {
+                vars.resize(num, VarValue(static_cast<sm::vec3>(m_item_default_vals[i].xyzw)));
+                for (auto& i : group->GetItems()) {
+                    vars[i] = VarValue(static_cast<sm::vec3>(m_item_values[i].xyzw));
+                }
+            }
+            else
+            {
+                vars.resize(num, VarValue(static_cast<sm::vec3>(m_item_values[i].xyzw)));
+            }
+        }
+        // string
+        else if (m_item_types[i] == ItemType::String)
+        {
+            if (group)
+            {
+                vars.resize(num, VarValue(std::string()));
+                for (auto& i : group->GetItems()) {
+                    vars[i] = VarValue(m_item_strings[i]);
+                }
+            }
+            else
+            {
+                vars.resize(num, VarValue(m_item_strings[i]));
+            }
+        }
+        // todo
         else
         {
-            vars.resize(num, item.value);
+            assert(0);
         }
 
         GeoAttrType type;
-        switch (item.type)
+        switch (m_item_types[i])
         {
-        case sop::node::AttributeCreate::ItemType::Float:
-            type = GeoAttrType::Float;
-            break;
         case sop::node::AttributeCreate::ItemType::Integer:
-            type = GeoAttrType::Int;
+        {
+            switch (m_item_comp_sizes[i])
+            {
+            case 1:
+                type = GeoAttrType::Int;
+                break;
+            case 2:
+                type = GeoAttrType::Int2;
+                break;
+            case 3:
+                type = GeoAttrType::Int3;
+                break;
+            case 4:
+                type = GeoAttrType::Int4;
+                break;
+            }
+        }
+            break;
+        case sop::node::AttributeCreate::ItemType::Float:
+        {
+            switch (m_item_comp_sizes[i])
+            {
+            case 1:
+                type = GeoAttrType::Float;
+                break;
+            case 2:
+                type = GeoAttrType::Float2;
+                break;
+            case 3:
+                type = GeoAttrType::Float3;
+                break;
+            case 4:
+                type = GeoAttrType::Float4;
+                break;
+            }
+        }
             break;
         case sop::node::AttributeCreate::ItemType::Vector:
             type = GeoAttrType::Vector;
@@ -77,82 +165,24 @@ void AttributeCreate::Execute(Evaluator& eval)
             type = GeoAttrType::String;
             break;
         default:
+            // todo *Array
             assert(0);
         }
-        m_geo_impl->GetAttr().AddAttr(item.cls, GeoAttribute::VarDesc(item.name, type), vars);
+        m_geo_impl->GetAttr().AddAttr(m_item_classes[i], GeoAttribute::VarDesc(m_item_names[i], type), vars);
     }
 }
-    }
-}
 
-void AttributeCreate::SetGroupName(const std::string& name)
+bool AttributeCreate::IsNumberValid() const
 {
-    NODE_PROP_SET(m_group_name, name);
-}
-
-void AttributeCreate::SetGroupType(GroupType type)
-{
-    NODE_PROP_SET(m_group_type, type);
-}
-
-void AttributeCreate::SetAttrItems(const std::vector<Item>& items)
-{
-    NODE_PROP_SET(m_items, items);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// struct AttributeCreate::Item
-//////////////////////////////////////////////////////////////////////////
-
-AttributeCreate::Item::
-Item(const std::string& name, ItemType type, GeoAttrClass cls, const VarValue& val, const VarValue& default_val)
-    : name(name)
-    , cls(cls)
-    , type(type)
-    , value(val)
-    , default_val(default_val)
-{
-}
-
-bool AttributeCreate::Item::
-operator == (const Item& i) const
-{
-    if (name != i.name ||
-        cls != i.cls ||
-        type != i.type) {
-        return false;
-    }
-
-    switch (type)
-    {
-    case sop::node::AttributeCreate::ItemType::Float:
-        if (value.f != i.value.f) {
-            return false;
-        }
-        break;
-    case sop::node::AttributeCreate::ItemType::Integer:
-        if (value.i != i.value.i) {
-            return false;
-        }
-        break;
-    case sop::node::AttributeCreate::ItemType::Vector:
-        if (*static_cast<const sm::vec3*>(value.p) !=
-            *static_cast<const sm::vec3*>(i.value.p)) {
-            return false;
-        }
-        break;
-    case sop::node::AttributeCreate::ItemType::String:
-        if (value.p == nullptr || i.value.p == nullptr ||
-            strcmp(static_cast<const char*>(value.p), static_cast<const char*>(i.value.p)) != 0) {
-            return false;
-        }
-        break;
-
-    default:
-        assert(0);
-    }
-
-    return true;
+    const size_t num = m_item_names.size();
+    return m_item_classes.size() == num
+        && m_item_types.size() == num
+        && m_item_values.size() == num
+        && m_item_default_vals.size() == num
+        && m_item_flt_infos.size() == num
+        && m_item_comp_sizes.size() == num
+        && m_item_strings.size() == num
+        ;
 }
 
 }

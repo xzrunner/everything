@@ -54,17 +54,12 @@ void Carve::Execute(Evaluator& eval)
 
     // only support first_u and second_u
     float len_min, len_max;
-    auto& props = m_props.GetProps();
-    assert(props[FIRST_U].Val().type == VarType::Float
-        && props[SECOND_U].Val().type == VarType::Float);
-    auto& first_u  = props[FIRST_U].Val().f;
-    auto& second_u = props[SECOND_U].Val().f;
-    if (first_u < second_u) {
-        len_min = tot_len * first_u;
-        len_max = tot_len * second_u;
+    if (m_first_u < m_second_u) {
+        len_min = tot_len * m_first_u;
+        len_max = tot_len * m_second_u;
     } else {
-        len_min = tot_len * second_u;
-        len_max = tot_len * first_u;
+        len_min = tot_len * m_second_u;
+        len_max = tot_len * m_first_u;
     }
 
     auto calc_pos = [&](float len, sm::vec3& pos, size_t& idx_int, float& idx_frac)
@@ -188,47 +183,6 @@ void Carve::Execute(Evaluator& eval)
             }
         }
     }
-}
-
-void Carve::SetFirstU(float u)
-{
-    u = std::min(1.0f, std::max(0.0f, u));
-    if (m_props.SetValue(FIRST_U, Variable(u))) {
-        SetDirty(true);
-    }
-}
-
-void Carve::SetSecondU(float u)
-{
-    u = std::min(1.0f, std::max(0.0f, u));
-    if (m_props.SetValue(SECOND_U, Variable(u))) {
-        SetDirty(true);
-    }
-}
-
-void Carve::SetFirstV(float v)
-{
-    v = std::min(1.0f, std::max(0.0f, v));
-    if (m_props.SetValue(FIRST_V, Variable(v))) {
-        SetDirty(true);
-    }
-
-}
-
-void Carve::SetSecondV(float v)
-{
-    v = std::min(1.0f, std::max(0.0f, v));
-    if (m_props.SetValue(SECOND_V, Variable(v))) {
-        SetDirty(true);
-    }
-}
-
-void Carve::InitProps()
-{
-    m_props.Assign(FIRST_U,  PropNames[FIRST_U],  Variable(0.0f));
-    m_props.Assign(SECOND_U, PropNames[SECOND_U], Variable(1.0f));
-    m_props.Assign(FIRST_V,  PropNames[FIRST_V],  Variable(0.0f));
-    m_props.Assign(SECOND_V, PropNames[SECOND_V], Variable(1.0f));
 }
 
 }

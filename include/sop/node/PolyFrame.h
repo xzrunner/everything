@@ -36,14 +36,6 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetEntityType(GroupType type);
-
-    void SetFrameStyle(FrameStyle style);
-
-    void SetNormalName(const std::string& name);
-    void SetTangentName(const std::string& name);
-    void SetBitangentName(const std::string& name);
-
 private:
     void CreateAttrs();
 
@@ -58,18 +50,13 @@ private:
     void AddToPointsAttr(const std::string& name, const std::vector<sm::vec3>& val);
 
 private:
-    // Primitives or Points
-    GroupType m_entity_type = GroupType::Primitives;
-
-    FrameStyle m_frame_style = FrameStyle::TwoEdges;
-
-    std::string m_normal_name;
-    std::string m_tangent_name;
-    std::string m_bitangent_name;
-
     bool m_ortho = false;
 
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/PolyFrame.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // PolyFrame
 

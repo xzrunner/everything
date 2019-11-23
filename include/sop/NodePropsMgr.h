@@ -45,11 +45,9 @@ private:
 class NodePropsMgr
 {
 public:
-    NodePropsMgr(size_t build_in_count);
-
     void Assign(size_t idx, const std::string& key, const Variable& val);
 
-    void SetExpr(size_t idx, const std::string& expr, size_t comp_idx = 0);
+    //void SetExpr(size_t idx, const std::string& expr, size_t comp_idx = 0);
     bool SetValue(size_t idx, const Variable& val, bool float_cast = false);
     bool SetValue(const std::string& key, const Variable& val);
 
@@ -66,8 +64,6 @@ public:
     int QueryIndex(const std::string& key) const;
 
 private:
-    size_t m_build_in_count = 0;
-
     std::vector<NodeProp> m_props;
 
 }; // NodePropsMgr

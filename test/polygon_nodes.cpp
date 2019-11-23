@@ -20,6 +20,7 @@
 #include <sop/node/Color.h>
 #include <sop/node/Merge.h>
 #include <sop/node/GroupExpression.h>
+#include <sop/node/Grid.h>
 
 #include <catch/catch.hpp>
 
@@ -38,6 +39,7 @@ TEST_CASE("add to brush")
     eval.AddNode(add);
 
     add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
 
     eval.Connect({ box, 0 }, { add, 0 });
 
@@ -66,6 +68,7 @@ TEST_CASE("add to brush with attr")
     eval.AddNode(add);
 
     add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
 
     eval.Connect({ color, 0 }, { add, 0 });
 
@@ -93,6 +96,7 @@ TEST_CASE("add to shape")
     eval.AddNode(add);
 
     add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
 
     eval.Connect({ line, 0 }, { add, 0 });
 
@@ -121,6 +125,7 @@ TEST_CASE("add to shape with attr")
     eval.AddNode(add);
 
     add->SetPoints({ {1, 2, 3}, {4, 5, 6} });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
 
     eval.Connect({ color, 0 }, { add, 0 });
 
@@ -146,7 +151,9 @@ TEST_CASE("add with group")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -154,7 +161,7 @@ TEST_CASE("add with group")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("top");
     blast->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -162,17 +169,24 @@ TEST_CASE("add with group")
     auto group_left = std::make_shared<sop::node::GroupCreate>();
     group_left->SetGroupName("left");
     group_left->SetGroupType(sop::GroupType::Points);
-    group_left->EnableBaseGroup("@P.x < 0");
+    group_left->SetBaseGroupEnable(true);
+    group_left->SetBaseGroupSyntax("@P.x < 0");
     eval.AddNode(group_left);
 
     eval.Connect({ blast, 0 }, { group_left, 0 });
 
+    auto blast_left = std::make_shared<sop::node::Blast>();
+    blast_left->SetGroupName("left");
+    blast_left->SetGroupType(sop::GroupType::GuessFromGroup);
+    blast_left->SetDelNonSelected(true);
+    eval.AddNode(blast_left);
+
+    eval.Connect({ group_left, 0 }, { blast_left, 0 });
+
     auto add = std::make_shared<sop::node::Add>();
-    add->SetGroupName("left");
-    add->SetGroupType(sop::GroupType::GuessFromGroup);
     eval.AddNode(add);
 
-    eval.Connect({ group_left, 0 }, { add, 0 });
+    eval.Connect({ blast_left, 0 }, { add, 0 });
 
     eval.Update();
 
@@ -286,6 +300,48 @@ TEST_CASE("boolean 2")
     }
 }
 
+TEST_CASE("boolean surface")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto grid = std::make_shared<sop::node::Grid>();
+    grid->SetSize({ 4, 4 });
+    grid->SetRows(2);
+    grid->SetColumns(2);
+    eval.AddNode(grid);
+
+    auto box = std::make_shared<sop::node::Box>();
+    eval.AddNode(box);
+
+    eval.Connect({ grid, 0 }, { box, 0 });
+
+    auto boolean = std::make_shared<sop::node::Boolean>();
+    eval.AddNode(boolean);
+
+    eval.Connect({ grid, 0 }, { boolean, sop::node::Boolean::IDX_A });
+    eval.Connect({ box,  0 }, { boolean, sop::node::Boolean::IDX_B });
+
+    //SECTION("solid - solid")
+    //{
+    //    boolean->SetTreatAs(sop::node::Boolean::TreatAs::Solid, sop::node::Boolean::TreatAs::Solid);
+    //    boolean->SetOperator(sop::node::Boolean::Operator::Subtract);
+
+    //    eval.Update();
+
+    //    test::check_points_num(boolean, 12);
+    //    test::check_aabb(boolean, { -2, -0.5f, -2 }, { 2, 0, 2 });
+    //}
+
+    //SECTION("surface - solid")
+    //{
+    //    boolean->SetTreatAs(sop::node::Boolean::TreatAs::Surface, sop::node::Boolean::TreatAs::Solid);
+
+    //    eval.Update();
+    //}
+}
+
 TEST_CASE("fuse brush")
 {
     test::init();
@@ -298,7 +354,9 @@ TEST_CASE("fuse brush")
     auto group0 = std::make_shared<sop::node::GroupCreate>();
     group0->SetGroupName("top");
     group0->SetGroupType(sop::GroupType::Primitives);
-    group0->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group0->SetKeepByNormals(true);
+    group0->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group0->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group0);
 
     eval.Connect({ box0, 0 }, { group0, 0 });
@@ -317,7 +375,9 @@ TEST_CASE("fuse brush")
     auto group1 = std::make_shared<sop::node::GroupCreate>();
     group1->SetGroupName("btm");
     group1->SetGroupType(sop::GroupType::Primitives);
-    group1->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
+    group1->SetKeepByNormals(true);
+    group1->SetKeepByNormalsDir(sm::vec3(0, -1, 0));
+    group1->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group1);
 
     eval.Connect({ box1, 0 }, { group1, 0 });
@@ -366,6 +426,7 @@ TEST_CASE("fuse polyline")
     auto add = std::make_shared<sop::node::Add>();
     const sm::vec3 p(0, 1, 0);
     add->SetPoints({ p, p });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto color = std::make_shared<sop::node::Color>();
@@ -398,7 +459,9 @@ TEST_CASE("fuse unique points")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -406,7 +469,7 @@ TEST_CASE("fuse unique points")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("top");
     blast->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -454,6 +517,7 @@ TEST_CASE("fuse polyline2")
         { 0, 4, 0 },
         { 0, 4, 0 },
     });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto color = std::make_shared<sop::node::Color>();
@@ -540,7 +604,9 @@ TEST_CASE("knife plane")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -548,7 +614,7 @@ TEST_CASE("knife plane")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("top");
     blast->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -623,7 +689,7 @@ TEST_CASE("normal box")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Points);
 
         eval.Update();
 
@@ -632,7 +698,7 @@ TEST_CASE("normal box")
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Vertex);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Vertices);
 
         eval.Update();
 
@@ -641,7 +707,7 @@ TEST_CASE("normal box")
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Primitive);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Primitives);
 
         eval.Update();
 
@@ -650,7 +716,7 @@ TEST_CASE("normal box")
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Detail);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Detail);
 
         eval.Update();
 
@@ -671,7 +737,9 @@ TEST_CASE("normal plane")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("Top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -679,7 +747,7 @@ TEST_CASE("normal plane")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("Top");
     blast->SetGroupType(sop::GroupType::Primitives);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
@@ -691,7 +759,7 @@ TEST_CASE("normal plane")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Points);
 
         eval.Update();
 
@@ -703,7 +771,7 @@ TEST_CASE("normal plane")
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Vertex);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Vertices);
 
         eval.Update();
 
@@ -715,7 +783,7 @@ TEST_CASE("normal plane")
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Primitive);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Primitives);
 
         eval.Update();
 
@@ -725,7 +793,7 @@ TEST_CASE("normal plane")
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Detail);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Detail);
 
         eval.Update();
 
@@ -747,6 +815,7 @@ TEST_CASE("normal line")
         { 0, 1, 0 },
         { 0, 1, 1 },
     });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto normal = std::make_shared<sop::node::Normal>();
@@ -756,7 +825,7 @@ TEST_CASE("normal line")
 
     SECTION("add to point")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Points);
 
         eval.Update();
 
@@ -768,7 +837,7 @@ TEST_CASE("normal line")
 
     SECTION("add to vertex")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Vertex);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Vertices);
 
         eval.Update();
 
@@ -780,7 +849,7 @@ TEST_CASE("normal line")
 
     SECTION("add to primitive")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Primitive);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Primitives);
 
         eval.Update();
 
@@ -790,7 +859,7 @@ TEST_CASE("normal line")
 
     SECTION("add to detail")
     {
-        normal->SetAttrAddTo(sop::GeoAttrClass::Detail);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Detail);
 
         eval.Update();
 
@@ -830,7 +899,10 @@ TEST_CASE("poly extrude")
         auto group = std::make_shared<sop::node::GroupCreate>();
         const std::string name("test");
         group->SetGroupName(name);
-        group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+        group->SetGroupType(sop::GroupType::Primitives);
+        group->SetKeepByNormals(true);
+        group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+        group->SetKeepByNormalsAngle(10.0f);
         eval.AddNode(group);
 
         eval.Connect({ box, 0 }, { group, 0 });
@@ -862,7 +934,9 @@ TEST_CASE("poly extrude face")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -870,14 +944,16 @@ TEST_CASE("poly extrude face")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("top");
     blast->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
 
     auto extrude = std::make_shared<sop::node::PolyExtrude>();
     extrude->SetDistance(0.5f);
+    extrude->SetOutputFrontGroup(true);
     extrude->SetFrontGroupName("new_front_faces");
+    extrude->SetOutputSideGroup(true);
     extrude->SetSideGroupName("new_side_faces");
     eval.AddNode(extrude);
 
@@ -905,7 +981,9 @@ TEST_CASE("poly fill")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -935,7 +1013,9 @@ TEST_CASE("poly fill")
         auto group2 = std::make_shared<sop::node::GroupCreate>();
         group2->SetGroupName("btm");
         group2->SetGroupType(sop::GroupType::Primitives);
-        group2->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
+        group2->SetKeepByNormals(true);
+        group2->SetKeepByNormalsDir(sm::vec3(0, -1, 0));
+        group2->SetKeepByNormalsAngle(10.0f);
         eval.AddNode(group2);
 
         eval.Connect({ blast, 0 }, { group2, 0 });
@@ -968,7 +1048,9 @@ TEST_CASE("poly fill")
         auto group2 = std::make_shared<sop::node::GroupCreate>();
         group2->SetGroupName("btm");
         group2->SetGroupType(sop::GroupType::Primitives);
-        group2->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
+        group2->SetKeepByNormals(true);
+        group2->SetKeepByNormalsDir(sm::vec3(0, -1, 0));
+        group2->SetKeepByNormalsAngle(10.0f);
         eval.AddNode(group2);
 
         eval.Connect({ box2, 0 }, { group2, 0 });
@@ -1098,11 +1180,15 @@ TEST_CASE("poly frame shape(2 pts)")
 
     auto add = std::make_shared<sop::node::Add>();
     add->SetPoints({ { 0, 0, 0 }, { 1, 2, 3 } });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto polyframe = std::make_shared<sop::node::PolyFrame>();
     polyframe->SetEntityType(sop::GroupType::Primitives);
     polyframe->SetFrameStyle(sop::node::PolyFrame::FrameStyle::TwoEdges);
+    polyframe->SetNormalNameToggle(true);
+    polyframe->SetTangentNameToggle(true);
+    polyframe->SetBitangentNameToggle(true);
     polyframe->SetNormalName("N");
     polyframe->SetTangentName("T");
     polyframe->SetBitangentName("B");
@@ -1135,18 +1221,16 @@ TEST_CASE("poly frame shape - norm attr (2 pts)")
     eval.AddNode(box);
 
     auto normal = std::make_shared<sop::node::Normal>();
-    normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+    normal->SetAttrAddTo(sop::node::Normal::AddToType::Points);
     eval.AddNode(normal);
 
     eval.Connect({ box, 0 }, { normal, 0 });
 
     auto group_expr = std::make_shared<sop::node::GroupExpression>();
     group_expr->SetGroupType(sop::GroupType::Points);
-    sop::node::GroupExpression::Instance inst0;
-    inst0.group_name = "group1";
-    inst0.expr_str = "@P.x < 0 && @P.y > 0";
-    inst0.merge_op = sop::GroupMerge::Replace;
-    group_expr->AddInstance(inst0);
+    group_expr->SetGroupNames({ "group1" });
+    group_expr->SetGroupExprs({ "@P.x < 0 && @P.y > 0" });
+    group_expr->SetGroupMergeOps({ sop::GroupMerge::Replace });
     eval.AddNode(group_expr);
 
     eval.Connect({ normal, 0 }, { group_expr, 0 });
@@ -1154,7 +1238,7 @@ TEST_CASE("poly frame shape - norm attr (2 pts)")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("group1");
     blast->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group_expr, 0 }, { blast, 0 });
@@ -1167,6 +1251,9 @@ TEST_CASE("poly frame shape - norm attr (2 pts)")
     auto polyframe = std::make_shared<sop::node::PolyFrame>();
     polyframe->SetEntityType(sop::GroupType::Primitives);
     polyframe->SetFrameStyle(sop::node::PolyFrame::FrameStyle::TwoEdges);
+    polyframe->SetNormalNameToggle(true);
+    polyframe->SetTangentNameToggle(true);
+    polyframe->SetBitangentNameToggle(true);
     polyframe->SetNormalName("N");
     polyframe->SetTangentName("T");
     polyframe->SetBitangentName("B");
@@ -1196,10 +1283,14 @@ TEST_CASE("poly frame shape - calc norm (3 pts)")
 
     auto add = std::make_shared<sop::node::Add>();
     add->SetPoints({ { 0, 0, 0 }, { 1, 1, 1 }, { 0, 0, 2 } });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto polyframe = std::make_shared<sop::node::PolyFrame>();
     polyframe->SetEntityType(sop::GroupType::Primitives);
+    polyframe->SetNormalNameToggle(true);
+    polyframe->SetTangentNameToggle(true);
+    polyframe->SetBitangentNameToggle(true);
     polyframe->SetNormalName("N");
     polyframe->SetTangentName("T");
     polyframe->SetBitangentName("B");
@@ -1259,10 +1350,14 @@ TEST_CASE("poly frame shape - calc norm (3 pts)")
 //
 //    auto add = std::make_shared<sop::node::Add>();
 //    add->SetPoints({ { 1.001f, 3, -20 }, { 0, 0, 0 }, { 1, 3, 1 }, { 0, 0, 1 } });
+//    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
 //    eval.AddNode(add);
 //
 //    auto polyframe = std::make_shared<sop::node::PolyFrame>();
 //    polyframe->SetEntityType(sop::GroupType::Primitives);
+//    polyframe->SetNormalNameToggle(true);
+//    polyframe->SetTangentNameToggle(true);
+//    polyframe->SetBitangentNameToggle(true);
 //    polyframe->SetNormalName("N");
 //    polyframe->SetTangentName("T");
 //    polyframe->SetBitangentName("B");

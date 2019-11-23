@@ -23,16 +23,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetAttrName(const std::string& name);
-    void SetPromoteType(GeoAttrClass from, GeoAttrClass to);
-
-private:
-    std::string m_attr_name;
-
-    GeoAttrClass m_from_type = GeoAttrClass::Point;
-    GeoAttrClass m_to_type   = GeoAttrClass::Point;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/AttributePromote.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // AttributePromote
 

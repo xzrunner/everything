@@ -48,56 +48,16 @@ void PolyExtrude::Execute(Evaluator& eval)
         m_geo_impl->UpdateByBrush(*brush_model);
 
         // update group
-        if (!m_front_group.empty()) {
-            AddToGroup(m_front_group, new_faces[he::Polyhedron::ExtrudeFront]);
+        if (m_output_front_group) {
+            AddToGroup(m_front_group_name, new_faces[he::Polyhedron::ExtrudeFront]);
         }
-        if (!m_back_group.empty()) {
-            AddToGroup(m_back_group, new_faces[he::Polyhedron::ExtrudeBack]);
+        if (m_output_back_group) {
+            AddToGroup(m_back_group_name, new_faces[he::Polyhedron::ExtrudeBack]);
         }
-        if (!m_side_group.empty()) {
-            AddToGroup(m_side_group, new_faces[he::Polyhedron::ExtrudeSide]);
+        if (m_output_side_group) {
+            AddToGroup(m_side_group_name, new_faces[he::Polyhedron::ExtrudeSide]);
         }
     }
-}
-
-void PolyExtrude::SetGroupName(const std::string& name)
-{
-    NODE_PROP_SET(m_group_name, name);
-}
-
-void PolyExtrude::SetDistance(float dist)
-{
-    NODE_PROP_SET(m_distance, dist);
-}
-
-void PolyExtrude::SetOutputFront(bool output)
-{
-    NODE_PROP_SET(m_output_front, output);
-}
-
-void PolyExtrude::SetOutputBack(bool output)
-{
-    NODE_PROP_SET(m_output_back, output);
-}
-
-void PolyExtrude::SetOutputSide(bool output)
-{
-    NODE_PROP_SET(m_output_side, output);
-}
-
-void PolyExtrude::SetFrontGroupName(const std::string& name)
-{
-    NODE_PROP_SET(m_front_group, name);
-}
-
-void PolyExtrude::SetBackGroupName(const std::string& name)
-{
-    NODE_PROP_SET(m_back_group, name);
-}
-
-void PolyExtrude::SetSideGroupName(const std::string& name)
-{
-    NODE_PROP_SET(m_side_group, name);
 }
 
 bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims,

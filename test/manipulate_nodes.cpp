@@ -32,7 +32,7 @@ TEST_CASE("delete")
 
     SECTION("del selected")
     {
-        del->SetDelNonSelected(false);
+        del->SetNegateSelected(sop::node::Delete::NegateSelected::Delete);
 
         eval.Update();
 
@@ -42,7 +42,7 @@ TEST_CASE("delete")
 
     SECTION("del non selected")
     {
-        del->SetDelNonSelected(true);
+        del->SetNegateSelected(sop::node::Delete::NegateSelected::Keep);
 
         eval.Update();
 
@@ -83,7 +83,9 @@ TEST_CASE("peak prims group")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -110,12 +112,10 @@ TEST_CASE("peak points group")
     eval.AddNode(box);
 
     auto group_expr = std::make_shared<sop::node::GroupExpression>();
-    sop::node::GroupExpression::Instance inst0;
-    inst0.group_name = "top";
-    inst0.expr_str = "@P.y > 0";
-    inst0.merge_op = sop::GroupMerge::Replace;
-    group_expr->AddInstance(inst0);
     group_expr->SetGroupType(sop::GroupType::Points);
+    group_expr->SetGroupNames({ "top" });
+    group_expr->SetGroupExprs({ "@P.y > 0" });
+    group_expr->SetGroupMergeOps({ sop::GroupMerge::Replace });
     eval.AddNode(group_expr);
 
     eval.Connect({ box, 0 }, { group_expr, 0 });
@@ -224,7 +224,8 @@ TEST_CASE("transform")
         auto group_create = std::make_shared<sop::node::GroupCreate>();
         group_create->SetGroupName("bottom");
         group_create->SetGroupType(sop::GroupType::Points);
-        group_create->EnableBaseGroup("@P.y < 0");
+        group_create->SetBaseGroupEnable(true);
+        group_create->SetBaseGroupSyntax("@P.y < 0");
         eval.AddNode(group_create);
 
         eval.Connect({ box, 0 }, { group_create, 0 });
@@ -248,7 +249,8 @@ TEST_CASE("transform")
         auto group_create = std::make_shared<sop::node::GroupCreate>();
         group_create->SetGroupName("bottom");
         group_create->SetGroupType(sop::GroupType::Vertices);
-        group_create->EnableBaseGroup("@P.y < 0");
+        group_create->SetBaseGroupEnable(true);
+        group_create->SetBaseGroupSyntax("@P.y < 0");
         eval.AddNode(group_create);
 
         eval.Connect({ box, 0 }, { group_create, 0 });
@@ -272,7 +274,8 @@ TEST_CASE("transform")
         auto group_create = std::make_shared<sop::node::GroupCreate>();
         group_create->SetGroupName("bottom");
         group_create->SetGroupType(sop::GroupType::Primitives);
-        group_create->EnableBaseGroup("@P.y < 0");
+        group_create->SetBaseGroupEnable(true);
+        group_create->SetBaseGroupSyntax("@P.y < 0");
         eval.AddNode(group_create);
 
         eval.Connect({ box, 0 }, { group_create, 0 });

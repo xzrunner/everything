@@ -95,6 +95,15 @@ rttr::registration::enumeration<sop::GroupType>("sop_group_type")
     REGIST_ENUM_ITEM(sop::GroupType::Primitives,     "primitive", "Primitives")
 );
 
+rttr::registration::enumeration<sop::GroupTypes>("sop_group_types")
+(
+    REGIST_ENUM_ITEM(sop::GroupTypes::Auto,       "auto",     "Auto"),
+    REGIST_ENUM_ITEM(sop::GroupTypes::Points,     "points",   "Points"),
+    REGIST_ENUM_ITEM(sop::GroupTypes::Vertices,   "vertices", "Vertices"),
+    REGIST_ENUM_ITEM(sop::GroupTypes::Edges,      "edges",    "Edges"),
+    REGIST_ENUM_ITEM(sop::GroupTypes::Primitives, "prims",    "Primitives")
+);
+
 rttr::registration::enumeration<sop::GroupMerge>("sop_group_merge")
 (
     REGIST_ENUM_ITEM(sop::GroupMerge::Replace,   "replace",   "Replace"),
@@ -130,8 +139,23 @@ rttr::registration::enumeration<sop::GeoAttrClass>("sop_geo_attr_class")
 
 REGIST_NODE_TYPE(Geometry, geometry)
 
+// widgets
+
+rttr::registration::class_<sop::RampWidgets>("sop::ramp_widgets")
+	.property("value",  &sop::RampWidgets::value)
+    .property("interp", &sop::RampWidgets::interp)
+    .property("pos",    &sop::RampWidgets::pos)
+;
+
 // attribute
-REGIST_NODE_TYPE(AttributeCreate, attribcreate::2.0)
+rttr::registration::class_<sop::node::AttributeCreate>("sop::attribcreate::2.0")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/AttributeCreate.parm.h"
+#define PARM_NODE_CLASS sop::node::AttributeCreate
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::AttributeCreate::ItemType>("sop_attributecreate_item_type")
 (
     REGIST_ENUM_ITEM(sop::node::AttributeCreate::ItemType::Float,        "float",       "Float"),
@@ -154,11 +178,32 @@ rttr::registration::enumeration<sop::node::AttributeCreate::ItemFltInfo>("sop_at
     REGIST_ENUM_ITEM(sop::node::AttributeCreate::ItemFltInfo::TransformMatrix,   "tranform",     "Transform Matrix"),
     REGIST_ENUM_ITEM(sop::node::AttributeCreate::ItemFltInfo::TextureCoordinate, "texturecoord", "Texture Coordinate")
 );
-REGIST_NODE_TYPE(AttributePromote, attribpromote)
+rttr::registration::class_<sop::node::AttributePromote>("sop::attribpromote")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/AttributePromote.parm.h"
+#define PARM_NODE_CLASS sop::node::AttributePromote
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 REGIST_NODE_TYPE(AttributeTransfer, attribtransfer)
 REGIST_NODE_TYPE(AttributeVOP, attribvop)
-REGIST_NODE_TYPE(AttributeWrangle, attribwrangle)
-REGIST_NODE_TYPE(Measure, measure)
+rttr::registration::class_<sop::node::AttributeWrangle>("sop::attribwrangle")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/AttributeWrangle.parm.h"
+#define PARM_NODE_CLASS sop::node::AttributeWrangle
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::Measure>("sop::measure")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Measure.parm.h"
+#define PARM_NODE_CLASS sop::node::Measure
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::Measure::Type>("sop_measure_type")
 (
     REGIST_ENUM_ITEM(sop::node::Measure::Type::Perimeter, "perimeter", "Perimeter"),
@@ -166,7 +211,14 @@ rttr::registration::enumeration<sop::node::Measure::Type>("sop_measure_type")
     REGIST_ENUM_ITEM(sop::node::Measure::Type::Curvature, "curvature", "Curvature"),
     REGIST_ENUM_ITEM(sop::node::Measure::Type::Volume,    "volume",    "Volume")
 );
-REGIST_NODE_TYPE(Sort, sort)
+rttr::registration::class_<sop::node::Sort>("sop::sort")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Sort.parm.h"
+#define PARM_NODE_CLASS sop::node::Sort
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::Sort::Key>("sop_sort_key")
 (
     REGIST_ENUM_ITEM(sop::node::Sort::Key::NoChange, "none", "No Change"),
@@ -177,7 +229,14 @@ rttr::registration::enumeration<sop::node::Sort::Key>("sop_sort_key")
 );
 
 // group
-REGIST_NODE_TYPE(GroupCreate, groupcreate)
+rttr::registration::class_<sop::node::GroupCreate>("sop::groupcreate")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/GroupCreate.parm.h"
+#define PARM_NODE_CLASS sop::node::GroupCreate
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::GroupCreate::BoundingType>("sop_groupcreate_bounding_type")
 (
     REGIST_ENUM_ITEM(sop::node::GroupCreate::BoundingType::Box,    "usebbox",    "Box"),
@@ -185,36 +244,91 @@ rttr::registration::enumeration<sop::node::GroupCreate::BoundingType>("sop_group
     REGIST_ENUM_ITEM(sop::node::GroupCreate::BoundingType::Object, "usebobject", "Object"),
     REGIST_ENUM_ITEM(sop::node::GroupCreate::BoundingType::Volume, "usebvolume", "Volume")
 );
-REGIST_NODE_TYPE(GroupExpression, groupexpression)
-REGIST_NODE_TYPE(GroupPromote, grouppromote)
+rttr::registration::class_<sop::node::GroupExpression>("sop::groupexpression")
+.constructor<>()
+.property("expressions", &sop::node::GroupExpression::GetExprsNum, &sop::node::GroupExpression::SetExprsNum)
+#define PARM_FILEPATH "sop/node/GroupExpression.parm.h"
+#define PARM_NODE_CLASS sop::node::GroupExpression
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::GroupPromote>("sop::grouppromote")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/GroupPromote.parm.h"
+#define PARM_NODE_CLASS sop::node::GroupPromote
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 
 // import
 REGIST_NODE_TYPE(File, file)
 REGIST_NODE_TYPE(ObjectMerge, object_merge)
 
 // manipulate
-REGIST_NODE_TYPE(Delete, delete)
+rttr::registration::class_<sop::node::Delete>("sop::delete")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Delete.parm.h"
+#define PARM_NODE_CLASS sop::node::Delete
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::enumeration<sop::node::Delete::NegateSelected>("sop_del_selected")
+(
+    REGIST_ENUM_ITEM(sop::node::Delete::NegateSelected::Delete, "dele", "Delete Selected"),
+    REGIST_ENUM_ITEM(sop::node::Delete::NegateSelected::Keep,   "keep", "Delete Non-Selected")
+);
 rttr::registration::enumeration<sop::node::Delete::EntityType>("sop_delete_entity_type")
 (
     REGIST_ENUM_ITEM(sop::node::Delete::EntityType::Points, "point", "Points"),
     REGIST_ENUM_ITEM(sop::node::Delete::EntityType::Edges,  "edge",  "Edges"),
     REGIST_ENUM_ITEM(sop::node::Delete::EntityType::Faces,  "face",  "Faces")
 );
-rttr::registration::enumeration<sop::node::Delete::Operation>("sop_delete_operation")
+rttr::registration::enumeration<sop::node::Delete::OpRule>("sop_delete_op_rule")
 (
-    REGIST_ENUM_ITEM(sop::node::Delete::Operation::Pattern,    "pattern", "Pattern"),
-    REGIST_ENUM_ITEM(sop::node::Delete::Operation::Range,      "range",   "Range"),
-    REGIST_ENUM_ITEM(sop::node::Delete::Operation::Expression, "filter",  "Expression")
+    REGIST_ENUM_ITEM(sop::node::Delete::OpRule::Pattern,    "pattern", "Pattern"),
+    REGIST_ENUM_ITEM(sop::node::Delete::OpRule::Range,      "range",   "Range"),
+    REGIST_ENUM_ITEM(sop::node::Delete::OpRule::Expression, "filter",  "Expression")
 );
-REGIST_NODE_TYPE(Peak, peak)
-REGIST_NODE_TYPE(Transform, xform)
+rttr::registration::class_<sop::node::Peak>("sop::peak")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Peak.parm.h"
+#define PARM_NODE_CLASS sop::node::Peak
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::Transform>("sop::xform")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Transform.parm.h"
+#define PARM_NODE_CLASS sop::node::Transform
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 
 // material
 REGIST_NODE_TYPE(Color, color)
 REGIST_NODE_TYPE(UVLayout, uvlayout)
 REGIST_NODE_TYPE(UVQuickShade, uvquickshade)
-REGIST_NODE_TYPE(UVTransform, uvtransform::2.0)
-REGIST_NODE_TYPE(UVUnwrap, uvunwrap)
+rttr::registration::class_<sop::node::UVTransform>("sop::uvtransform::2.0")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/UVTransform.parm.h"
+#define PARM_NODE_CLASS sop::node::UVTransform
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::UVUnwrap>("sop::uvunwrap")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/UVUnwrap.parm.h"
+#define PARM_NODE_CLASS sop::node::UVUnwrap
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::UVUnwrap::ScaleType>("sop_uvunwrap_scale_type")
 (
     REGIST_ENUM_ITEM(sop::node::UVUnwrap::ScaleType::None,    "none",    "None"),
@@ -223,10 +337,27 @@ rttr::registration::enumeration<sop::node::UVUnwrap::ScaleType>("sop_uvunwrap_sc
 );
 
 // NURBs
-REGIST_NODE_TYPE(Carve, carve)
+rttr::registration::class_<sop::node::Carve>("sop::carve")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Carve.parm.h"
+#define PARM_NODE_CLASS sop::node::Carve
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 
 // polygon
-REGIST_NODE_TYPE(Add, add)
+rttr::registration::class_<sop::node::Add>("sop::add")
+.constructor<>()
+.property("stdswitcher1", &sop::node::Add::GetStdSwitcher1, &sop::node::Add::SetStdSwitcher1)
+.property("switcher1", &sop::node::Add::GetSwitcher1, &sop::node::Add::SetSwitcher1)
+.property("points", &sop::node::Add::GetPointsNum, &sop::node::Add::SetPointsNum)
+#define PARM_FILEPATH "sop/node/Add.parm.h"
+#define PARM_NODE_CLASS sop::node::Add
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 REGIST_NODE_TYPE(Boolean, boolean::2.0)
 rttr::registration::enumeration<sop::node::Boolean::Operator>("sop_boolean_operator")
 (
@@ -245,29 +376,78 @@ rttr::registration::enumeration<sop::node::Boolean::SubType>("sop_boolean_sub_ty
     REGIST_ENUM_ITEM(sop::node::Boolean::SubType::BMinusA, "bminusa", "B - A"),
     REGIST_ENUM_ITEM(sop::node::Boolean::SubType::Both,    "both",    "Both")
 );
-REGIST_NODE_TYPE(Divide, divide)
-REGIST_NODE_TYPE(Fuse, fuse)
+rttr::registration::class_<sop::node::Divide>("sop::divide")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Divide.parm.h"
+#define PARM_NODE_CLASS sop::node::Divide
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::Fuse>("sop::fuse")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Fuse.parm.h"
+#define PARM_NODE_CLASS sop::node::Fuse
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::Fuse::Operator>("sop_fuse_operator")
 (
     REGIST_ENUM_ITEM(sop::node::Fuse::Operator::Consolidate,  "consolidate",   "Consolidate"),
     REGIST_ENUM_ITEM(sop::node::Fuse::Operator::UniquePoints, "unique_points", "Unique Points"),
     REGIST_ENUM_ITEM(sop::node::Fuse::Operator::Snap,         "snap",          "Snap")
 );
-REGIST_NODE_TYPE(Knife, knife)
+rttr::registration::class_<sop::node::Knife>("sop::knife")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Knife.parm.h"
+#define PARM_NODE_CLASS sop::node::Knife
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::Knife::KeepType>("sop_knife_keep")
 (
     REGIST_ENUM_ITEM(sop::node::Knife::KeepType::KeepAbove, "above", "Keep Above"),
     REGIST_ENUM_ITEM(sop::node::Knife::KeepType::KeepBelow, "below", "Keep Below"),
     REGIST_ENUM_ITEM(sop::node::Knife::KeepType::KeepAll,   "both",  "Keep All")
 );
-REGIST_NODE_TYPE(Normal, normal)
-REGIST_NODE_TYPE(PolyExtrude, polyextrude::2.0)
+rttr::registration::class_<sop::node::Normal>("sop::normal")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Normal.parm.h"
+#define PARM_NODE_CLASS sop::node::Normal
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::enumeration<sop::node::Normal::AddToType>("sop_normal_add_to_type")
+(
+    REGIST_ENUM_ITEM(sop::node::Normal::AddToType::Points,     "typepoint",  "Points"),
+    REGIST_ENUM_ITEM(sop::node::Normal::AddToType::Vertices,   "typevertex", "Vertices"),
+    REGIST_ENUM_ITEM(sop::node::Normal::AddToType::Primitives, "typeprim",   "Primitives"),
+    REGIST_ENUM_ITEM(sop::node::Normal::AddToType::Detail,     "typedetail", "Detail")
+);
+rttr::registration::class_<sop::node::PolyExtrude>("sop::polyextrude::2.0")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/PolyExtrude.parm.h"
+#define PARM_NODE_CLASS sop::node::PolyExtrude
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::PolyExtrude::Extrusion>("sop_polyextrude_extrusion")
 (
     REGIST_ENUM_ITEM(sop::node::PolyExtrude::Extrusion::PrimEdgeNorm, "primnormal", "Prim Edge Norm"),
     REGIST_ENUM_ITEM(sop::node::PolyExtrude::Extrusion::PointNorm,    "pointnormal", "Point Norm")
 );
-REGIST_NODE_TYPE(PolyFill, polyfill)
+rttr::registration::class_<sop::node::PolyFill>("sop::polyfill")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/PolyFill.parm.h"
+#define PARM_NODE_CLASS sop::node::PolyFill
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::PolyFill::Mode>("sop_polyfill_mode")
 (
     REGIST_ENUM_ITEM(sop::node::PolyFill::Mode::SinglePolygon,     "none",      "Single Polygon"),
@@ -277,7 +457,14 @@ rttr::registration::enumeration<sop::node::PolyFill::Mode>("sop_polyfill_mode")
     REGIST_ENUM_ITEM(sop::node::PolyFill::Mode::Quadrilaterals,    "quads",     "Quadrilaterals"),
     REGIST_ENUM_ITEM(sop::node::PolyFill::Mode::QuadrilateralGrid, "gridquads", "Quadrilateral Grid")
 );
-REGIST_NODE_TYPE(PolyFrame, polyframe)
+rttr::registration::class_<sop::node::PolyFrame>("sop::polyframe")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/PolyFrame.parm.h"
+#define PARM_NODE_CLASS sop::node::PolyFrame
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::PolyFrame::FrameStyle>("sop_poly_frame_style")
 (
     REGIST_ENUM_ITEM(sop::node::PolyFrame::FrameStyle::FirstEdge,         "first_edge",          "First Edge"),
@@ -290,26 +477,32 @@ rttr::registration::enumeration<sop::node::PolyFrame::FrameStyle>("sop_poly_fram
 );
 
 // primitive
-//REGIST_NODE_TYPE(Box, box)
 rttr::registration::class_<sop::node::Box>("sop::box")
-    .constructor<>()
-    .property("size", &sop::node::Box::GetSize, &sop::node::Box::SetSize)
-    (
-	    rttr::metadata(sop::PropMeta::ParmType, sop::ParmType::Vector3)
-    )
-    .property("t", &sop::node::Box::GetCenter, &sop::node::Box::SetCenter)
-    (
-	    rttr::metadata(sop::PropMeta::ParmType, sop::ParmType::Vector3)
-    )
-    .property("scale", &sop::node::Box::GetScale, &sop::node::Box::SetScale)
-    (
-	    rttr::metadata(sop::PropMeta::ParmType, sop::ParmType::Vector3)
-    )
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Box.parm.h"
+#define PARM_NODE_CLASS sop::node::Box
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
 ;
 REGIST_NODE_TYPE(Curve, curve)
 REGIST_NODE_TYPE(Grid, grid)
-REGIST_NODE_TYPE(Line, line)
-REGIST_NODE_TYPE(Primitive, primitive)
+rttr::registration::class_<sop::node::Line>("sop::line")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Line.parm.h"
+#define PARM_NODE_CLASS sop::node::Line
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::Primitive>("sop::primitive")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Primitive.parm.h"
+#define PARM_NODE_CLASS sop::node::Primitive
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 REGIST_NODE_TYPE(Sphere, sphere)
 // primitive extern
 REGIST_NODE_TYPE(Dungeon, dungeon)
@@ -318,9 +511,30 @@ REGIST_NODE_TYPE(Dungeon, dungeon)
 REGIST_NODE_TYPE(Lattice, lattice)
 
 // utility
-REGIST_NODE_TYPE(Blast, blast)
-REGIST_NODE_TYPE(CopyToPoints, copytopoints)
-REGIST_NODE_TYPE(ForeachPrimBegin, block_begin)
+rttr::registration::class_<sop::node::Blast>("sop::blast")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Blast.parm.h"
+#define PARM_NODE_CLASS sop::node::Blast
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::CopyToPoints>("sop::copytopoints")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/CopyToPoints.parm.h"
+#define PARM_NODE_CLASS sop::node::CopyToPoints
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::ForeachPrimBegin>("sop::block_begin")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/ForeachPrimBegin.parm.h"
+#define PARM_NODE_CLASS sop::node::ForeachPrimBegin
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::ForeachPrimBegin::Method>("sop_foreachprimbegin_method")
 (
     REGIST_ENUM_ITEM(sop::node::ForeachPrimBegin::Method::Feedback,     "feedback", "Feedback"),
@@ -328,7 +542,14 @@ rttr::registration::enumeration<sop::node::ForeachPrimBegin::Method>("sop_foreac
     REGIST_ENUM_ITEM(sop::node::ForeachPrimBegin::Method::Metadata,     "metadata", "Metadata"),
     REGIST_ENUM_ITEM(sop::node::ForeachPrimBegin::Method::Input,        "input",    "Input")
 );
-REGIST_NODE_TYPE(ForeachPrimEnd, block_end)
+rttr::registration::class_<sop::node::ForeachPrimEnd>("sop::block_end")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/ForeachPrimEnd.parm.h"
+#define PARM_NODE_CLASS sop::node::ForeachPrimEnd
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::ForeachPrimEnd::IterMethod>("sop_foreachprimend_iter_method")
 (
     REGIST_ENUM_ITEM(sop::node::ForeachPrimEnd::IterMethod::AutoDetectFromInputs, "auto",   "Auto Detect from Inputs"),
@@ -347,10 +568,38 @@ rttr::registration::enumeration<sop::node::ForeachPrimEnd::PieceElements>("sop_f
 );
 REGIST_NODE_TYPE(Merge, merge)
 REGIST_NODE_TYPE(Null, null)
-REGIST_NODE_TYPE(Output, output)
-REGIST_NODE_TYPE(Python, python)
-REGIST_NODE_TYPE(Split, split)
-REGIST_NODE_TYPE(Switch, switch)
+rttr::registration::class_<sop::node::Output>("sop::output")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Output.parm.h"
+#define PARM_NODE_CLASS sop::node::Output
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::Python>("sop::python")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Python.parm.h"
+#define PARM_NODE_CLASS sop::node::Python
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::Split>("sop::split")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Split.parm.h"
+#define PARM_NODE_CLASS sop::node::Split
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::Switch>("sop::switch")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Switch.parm.h"
+#define PARM_NODE_CLASS sop::node::Switch
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 
 }
 

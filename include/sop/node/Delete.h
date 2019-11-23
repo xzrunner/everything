@@ -10,6 +10,12 @@ namespace node
 class Delete : public Node
 {
 public:
+    enum class NegateSelected
+    {
+        Delete,
+        Keep,
+    };
+
     enum class EntityType
     {
         Points,
@@ -17,7 +23,7 @@ public:
         Faces,
     };
 
-    enum class Operation
+    enum class OpRule
     {
         Pattern,
         Range,
@@ -37,20 +43,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetDelNonSelected(bool del_non_selected);
-
-    void SetEntityType(EntityType type);
-
-    void SetFilterExpr(const std::string& expr);
-
-private:
-    bool m_delete_non_selected = false;
-
-    EntityType m_entity_type = EntityType::Points;
-
-    std::string m_filter_expr;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/Delete.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Delete
 

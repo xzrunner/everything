@@ -11,8 +11,6 @@ namespace node
 class GroupPromote : public Node
 {
 public:
-
-public:
     GroupPromote()
     {
         m_imports = {
@@ -25,22 +23,15 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetGroupName(const std::string& name);
-
-    void SetSrcGroupType(GroupType type);
-    void SetDstGroupType(GroupType type);
-
 private:
     void PrimsToPoints(Group& group);
     void PointsToPrims(Group& group);
 
-private:
-    std::string m_group_name;
-
-    GroupType m_src_type = GroupType::GuessFromGroup;
-    GroupType m_dst_type = GroupType::Points;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/GroupPromote.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // GroupPromote
 

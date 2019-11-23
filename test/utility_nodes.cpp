@@ -40,7 +40,9 @@ TEST_CASE("blast")
     const std::string name("test");
     group->SetGroupName(name);
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -62,7 +64,7 @@ TEST_CASE("blast")
 
     SECTION("del non selected")
     {
-        blast->SetDeleteNonSelected(true);
+        blast->SetDelNonSelected(true);
 
         eval.Update();
 
@@ -115,21 +117,22 @@ TEST_CASE("copy to points with points dir")
     eval.AddNode(box);
 
     auto copy = std::make_shared<sop::node::CopyToPoints>();
-    copy->EnableUsePointDir(true);
+    copy->SetTransUsePointDir(true);
     eval.AddNode(copy);
 
     eval.Connect({ box, 0 }, { copy, sop::node::CopyToPoints::IDX_SRC_PRIM });
 
     SECTION("shape")
     {
-        auto line = std::make_shared<sop::node::Add>();
-        line->SetPoints({
+        auto add = std::make_shared<sop::node::Add>();
+        add->SetPoints({
             { 0, 0, 0 },
             { 2, 4, 8 }
         });
-        eval.AddNode(line);
+        add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
+        eval.AddNode(add);
 
-        eval.Connect({ line, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
+        eval.Connect({ add, 0 }, { copy, sop::node::CopyToPoints::IDX_TARGET_POS });
 
         eval.Update();
 
@@ -158,7 +161,9 @@ TEST_CASE("copy to points with points dir")
         auto group = std::make_shared<sop::node::GroupCreate>();
         group->SetGroupName("Top");
         group->SetGroupType(sop::GroupType::Primitives);
-        group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+        group->SetKeepByNormals(true);
+        group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+        group->SetKeepByNormalsAngle(10.0f);
         eval.AddNode(group);
 
         eval.Connect({ to_box, 0 }, { group, 0 });
@@ -166,7 +171,7 @@ TEST_CASE("copy to points with points dir")
         auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("Top");
         blast->SetGroupType(sop::GroupType::GuessFromGroup);
-        blast->SetDeleteNonSelected(true);
+        blast->SetDelNonSelected(true);
         eval.AddNode(blast);
 
         eval.Connect({ group, 0 }, { blast, 0 });
@@ -185,7 +190,7 @@ TEST_CASE("copy to points with points dir")
         eval.AddNode(to_box);
 
         auto normal = std::make_shared<sop::node::Normal>();
-        normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+        normal->SetAttrAddTo(sop::node::Normal::AddToType::Points);
         eval.AddNode(normal);
 
         eval.Connect({ to_box, 0 }, { normal, 0 });
@@ -193,7 +198,9 @@ TEST_CASE("copy to points with points dir")
         auto group = std::make_shared<sop::node::GroupCreate>();
         group->SetGroupName("Top");
         group->SetGroupType(sop::GroupType::Primitives);
-        group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+        group->SetKeepByNormals(true);
+        group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+        group->SetKeepByNormalsAngle(10.0f);
         eval.AddNode(group);
 
         eval.Connect({ normal, 0 }, { group, 0 });
@@ -201,7 +208,7 @@ TEST_CASE("copy to points with points dir")
         auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("Top");
         blast->SetGroupType(sop::GroupType::GuessFromGroup);
-        blast->SetDeleteNonSelected(true);
+        blast->SetDelNonSelected(true);
         eval.AddNode(blast);
 
         eval.Connect({ group, 0 }, { blast, 0 });
@@ -235,6 +242,7 @@ TEST_CASE("copy to points with attr")
         { 0, 0, 0 },
         { 10, 10, 10 },
     });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto copy = std::make_shared<sop::node::CopyToPoints>();
@@ -263,13 +271,18 @@ TEST_CASE("copy to points with default attr scale")
 
     auto add = std::make_shared<sop::node::Add>();
     add->SetPoints({ { 0, 0, 0 } });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    std::vector<sop::node::AttributeCreate::Item> items;
-    items.emplace_back(sop::GeoAttrNames[sop::GEO_ATTR_PSCALE], sop::node::AttributeCreate::ItemType::Float,
-        sop::GeoAttrClass::Point, sop::VarValue(2.0f), sop::VarValue(0.0f));
-    attr_create->SetAttrItems(items);
+    attr_create->SetItemNames({ sop::GeoAttrNames[sop::GEO_ATTR_PSCALE] });
+    attr_create->SetItemClasses({ sop::GeoAttrClass::Point });
+    attr_create->SetItemTypes({ sop::node::AttributeCreate::ItemType::Float });
+    attr_create->SetItemValues({ sm::vec4(2, 0, 0, 0) });
+    attr_create->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0) });
+    attr_create->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess });
+    attr_create->SetItemCompSize({ 1 });
+    attr_create->SetItemStrings({ "" });
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });
@@ -297,19 +310,28 @@ TEST_CASE("copy to points with default attr N up")
 
     auto add = std::make_shared<sop::node::Add>();
     add->SetPoints({ { 0, 0, 0 } });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    std::vector<sop::node::AttributeCreate::Item> items;
-    //items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
-    //items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
-    items.emplace_back(sop::GeoAttrNames[sop::GEO_ATTR_NORM], sop::node::AttributeCreate::ItemType::Vector, 
-        sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 0, 1)), sop::VarValue(sm::vec3(0, 0, 0)));
-    items.emplace_back(sop::GeoAttrNames[sop::GEO_ATTR_UP], sop::node::AttributeCreate::ItemType::Vector, 
-        sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)), sop::VarValue(sm::vec3(0, 0, 0)));
-    //items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
-    //items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 0)));
-    attr_create->SetAttrItems(items);
+    attr_create->SetItemNames({ sop::GeoAttrNames[sop::GEO_ATTR_NORM], sop::GeoAttrNames[sop::GEO_ATTR_UP] });
+    attr_create->SetItemClasses({ sop::GeoAttrClass::Point, sop::GeoAttrClass::Point });
+    attr_create->SetItemTypes({ sop::node::AttributeCreate::ItemType::Vector, sop::node::AttributeCreate::ItemType::Vector });
+    attr_create->SetItemValues({ sm::vec4(0, 0, 1, 0), sm::vec4(1, 1, 0, 0) });
+    attr_create->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0), sm::vec4(0, 0, 0, 0) });
+    attr_create->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess, sop::node::AttributeCreate::ItemFltInfo::Guess });
+    attr_create->SetItemCompSize({ 3, 3 });
+    attr_create->SetItemStrings({ "", "" });
+    //std::vector<sop::node::AttributeCreate::Item> items;
+    ////items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
+    ////items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)));
+    //items.emplace_back(sop::GeoAttrNames[sop::GEO_ATTR_NORM], sop::node::AttributeCreate::ItemType::Vector,
+    //    sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 0, 1)), sop::VarValue(sm::vec3(0, 0, 0)));
+    //items.emplace_back(sop::GeoAttrNames[sop::GEO_ATTR_UP], sop::node::AttributeCreate::ItemType::Vector,
+    //    sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(1, 1, 0)), sop::VarValue(sm::vec3(0, 0, 0)));
+    ////items.emplace_back(sop::GEO_ATTR_NORM, sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 1)));
+    ////items.emplace_back(sop::GEO_ATTR_UP,   sop::GeoAttrClass::Point, sop::VarValue(sm::vec3(0, 1, 0)));
+    //attr_create->SetAttrItems(items);
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });
@@ -340,7 +362,9 @@ TEST_CASE("foreach primitive")
     auto top_face_group = std::make_shared<sop::node::GroupCreate>();
     top_face_group->SetGroupName("top_face");
     top_face_group->SetGroupType(sop::GroupType::Primitives);
-    top_face_group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    top_face_group->SetKeepByNormals(true);
+    top_face_group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    top_face_group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(top_face_group);
     hdiop::make_connecting<sop::NodeVarType>({ src_box, 0 }, { top_face_group, 0 });
     auto top_face_blast = std::make_shared<sop::node::Blast>();
@@ -353,7 +377,9 @@ TEST_CASE("foreach primitive")
     auto btm_face_group = std::make_shared<sop::node::GroupCreate>();
     btm_face_group->SetGroupName("btm_face");
     btm_face_group->SetGroupType(sop::GroupType::Primitives);
-    btm_face_group->EnableKeepByNormals(sm::vec3(0, -1, 0), 10);
+    btm_face_group->SetKeepByNormals(true);
+    btm_face_group->SetKeepByNormalsDir(sm::vec3(0, -1, 0));
+    btm_face_group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(btm_face_group);
     hdiop::make_connecting<sop::NodeVarType>({ top_face_blast, 0 }, { btm_face_group, 0 });
     auto btm_face_blast = std::make_shared<sop::node::Blast>();
@@ -514,7 +540,9 @@ TEST_CASE("split")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });

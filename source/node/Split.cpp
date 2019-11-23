@@ -64,18 +64,13 @@ void Split::Execute(Evaluator& eval)
     }
 }
 
-void Split::SetGroupName(const std::string& name)
-{
-    NODE_PROP_SET(m_group_name, name);
-}
-
 void Split::InitSubNodes()
 {
     m_children.resize(SUB_MAX_COUNT);
 
     auto blast0 = std::make_shared<Blast>();
     blast0->SetName("blast1");
-    blast0->SetDeleteNonSelected(true);
+    blast0->SetDelNonSelected(true);
     m_children[SUB_BLAST_0] = blast0;
 
     auto output0 = std::make_shared<Output>();
@@ -85,7 +80,7 @@ void Split::InitSubNodes()
 
     auto blast1 = std::make_shared<Blast>();
     blast1->SetName("blast2");
-    blast1->SetDeleteNonSelected(false);
+    blast1->SetDelNonSelected(false);
     m_children[SUB_BLAST_1] = blast1;
 
     auto output1 = std::make_shared<Output>();

@@ -45,6 +45,8 @@ void Dungeon::BuildModel()
 
     dungeon::BaseBSPGen dungeon(m_size, m_split_sz, m_min_sz, m_seed);
     auto rooms = dungeon.GetAllRooms();
+    auto passages = dungeon.GetAllPassages();
+    std::copy(passages.begin(), passages.end(), std::back_inserter(rooms));
     if (rooms.empty()) {
         return;
     }

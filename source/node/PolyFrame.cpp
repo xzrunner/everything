@@ -26,31 +26,6 @@ void PolyFrame::Execute(Evaluator& eval)
     CreateAttrs();
 }
 
-void PolyFrame::SetEntityType(GroupType type)
-{
-    NODE_PROP_SET(m_entity_type, type);
-}
-
-void PolyFrame::SetFrameStyle(FrameStyle style)
-{
-    NODE_PROP_SET(m_frame_style, style);
-}
-
-void PolyFrame::SetNormalName(const std::string& name)
-{
-    NODE_PROP_SET(m_normal_name, name);
-}
-
-void PolyFrame::SetTangentName(const std::string& name)
-{
-    NODE_PROP_SET(m_tangent_name, name);
-}
-
-void PolyFrame::SetBitangentName(const std::string& name)
-{
-    NODE_PROP_SET(m_bitangent_name, name);
-}
-
 void PolyFrame::CreateAttrs()
 {
     // todo: only support FirstEdge and TwoEdges now
@@ -71,13 +46,13 @@ void PolyFrame::CreateAttrs()
         }
     }
 
-    if (!m_normal_name.empty()) {
+    if (m_normal_name_toggle) {
         AddToPointsAttr(m_normal_name, normals);
     }
-    if (!m_tangent_name.empty()) {
+    if (m_tangent_name_toggle) {
         AddToPointsAttr(m_tangent_name, tangents);
     }
-    if (!m_bitangent_name.empty()) {
+    if (m_bitangent_name_toggle) {
         AddToPointsAttr(m_bitangent_name, bitangents);
     }
 }

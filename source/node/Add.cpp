@@ -21,8 +21,11 @@ void Add::Execute(Evaluator& eval)
 
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
 
-    for (auto& p : m_points) {
-        vertices.push_back({ he::TopoID(), p });
+    assert(m_points_enable.size() == m_points.size());
+    for (size_t i = 0, n = m_points.size(); i < n; ++i) {
+        if (m_points_enable[i]) {
+            vertices.push_back({ he::TopoID(), m_points[i] });
+        }
     }
 
     std::vector<std::pair<he::TopoID, sm::vec3>> line_vertices;
@@ -45,19 +48,28 @@ void Add::Execute(Evaluator& eval)
     }
 }
 
-void Add::SetPoints(const std::vector<sm::vec3>& points)
+void Add::SetStdSwitcher1(int sel)
 {
-    NODE_PROP_SET(m_points, points);
+    assert(sel == 1);
+    m_stdswitcher1 = sel;
 }
 
-void Add::SetGroupName(const std::string& name)
+void Add::SetSwitcher1(int sel)
 {
-    NODE_PROP_SET(m_group_name, name);
+    assert(sel == 1);
+    m_switcher1 = 1;
 }
 
-void Add::SetGroupType(GroupType type)
+void Add::SetPointsNum(size_t num)
 {
-    NODE_PROP_SET(m_group_type, type);
+    m_points_enable.resize(num, false);
+    m_points.resize(num, sm::vec3(0, 0, 0));
+}
+
+size_t Add::GetPointsNum() const
+{
+    assert(m_points_enable.size() == m_points.size());
+    return m_points.size();
 }
 
 std::vector<std::pair<he::TopoID, sm::vec3>>
@@ -70,42 +82,10 @@ Add::GetPrevVertices() const
         return vertices;
     }
 
-    std::shared_ptr<Group> group = nullptr;
-    if (!m_group_name.empty())
-    {
-        group = prev_geo->GetGroup().Query(m_group_name);
-        if (!group) {
-            return vertices;
-        }
-    }
-
     auto& prev_points = prev_geo->GetAttr().GetPoints();
-    if (group)
-    {
-        auto type = m_group_type == GroupType::GuessFromGroup ? group->GetType() : m_group_type;
-        if (type != group->GetType()) {
-            return vertices;
-        }
-
-        switch (type)
-        {
-        case GroupType::Points:
-        {
-            vertices.reserve(group->GetItems().size());
-            for (auto& i : group->GetItems()) {
-                auto& p = prev_points[i];
-                vertices.push_back({ p->topo_id, p->pos });
-            }
-        }
-            break;
-        }
-    }
-    else
-    {
-        vertices.reserve(prev_points.size());
-        for (auto& p : prev_points) {
-            vertices.push_back({ p->topo_id, p->pos });
-        }
+    vertices.reserve(prev_points.size());
+    for (auto& p : prev_points) {
+        vertices.push_back({ p->topo_id, p->pos });
     }
 
     return vertices;

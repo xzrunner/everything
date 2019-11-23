@@ -22,13 +22,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetOutputIdx(int idx) { m_output_idx = idx; }
-    int  GetOutputIdx() const { return m_output_idx; }
-
-private:
-    int m_output_idx = -1;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/Output.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Output
 

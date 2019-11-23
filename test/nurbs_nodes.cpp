@@ -121,11 +121,9 @@ TEST_CASE("carve")
 
     SECTION("expr fit")
     {
-        auto& props = const_cast<sop::NodePropsMgr&>(carve->GetProps());
-        REQUIRE(props.Size() == sop::node::Carve::MAX_BUILD_IN_PROP);
-
-        props.SetExpr(sop::node::Carve::FIRST_U,  "fit(3, 0, 10, 0, 1)");
-        props.SetExpr(sop::node::Carve::SECOND_U, "1 - ch(\"domainu1\")");
+        auto& params = const_cast<sop::NodeParmsMgr&>(carve->GetParms());
+        params.SetExpr("domainu1", "fit(3, 0, 10, 0, 1)");
+        params.SetExpr("domainu2", "1 - ch(\"domainu1\")");
 
         eval.Update();
 
@@ -150,7 +148,9 @@ TEST_CASE("carve normal")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("Top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -158,24 +158,22 @@ TEST_CASE("carve normal")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("Top");
     blast->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
 
     auto normal = std::make_shared<sop::node::Normal>();
-    normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+    normal->SetAttrAddTo(sop::node::Normal::AddToType::Points);
     eval.AddNode(normal);
 
     eval.Connect({ blast, 0 }, { normal, 0 });
 
     auto group_expr = std::make_shared<sop::node::GroupExpression>();
     group_expr->SetGroupType(sop::GroupType::Points);
-    sop::node::GroupExpression::Instance inst;
-    inst.group_name = "test0";
-    inst.expr_str = "@P.x < 0";
-    inst.merge_op = sop::GroupMerge::Union;
-    group_expr->AddInstance(inst);
+    group_expr->SetGroupNames({ "test0" });
+    group_expr->SetGroupExprs({ "@P.x < 0" });
+    group_expr->SetGroupMergeOps({ sop::GroupMerge::Union });
     eval.AddNode(group_expr);
 
     eval.Connect({ normal, 0 }, { group_expr, 0 });
@@ -183,7 +181,7 @@ TEST_CASE("carve normal")
     auto blast2 = std::make_shared<sop::node::Blast>();
     blast2->SetGroupName("test0");
     blast2->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast2->SetDeleteNonSelected(true);
+    blast2->SetDelNonSelected(true);
     eval.AddNode(blast2);
 
     eval.Connect({ group_expr, 0 }, { blast2, 0 });

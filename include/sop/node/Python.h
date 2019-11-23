@@ -22,12 +22,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetCode(const std::string& code);
-
-private:
-    std::string m_code;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/Python.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Python
 

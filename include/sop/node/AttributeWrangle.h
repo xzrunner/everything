@@ -23,12 +23,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetVexExpr(const std::string& expr);
-
-private:
-    std::string m_vex_expr;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/AttributeWrangle.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // AttributeWrangle
 

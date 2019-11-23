@@ -38,11 +38,9 @@ void Sort::Execute(Evaluator& eval)
         break;
     case Key::Shift:
     {
-        assert(m_props.GetProps()[POINT_OFFSET].Val().type == VarType::Int);
-        const int p_off = m_props.GetProps()[POINT_OFFSET].Val().i;
         order.resize(pts.size(), 0);
         for (int i = 0, n = pts.size(); i < n; ++i) {
-            order[i] = (i + n - p_off) % n;
+            order[i] = (i + n - m_point_offset) % n;
         }
     }
         break;
@@ -55,34 +53,6 @@ void Sort::Execute(Evaluator& eval)
         }
         attr.ChangePointsOrder(order);
     }
-}
-
-void Sort::SetKey(Key key)
-{
-    NODE_PROP_SET(m_key, key);
-}
-
-void Sort::SetPointReverse(bool reverse)
-{
-    NODE_PROP_SET(m_point_reverse, reverse);
-}
-
-void Sort::SetPointOffset(int off)
-{
-    bool dirty = false;
-
-    if (m_props.SetValue(POINT_OFFSET, Variable(off))) {
-        dirty = true;
-    }
-
-    if (dirty) {
-        SetDirty(true);
-    }
-}
-
-void Sort::InitProps()
-{
-    m_props.Assign(POINT_OFFSET, PropNames[POINT_OFFSET], Variable(0));
 }
 
 //////////////////////////////////////////////////////////////////////////

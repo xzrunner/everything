@@ -32,20 +32,15 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetMesureType(Type type);
-
-    void SetMesureName(const std::string& name);
-
 private:
     void CalcPerimeter(std::string& name, std::vector<VarValue>& val) const;
     void CalcArea(std::string& name, std::vector<VarValue>& val) const;
 
-private:
-    Type m_ms_type = Type::Perimeter;
-
-    std::string m_ms_name;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/Measure.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Measure
 

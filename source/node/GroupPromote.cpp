@@ -2,6 +2,31 @@
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
 
+namespace
+{
+
+sop::GroupTypes trans_group_type(sop::GroupType type)
+{
+    switch (type)
+    {
+    case sop::GroupType::GuessFromGroup:
+        return sop::GroupTypes::Auto;
+    case sop::GroupType::Points:
+        return sop::GroupTypes::Points;
+    case sop::GroupType::Vertices:
+        return sop::GroupTypes::Vertices;
+    case sop::GroupType::Edges:
+        return sop::GroupTypes::Edges;
+    case sop::GroupType::Primitives:
+        return sop::GroupTypes::Primitives;
+    default:
+        assert(0);
+        return sop::GroupTypes::Auto;
+    }
+}
+
+}
+
 namespace sop
 {
 namespace node
@@ -18,43 +43,33 @@ void GroupPromote::Execute(Evaluator& eval)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
-    if (m_group_name.empty() || m_src_type == m_dst_type) {
-        return;
-    }
+    assert(m_group_names.size() == m_src_types.size() &&
+           m_src_types.size() == m_dst_types.size());
+    for (size_t i = 0, n = m_group_names.size(); i < n; ++i)
+    {
+        if (m_group_names[i].empty() || m_src_types[i] == m_dst_types[i]) {
+            continue;
+        }
 
-    auto group = m_geo_impl->GetGroup().Query(m_group_name);
-    if (!group) {
-        return;
-    }
-    if (m_src_type != GroupType::GuessFromGroup &&
-        m_src_type != group->GetType()) {
-        return;
-    }
+        auto group = m_geo_impl->GetGroup().Query(m_group_names[i]);
+        if (!group) {
+            continue;
+        }
+        if (m_src_types[i] != GroupTypes::Auto &&
+            m_src_types[i] != trans_group_type(group->GetType())) {
+            continue;
+        }
 
-    auto src_type = m_src_type;
-    if (m_src_type == GroupType::GuessFromGroup) {
-        src_type = group->GetType();
+        auto src_type = m_src_types[i];
+        if (m_src_types[i] == GroupTypes::Auto) {
+            src_type = trans_group_type(group->GetType());
+        }
+        if (src_type == GroupTypes::Primitives && m_dst_types[i] == GroupTypes::Points) {
+            PrimsToPoints(*group);
+        } else if (src_type == GroupTypes::Points && m_dst_types[i] == GroupTypes::Primitives) {
+            PointsToPrims(*group);
+        }
     }
-    if (src_type == GroupType::Primitives && m_dst_type == GroupType::Points) {
-        PrimsToPoints(*group);
-    } else if (src_type == GroupType::Points && m_dst_type == GroupType::Primitives) {
-        PointsToPrims(*group);
-    }
-}
-
-void GroupPromote::SetGroupName(const std::string& name)
-{
-    NODE_PROP_SET(m_group_name, name);
-}
-
-void GroupPromote::SetSrcGroupType(GroupType type)
-{
-    NODE_PROP_SET(m_src_type, type);
-}
-
-void GroupPromote::SetDstGroupType(GroupType type)
-{
-    NODE_PROP_SET(m_dst_type, type);
 }
 
 void GroupPromote::PrimsToPoints(Group& group)
@@ -101,7 +116,7 @@ void GroupPromote::PointsToPrims(Group& group)
     group.SetType(GroupType::Primitives);
     auto& prims = attr.GetPrimtives();
     std::vector<size_t> items;
-    for (size_t i = 0, n = prims.size(); i < n; ++i) 
+    for (size_t i = 0, n = prims.size(); i < n; ++i)
     {
         bool find = false;
         for (auto& v : prims[i]->vertices) {

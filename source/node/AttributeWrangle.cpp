@@ -19,7 +19,7 @@ void AttributeWrangle::Execute(Evaluator& eval)
     }
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
- 
+
     EvalContext eval_ctx(eval, *this);
     auto& pts = m_geo_impl->GetAttr().GetPoints();
     eval_ctx.attr_type = GeoAttrClass::Point;
@@ -28,11 +28,6 @@ void AttributeWrangle::Execute(Evaluator& eval)
         eval_ctx.attr_idx = i;
         eval.RunStatement("{" + m_vex_expr + "}", eval_ctx);
     }
-}
-
-void AttributeWrangle::SetVexExpr(const std::string& expr)
-{
-    NODE_PROP_SET(m_vex_expr, expr);
 }
 
 }

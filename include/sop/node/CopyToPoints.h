@@ -36,11 +36,6 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetSrcGroup(const std::string& group);
-    void SetTargetGroup(const std::string& group);
-
-    void EnableUsePointDir(bool enable);
-
 private:
     void CopyTo(const GeometryImpl& src, const GeometryImpl& dst);
     void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, size_t norm_idx);
@@ -54,13 +49,11 @@ private:
     sm::mat4 CalcMat(const GeoAttribute::Point& pt, const std::vector<GeoAttribute::VarDesc>& desc,
         const sm::vec3& norm) const;
 
-private:
-    std::string m_src_group;
-    std::string m_target_group;
-
-    bool m_use_pt_dir = false;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/CopyToPoints.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // CopyToPoints
 

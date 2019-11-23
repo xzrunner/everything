@@ -45,31 +45,6 @@ void Knife::Execute(Evaluator& eval)
     }
 }
 
-void Knife::SetOrigin(const sm::vec3& ori)
-{
-    if (m_props.SetValue(ORIGINX, Variable(ori))) {
-        SetDirty(true);
-    }
-}
-
-void Knife::SetDirection(const sm::vec3& dir)
-{
-    if (m_props.SetValue(DIR, Variable(dir))) {
-        SetDirty(true);
-    }
-}
-
-void Knife::SetKeepType(KeepType keep)
-{
-    NODE_PROP_SET(m_keep, keep);
-}
-
-void Knife::InitProps()
-{
-    m_props.Assign(ORIGINX, PropNames[ORIGINX], Variable(sm::vec3(0.0f, 0.0f, 0.0f)));
-    m_props.Assign(DIR,     PropNames[DIR],     Variable(sm::vec3(0.0f, 1.0f, 0.0f)));
-}
-
 bool Knife::Clip(pm3::Polytope& poly) const
 {
     he::Polyhedron::KeepType keep;
@@ -88,15 +63,7 @@ bool Knife::Clip(pm3::Polytope& poly) const
         assert(0);
     }
 
-    auto& props = m_props.GetProps();
-
-    assert(props[ORIGINX].Val().type == VarType::Float3);
-    auto origin = static_cast<const sm::vec3*>(props[ORIGINX].Val().p);
-
-    assert(props[DIR].Val().type == VarType::Float3);
-    auto dir = static_cast<const sm::vec3*>(props[DIR].Val().p);
-
-    sm::Plane plane(*dir, *origin);
+    sm::Plane plane(m_dir, m_ori);
     if (poly.GetGeometry()->Clip(plane, keep)) {
         poly.BuildFromGeo();
         return true;

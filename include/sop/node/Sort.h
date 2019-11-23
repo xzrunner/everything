@@ -20,20 +20,8 @@ public:
         Shift,
     };
 
-    enum PropID
-    {
-        POINT_OFFSET,
-
-        MAX_BUILD_IN_PROP,
-    };
-
-    static const constexpr char* const PropNames[MAX_BUILD_IN_PROP] = {
-        "pointoffset"
-    };
-
 public:
     Sort()
-        : Node(MAX_BUILD_IN_PROP)
     {
         m_imports = {
             {{ NodeVarType::Any, "in" }}
@@ -41,20 +29,9 @@ public:
         m_exports = {
             {{ NodeVarType::Any, "out" }},
         };
-
-        InitProps();
     }
 
     virtual void Execute(Evaluator& eval) override;
-
-    void SetKey(Key key);
-
-    void SetPointReverse(bool reverse);
-
-    void SetPointOffset(int off);
-
-private:
-    void InitProps();
 
 private:
     class PointCmp
@@ -71,12 +48,11 @@ private:
 
     }; // PointCmp
 
-private:
-    Key m_key = Key::NoChange;
-
-    bool m_point_reverse = false;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/Sort.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Sort
 

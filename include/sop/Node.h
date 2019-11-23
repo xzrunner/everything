@@ -15,17 +15,11 @@ class GeometryImpl;
 class Node : public hdiop::NodeImpl<NodeVarType>
 {
 public:
-    Node(size_t build_in_count = 0);
+    Node();
 
     virtual void Execute(Evaluator& eval) = 0;
 
     virtual void AddInputPorts(size_t num) {}
-
-    virtual void SetParm(const std::string& key, const Variable& val)
-    {
-        auto type = get_type().get_name().to_string();
-        printf("setparm %s, %s\n", type.c_str(), key.c_str());
-    }
 
     std::shared_ptr<GeometryImpl> GetGeometry() const { return m_geo_impl; }
 

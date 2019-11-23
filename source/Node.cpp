@@ -5,9 +5,8 @@
 namespace sop
 {
 
-Node::Node(size_t build_in_count)
-    : m_props(build_in_count)
-    , m_parms(*this)
+Node::Node()
+    : m_parms(*this)
 {
 }
 

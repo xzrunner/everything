@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sop/Variable.h"
-#include "sop/ParmType.h"
 
 #include <rttr/type>
 
@@ -22,11 +21,15 @@ public:
     void SetExpr(const std::string& key, const std::string& val);
     //void SetExpr(size_t id, const std::string& val, size_t comp_idx = 0);
 
-    bool SetValue(const std::string& key, const Variable& val, bool float_cast = false);
+    bool SetValue(const std::string& key, const Variable& val);
+    bool SetArrayValue(const std::string& array_key, size_t idx,
+        const Variable& val, const std::string& sub_key = "");
 
     bool Update(const Evaluator& eval);
 
     Variable Query(const std::string& key) const;
+
+    bool IsExist(const std::string& key) const;
 
 private:
     struct KeyInfo
@@ -38,12 +41,12 @@ private:
         int comp = -1;
 
         rttr::property prop;
-
-        rttr::variant val;
-        ParmType type;
+//        rttr::variant  val;
     };
 
     KeyInfo ParseKey(const std::string& key) const;
+
+    bool SetValue(rttr::property prop, const Variable& val, int comp_idx = -1);
 
 private:
     Node& m_node;

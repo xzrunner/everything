@@ -7,12 +7,6 @@
 namespace sop
 {
 
-NodePropsMgr::NodePropsMgr(size_t build_in_count)
-    : m_build_in_count(build_in_count)
-{
-    m_props.resize(m_build_in_count);
-}
-
 void NodePropsMgr::Assign(size_t idx, const std::string& key, const Variable& val)
 {
     if (idx < 0 || idx >= m_props.size()) {
@@ -26,18 +20,18 @@ void NodePropsMgr::Assign(size_t idx, const std::string& key, const Variable& va
     p.m_val = val;
 }
 
-void NodePropsMgr::SetExpr(size_t idx, const std::string& expr, size_t comp_idx)
-{
-    if (idx < 0 || idx >= m_props.size()) {
-        return;
-    }
-
-    auto& p = m_props[idx];
-    if (p.m_expr[comp_idx] == expr) {
-        return;
-    }
-    p.m_expr[comp_idx] = expr;
-}
+//void NodePropsMgr::SetExpr(size_t idx, const std::string& expr, size_t comp_idx)
+//{
+//    if (idx < 0 || idx >= m_props.size()) {
+//        return;
+//    }
+//
+//    auto& p = m_props[idx];
+//    if (p.m_expr[comp_idx] == expr) {
+//        return;
+//    }
+//    p.m_expr[comp_idx] = expr;
+//}
 
 bool NodePropsMgr::SetValue(size_t idx, const Variable& val, bool float_cast)
 {
@@ -113,16 +107,9 @@ int NodePropsMgr::Add(const std::string& key, const Variable& val)
 
 bool NodePropsMgr::Remove(const std::string& key)
 {
-    for (size_t i = 0, n = m_props.size(); i < n; ++i)
-    {
-        if (m_props[i].m_key != key) {
-            continue;
-        }
-
-        if (i < m_build_in_count) {
-            return false;
-        } else {
-            m_props.erase(m_props.begin() + i);
+    for (auto itr = m_props.begin(); itr != m_props.end(); ++itr) {
+        if (itr->m_key == key) {
+            m_props.erase(itr);
             return true;
         }
     }
@@ -131,7 +118,7 @@ bool NodePropsMgr::Remove(const std::string& key)
 
 void NodePropsMgr::Clear()
 {
-    m_props.erase(m_props.begin() + m_build_in_count, m_props.end());
+    m_props.clear();
 }
 
 Variable NodePropsMgr::Query(const std::string& key) const

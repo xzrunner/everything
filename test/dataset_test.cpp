@@ -184,6 +184,7 @@ TEST_CASE("attr combine")
         { 0, 1, 1 },
         { 0, 2, 1 },
     });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto measure1 = std::make_shared<sop::node::Measure>();
@@ -326,7 +327,7 @@ TEST_CASE("attr blast")
     eval.AddNode(box);
 
     auto normal = std::make_shared<sop::node::Normal>();
-    normal->SetAttrAddTo(sop::GeoAttrClass::Primitive);
+    normal->SetAttrAddTo(sop::node::Normal::AddToType::Primitives);
     eval.AddNode(normal);
 
     eval.Connect({ box, 0 }, { normal, 0 });
@@ -334,7 +335,9 @@ TEST_CASE("attr blast")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("Top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals({ 0, 1, 0 }, 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ normal, 0 }, { group, 0 });
@@ -342,7 +345,7 @@ TEST_CASE("attr blast")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("Top");
     blast->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });

@@ -39,11 +39,6 @@ void Normal::Execute(Evaluator& eval)
     }
 }
 
-void Normal::SetAttrAddTo(GeoAttrClass cls)
-{
-    NODE_PROP_SET(m_attr_add_to, cls);
-}
-
 bool Normal::CalcSmoothedPointsNormal(const GeometryImpl& geo, std::vector<sm::vec3>& out_norms)
 {
     auto& attr = geo.GetAttr();

@@ -41,11 +41,6 @@ void Fuse::SetFuseOP(Operator op)
     NODE_PROP_SET(m_fuse_op, op);
 }
 
-void Fuse::SetDistance(float dist)
-{
-    NODE_PROP_SET(m_distance, dist);
-}
-
 void Fuse::Consolidate()
 {
     switch (m_geo_impl->GetAdaptorType())

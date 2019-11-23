@@ -136,9 +136,6 @@
     <ClInclude Include="..\..\..\include\sop\node\ForeachPrimBegin.h">
       <Filter>nodes\utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimEnd.h">
-      <Filter>nodes\utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\Geometry.h">
       <Filter>nodes</Filter>
     </ClInclude>
@@ -326,6 +323,108 @@
     <ClInclude Include="..\..\..\include\sop\RTTRInfo.h">
       <Filter>tools</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\rttr_prop_gen.h">
+      <Filter>dataset\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Sort.parm.h">
+      <Filter>nodes\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Peak.parm.h">
+      <Filter>nodes\manipulate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Transform.parm.h">
+      <Filter>nodes\manipulate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\UVTransform.parm.h">
+      <Filter>nodes\material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Carve.parm.h">
+      <Filter>nodes\nurbs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Knife.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Line.parm.h">
+      <Filter>nodes\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Primitive.parm.h">
+      <Filter>nodes\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Switch.parm.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Blast.parm.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Delete.parm.h">
+      <Filter>nodes\manipulate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\CopyToPoints.parm.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimEnd.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimEnd.parm.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Measure.parm.h">
+      <Filter>nodes\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimBegin.parm.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Fuse.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\AttributePromote.parm.h">
+      <Filter>nodes\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\GroupExpression.parm.h">
+      <Filter>nodes\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Normal.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\PolyExtrude.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\PolyFrame.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\AttributeWrangle.parm.h">
+      <Filter>nodes\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\PolyFill.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.parm.h">
+      <Filter>nodes\material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Split.parm.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Output.parm.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Python.parm.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Add.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\GroupPromote.parm.h">
+      <Filter>nodes\group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.parm.h">
+      <Filter>nodes\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\Widgets.h">
+      <Filter>dataset\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Divide.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -381,9 +480,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\Node.cpp">
       <Filter>dataset\node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp">
-      <Filter>nodes\utility</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Geometry.cpp">
       <Filter>nodes</Filter>
@@ -542,5 +638,13 @@
     <ClCompile Include="..\..\..\source\NodeParmsMgr.cpp">
       <Filter>dataset\parameters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp">
+      <Filter>nodes\utility</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\sop\node\GroupCreate.parm.h">
+      <Filter>nodes\group</Filter>
+    </None>
   </ItemGroup>
 </Project>

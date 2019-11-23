@@ -6,6 +6,9 @@ namespace sop
 enum class GeoAttrType
 {
     Int,
+    Int2,
+    Int3,
+    Int4,
 
     // todo
     Bool,

@@ -39,8 +39,8 @@ void Delete::Execute(Evaluator& eval)
         eval_ctx.attr_idx = i;
         auto v = eval.CalcExpr(m_filter_expr, eval_ctx);
         assert(v.type == VarType::Bool);
-        if ((v.b && !m_delete_non_selected) ||
-            (!v.b && m_delete_non_selected)) {
+        if ((v.b && m_del_selected == Delete::NegateSelected::Delete) ||
+            (!v.b && m_del_selected == Delete::NegateSelected::Keep)) {
             bool b = false;
             if (v.type == VarType::Float) {
                 if (v.f == 0.0f) {
@@ -55,8 +55,8 @@ void Delete::Execute(Evaluator& eval)
             } else {
                 assert(0);
             }
-            if ((b && !m_delete_non_selected) ||
-                (!b && m_delete_non_selected)) {
+            if ((b && m_del_selected == Delete::NegateSelected::Delete) ||
+                (!b && m_del_selected == Delete::NegateSelected::Keep)) {
                 del_flags[i] = true;
             }
         }
@@ -64,21 +64,6 @@ void Delete::Execute(Evaluator& eval)
 
     m_geo_impl->GetAttr().RemoveItems(GeoAttrClass::Point, del_flags, false);
     m_geo_impl->UpdateByAttr();
-}
-
-void Delete::SetDelNonSelected(bool del_non_selected)
-{
-    NODE_PROP_SET(m_delete_non_selected, del_non_selected);
-}
-
-void Delete::SetEntityType(EntityType type)
-{
-    NODE_PROP_SET(m_entity_type, type);
-}
-
-void Delete::SetFilterExpr(const std::string& expr)
-{
-    NODE_PROP_SET(m_filter_expr, expr);
 }
 
 }

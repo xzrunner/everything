@@ -19,28 +19,60 @@
     <ClInclude Include="..\..\..\include\sop\Evaluator.h" />
     <ClInclude Include="..\..\..\include\sop\GeogramHelper.h" />
     <ClInclude Include="..\..\..\include\sop\NodeParmsMgr.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Add.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.h" />
+    <ClInclude Include="..\..\..\include\sop\node\AttributeCreate.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributePromote.h" />
+    <ClInclude Include="..\..\..\include\sop\node\AttributePromote.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributeTransfer.h" />
     <ClInclude Include="..\..\..\include\sop\node\AttributeVOP.h" />
+    <ClInclude Include="..\..\..\include\sop\node\AttributeWrangle.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Blast.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Box.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Carve.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\CopyToPoints.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Delete.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Divide.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Divide.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Dungeon.h" />
     <ClInclude Include="..\..\..\include\sop\node\File.h" />
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimBegin.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\ForeachPrimEnd.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Fuse.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Grid.h" />
+    <ClInclude Include="..\..\..\include\sop\node\GroupExpression.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h" />
+    <ClInclude Include="..\..\..\include\sop\node\GroupPromote.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Knife.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Lattice.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Line.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Measure.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Normal.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\ObjectMerge.h" />
     <ClInclude Include="..\..\..\include\sop\node\Output.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Output.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Peak.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Peak.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\PolyExtrude.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\PolyFill.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\PolyFrame.h" />
+    <ClInclude Include="..\..\..\include\sop\node\PolyFrame.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Primitive.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Python.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Python.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Sort.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Split.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Split.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Switch.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Transform.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVLayout.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVQuickShade.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVTransform.h" />
+    <ClInclude Include="..\..\..\include\sop\node\UVTransform.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.h" />
+    <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node_parms_gen.h" />
+    <ClInclude Include="..\..\..\include\sop\rttr_prop_gen.h" />
     <ClInclude Include="..\..\..\include\sop\ParmType.h" />
     <ClInclude Include="..\..\..\include\sop\PyCommonTypes.h" />
     <ClInclude Include="..\..\..\include\sop\PyLoader.h" />
@@ -91,6 +123,7 @@
     <ClInclude Include="..\..\..\include\sop\node\Transform.h" />
     <ClInclude Include="..\..\..\include\sop\typedef.h" />
     <ClInclude Include="..\..\..\include\sop\NodeVarType.h" />
+    <ClInclude Include="..\..\..\include\sop\Widgets.h" />
     <ClInclude Include="..\..\..\include\sop\VarBuffer.h" />
     <ClInclude Include="..\..\..\include\sop\Variable.h" />
     <ClInclude Include="..\..\..\include\sop\VarType.h" />
@@ -171,6 +204,9 @@
     <ClCompile Include="..\..\..\source\VarValue.cpp" />
     <ClCompile Include="..\..\..\source\VexFuncs.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\sop\node\GroupCreate.parm.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>5.sop</ProjectName>
     <ProjectGuid>{A1C0A31A-8FA7-4835-AFD5-77F44C93E040}</ProjectGuid>
@@ -222,6 +258,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -235,6 +272,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

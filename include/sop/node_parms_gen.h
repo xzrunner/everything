@@ -2,7 +2,13 @@
 #error "You must define PARM_FILEPATH macro before include this file"
 #endif
 
+#define Boolean bool
+#define Integer int
+#define Float   float
 #define Vector3 sm::vec3
+#define Vector4 sm::vec4
+#define String  std::string
+#define Array   std::vector
 
 // names
 public:
@@ -26,10 +32,10 @@ enum class Parm
 // setter & getter
 public:
 #define PARAM_INFO(id, type, name, member, default_val) \
-    void Set##id(const type& name)                      \
+    void Set##id(const type& _##name)                   \
     {                                                   \
-        if (member != name) {                           \
-            member = name;                              \
+        if (member != _##name) {                        \
+            member = _##name;                           \
             SetDirty(true);                             \
         }                                               \
     }                                                   \
@@ -47,4 +53,10 @@ private:
 #include PARM_FILEPATH
 #undef  PARAM_INFO
 
+#undef Boolean
+#undef Integer
+#undef Float
 #undef Vector3
+#undef Vector4
+#undef String
+#undef Array

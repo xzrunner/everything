@@ -56,7 +56,7 @@ void CopyToPoints::Execute(Evaluator& eval)
 
     m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
 
-    if (!m_use_pt_dir)
+    if (!m_trans_use_pt_dir)
     {
         CopyTo(*src_geo, *dst_geo);
     }
@@ -90,21 +90,6 @@ void CopyToPoints::Execute(Evaluator& eval)
     }
 
     m_geo_impl->UpdateByAttr();
-}
-
-void CopyToPoints::SetSrcGroup(const std::string& group)
-{
-    NODE_PROP_SET(m_src_group, group);
-}
-
-void CopyToPoints::SetTargetGroup(const std::string& group)
-{
-    NODE_PROP_SET(m_target_group, group);
-}
-
-void CopyToPoints::EnableUsePointDir(bool enable)
-{
-    NODE_PROP_SET(m_use_pt_dir, enable);
 }
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)

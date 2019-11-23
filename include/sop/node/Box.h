@@ -31,9 +31,6 @@ private:
 
     std::unique_ptr<model::BrushModel> BuildBrush() const;
 
-private:
-    std::map<std::string, std::string> m_parms_expr;
-
     RTTR_ENABLE(Node)
 
 #define PARM_FILEPATH "sop/node/Box.parm.h"

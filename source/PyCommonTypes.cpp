@@ -3,7 +3,6 @@
 
 #include "sop/PyCommonTypes.h"
 #include "sop/PyParmTemplate.h"
-#include "sop/NodePropsMgr.h"
 #include "sop/Node.h"
 
 #include <SM_Vector.h>

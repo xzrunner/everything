@@ -60,9 +60,14 @@ TEST_CASE("point")
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
     attr_create->SetName("attr_create");
-    std::vector<sop::node::AttributeCreate::Item> items;
-    items.emplace_back("ScaleY", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(2.0f), sop::VarValue(0.0f));
-    attr_create->SetAttrItems(items);
+    attr_create->SetItemNames({ "ScaleY" });
+    attr_create->SetItemClasses({ sop::GeoAttrClass::Point });
+    attr_create->SetItemTypes({ sop::node::AttributeCreate::ItemType::Float });
+    attr_create->SetItemValues({ sm::vec4(2, 0, 0, 0) });
+    attr_create->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0) });
+    attr_create->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess });
+    attr_create->SetItemCompSize({ 1 });
+    attr_create->SetItemStrings({ "" });
     eval.AddNode(attr_create);
 
     eval.Connect({ box, 0 }, { attr_create, 0 });
@@ -99,7 +104,7 @@ TEST_CASE("prim")
 
     auto box2 = std::make_shared<sop::node::Box>();
     auto& box2_parms = const_cast<sop::NodeParmsMgr&>(box2->GetParms());
-    //box2_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size), 
+    //box2_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
     //    "prim(\"../measure1/\",0,\"Perim\",0)", 0);
     box2_parms.SetExpr("sizex", "prim(\"../measure1/\",0,\"Perim\",0)");
     eval.AddNode(box2);
@@ -126,16 +131,14 @@ TEST_CASE("attr")
 
     SECTION("@P")
     {
-        sop::node::GroupExpression::Instance inst;
-        inst.group_name = "test0";
-        inst.expr_str = "@P.x < 0 && @P.y < 0 && @P.z > 0";
-        inst.merge_op = sop::GroupMerge::Union;
-        group_expr->AddInstance(inst);
+        group_expr->SetGroupNames({ "test0" });
+        group_expr->SetGroupExprs({ "@P.x < 0 && @P.y < 0 && @P.z > 0" });
+        group_expr->SetGroupMergeOps({ sop::GroupMerge::Union });
 
         auto blast = std::make_shared<sop::node::Blast>();
         blast->SetGroupName("test0");
         blast->SetGroupType(sop::GroupType::GuessFromGroup);
-        blast->SetDeleteNonSelected(true);
+        blast->SetDelNonSelected(true);
         eval.AddNode(blast);
 
         eval.Connect({ group_expr, 0 }, { blast, 0 });

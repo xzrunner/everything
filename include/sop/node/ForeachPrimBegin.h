@@ -37,6 +37,10 @@ public:
 
     RTTR_ENABLE(Node)
 
+#define PARM_FILEPATH "sop/node/ForeachPrimBegin.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
+
 }; // ForeachPrimBegin
 
 }

@@ -20,7 +20,7 @@ void Measure::Execute(Evaluator& eval)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
     auto& attr = m_geo_impl->GetAttr();
-    switch (m_ms_type)
+    switch (m_type)
     {
     case Type::Perimeter:
     {
@@ -47,19 +47,9 @@ void Measure::Execute(Evaluator& eval)
     }
 }
 
-void Measure::SetMesureType(Type type)
-{
-    NODE_PROP_SET(m_ms_type, type);
-}
-
-void Measure::SetMesureName(const std::string& name)
-{
-    NODE_PROP_SET(m_ms_name, name);
-}
-
 void Measure::CalcPerimeter(std::string& name, std::vector<VarValue>& val) const
 {
-    name = m_ms_name.empty() ? "perimeter" : m_ms_name;
+    name = m_attr_name.empty() ? "perimeter" : m_attr_name;
 
     auto& attr = m_geo_impl->GetAttr();
     auto& prims = attr.GetPrimtives();
@@ -106,7 +96,7 @@ void Measure::CalcPerimeter(std::string& name, std::vector<VarValue>& val) const
 
 void Measure::CalcArea(std::string& name, std::vector<VarValue>& val) const
 {
-    name = m_ms_name.empty() ? "area" : m_ms_name;
+    name = m_attr_name.empty() ? "area" : m_attr_name;
 
     auto& attr = m_geo_impl->GetAttr();
     auto& prims = attr.GetPrimtives();

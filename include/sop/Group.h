@@ -15,6 +15,15 @@ enum class GroupType
     Primitives,
 };
 
+enum class GroupTypes
+{
+    Auto,
+    Points,
+    Vertices,
+    Edges,
+    Primitives,
+};
+
 enum class GroupMerge
 {
     Replace,

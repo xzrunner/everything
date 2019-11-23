@@ -25,12 +25,18 @@ TEST_CASE("attribute create")
 
     auto add = std::make_shared<sop::node::Add>();
     add->SetPoints({ {1, 1, 1} });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-    std::vector<sop::node::AttributeCreate::Item> items;
-    items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
-    attr_create->SetAttrItems(items);
+    attr_create->SetItemNames({ "new_attr" });
+    attr_create->SetItemClasses({ sop::GeoAttrClass::Point });
+    attr_create->SetItemTypes({ sop::node::AttributeCreate::ItemType::Float });
+    attr_create->SetItemValues({ sm::vec4(0.1f, 0, 0, 0) });
+    attr_create->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0) });
+    attr_create->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess });
+    attr_create->SetItemCompSize({ 1 });
+    attr_create->SetItemStrings({ "" });
     eval.AddNode(attr_create);
 
     eval.Connect({ add, 0 }, { attr_create, 0 });
@@ -62,12 +68,18 @@ TEST_CASE("attribute promote")
 
     SECTION("vertex to point")
     {
-        std::vector<sop::node::AttributeCreate::Item> items;
-        items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Vertex, sop::VarValue(0.1f), sop::VarValue(0.0f));
-        attr_create->SetAttrItems(items);
+        attr_create->SetItemNames({ "new_attr" });
+        attr_create->SetItemClasses({ sop::GeoAttrClass::Vertex });
+        attr_create->SetItemTypes({ sop::node::AttributeCreate::ItemType::Float });
+        attr_create->SetItemValues({ sm::vec4(0.1f, 0, 0, 0) });
+        attr_create->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0) });
+        attr_create->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess });
+        attr_create->SetItemCompSize({ 1 });
+        attr_create->SetItemStrings({ "" });
 
-        attr_promote->SetAttrName("new_attr");
-        attr_promote->SetPromoteType(sop::GeoAttrClass::Vertex, sop::GeoAttrClass::Point);
+        attr_promote->SetOriName("new_attr");
+        attr_promote->SetOriClass(sop::GeoAttrClass::Vertex);
+        attr_promote->SetNewClass(sop::GeoAttrClass::Point);
 
         eval.Update();
 
@@ -81,12 +93,18 @@ TEST_CASE("attribute promote")
 
     SECTION("point to vertex")
     {
-        std::vector<sop::node::AttributeCreate::Item> items;
-        items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
-        attr_create->SetAttrItems(items);
+        attr_create->SetItemNames({ "new_attr" });
+        attr_create->SetItemClasses({ sop::GeoAttrClass::Point });
+        attr_create->SetItemTypes({ sop::node::AttributeCreate::ItemType::Float });
+        attr_create->SetItemValues({ sm::vec4(0.1f, 0, 0, 0) });
+        attr_create->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0) });
+        attr_create->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess });
+        attr_create->SetItemCompSize({ 1 });
+        attr_create->SetItemStrings({ "" });
 
-        attr_promote->SetAttrName("new_attr");
-        attr_promote->SetPromoteType(sop::GeoAttrClass::Point, sop::GeoAttrClass::Vertex);
+        attr_promote->SetOriName("new_attr");
+        attr_promote->SetOriClass(sop::GeoAttrClass::Point);
+        attr_promote->SetNewClass(sop::GeoAttrClass::Vertex);
 
         eval.Update();
 
@@ -117,9 +135,14 @@ TEST_CASE("attribute transfer")
     SECTION("add new one")
     {
         auto attr_create = std::make_shared<sop::node::AttributeCreate>();
-        std::vector<sop::node::AttributeCreate::Item> items;
-        items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
-        attr_create->SetAttrItems(items);
+        attr_create->SetItemNames({ "new_attr" });
+        attr_create->SetItemClasses({ sop::GeoAttrClass::Point });
+        attr_create->SetItemTypes({ sop::node::AttributeCreate::ItemType::Float });
+        attr_create->SetItemValues({ sm::vec4(0.1f, 0, 0, 0) });
+        attr_create->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0) });
+        attr_create->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess });
+        attr_create->SetItemCompSize({ 1 });
+        attr_create->SetItemStrings({ "" });
         eval.AddNode(attr_create);
 
         eval.Connect({ box_f, 0 }, { attr_create, 0 });
@@ -140,19 +163,25 @@ TEST_CASE("attribute transfer")
     SECTION("change old")
     {
         auto attr_create_f = std::make_shared<sop::node::AttributeCreate>();
-        {
-            std::vector<sop::node::AttributeCreate::Item> items;
-            items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.1f), sop::VarValue(0.0f));
-            attr_create_f->SetAttrItems(items);
-        }
+        attr_create_f->SetItemNames({ "new_attr" });
+        attr_create_f->SetItemClasses({ sop::GeoAttrClass::Point });
+        attr_create_f->SetItemTypes({ sop::node::AttributeCreate::ItemType::Float });
+        attr_create_f->SetItemValues({ sm::vec4(0.1f, 0, 0, 0) });
+        attr_create_f->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0) });
+        attr_create_f->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess });
+        attr_create_f->SetItemCompSize({ 1 });
+        attr_create_f->SetItemStrings({ "" });
         eval.AddNode(attr_create_f);
 
         auto attr_create_t = std::make_shared<sop::node::AttributeCreate>();
-        {
-            std::vector<sop::node::AttributeCreate::Item> items;
-            items.emplace_back("new_attr", sop::node::AttributeCreate::ItemType::Float, sop::GeoAttrClass::Point, sop::VarValue(0.2f), sop::VarValue(0.0f));
-            attr_create_t->SetAttrItems(items);
-        }
+        attr_create_t->SetItemNames({ "new_attr" });
+        attr_create_t->SetItemClasses({ sop::GeoAttrClass::Point });
+        attr_create_t->SetItemTypes({ sop::node::AttributeCreate::ItemType::Float });
+        attr_create_t->SetItemValues({ sm::vec4(0.2f, 0, 0, 0) });
+        attr_create_t->SetItemDefaultValues({ sm::vec4(0, 0, 0, 0) });
+        attr_create_t->SetItemFloatInfos({ sop::node::AttributeCreate::ItemFltInfo::Guess });
+        attr_create_t->SetItemCompSize({ 1 });
+        attr_create_t->SetItemStrings({ "" });
         eval.AddNode(attr_create_t);
 
         eval.Connect({ box_f, 0 }, { attr_create_f, 0 });
@@ -185,7 +214,9 @@ TEST_CASE("attribute wrangle")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("top");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableKeepByNormals(sm::vec3(0, 1, 0), 10);
+    group->SetKeepByNormals(true);
+    group->SetKeepByNormalsDir(sm::vec3(0, 1, 0));
+    group->SetKeepByNormalsAngle(10.0f);
     eval.AddNode(group);
 
     eval.Connect({ box, 0 }, { group, 0 });
@@ -193,13 +224,13 @@ TEST_CASE("attribute wrangle")
     auto blast = std::make_shared<sop::node::Blast>();
     blast->SetGroupName("top");
     blast->SetGroupType(sop::GroupType::GuessFromGroup);
-    blast->SetDeleteNonSelected(true);
+    blast->SetDelNonSelected(true);
     eval.AddNode(blast);
 
     eval.Connect({ group, 0 }, { blast, 0 });
 
     auto normal = std::make_shared<sop::node::Normal>();
-    normal->SetAttrAddTo(sop::GeoAttrClass::Point);
+    normal->SetAttrAddTo(sop::node::Normal::AddToType::Points);
     eval.AddNode(normal);
 
     eval.Connect({ blast, 0 }, { normal, 0 });
@@ -268,6 +299,7 @@ TEST_CASE("measure polyline")
         { 0, 1, 1 },
         { 0, 2, 1 },
     });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto measure = std::make_shared<sop::node::Measure>();
@@ -345,6 +377,7 @@ TEST_CASE("sort")
         { 1, -2, 3 },
         { -1, 2, -3 },
     });
+    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
     eval.AddNode(add);
 
     auto sort = std::make_shared<sop::node::Sort>();
@@ -354,7 +387,7 @@ TEST_CASE("sort")
 
     SECTION("no sort")
     {
-        sort->SetKey(sop::node::Sort::Key::NoChange);
+        sort->SetSortKey(sop::node::Sort::Key::NoChange);
 
         eval.Update();
 
@@ -365,7 +398,7 @@ TEST_CASE("sort")
 
     SECTION("sort x")
     {
-        sort->SetKey(sop::node::Sort::Key::X);
+        sort->SetSortKey(sop::node::Sort::Key::X);
 
         eval.Update();
 
@@ -376,7 +409,7 @@ TEST_CASE("sort")
 
     SECTION("sort y")
     {
-        sort->SetKey(sop::node::Sort::Key::Y);
+        sort->SetSortKey(sop::node::Sort::Key::Y);
 
         eval.Update();
 
@@ -387,7 +420,7 @@ TEST_CASE("sort")
 
     SECTION("sort z")
     {
-        sort->SetKey(sop::node::Sort::Key::Z);
+        sort->SetSortKey(sop::node::Sort::Key::Z);
 
         eval.Update();
 
@@ -398,7 +431,7 @@ TEST_CASE("sort")
 
     SECTION("shift")
     {
-        sort->SetKey(sop::node::Sort::Key::Shift);
+        sort->SetSortKey(sop::node::Sort::Key::Shift);
 
         sort->SetPointOffset(1);
 

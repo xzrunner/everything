@@ -26,22 +26,28 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetPoints(const std::vector<sm::vec3>& points);
+    void SetStdSwitcher1(int sel);
+    int GetStdSwitcher1() { return m_stdswitcher1; }
 
-    void SetGroupName(const std::string& name);
-    void SetGroupType(GroupType type);
+    void SetSwitcher1(int sel);
+    int GetSwitcher1() { return m_switcher1; }
+
+    void SetPointsNum(size_t num);
+    size_t GetPointsNum() const;
 
 private:
     std::vector<std::pair<he::TopoID, sm::vec3>>
         GetPrevVertices() const;
 
 private:
-    std::string m_group_name;
-    GroupType   m_group_type = GroupType::GuessFromGroup;
-
-    std::vector<sm::vec3> m_points;
+    int m_stdswitcher1 = 1;
+    int m_switcher1 = 1;
 
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/Add.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Add
 

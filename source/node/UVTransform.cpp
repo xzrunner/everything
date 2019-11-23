@@ -29,7 +29,8 @@ void UVTransform::Execute(Evaluator& eval)
     }
 
     auto& attr = m_geo_impl->GetAttr();
-    auto mat = CalcTransformMat();
+
+    auto mat = Transform::CalcTransformMat(m_translate, m_rotate * SM_DEG_TO_RAD, m_scale, m_shear);
     if (group)
     {
         auto type = m_group_type == GroupType::GuessFromGroup ? group->GetType() : m_group_type;
@@ -93,34 +94,6 @@ void UVTransform::Execute(Evaluator& eval)
     m_geo_impl->UpdateByAttr();
 }
 
-void UVTransform::SetTranslate(const sm::vec3& t)
-{
-    if (m_props.SetValue(TRANS, Variable(t))) {
-        SetDirty(true);
-    }
-}
-
-void UVTransform::SetRotate(const sm::vec3& r)
-{
-    if (m_props.SetValue(ROT, Variable(r))) {
-        SetDirty(true);
-    }
-}
-
-void UVTransform::SetScale(const sm::vec3& s)
-{
-    if (m_props.SetValue(SCALE, Variable(s))) {
-        SetDirty(true);
-    }
-}
-
-void UVTransform::SetShear(const sm::vec3& s)
-{
-    if (m_props.SetValue(SHEAR, Variable(s))) {
-        SetDirty(true);
-    }
-}
-
 void UVTransform::SetGroupName(const std::string& name)
 {
     NODE_PROP_SET(m_group_name, name);
@@ -129,30 +102,6 @@ void UVTransform::SetGroupName(const std::string& name)
 void UVTransform::SetGroupType(GroupType type)
 {
     NODE_PROP_SET(m_group_type, type);
-}
-
-void UVTransform::InitProps()
-{
-    m_props.Assign(TRANS, PropNames[TRANS], Variable(sm::vec3(0.0f, 0.0f, 0.0f)));
-    m_props.Assign(ROT,   PropNames[ROT],   Variable(sm::vec3(0.0f, 0.0f, 0.0f)));
-    m_props.Assign(SCALE, PropNames[SCALE], Variable(sm::vec3(1.0f, 1.0f, 1.0f)));
-    m_props.Assign(SHEAR, PropNames[SHEAR], Variable(sm::vec3(0.0f, 0.0f, 0.0f)));
-}
-
-sm::mat4 UVTransform::CalcTransformMat() const
-{
-    auto& props = m_props.GetProps();
-
-    assert(props[SCALE].Val().type == VarType::Float3);
-    auto scale = static_cast<const sm::vec3*>(props[SCALE].Val().p);
-
-    assert(props[ROT].Val().type == VarType::Float3);
-    auto rotate = static_cast<const sm::vec3*>(props[ROT].Val().p);
-
-    assert(props[TRANS].Val().type == VarType::Float3);
-    auto translate = static_cast<const sm::vec3*>(props[TRANS].Val().p);
-
-    return Transform::CalcTransformMat(*translate, *rotate * SM_DEG_TO_RAD, *scale, sm::vec3(0, 0, 0));
 }
 
 }

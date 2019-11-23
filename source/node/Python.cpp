@@ -17,10 +17,5 @@ void Python::Execute(Evaluator& eval)
     }
 }
 
-void Python::SetCode(const std::string& code)
-{
-    NODE_PROP_SET(m_code, code);
-}
-
 }
 }

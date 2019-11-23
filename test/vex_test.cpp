@@ -54,7 +54,8 @@ TEST_CASE("fetch attr use @")
     auto group = std::make_shared<sop::node::GroupCreate>();
     group->SetGroupName("selected");
     group->SetGroupType(sop::GroupType::Primitives);
-    group->EnableBaseGroup("@Perim<7");
+    group->SetBaseGroupEnable(true);
+    group->SetBaseGroupSyntax("@Perim<7");
     eval.AddNode(group);
 
     eval.Connect({ measure, 0 }, { group, 0 });

@@ -16,33 +16,6 @@ void Line::Execute(Evaluator& eval)
     BuildModel();
 }
 
-void Line::SetOrigin(const sm::vec3& ori)
-{
-    NODE_PROP_SET(m_origin, ori);
-}
-
-void Line::SetDirection(const sm::vec3& dir)
-{
-    NODE_PROP_SET(m_direction, dir);
-}
-
-void Line::SetLength(float len)
-{
-    if (m_props.SetValue(LENGTH, Variable(len))) {
-        SetDirty(true);
-    }
-}
-
-void Line::SetPoints(size_t num)
-{
-    NODE_PROP_SET(m_points, num);
-}
-
-void Line::InitProps()
-{
-    m_props.Assign(LENGTH, PropNames[LENGTH], Variable(1.0f));
-}
-
 void Line::BuildModel()
 {
     if (!m_geo_impl) {
@@ -57,12 +30,9 @@ void Line::BuildModel()
     line_vertices.reserve(m_points);
     std::vector<size_t> indices(m_points);
 
-    auto& props = m_props.GetProps();
-    assert(props[LENGTH].Val().type == VarType::Float);
-    const float length = props[LENGTH].Val().f;
-    auto dt = m_direction * length / static_cast<float>(m_points - 1);
+    auto dt = m_direction * m_len / static_cast<float>(m_points - 1);
     auto v = m_origin;
-    for (size_t i = 0; i < m_points; ++i)
+    for (int i = 0; i < m_points; ++i)
     {
         line_vertices.push_back({ he::TopoID(), v });
         v += dt;

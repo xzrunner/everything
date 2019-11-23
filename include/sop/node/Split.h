@@ -35,15 +35,14 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetGroupName(const std::string& name);
-
 private:
     void InitSubNodes();
 
-private:
-    std::string m_group_name;
-
     RTTR_ENABLE(Geometry)
+
+#define PARM_FILEPATH "sop/node/Split.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Split
 

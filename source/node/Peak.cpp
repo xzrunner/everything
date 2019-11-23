@@ -28,10 +28,6 @@ void Peak::Execute(Evaluator& eval)
         }
     }
 
-    auto& props = m_props.GetProps();
-    assert(props[DIST].Val().type == VarType::Float);
-    auto dist = props[DIST].Val().f;
-
     if (group)
     {
         auto type = m_group_type == GroupType::GuessFromGroup ? group->GetType() : m_group_type;
@@ -42,13 +38,13 @@ void Peak::Execute(Evaluator& eval)
         switch (type)
         {
         case GroupType::Points:
-            TranslatePoints(dist, group);
+            TranslatePoints(m_dist, group);
             break;
         case GroupType::Vertices:
-            TranslateVertices(dist, group);
+            TranslateVertices(m_dist, group);
             break;
         case GroupType::Primitives:
-            TranslatePrimitives(dist, group);
+            TranslatePrimitives(m_dist, group);
             break;
         default:
             assert(0);
@@ -60,48 +56,15 @@ void Peak::Execute(Evaluator& eval)
         switch (type)
         {
         case GeoAdaptor::Type::Shape:
-            TranslatePoints(dist, nullptr);
+            TranslatePoints(m_dist, nullptr);
             break;
         case GeoAdaptor::Type::Brush:
-            TranslatePrimitives(dist, nullptr);
+            TranslatePrimitives(m_dist, nullptr);
             break;
         default:
             assert(0);
         }
     }
-}
-
-void Peak::SetGroupName(const std::string& name)
-{
-    NODE_PROP_SET(m_group_name, name);
-}
-
-void Peak::SetGroupType(GroupType type)
-{
-    NODE_PROP_SET(m_group_type, type);
-}
-
-void Peak::SetDistance(float dist)
-{
-    bool dirty = false;
-
-    if (m_props.SetValue(DIST, Variable(dist))) {
-        dirty = true;
-    }
-
-    if (dirty) {
-        SetDirty(true);
-    }
-}
-
-void Peak::SetUpdateNorm(bool update_norm)
-{
-    NODE_PROP_SET(m_update_normals, update_norm);
-}
-
-void Peak::InitProps()
-{
-    m_props.Assign(DIST, PropNames[DIST], Variable(0.0f));
 }
 
 void Peak::TranslatePoints(float dist, const std::shared_ptr<Group>& group)

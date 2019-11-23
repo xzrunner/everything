@@ -32,9 +32,6 @@ public:
 
     void SetFuseOP(Operator op);
 
-    // Consolidate
-    void SetDistance(float dist);
-
 private:
     void Consolidate();
     void ConsolidateBrush();
@@ -47,10 +44,11 @@ private:
 private:
     Operator m_fuse_op = Operator::Consolidate;
 
-    // Consolidate
-    float m_distance = 0.001f;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/Fuse.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Fuse
 

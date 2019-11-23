@@ -36,22 +36,6 @@ public:
         TextureCoordinate,
     };
 
-    struct Item
-    {
-        Item() {}
-        Item(const std::string& name, ItemType type, GeoAttrClass cls, const VarValue& val, const VarValue& default_val);
-
-        bool operator == (const Item& i) const;
-
-        std::string  name;
-        GeoAttrClass cls  = GeoAttrClass::Point;
-        ItemType     type = ItemType::Float;
-        VarValue     value;
-        VarValue     default_val;
-        std::string  string;
-        ItemFltInfo  flt_info = ItemFltInfo::Guess;
-    };
-
 public:
     AttributeCreate()
     {
@@ -65,18 +49,14 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetGroupName(const std::string& name);
-    void SetGroupType(GroupType type);
-
-    void SetAttrItems(const std::vector<Item>& items);
-
 private:
-    std::string m_group_name;
-    GroupType   m_group_type = GroupType::GuessFromGroup;
-
-    std::vector<Item> m_items;
+    bool IsNumberValid() const;
 
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/AttributeCreate.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // AttributeCreate
 
