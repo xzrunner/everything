@@ -31,7 +31,7 @@ void AttributeCreate::Execute(Evaluator& eval)
     assert(IsNumberValid());
     for (size_t i = 0, n = m_item_names.size(); i < n; ++i)
     {
-        GeoAttrType type;
+        ParmType type;
         switch (m_item_types[i])
         {
         case sop::node::AttributeCreate::ItemType::Integer:
@@ -39,16 +39,16 @@ void AttributeCreate::Execute(Evaluator& eval)
             switch (m_item_comp_sizes[i])
             {
             case 1:
-                type = GeoAttrType::Int;
+                type = ParmType::Int;
                 break;
             case 2:
-                type = GeoAttrType::Int2;
+                type = ParmType::Int2;
                 break;
             case 3:
-                type = GeoAttrType::Int3;
+                type = ParmType::Int3;
                 break;
             case 4:
-                type = GeoAttrType::Int4;
+                type = ParmType::Int4;
                 break;
             }
         }
@@ -58,25 +58,25 @@ void AttributeCreate::Execute(Evaluator& eval)
             switch (m_item_comp_sizes[i])
             {
             case 1:
-                type = GeoAttrType::Float;
+                type = ParmType::Float;
                 break;
             case 2:
-                type = GeoAttrType::Float2;
+                type = ParmType::Float2;
                 break;
             case 3:
-                type = GeoAttrType::Float3;
+                type = ParmType::Float3;
                 break;
             case 4:
-                type = GeoAttrType::Float4;
+                type = ParmType::Float4;
                 break;
             }
         }
             break;
         case sop::node::AttributeCreate::ItemType::Vector:
-            type = GeoAttrType::Vector;
+            type = ParmType::Vector;
             break;
         case sop::node::AttributeCreate::ItemType::String:
-            type = GeoAttrType::String;
+            type = ParmType::String;
             break;
         default:
             // todo *Array

@@ -156,8 +156,8 @@ PolyFrame::CalcBrushPointsTangent() const
 void PolyFrame::AddToPointsAttr(const std::string& name, const std::vector<sm::vec3>& val)
 {
     auto& attr = m_geo_impl->GetAttr();
-    attr.AddParmList(GeoAttrClass::Point, 
-        std::make_shared<ParmFlt3List>(name, GeoAttrType::Vector, val)
+    attr.AddParmList(GeoAttrClass::Point,
+        std::make_shared<ParmFlt3List>(name, ParmType::Vector, val)
     );
 }
 

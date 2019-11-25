@@ -2,7 +2,6 @@
 
 #include "sop/GeoAttrClass.h"
 #include "sop/Variable.h"
-#include "sop/GeoAttrType.h"
 #include "sop/GeoAttrDefine.h"
 
 #include <SM_Cube.h>

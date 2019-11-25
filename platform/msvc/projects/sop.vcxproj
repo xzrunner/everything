@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\sop\GeoAttrDefine.h" />
-    <ClInclude Include="..\..\..\include\sop\GeoAttrType.h" />
     <ClInclude Include="..\..\..\include\sop\geo_attr_cfg.h" />
     <ClInclude Include="..\..\..\include\sop\CompTopoPolyline.h" />
     <ClInclude Include="..\..\..\include\sop\EvalContext.h" />
@@ -81,6 +80,7 @@
     <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node_parms_gen.h" />
     <ClInclude Include="..\..\..\include\sop\ParmList.h" />
+    <ClInclude Include="..\..\..\include\sop\parm_cfg.h" />
     <ClInclude Include="..\..\..\include\sop\rttr_prop_gen.h" />
     <ClInclude Include="..\..\..\include\sop\ParmType.h" />
     <ClInclude Include="..\..\..\include\sop\PyCommonTypes.h" />

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sop/ParmType.h"
-#include "sop/GeoAttrType.h"
 #include "sop/GeoAttrDefine.h"
 
 #include <SM_Vector.h>
@@ -18,7 +17,7 @@ public:
     ParmList() {}
     ParmList(const ParmList& p);
     ParmList(GeoAttr attr);
-    ParmList(const std::string& name, GeoAttrType type);
+    ParmList(const std::string& name, ParmType type);
 
     ParmList& operator = (const ParmList& list);
 
@@ -41,7 +40,7 @@ protected:
     GeoAttr     m_attr = GEO_ATTR_UNKNOWN;
 
     std::string m_name;
-    GeoAttrType m_type = GeoAttrType::Bool;
+    ParmType    m_type = ParmType::Boolean;
 
 }; // ParmList
 
@@ -54,7 +53,7 @@ public:
         , m_items(items)
     {
     }
-    ParmListImpl(const std::string& name, GeoAttrType type, std::vector<T> items)
+    ParmListImpl(const std::string& name, ParmType type, std::vector<T> items)
         : ParmList(name, type)
         , m_items(items)
     {
@@ -104,10 +103,10 @@ private:
 
 typedef ParmListImpl<bool, ParmType::Boolean> ParmBoolList;
 
-typedef ParmListImpl<int,       ParmType::Integer>  ParmIntList;
-typedef ParmListImpl<sm::ivec2, ParmType::Integer2> ParmInt2List;
-typedef ParmListImpl<sm::ivec3, ParmType::Integer3> ParmInt3List;
-typedef ParmListImpl<sm::ivec4, ParmType::Integer4> ParmInt4List;
+typedef ParmListImpl<int,       ParmType::Int>  ParmIntList;
+typedef ParmListImpl<sm::ivec2, ParmType::Int2> ParmInt2List;
+typedef ParmListImpl<sm::ivec3, ParmType::Int3> ParmInt3List;
+typedef ParmListImpl<sm::ivec4, ParmType::Int4> ParmInt4List;
 
 typedef ParmListImpl<float,    ParmType::Float>  ParmFltList;
 typedef ParmListImpl<sm::vec2, ParmType::Float2> ParmFlt2List;

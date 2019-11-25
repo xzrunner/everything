@@ -221,9 +221,6 @@
     <ClInclude Include="..\..\..\include\sop\GeoAttrClass.h">
       <Filter>dataset\geometry\attr</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\GeoAttrType.h">
-      <Filter>dataset\geometry\attr</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h">
       <Filter>nodes\group</Filter>
     </ClInclude>
@@ -447,6 +444,9 @@
       <Filter>nodes\primitive</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\ParmList.h">
+      <Filter>dataset\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\parm_cfg.h">
       <Filter>dataset\parameters</Filter>
     </ClInclude>
   </ItemGroup>

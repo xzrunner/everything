@@ -7,19 +7,9 @@ enum class ParmType
 {
     Unsupported,
 
-    Boolean,
-
-    Integer,
-    Integer2,
-    Integer3,
-    Integer4,
-
-    Float,
-    Float2,
-    Float3,
-    Float4,
-
-    String,
+#define PARM_INFO(type, name, label, size) type,
+#include "sop/parm_cfg.h"
+#undef PARM_INFO
 
     Array,
 };

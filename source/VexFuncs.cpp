@@ -255,7 +255,7 @@ void SetupVexFuncs()
             assert(element_num < static_cast<int>(num));
             data[element_num] = value;
             attr.AddParmList(cls,
-                std::make_shared<ParmFltList>(attr_name, GeoAttrType::Float, data)
+                std::make_shared<ParmFltList>(attr_name, ParmType::Float, data)
             );
         }
 

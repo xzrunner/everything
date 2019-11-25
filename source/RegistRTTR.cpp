@@ -111,21 +111,14 @@ rttr::registration::enumeration<sop::GroupMerge>("sop_group_merge")
     REGIST_ENUM_ITEM(sop::GroupMerge::Subtract,  "subtract",  "Subtract")
 );
 
-rttr::registration::enumeration<sop::GeoAttrType>("sop_geo_attr_type")
+rttr::registration::enumeration<sop::ParmType>("sop_geo_parm_type")
 (
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Int,     "int",     "Int"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Bool,    "bool",    "Bool"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Double,  "double",  "Double"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Float,   "float",   "Float"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Float2,  "float2",  "Float2"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Float3,  "float3",  "Float3"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Float4,  "float4",  "Float4"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::String,  "string",  "String"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Vector,  "vector",  "Vector"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Vector4, "vector4", "Vector4"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Matrix2, "matrix2", "Matrix2"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Matrix3, "matrix3", "Matrix3"),
-    REGIST_ENUM_ITEM(sop::GeoAttrType::Matrix4, "matrix4", "Matrix4")
+    REGIST_ENUM_ITEM(sop::ParmType::Unsupported, "unknown", "Unknown"),
+#define PARM_INFO(type, name, label, size) \
+    REGIST_ENUM_ITEM(sop::ParmType::##type, name, label),
+#include "sop/parm_cfg.h"
+#undef PARM_INFO
+    REGIST_ENUM_ITEM(sop::ParmType::Array, "array", "Array")
 );
 
 rttr::registration::enumeration<sop::GeoAttrClass>("sop_geo_attr_class")

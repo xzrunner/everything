@@ -294,7 +294,7 @@ Variable GeoAttribute::QueryParm(GeoAttrClass cls, const std::string& name, size
     {
     case ParmType::Boolean:
         return Variable(std::static_pointer_cast<ParmBoolList>(list)->GetAllItems()[index]);
-    case ParmType::Integer:
+    case ParmType::Int:
         return Variable(std::static_pointer_cast<ParmIntList>(list)->GetAllItems()[index]);
     case ParmType::Float:
         return Variable(std::static_pointer_cast<ParmFltList>(list)->GetAllItems()[index]);

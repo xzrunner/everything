@@ -30,7 +30,7 @@ void Measure::Execute(Evaluator& eval)
         CalcPerimeter(name, val);
 
         attr.AddParmList(GeoAttrClass::Primitive,
-            std::make_shared<ParmFltList>(name, GeoAttrType::Float, val)
+            std::make_shared<ParmFltList>(name, ParmType::Float, val)
         );
     }
         break;
@@ -41,7 +41,7 @@ void Measure::Execute(Evaluator& eval)
         CalcArea(name, val);
 
         attr.AddParmList(GeoAttrClass::Primitive,
-            std::make_shared<ParmFltList>(name, GeoAttrType::Float, val)
+            std::make_shared<ParmFltList>(name, ParmType::Float, val)
         );
     }
         break;

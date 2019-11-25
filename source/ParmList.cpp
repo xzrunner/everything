@@ -17,14 +17,14 @@ ParmList& ParmList::operator = (const ParmList& list)
     return *this;
 }
 
-ParmList::ParmList(GeoAttr attr) 
+ParmList::ParmList(GeoAttr attr)
     : m_attr(attr)
     , m_name(GeoAttrNames[attr])
     , m_type(GeoAttrTypes[attr])
 {
 }
 
-ParmList::ParmList(const std::string& name, GeoAttrType type)
+ParmList::ParmList(const std::string& name, ParmType type)
     : m_attr(GEO_ATTR_UNKNOWN)
     , m_name(name)
     , m_type(type)
