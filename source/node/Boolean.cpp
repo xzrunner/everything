@@ -88,22 +88,5 @@ void Boolean::Execute(Evaluator& eval)
     }
 }
 
-void Boolean::SetOperator(Operator op)
-{
-    NODE_PROP_SET(m_operator, op);
-}
-
-void Boolean::SetGeoType(GeoType a, GeoType b)
-{
-    if (m_a_type == a && m_b_type == b) {
-        return;
-    }
-
-    m_a_type = a;
-    m_b_type = b;
-
-    SetDirty(true);
-}
-
 }
 }

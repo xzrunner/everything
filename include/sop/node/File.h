@@ -22,12 +22,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetFilepath(const std::string& filepath);
-
-private:
-    std::string m_filepath;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/File.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // File
 

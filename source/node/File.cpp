@@ -95,10 +95,5 @@ void File::Execute(Evaluator& eval)
     }
 }
 
-void File::SetFilepath(const std::string& filepath)
-{
-    NODE_PROP_SET(m_filepath, filepath);
-}
-
 }
 }

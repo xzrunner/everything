@@ -6,6 +6,10 @@
 #include "sop/Widgets.h"
 #include "sop/node/Add.h"
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/lexical_cast.hpp>
+
 namespace sop
 {
 
@@ -86,11 +90,11 @@ bool NodeParmsMgr::SetArrayValue(const std::string& array_key, size_t idx,
                 return true;
             }
         }
-        else if (dst_wrapped_type == rttr::type::get<RampWidgets>())
+        else if (dst_wrapped_type == rttr::type::get<RampFloat>())
         {
-            auto dst = view.get_value(idx).get_wrapped_value<RampWidgets>();
+            auto dst = view.get_value(idx).get_wrapped_value<RampFloat>();
             auto src = val.f;
-            if (sub_key == RampWidgets::COMP_NAMES[RampWidgets::COMP_VALUE])
+            if (sub_key == RampFloat::COMP_NAMES[RampFloat::COMP_VALUE])
             {
                 if (src == dst.value) {
                     return false;
@@ -101,7 +105,27 @@ bool NodeParmsMgr::SetArrayValue(const std::string& array_key, size_t idx,
                     return true;
                 }
             }
-            else if (sub_key == RampWidgets::COMP_NAMES[RampWidgets::COMP_POS])
+            else if (sub_key == RampFloat::COMP_NAMES[RampFloat::COMP_POS])
+            {
+                if (src == dst.pos) {
+                    return false;
+                } else {
+                    dst.pos = src;
+                    auto succ = view.set_value(idx, dst);
+                    assert(succ);
+                    return true;
+                }
+            }
+            else
+            {
+                assert(0);
+            }
+        }
+        else if (dst_wrapped_type == rttr::type::get<RampColor>())
+        {
+            auto dst = view.get_value(idx).get_wrapped_value<RampColor>();
+            auto src = val.f;
+            if (sub_key == RampColor::COMP_NAMES[RampColor::COMP_POS])
             {
                 if (src == dst.pos) {
                     return false;
@@ -126,6 +150,7 @@ bool NodeParmsMgr::SetArrayValue(const std::string& array_key, size_t idx,
     case VarType::Float3:
     {
         auto dst_wrapped_type = view.get_value(idx).extract_wrapped_value().get_type();
+        auto zz = dst_wrapped_type.get_name().to_string();
         if (dst_wrapped_type == rttr::type::get<sm::vec3>())
         {
             auto dst = view.get_value(idx).get_value<sm::vec3>();
@@ -134,6 +159,34 @@ bool NodeParmsMgr::SetArrayValue(const std::string& array_key, size_t idx,
                 return false;
             } else {
                 auto succ = view.set_value(idx, *src);
+                assert(succ);
+                return true;
+            }
+        }
+        else if (dst_wrapped_type == rttr::type::get<sm::vec4>())
+        {
+            auto dst = view.get_value(idx).get_value<sm::vec4>();
+            auto src = static_cast<const sm::vec3*>(val.p);
+            if (*src == sm::vec3(dst.xyzw)) {
+                return false;
+            } else {
+                dst.x = src->x;
+                dst.y = src->y;
+                dst.z = src->z;
+                auto succ = view.set_value(idx, dst);
+                assert(succ);
+                return true;
+            }
+        }
+        else if (dst_wrapped_type == rttr::type::get<RampColor>() && sub_key == RampColor::COMP_NAMES[RampColor::COMP_COLOR])
+        {
+            auto dst = view.get_value(idx).get_wrapped_value<RampColor>();
+            auto src = static_cast<const sm::vec3*>(val.p);
+            if (*src == dst.color) {
+                return false;
+            } else {
+                dst.color = *src;
+                auto succ = view.set_value(idx, dst);
                 assert(succ);
                 return true;
             }
@@ -150,7 +203,6 @@ bool NodeParmsMgr::SetArrayValue(const std::string& array_key, size_t idx,
         if (dst_wrapped_type.is_enumeration())
         {
             auto dst = view.get_value(idx).get_value<int>();
-            auto zz0 = static_cast<const char*>(val.p);
             auto src = dst_wrapped_type.get_enumeration().name_to_value(static_cast<const char*>(val.p));
             if (src.get_value<int>() == dst) {
                 return false;
@@ -172,16 +224,38 @@ bool NodeParmsMgr::SetArrayValue(const std::string& array_key, size_t idx,
                 return true;
             }
         }
-        else if (dst_wrapped_type == rttr::type::get<RampWidgets>())
+        else if (dst_wrapped_type == rttr::type::get<RampFloat>())
         {
-            auto dst = view.get_value(idx).get_wrapped_value<RampWidgets>();
+            auto dst = view.get_value(idx).get_wrapped_value<RampFloat>();
             std::string src = static_cast<const char*>(val.p);
-            if (sub_key == RampWidgets::COMP_NAMES[RampWidgets::COMP_INTERP])
+            if (sub_key == RampFloat::COMP_NAMES[RampFloat::COMP_INTERP])
             {
-                if (src == dst.interp) {
+                auto src_interp = rttr::type::get<InterpType>().get_enumeration().name_to_value(src).get_value<InterpType>();
+                if (src_interp == dst.interp) {
                     return false;
                 } else {
-                    dst.interp = src;
+                    dst.interp = src_interp;
+                    auto succ = view.set_value(idx, dst);
+                    assert(succ);
+                    return true;
+                }
+            }
+            else
+            {
+                assert(0);
+            }
+        }
+        else if (dst_wrapped_type == rttr::type::get<RampColor>())
+        {
+            auto dst = view.get_value(idx).get_wrapped_value<RampColor>();
+            std::string src = static_cast<const char*>(val.p);
+            if (sub_key == RampColor::COMP_NAMES[RampColor::COMP_INTERP])
+            {
+                auto src_interp = rttr::type::get<InterpType>().get_enumeration().name_to_value(src).get_value<InterpType>();
+                if (src_interp == dst.interp) {
+                    return false;
+                } else {
+                    dst.interp = src_interp;
                     auto succ = view.set_value(idx, dst);
                     assert(succ);
                     return true;
@@ -329,6 +403,9 @@ bool NodeParmsMgr::SetValue(rttr::property prop, const Variable& val, int comp_i
 
     auto src_type = val.type;
     auto dst_type = prop.get_type();
+
+    auto zz = dst_type.get_name().to_string();
+
     if (prop.is_enumeration())
     {
         switch (val.type)
@@ -530,6 +607,27 @@ bool NodeParmsMgr::SetValue(rttr::property prop, const Variable& val, int comp_i
             auto succ = prop.set_value(m_node, src);
             assert(succ);
             return true;
+        }
+    }
+    else if (dst_type == rttr::type::get<std::vector<std::string>>())
+    {
+        auto dst = var.get_value<std::vector<std::string>>();
+        switch (val.type)
+        {
+        case VarType::String:
+        {
+            std::vector<std::string> src;
+            std::string s = static_cast<const char*>(val.p);
+            boost::split(src, s, boost::is_any_of(" "));
+            if (dst == src) {
+                false;
+            } else {
+                auto succ = prop.set_value(m_node, src);
+                assert(succ);
+                return true;
+            }
+        }
+            break;
         }
     }
     else

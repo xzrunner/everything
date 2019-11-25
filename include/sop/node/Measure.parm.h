@@ -4,5 +4,5 @@
 
 PARAM_INFO(MesureType, Measure::Type, type, m_type, (Measure::Type::Perimeter))
 
-PARAM_INFO(OverrideName, Boolean, override,   m_override,  (false))
-PARAM_INFO(MesureName,   String,  attribname, m_attr_name, (""))
+PARAM_INFO(OverrideName, Bool,   override,   m_override,  (false))
+PARAM_INFO(MesureName,   String, attribname, m_attr_name, (""))

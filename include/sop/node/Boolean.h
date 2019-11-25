@@ -50,17 +50,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetOperator(Operator op);
-
-    void SetGeoType(GeoType a, GeoType b);
-
-private:
-    Operator m_operator = Operator::Intersect;
-
-    GeoType m_a_type = GeoType::Solid;
-    GeoType m_b_type = GeoType::Solid;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/Boolean.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // Boolean
 

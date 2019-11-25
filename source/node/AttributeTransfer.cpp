@@ -24,74 +24,80 @@ void AttributeTransfer::Execute(Evaluator& eval)
 
     auto& from_attr = from_geo->GetAttr();
     auto& to_attr = m_geo_impl->GetAttr();
-    for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i)
+    if (m_point_attribs && !m_point_attrib_list.empty())
     {
-        const auto cls = static_cast<GeoAttrClass>(i);
-        const size_t from_sz = from_attr.GetSize(cls);
-        if (from_sz != to_attr.GetSize(cls)) {
-            continue;
-        }
-
-        auto& from_descs = from_attr.GetAttrDesc(cls);
-
-        for (auto& name : m_attrs[i])
+        auto from_sz = from_attr.GetSize(GeoAttrClass::Point);
+        if (from_sz == to_attr.GetSize(GeoAttrClass::Point))
         {
-            const int from_idx = from_attr.QueryAttrIdx(cls, name);
-            assert(from_idx >= 0);
-
-            std::vector<VarValue> vars;
-            vars.reserve(from_sz);
-            switch (cls)
+            for (auto& name : m_point_attrib_list)
             {
-            case GeoAttrClass::Point:
+                const int from_idx = from_attr.QueryAttrIdx(GeoAttrClass::Point, name);
+                assert(from_idx >= 0);
+
+                std::vector<VarValue> vars;
+                vars.reserve(from_sz);
                 for (auto& p : from_attr.GetPoints()) {
                     vars.push_back(VarValue(p->vars[from_idx]));
                 }
-                break;
+                to_attr.AddAttr(GeoAttrClass::Point, from_attr.GetAttrDesc(GeoAttrClass::Point)[from_idx], vars);
+            }
+        }
+    }
+    if (m_vertex_attribs && !m_vertex_attrib_list.empty())
+    {
+        auto from_sz = from_attr.GetSize(GeoAttrClass::Vertex);
+        if (from_sz == to_attr.GetSize(GeoAttrClass::Vertex))
+        {
+            for (auto& name : m_vertex_attrib_list)
+            {
+                const int from_idx = from_attr.QueryAttrIdx(GeoAttrClass::Vertex, name);
+                assert(from_idx >= 0);
 
-            case GeoAttrClass::Vertex:
+                std::vector<VarValue> vars;
+                vars.reserve(from_sz);
                 for (auto& v : from_attr.GetVertices()) {
                     vars.push_back(VarValue(v->vars[from_idx]));
                 }
-                break;
+                to_attr.AddAttr(GeoAttrClass::Vertex, from_attr.GetAttrDesc(GeoAttrClass::Vertex)[from_idx], vars);
+            }
+        }
+    }
+    if (m_primitive_attribs && !m_prim_attrib_list.empty())
+    {
+        auto from_sz = from_attr.GetSize(GeoAttrClass::Primitive);
+        if (from_sz == to_attr.GetSize(GeoAttrClass::Primitive))
+        {
+            for (auto& name : m_prim_attrib_list)
+            {
+                const int from_idx = from_attr.QueryAttrIdx(GeoAttrClass::Primitive, name);
+                assert(from_idx >= 0);
 
-            case GeoAttrClass::Primitive:
+                std::vector<VarValue> vars;
+                vars.reserve(from_sz);
                 for (auto& prim : from_attr.GetPrimtives()) {
                     vars.push_back(VarValue(prim->vars[from_idx]));
                 }
-                break;
-
-            case GeoAttrClass::Detail:
-                vars.push_back(VarValue(from_attr.GetDetail().vars[from_idx]));
-                break;
-
-            default:
-                assert(0);
-                continue;
+                to_attr.AddAttr(GeoAttrClass::Primitive, from_attr.GetAttrDesc(GeoAttrClass::Primitive)[from_idx], vars);
             }
-
-            to_attr.AddAttr(cls, from_descs[from_idx], vars);
         }
     }
-}
+    if (m_detail_attribs && !m_detail_attrib_list.empty())
+    {
+        auto from_sz = from_attr.GetSize(GeoAttrClass::Detail);
+        if (from_sz == to_attr.GetSize(GeoAttrClass::Detail))
+        {
+            for (auto& name : m_detail_attrib_list)
+            {
+                const int from_idx = from_attr.QueryAttrIdx(GeoAttrClass::Detail, name);
+                assert(from_idx >= 0);
 
-void AttributeTransfer::ClearCopyAttrs()
-{
-    for (auto& attrs : m_attrs) {
-        attrs.clear();
+                std::vector<VarValue> vars;
+                vars.reserve(from_sz);
+                vars.push_back(VarValue(from_attr.GetDetail().vars[from_idx]));
+                to_attr.AddAttr(GeoAttrClass::Detail, from_attr.GetAttrDesc(GeoAttrClass::Detail)[from_idx], vars);
+            }
+        }
     }
-}
-
-void AttributeTransfer::SetCopyAttrs(GeoAttrClass cls, const std::vector<std::string>& attrs)
-{
-    const int idx = static_cast<int>(cls);
-    if (m_attrs[idx] == attrs) {
-        return;
-    }
-
-    m_attrs[idx] = attrs;
-
-    SetDirty(true);
 }
 
 }

@@ -147,7 +147,7 @@ TEST_CASE("attribute transfer")
 
         eval.Connect({ box_f, 0 }, { attr_create, 0 });
 
-        attr_transfer->SetCopyAttrs(sop::GeoAttrClass::Point, { "new_attr" });
+        attr_transfer->SetPointAttribList({ "new_attr" });
 
         eval.Connect({ box_t, 0 }, { attr_transfer, sop::node::AttributeTransfer::IDX_TO_GEO });
         eval.Connect({ attr_create, 0 }, { attr_transfer, sop::node::AttributeTransfer::IDX_FROM_GEO });
@@ -187,7 +187,7 @@ TEST_CASE("attribute transfer")
         eval.Connect({ box_f, 0 }, { attr_create_f, 0 });
         eval.Connect({ box_t, 0 }, { attr_create_t, 0 });
 
-        attr_transfer->SetCopyAttrs(sop::GeoAttrClass::Point, { "new_attr" });
+        attr_transfer->SetPointAttribList({ "new_attr" });
 
         eval.Connect({ attr_create_t, 0 }, { attr_transfer, sop::node::AttributeTransfer::IDX_TO_GEO });
         eval.Connect({ attr_create_f, 0 }, { attr_transfer, sop::node::AttributeTransfer::IDX_FROM_GEO });

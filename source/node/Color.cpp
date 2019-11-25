@@ -44,15 +44,5 @@ void Color::Execute(Evaluator& eval)
     attr.AddAttr(m_attr_add_to, GEO_ATTR_CD, vars);
 }
 
-void Color::SetAttrAddTo(GeoAttrClass cls)
-{
-    NODE_PROP_SET(m_attr_add_to, cls);
-}
-
-void Color::SetColor(const sm::vec3& col)
-{
-    NODE_PROP_SET(m_color, col);
-}
-
 }
 }

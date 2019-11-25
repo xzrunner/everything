@@ -30,8 +30,6 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetFuseOP(Operator op);
-
 private:
     void Consolidate();
     void ConsolidateBrush();
@@ -40,9 +38,6 @@ private:
     void UniquePoints();
     void UniquePointsBrush();
     void UniquePointsShape();
-
-private:
-    Operator m_fuse_op = Operator::Consolidate;
 
     RTTR_ENABLE(Node)
 

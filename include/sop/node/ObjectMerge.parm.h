@@ -2,4 +2,4 @@
 #error "You must define PARAM_INFO macro before include this file"
 #endif
 
-PARAM_INFO(OutputIdx, Int, outputidx, m_output_idx, (-1))
+PARAM_INFO(ObjectPaths, Array<String>, objpath, m_obj_paths, ())

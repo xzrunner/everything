@@ -401,9 +401,14 @@ void Evaluator::TopologicalSorting()
         auto& node = nodes[i];
         if (node->get_type() == rttr::type::get<node::ObjectMerge>())
         {
-            for (auto& obj : std::static_pointer_cast<node::ObjectMerge>(node)->GetObjects()) {
+            for (auto& path : std::static_pointer_cast<node::ObjectMerge>(node)->GetObjectPaths())
+            {
+                auto cnode = QueryNodeByPath(node.get(), path);
+                if (!cnode) {
+                    continue;
+                }
                 for (int j = 0, m = nodes.size(); j < m; ++j) {
-                    if (obj == nodes[j]) {
+                    if (cnode == nodes[j].get()) {
                         in_deg[i]++;
                         out_nodes[j].push_back(i);
                         break;

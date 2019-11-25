@@ -24,14 +24,8 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    auto& GetVertices() const { return m_vertices; }
-    void  SetVertices(const std::vector<sm::vec3>& vertices);
-
 private:
     void BuildModel();
-
-private:
-    std::vector<sm::vec3> m_vertices;
 
     RTTR_ENABLE(Node)
 

@@ -10,12 +10,6 @@ namespace sop
 class GeometryImpl;
 class Evaluator;
 
-#define NODE_PROP_SET(prop, val) \
-    if (prop != val) {           \
-        prop = val;              \
-        SetDirty(true);          \
-    }                            \
-
 class NodeHelper
 {
 public:

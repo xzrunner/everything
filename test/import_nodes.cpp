@@ -15,6 +15,7 @@ TEST_CASE("object merge")
     sop::Evaluator eval;
 
     auto box0 = std::make_shared<sop::node::Box>();
+    box0->SetName("box0");
     const sm::vec3 size0(1, 2, 3);
     box0->SetSize(size0);
     const sm::vec3 pos0(21, 22, 23);
@@ -22,6 +23,7 @@ TEST_CASE("object merge")
     eval.AddNode(box0);
 
     auto box1 = std::make_shared<sop::node::Box>();
+    box1->SetName("box1");
     const sm::vec3 size1(11, 12, 13);
     box1->SetSize(size1);
     const sm::vec3 pos1(121, 122, 123);
@@ -29,6 +31,7 @@ TEST_CASE("object merge")
     eval.AddNode(box1);
 
     auto box2 = std::make_shared<sop::node::Box>();
+    box2->SetName("box2");
     const sm::vec3 size2(21, 22, 23);
     box2->SetSize(size2);
     const sm::vec3 pos2(221, 222, 223);
@@ -36,7 +39,7 @@ TEST_CASE("object merge")
     eval.AddNode(box2);
 
     auto merge = std::make_shared<sop::node::ObjectMerge>();
-    merge->SetObjects({ box0, box1, box2 });
+    merge->SetObjectPaths({ "../box0", "../box1", "../box2" });
     eval.AddNode(merge);
 
     eval.Update();

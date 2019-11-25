@@ -1,4 +1,3 @@
-#include "sop/ParmType.h"
 #include "sop/RTTRInfo.h"
 
 // base
@@ -141,10 +140,27 @@ REGIST_NODE_TYPE(Geometry, geometry)
 
 // widgets
 
-rttr::registration::class_<sop::RampWidgets>("sop::ramp_widgets")
-	.property("value",  &sop::RampWidgets::value)
-    .property("interp", &sop::RampWidgets::interp)
-    .property("pos",    &sop::RampWidgets::pos)
+rttr::registration::enumeration<sop::InterpType>("sop_interp_type")
+(
+    REGIST_ENUM_ITEM(sop::InterpType::Constant,      "constant",      "Constant"),
+    REGIST_ENUM_ITEM(sop::InterpType::Linear,        "linear",        "Constant"),
+    REGIST_ENUM_ITEM(sop::InterpType::Catmull_Rom,   "catmull-rom",   "Catmull-Rom"),
+    REGIST_ENUM_ITEM(sop::InterpType::MonotoneCubic, "monotonecubic", "Monotone Cubic"),
+    REGIST_ENUM_ITEM(sop::InterpType::Bezier,        "bezier",        "Bezier"),
+    REGIST_ENUM_ITEM(sop::InterpType::B_Spline,      "bspline",       "B-Spline"),
+    REGIST_ENUM_ITEM(sop::InterpType::Hermite,       "hermite",       "Hermite")
+);
+
+rttr::registration::class_<sop::RampFloat>("sop::ramp_float")
+	.property("value",  &sop::RampFloat::value)
+    .property("interp", &sop::RampFloat::interp)
+    .property("pos",    &sop::RampFloat::pos)
+;
+
+rttr::registration::class_<sop::RampColor>("sop::ramp_color")
+	.property("c",      &sop::RampColor::color)
+    .property("interp", &sop::RampColor::interp)
+    .property("pos",    &sop::RampColor::pos)
 ;
 
 // attribute
@@ -186,7 +202,14 @@ rttr::registration::class_<sop::node::AttributePromote>("sop::attribpromote")
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
-REGIST_NODE_TYPE(AttributeTransfer, attribtransfer)
+rttr::registration::class_<sop::node::AttributeTransfer>("sop::attribtransfer")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/AttributeTransfer.parm.h"
+#define PARM_NODE_CLASS sop::node::AttributeTransfer
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 REGIST_NODE_TYPE(AttributeVOP, attribvop)
 rttr::registration::class_<sop::node::AttributeWrangle>("sop::attribwrangle")
 .constructor<>()
@@ -263,8 +286,22 @@ rttr::registration::class_<sop::node::GroupPromote>("sop::grouppromote")
 ;
 
 // import
-REGIST_NODE_TYPE(File, file)
-REGIST_NODE_TYPE(ObjectMerge, object_merge)
+rttr::registration::class_<sop::node::File>("sop::file")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/File.parm.h"
+#define PARM_NODE_CLASS sop::node::File
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
+rttr::registration::class_<sop::node::ObjectMerge>("sop::object_merge")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/ObjectMerge.parm.h"
+#define PARM_NODE_CLASS sop::node::ObjectMerge
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 
 // manipulate
 rttr::registration::class_<sop::node::Delete>("sop::delete")
@@ -310,9 +347,23 @@ rttr::registration::class_<sop::node::Transform>("sop::xform")
 ;
 
 // material
-REGIST_NODE_TYPE(Color, color)
+rttr::registration::class_<sop::node::Color>("sop::color")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Color.parm.h"
+#define PARM_NODE_CLASS sop::node::Color
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 REGIST_NODE_TYPE(UVLayout, uvlayout)
-REGIST_NODE_TYPE(UVQuickShade, uvquickshade)
+rttr::registration::class_<sop::node::UVQuickShade>("sop::uvquickshade")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/UVQuickShade.parm.h"
+#define PARM_NODE_CLASS sop::node::UVQuickShade
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::class_<sop::node::UVTransform>("sop::uvtransform::2.0")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/UVTransform.parm.h"
@@ -358,7 +409,14 @@ rttr::registration::class_<sop::node::Add>("sop::add")
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
-REGIST_NODE_TYPE(Boolean, boolean::2.0)
+rttr::registration::class_<sop::node::Boolean>("sop::boolean::2.0")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Boolean.parm.h"
+#define PARM_NODE_CLASS sop::node::Boolean
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 rttr::registration::enumeration<sop::node::Boolean::Operator>("sop_boolean_operator")
 (
     REGIST_ENUM_ITEM(sop::node::Boolean::Operator::Union,     "union",     "Union"),
@@ -505,7 +563,14 @@ rttr::registration::class_<sop::node::Primitive>("sop::primitive")
 ;
 REGIST_NODE_TYPE(Sphere, sphere)
 // primitive extern
-REGIST_NODE_TYPE(Dungeon, dungeon)
+rttr::registration::class_<sop::node::Dungeon>("sop::dungeon")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/Dungeon.parm.h"
+#define PARM_NODE_CLASS sop::node::Dungeon
+#include "sop/rttr_prop_gen.h"
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 
 // rigging
 REGIST_NODE_TYPE(Lattice, lattice)

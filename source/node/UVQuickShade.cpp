@@ -54,10 +54,5 @@ void UVQuickShade::Execute(Evaluator& eval)
     model->materials[0]->diffuse_tex = m_diffuse_tex;
 }
 
-void UVQuickShade::SetImageFile(const std::string& image_file)
-{
-    NODE_PROP_SET(m_image_file, image_file);
-}
-
 }
 }

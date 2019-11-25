@@ -20,13 +20,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetObjects(const std::vector<NodePtr>& objs);
-    auto& GetObjects() const { return m_objs; }
-
-private:
-    std::vector<NodePtr> m_objs;
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/ObjectMerge.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // ObjectMerge
 

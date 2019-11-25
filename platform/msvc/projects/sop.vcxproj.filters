@@ -425,6 +425,30 @@
     <ClInclude Include="..\..\..\include\sop\node\Divide.parm.h">
       <Filter>nodes\polygon</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Boolean.parm.h">
+      <Filter>nodes\polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Color.parm.h">
+      <Filter>nodes\material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\AttributeTransfer.parm.h">
+      <Filter>nodes\attribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\ObjectMerge.parm.h">
+      <Filter>nodes\import</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\File.parm.h">
+      <Filter>nodes\import</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\UVQuickShade.parm.h">
+      <Filter>nodes\material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Dungeon.parm.h">
+      <Filter>nodes\primitive\extern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Grid.parm.h">
+      <Filter>nodes\primitive</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">

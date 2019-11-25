@@ -31,13 +31,11 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void ClearCopyAttrs();
-    void SetCopyAttrs(GeoAttrClass cls, const std::vector<std::string>& attrs);
-
-private:
-    std::vector<std::string> m_attrs[static_cast<int>(GeoAttrClass::MaxTypeNum)];
-
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/AttributeTransfer.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // AttributeTransfer
 

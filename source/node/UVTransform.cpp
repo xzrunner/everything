@@ -94,15 +94,5 @@ void UVTransform::Execute(Evaluator& eval)
     m_geo_impl->UpdateByAttr();
 }
 
-void UVTransform::SetGroupName(const std::string& name)
-{
-    NODE_PROP_SET(m_group_name, name);
-}
-
-void UVTransform::SetGroupType(GroupType type)
-{
-    NODE_PROP_SET(m_group_type, type);
-}
-
 }
 }

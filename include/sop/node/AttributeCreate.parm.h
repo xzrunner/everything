@@ -9,12 +9,12 @@ PARAM_INFO(ItemNames,         Array<String>,                       name,     m_i
 PARAM_INFO(ItemClasses,       Array<GeoAttrClass>,                 class,    m_item_classes,      ())
 PARAM_INFO(ItemTypes,         Array<AttributeCreate::ItemType>,    type,     m_item_types,        ())
 // Float, Integer, Vector
-PARAM_INFO(ItemValues,        Array<Vector4>,                      value,    m_item_values,       ())
+PARAM_INFO(ItemValues,        Array<Float4>,                       value,    m_item_values,       ())
 // Float, Integer, Vector
-PARAM_INFO(ItemDefaultValues, Array<Vector4>,                      default,  m_item_default_vals, ())
+PARAM_INFO(ItemDefaultValues, Array<Float4>,                       default,  m_item_default_vals, ())
 // Float
 PARAM_INFO(ItemFloatInfos,    Array<AttributeCreate::ItemFltInfo>, typeinfo, m_item_flt_infos,    ())
 // Float, Integer, *Array
-PARAM_INFO(ItemCompSize,      Array<Integer>,                      size,     m_item_comp_sizes,   ())
+PARAM_INFO(ItemCompSize,      Array<Int>,                          size,     m_item_comp_sizes,   ())
 // String
 PARAM_INFO(ItemStrings,       Array<String>,                       string,   m_item_strings,      ())

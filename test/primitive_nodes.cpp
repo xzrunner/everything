@@ -47,48 +47,48 @@ TEST_CASE("box")
     test::check_aabb(box, -h_sz * scale + off, h_sz * scale + off);
 }
 
-TEST_CASE("curve")
-{
-    test::init();
-
-    sop::Evaluator eval;
-
-    auto curve = std::make_shared<sop::node::Curve>();
-    eval.AddNode(curve);
-
-    SECTION("no loop")
-    {
-        std::vector<sm::vec3> vertices = {
-            { 0, 1, 0 },
-            { 4, 1, 0 },
-            { 4, 0, 2 },
-        };
-        curve->SetVertices(vertices);
-
-        eval.Update();
-
-        test::check_points_num(curve, 3);
-        test::check_point(curve, 1, sm::vec3(4, 1, 0));
-        test::check_aabb(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
-    }
-
-    SECTION("loop")
-    {
-        std::vector<sm::vec3> vertices = {
-            { 0, 1, 0 },
-            { 4, 1, 0 },
-            { 4, 0, 2 },
-            { 0, 1, 0 },
-        };
-        curve->SetVertices(vertices);
-
-        eval.Update();
-
-        test::check_points_num(curve, 3);
-        test::check_point(curve, 1, sm::vec3(4, 1, 0));
-        test::check_aabb(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
-    }
-}
+//TEST_CASE("curve")
+//{
+//    test::init();
+//
+//    sop::Evaluator eval;
+//
+//    auto curve = std::make_shared<sop::node::Curve>();
+//    eval.AddNode(curve);
+//
+//    SECTION("no loop")
+//    {
+//        std::vector<sm::vec3> vertices = {
+//            { 0, 1, 0 },
+//            { 4, 1, 0 },
+//            { 4, 0, 2 },
+//        };
+//        curve->SetVertices(vertices);
+//
+//        eval.Update();
+//
+//        test::check_points_num(curve, 3);
+//        test::check_point(curve, 1, sm::vec3(4, 1, 0));
+//        test::check_aabb(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
+//    }
+//
+//    SECTION("loop")
+//    {
+//        std::vector<sm::vec3> vertices = {
+//            { 0, 1, 0 },
+//            { 4, 1, 0 },
+//            { 4, 0, 2 },
+//            { 0, 1, 0 },
+//        };
+//        curve->SetVertices(vertices);
+//
+//        eval.Update();
+//
+//        test::check_points_num(curve, 3);
+//        test::check_point(curve, 1, sm::vec3(4, 1, 0));
+//        test::check_aabb(curve, sm::vec3(0, 0, 0), sm::vec3(4, 1, 2));
+//    }
+//}
 
 TEST_CASE("grid")
 {

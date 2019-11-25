@@ -19,26 +19,6 @@ void Dungeon::Execute(Evaluator& eval)
     BuildModel();
 }
 
-void Dungeon::SetSize(const sm::vec2& size)
-{
-    NODE_PROP_SET(m_size, size);
-}
-
-void Dungeon::SetSplitSize(const sm::vec2& split_sz)
-{
-    NODE_PROP_SET(m_split_sz, split_sz);
-}
-
-void Dungeon::SetMinSize(const sm::vec2& min_sz)
-{
-    NODE_PROP_SET(m_min_sz, min_sz);
-}
-
-void Dungeon::SetSeed(uint32_t seed)
-{
-    NODE_PROP_SET(m_seed, seed);
-}
-
 void Dungeon::BuildModel()
 {
     assert(m_geo_impl);

@@ -39,16 +39,34 @@ bool fetch_end_num(const std::string& str, int& out_num, std::string& out_prefix
     return num;
 }
 
-bool fetch_end_ramp(const std::string& str, int& out_num,
-                    std::string& out_prefix, sop::RampWidgets::COMP_ID& out_comp)
+bool fetch_end_num(const std::string& str, int& out_num, std::string& out_prefix, std::string& out_type_postfix)
 {
-    for (size_t i = 0; i < 3; ++i)
+    if (str.empty()) {
+        return false;
+    }
+
+    auto end = str.back();
+    if (end == 'v')
     {
-        if (str.find_last_of(sop::RampWidgets::COMP_NAMES[i]) != str.size() - 1) {
+        out_type_postfix = "v";
+        return fetch_end_num(str.substr(0, str.size() - 1), out_num, out_prefix);
+    }
+    else
+    {
+        out_type_postfix = "";
+        return fetch_end_num(str, out_num, out_prefix);
+    }
+}
+
+bool fetch_end_float_ramp(const std::string& str, int& out_num, std::string& out_prefix, sop::RampFloat::COMP_ID& out_comp)
+{
+    for (size_t i = 0; i < sop::RampFloat::COMP_MAX_COUNT; ++i)
+    {
+        if (str.find_last_of(sop::RampFloat::COMP_NAMES[i]) != str.size() - 1) {
             continue;
         }
 
-        auto rem = str.substr(0, str.size() - strlen(sop::RampWidgets::COMP_NAMES[i]));
+        auto rem = str.substr(0, str.size() - strlen(sop::RampFloat::COMP_NAMES[i]));
         if (!fetch_end_num(rem, out_num, out_prefix)) {
             continue;
         }
@@ -58,7 +76,33 @@ bool fetch_end_ramp(const std::string& str, int& out_num,
         }
 
         out_prefix = out_prefix.substr(0, out_prefix.size() - strlen("ramp"));
-        out_comp = static_cast<sop::RampWidgets::COMP_ID>(i);
+        out_comp = static_cast<sop::RampFloat::COMP_ID>(i);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool fetch_end_color_ramp(const std::string& str, int& out_num, std::string& out_prefix, sop::RampColor::COMP_ID& out_comp)
+{
+    for (size_t i = 0; i < sop::RampColor::COMP_MAX_COUNT; ++i)
+    {
+        if (str.find_last_of(sop::RampColor::COMP_NAMES[i]) != str.size() - 1) {
+            continue;
+        }
+
+        auto rem = str.substr(0, str.size() - strlen(sop::RampColor::COMP_NAMES[i]));
+        if (!fetch_end_num(rem, out_num, out_prefix)) {
+            continue;
+        }
+
+        if (out_prefix.find_last_of("ramp") != out_prefix.size() - 1) {
+            continue;
+        }
+
+        out_prefix = out_prefix.substr(0, out_prefix.size() - strlen("ramp"));
+        out_comp = static_cast<sop::RampColor::COMP_ID>(i);
 
         return true;
     }
@@ -74,25 +118,30 @@ bool parm_set_val(sop::NodeParmsMgr& parms, const std::string& key, const sop::V
         return true;
     }
 
-    int idx;
-    std::string name;
-    sop::RampWidgets::COMP_ID ramp_comp;
-    if (fetch_end_num(key, idx, name))
     {
-        if (parms.IsExist(name)) {
+        int idx;
+        std::string name, type_postfix;
+        if (fetch_end_num(key, idx, name, type_postfix) && parms.IsExist(name)) {
             parms.SetArrayValue(name, idx, val);
             return true;
-        } else {
-            return false;
         }
     }
-    else if (fetch_end_ramp(key, idx, name, ramp_comp))
     {
-        if (parms.IsExist(name)) {
-            parms.SetArrayValue(name, idx, val, sop::RampWidgets::COMP_NAMES[ramp_comp]);
+        int idx;
+        std::string name;
+        sop::RampFloat::COMP_ID flt_comp;
+        if (fetch_end_float_ramp(key, idx, name, flt_comp) && parms.IsExist(name)) {
+            parms.SetArrayValue(name, idx, val, sop::RampFloat::COMP_NAMES[flt_comp]);
             return true;
-        } else {
-            return false;
+        }
+    }
+    {
+        int idx;
+        std::string name;
+        sop::RampColor::COMP_ID col_comp;
+        if (fetch_end_color_ramp(key, idx, name, col_comp) && parms.IsExist("ramp")) {
+            parms.SetArrayValue("ramp", idx, val, sop::RampColor::COMP_NAMES[col_comp]);
+            return true;
         }
     }
 

@@ -22,21 +22,6 @@ void Grid::Execute(Evaluator& eval)
     BuildModel();
 }
 
-void Grid::SetSize(const sm::ivec2& size)
-{
-    NODE_PROP_SET(m_size, size);
-}
-
-void Grid::SetRows(size_t row)
-{
-    NODE_PROP_SET(m_rows, row);
-}
-
-void Grid::SetColumns(size_t col)
-{
-    NODE_PROP_SET(m_columns, col);
-}
-
 void Grid::BuildModel()
 {
     assert(m_geo_impl);
@@ -44,9 +29,9 @@ void Grid::BuildModel()
 
     std::vector<pm3::PointPtr> points;
     points.reserve(m_columns * m_rows);
-    for (size_t x = 0; x < m_columns; ++x) 
+    for (int x = 0; x < m_columns; ++x)
     {
-        for (size_t y = 0; y < m_rows; ++y) 
+        for (int y = 0; y < m_rows; ++y)
         {
             auto p = std::make_shared<pm3::Point>();
             if (m_columns > 1) {
@@ -68,9 +53,9 @@ void Grid::BuildModel()
     }
 
     std::vector<pm3::FacePtr> faces;
-    for (size_t x = 0; x < m_columns - 1; ++x)
+    for (int x = 0; x < m_columns - 1; ++x)
     {
-        for (size_t y = 0; y < m_rows - 1; ++y)
+        for (int y = 0; y < m_rows - 1; ++y)
         {
             auto f = std::make_shared<pm3::Face>();
             f->points.push_back(x + m_columns * y);

@@ -24,14 +24,14 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
-    void SetImageFile(const std::string& image_file);
-
 private:
-    std::string m_image_file;
-
     int m_diffuse_tex = -1;
 
     RTTR_ENABLE(Node)
+
+#define PARM_FILEPATH "sop/node/UVQuickShade.parm.h"
+#include "sop/node_parms_gen.h"
+#undef PARM_FILEPATH
 
 }; // UVQuickShade
 

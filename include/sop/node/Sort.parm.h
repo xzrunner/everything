@@ -3,5 +3,5 @@
 #endif
 
 PARAM_INFO(SortKey,      Sort::Key, ptsort,       m_key,           (Sort::Key::NoChange))
-PARAM_INFO(PointReverse, Boolean,   pointreverse, m_point_reverse, (false))
-PARAM_INFO(PointOffset,  Integer,   pointoffset,  m_point_offset,  (0))
+PARAM_INFO(PointReverse, Bool,      pointreverse, m_point_reverse, (false))
+PARAM_INFO(PointOffset,  Int,       pointoffset,  m_point_offset,  (0))
