@@ -1,6 +1,7 @@
 #include "sop/node/PolyFrame.h"
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
+#include "sop/ParmList.h"
 #include "sop/node/Normal.h"
 
 namespace sop
@@ -66,13 +67,13 @@ PolyFrame::CalcPointsNormal() const
     std::vector<sm::vec3> norms;
     if (!Normal::CalcSmoothedPointsNormal(*m_geo_impl, norms))
     {
-        const int norm_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
-        if (norm_idx >= 0)
+        auto norm_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
+        if (norm_list)
         {
-            norms.resize(pts.size());
-            for (size_t i = 0, n = pts.size(); i < n; ++i) {
-                norms[i] = *static_cast<const sm::vec3*>(pts[i]->vars[norm_idx].p);
-            }
+            assert(norm_list->Type() == ParmType::Float3);
+            auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
+            assert(pts.size() == norm_data.size());
+            norms = norm_data;
         }
         else
         {
@@ -155,17 +156,9 @@ PolyFrame::CalcBrushPointsTangent() const
 void PolyFrame::AddToPointsAttr(const std::string& name, const std::vector<sm::vec3>& val)
 {
     auto& attr = m_geo_impl->GetAttr();
-    auto& pts = attr.GetPoints();
-
-    std::vector<VarValue> vars;
-    assert(val.size() == pts.size());
-    vars.reserve(val.size());
-    for (auto& v : val) {
-        vars.push_back(VarValue(v));
-    }
-
-    GeoAttribute::VarDesc desc(name, GeoAttrType::Vector);
-    attr.AddAttr(GeoAttrClass::Point, desc, vars);
+    attr.AddParmList(GeoAttrClass::Point, 
+        std::make_shared<ParmFlt3List>(name, GeoAttrType::Vector, val)
+    );
 }
 
 }

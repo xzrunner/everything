@@ -1,6 +1,7 @@
 #include "sop/node/Peak.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeometryImpl.h"
+#include "sop/ParmList.h"
 #include "sop/node/Normal.h"
 
 namespace sop
@@ -71,23 +72,26 @@ void Peak::TranslatePoints(float dist, const std::shared_ptr<Group>& group)
 {
     assert(m_geo_impl);
     auto& attr = m_geo_impl->GetAttr();
-    auto norm_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
-    if (norm_idx >= 0)
+    auto norm_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
+    if (norm_list)
     {
+        assert(norm_list->Type() == ParmType::Float3);
+        auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
         auto& pts = attr.GetPoints();
         if (group)
         {
-            for (auto& i : group->GetItems()) {
+            for (auto& i : group->GetItems()) 
+            {
                 auto& p = pts[i];
-                auto norm = static_cast<const sm::vec3*>(p->vars[norm_idx].p);
-                p->pos += *norm * dist;
+                assert(i < norm_data.size());
+                p->pos += norm_data[i] * dist;
             }
         }
         else
         {
-            for (auto& p : pts) {
-                auto norm = static_cast<const sm::vec3*>(p->vars[norm_idx].p);
-                p->pos += *norm * dist;
+            assert(pts.size() == norm_data.size());
+            for (size_t i = 0, n = pts.size(); i < n; ++i) {
+                pts[i]->pos += norm_data[i] * dist;
             }
         }
 
@@ -119,23 +123,26 @@ void Peak::TranslateVertices(float dist, const std::shared_ptr<Group>& group)
 {
     assert(m_geo_impl);
     auto& attr = m_geo_impl->GetAttr();
-    auto norm_idx = attr.QueryAttrIdx(GeoAttrClass::Vertex, GEO_ATTR_NORM);
-    if (norm_idx >= 0)
+    auto norm_list = attr.QueryParmList(GeoAttrClass::Vertex, GEO_ATTR_NORM);
+    if (norm_list)
     {
+        assert(norm_list->Type() == ParmType::Float3);
+        auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
         auto& vts = attr.GetVertices();
         if (group)
         {
-            for (auto& i : group->GetItems()) {
+            for (auto& i : group->GetItems()) 
+            {
                 auto& v = vts[i];
-                auto norm = static_cast<const sm::vec3*>(v->vars[norm_idx].p);
-                v->point->pos += *norm * dist;
+                assert(i < norm_data.size());
+                v->point->pos += norm_data[i] * dist;
             }
         }
         else
         {
-            for (auto& v : vts) {
-                auto norm = static_cast<const sm::vec3*>(v->vars[norm_idx].p);
-                v->point->pos += *norm * dist;
+            assert(vts.size() == norm_data.size());
+            for (size_t i = 0, n = vts.size(); i < n; ++i) {
+                vts[i]->point->pos += norm_data[i] * dist;
             }
         }
 

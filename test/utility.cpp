@@ -240,7 +240,7 @@ void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass cls,
     REQUIRE(geo != nullptr);
     auto& attr = geo->GetAttr();
 
-    auto var = attr.QueryAttr(cls, name, 0);
+    auto var = attr.QueryParm(cls, name, 0);
     REQUIRE(var.type != sop::VarType::Invalid);
     switch (cls)
     {
@@ -264,7 +264,7 @@ void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
-    auto var2 = geo->GetAttr().QueryAttr(cls, name, idx);
+    auto var2 = geo->GetAttr().QueryParm(cls, name, idx);
     if (!approx)
     {
         REQUIRE(var == var2);

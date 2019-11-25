@@ -1,11 +1,12 @@
 #include "sop/GeoAttrRebuild.h"
 #include "sop/GeometryImpl.h"
+#include "sop/ParmList.h"
 
 namespace
 {
 
-std::map<uint64_t, std::vector<sop::VarValue>>::const_iterator
-QueryFromCache(const std::map<uint64_t, std::vector<sop::VarValue>>& cache, const he::TopoID& id, bool split)
+std::map<uint64_t, uint32_t>::const_iterator
+QueryFromCache(const std::map<uint64_t, uint32_t>& cache, const he::TopoID& id, bool split)
 {
     auto itr = cache.find(id.UID());
     if (itr != cache.end()) {
@@ -52,14 +53,19 @@ void GeoAttrRebuild::Copy(GeometryImpl& dst, GeometryImpl& src, bool prim_split)
 void GeoAttrRebuild::Save(AttrDump& dst, const GeometryImpl& src)
 {
     auto& attr = src.GetAttr();
-    for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
-        dst.var_descs[i] = attr.GetAttrDesc(static_cast<GeoAttrClass>(i));
+
+    auto& src_lists = attr.GetAllParmLists();
+    for (size_t i = 0; i < AttrDump::MAX_LSIT_COUNT; ++i) {
+        dst.parm_lists[i].resize(src_lists[i].size());
+        for (size_t j = 0, m = src_lists[i].size(); j < m; ++j) {
+            dst.parm_lists[i][j] = src_lists[i][j]->Clone();
+        }
     }
 
     // points
     for (auto& p : attr.GetPoints()) {
         assert(!p->topo_id.Empty());
-        dst.points.insert({ p->topo_id.UID(), p->vars });
+        dst.points.insert({ p->topo_id.UID(), p->attr_idx });
     }
 
     // vertices
@@ -71,72 +77,98 @@ void GeoAttrRebuild::Save(AttrDump& dst, const GeometryImpl& src)
         auto& face_id = face->topo_id;
         assert(!vert_id.Empty() && !face_id.Empty());
         const uint64_t id = static_cast<uint64_t>(face_id.UID()) << 32 | vert_id.UID();
-        dst.vertices.insert({ id, v->vars });
+        dst.vertices.insert({ id, v->attr_idx });
     }
 
     // primitives
     for (auto& prim : attr.GetPrimtives()) {
         assert(!prim->topo_id.Empty());
-        dst.primitives.insert({ prim->topo_id.UID(), prim->vars });
+        dst.primitives.insert({ prim->topo_id.UID(), prim->attr_idx });
     }
-
-    // detail
-    dst.detail = attr.GetDetail().vars;
 }
 
 void GeoAttrRebuild::Load(GeometryImpl& dst, const AttrDump& src, bool prim_split)
 {
     auto& attr = dst.GetAttr();
-    for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
-        attr.SetAttrDesc(static_cast<GeoAttrClass>(i), src.var_descs[i]);
-    }
 
     // points
-    auto default_attr_p = attr.GetDefaultValues(GeoAttrClass::Point);
-    for (auto& p : attr.GetPoints())
+    std::vector<std::shared_ptr<ParmList>> p_lists;
+    auto& pts = attr.GetPoints();
+    auto& p_src = src.parm_lists[static_cast<size_t>(GeoAttrClass::Point)];
+    p_lists.reserve(p_src.size());
+    for (auto& s : p_src)
     {
-        assert(!p->topo_id.Empty());
-        auto itr = QueryFromCache(src.points, p->topo_id, prim_split);
+        auto d = s->Clone(false);
+        d->Resize(pts.size());
+        p_lists.push_back(d);
+    }
+    for (size_t i = 0, n = pts.size(); i < n; ++i)
+    {
+        assert(!pts[i]->topo_id.Empty());
+        auto itr = QueryFromCache(src.points, pts[i]->topo_id, prim_split);
         if (itr != src.points.end()) {
-            p->vars = itr->second;
-        } else {
-            p->vars = default_attr_p;
+            for (size_t j = 0, m = p_src.size(); j < m; ++j) {
+                p_lists[j]->CopyFrom(i, *p_src[j], itr->second);
+            }
         }
     }
+    attr.SetParmLists(GeoAttrClass::Point, p_lists);
 
     // vertices
-    auto default_attr_v = attr.GetDefaultValues(GeoAttrClass::Vertex);
-    for (auto& v : attr.GetVertices())
+
+    std::vector<std::shared_ptr<ParmList>> v_lists;
+    auto& vts = attr.GetVertices();
+    auto& v_src = src.parm_lists[static_cast<size_t>(GeoAttrClass::Vertex)];
+    v_lists.reserve(v_src.size());
+    for (auto& s : v_src)
     {
-        auto& vert_id = v->point->topo_id;
-        auto face = v->prim.lock();
+        auto d = s->Clone(false);
+        d->Resize(vts.size());
+        v_lists.push_back(d);
+    }
+    for (size_t i = 0, n = vts.size(); i < n; ++i)
+    {
+        auto& vert_id = vts[i]->point->topo_id;
+        auto face = vts[i]->prim.lock();
         assert(face);
         auto& face_id = face->topo_id;
         assert(!vert_id.Empty() && !face_id.Empty());
         const uint64_t id = static_cast<uint64_t>(face_id.UID()) << 32 | vert_id.UID();
         auto itr = src.vertices.find(id);
         if (itr != src.vertices.end()) {
-            v->vars = itr->second;
-        } else {
-            v->vars = default_attr_v;
+            for (size_t j = 0, m = v_src.size(); j < m; ++j) {
+                v_lists[j]->CopyFrom(i, *v_src[j], itr->second);
+            }
         }
     }
+    attr.SetParmLists(GeoAttrClass::Vertex, v_lists);
+
 
     // primitives
-    auto default_attr_prim = attr.GetDefaultValues(GeoAttrClass::Primitive);
-    for (auto& prim : attr.GetPrimtives())
+    std::vector<std::shared_ptr<ParmList>> prim_lists;
+    auto& prims = attr.GetPrimtives();
+    auto& prim_src = src.parm_lists[static_cast<size_t>(GeoAttrClass::Primitive)];
+    prim_lists.reserve(prim_src.size());
+    for (auto& s : prim_src)
     {
-        assert(!prim->topo_id.Empty());
-        auto itr = QueryFromCache(src.primitives, prim->topo_id, prim_split);
+        auto d = s->Clone(false);
+        d->Resize(prims.size());
+        prim_lists.push_back(d);
+    }
+    for (size_t i = 0, n = prims.size(); i < n; ++i)
+    {
+        assert(!prims[i]->topo_id.Empty());
+        auto itr = QueryFromCache(src.primitives, prims[i]->topo_id, prim_split);
         if (itr != src.primitives.end()) {
-            prim->vars = itr->second;
-        } else {
-            prim->vars = default_attr_prim;
+            for (size_t j = 0, m = prim_src.size(); j < m; ++j) {
+                prim_lists[j]->CopyFrom(i, *prim_src[j], itr->second);
+            }
         }
     }
+    attr.SetParmLists(GeoAttrClass::Primitive, prim_lists);
 
     // detail
-    const_cast<GeoAttribute::Detail&>(attr.GetDetail()).vars = src.detail;
+    attr.SetParmLists(GeoAttrClass::Detail, src.parm_lists[static_cast<size_t>(GeoAttrClass::Detail)]);
 }
 
 }

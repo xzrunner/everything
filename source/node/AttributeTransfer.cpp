@@ -1,6 +1,7 @@
 #include "sop/node/AttributeTransfer.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeometryImpl.h"
+#include "sop/ParmList.h"
 
 namespace sop
 {
@@ -31,15 +32,9 @@ void AttributeTransfer::Execute(Evaluator& eval)
         {
             for (auto& name : m_point_attrib_list)
             {
-                const int from_idx = from_attr.QueryAttrIdx(GeoAttrClass::Point, name);
-                assert(from_idx >= 0);
-
-                std::vector<VarValue> vars;
-                vars.reserve(from_sz);
-                for (auto& p : from_attr.GetPoints()) {
-                    vars.push_back(VarValue(p->vars[from_idx]));
-                }
-                to_attr.AddAttr(GeoAttrClass::Point, from_attr.GetAttrDesc(GeoAttrClass::Point)[from_idx], vars);
+                auto src_list = from_attr.QueryParmList(GeoAttrClass::Point, name);
+                assert(src_list);
+                to_attr.AddParmList(GeoAttrClass::Point, src_list->Clone());
             }
         }
     }
@@ -50,15 +45,9 @@ void AttributeTransfer::Execute(Evaluator& eval)
         {
             for (auto& name : m_vertex_attrib_list)
             {
-                const int from_idx = from_attr.QueryAttrIdx(GeoAttrClass::Vertex, name);
-                assert(from_idx >= 0);
-
-                std::vector<VarValue> vars;
-                vars.reserve(from_sz);
-                for (auto& v : from_attr.GetVertices()) {
-                    vars.push_back(VarValue(v->vars[from_idx]));
-                }
-                to_attr.AddAttr(GeoAttrClass::Vertex, from_attr.GetAttrDesc(GeoAttrClass::Vertex)[from_idx], vars);
+                auto src_list = from_attr.QueryParmList(GeoAttrClass::Vertex, name);
+                assert(src_list);
+                to_attr.AddParmList(GeoAttrClass::Vertex, src_list->Clone());
             }
         }
     }
@@ -69,15 +58,9 @@ void AttributeTransfer::Execute(Evaluator& eval)
         {
             for (auto& name : m_prim_attrib_list)
             {
-                const int from_idx = from_attr.QueryAttrIdx(GeoAttrClass::Primitive, name);
-                assert(from_idx >= 0);
-
-                std::vector<VarValue> vars;
-                vars.reserve(from_sz);
-                for (auto& prim : from_attr.GetPrimtives()) {
-                    vars.push_back(VarValue(prim->vars[from_idx]));
-                }
-                to_attr.AddAttr(GeoAttrClass::Primitive, from_attr.GetAttrDesc(GeoAttrClass::Primitive)[from_idx], vars);
+                auto src_list = from_attr.QueryParmList(GeoAttrClass::Primitive, name);
+                assert(src_list);
+                to_attr.AddParmList(GeoAttrClass::Primitive, src_list->Clone());
             }
         }
     }
@@ -88,13 +71,9 @@ void AttributeTransfer::Execute(Evaluator& eval)
         {
             for (auto& name : m_detail_attrib_list)
             {
-                const int from_idx = from_attr.QueryAttrIdx(GeoAttrClass::Detail, name);
-                assert(from_idx >= 0);
-
-                std::vector<VarValue> vars;
-                vars.reserve(from_sz);
-                vars.push_back(VarValue(from_attr.GetDetail().vars[from_idx]));
-                to_attr.AddAttr(GeoAttrClass::Detail, from_attr.GetAttrDesc(GeoAttrClass::Detail)[from_idx], vars);
+                auto src_list = from_attr.QueryParmList(GeoAttrClass::Detail, name);
+                assert(src_list);
+                to_attr.AddParmList(GeoAttrClass::Detail, src_list->Clone());
             }
         }
     }

@@ -1,5 +1,6 @@
 #include "sop/GeogramHelper.h"
 #include "sop/GeoAttribute.h"
+#include "sop/ParmList.h"
 
 #include <geogram/mesh/mesh.h>
 
@@ -40,7 +41,7 @@ void GeogramHelper::LoadTexcoordsFromMesh(GeoAttribute& dst, const GEO::Mesh& sr
     geo_assert(tex_coord.is_bound() && tex_coord.dimension() == 2);
     auto& prims = dst.GetPrimtives();
     assert(src.facets.nb() == prims.size());
-    std::vector<VarValue> vars(dst.GetVertices().size(), VarValue(sm::vec3(0 ,0, 0)));
+    std::vector<sm::vec3> data(dst.GetVertices().size(), sm::vec3(0, 0, 0));
     for (size_t f = 0; f < src.facets.nb(); ++f)
     {
         auto& prim = prims[f];
@@ -50,10 +51,12 @@ void GeogramHelper::LoadTexcoordsFromMesh(GeoAttribute& dst, const GEO::Mesh& sr
         {
             float tx = static_cast<float>(tex_coord[2 * c]);
             float ty = static_cast<float>(tex_coord[2 * c + 1]);
-            vars[prim->vertices[idx]->attr_idx] = VarValue(sm::vec3(tx, ty, 0));
+            data[prim->vertices[idx]->attr_idx].Set(tx, ty, 0);
         }
     }
-    dst.AddAttr(GeoAttrClass::Vertex, GEO_ATTR_UV, vars);
+    dst.AddParmList(GeoAttrClass::Vertex, 
+        std::make_shared<ParmFlt3List>(GEO_ATTR_UV, data)
+    );
 }
 
 void GeogramHelper::LoadTexcoordsToMesh(GEO::Mesh& dst, const GeoAttribute& src)
@@ -62,17 +65,20 @@ void GeogramHelper::LoadTexcoordsToMesh(GEO::Mesh& dst, const GeoAttribute& src)
     tex_coord.create_vector_attribute(
         dst.facet_corners.attributes(), "tex_coord", 2
     );
-    auto uv_idx = src.QueryAttrIdx(GeoAttrClass::Vertex, GEO_ATTR_UV);
-    assert(uv_idx >= 0);
+    auto uv_list = src.QueryParmList(GeoAttrClass::Vertex, GEO_ATTR_UV);
+    assert(uv_list);
     size_t idx = 0;
     auto& prims = src.GetPrimtives();
+    assert(uv_list->Type() == ParmType::Float3);
+    auto& uv_data = std::static_pointer_cast<ParmFlt3List>(uv_list)->GetAllItems();
     for (auto& prim : prims)
     {
         for (auto& v : prim->vertices)
         {
-            auto uv = static_cast<const sm::vec3*>(v->vars[uv_idx].p);
-            tex_coord[idx * 2]     = std::max(uv->x, 0.01f);
-            tex_coord[idx * 2 + 1] = std::max(uv->y, 0.01f);
+            assert(v->attr_idx < uv_data.size());
+            auto& uv = uv_data[v->attr_idx];
+            tex_coord[idx * 2]     = std::max(uv.x, 0.01f);
+            tex_coord[idx * 2 + 1] = std::max(uv.y, 0.01f);
             ++idx;
         }
     }

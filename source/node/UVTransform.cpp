@@ -2,6 +2,7 @@
 #include "sop/node/Transform.h"
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
+#include "sop/ParmList.h"
 
 namespace sop
 {
@@ -42,13 +43,13 @@ void UVTransform::Execute(Evaluator& eval)
         {
         case GroupType::Points:
         {
-            auto attr_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
-            if (attr_idx >= 0)
+            auto list = attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
+            if (list)
             {
-                auto& pts = attr.GetPoints();
+                assert(list->Type() == ParmType::Float3);
+                auto& data = std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems();
                 for (auto i : group->GetItems()) {
-                    auto uv = static_cast<const sm::vec3*>(pts[i]->vars[attr_idx].p);
-                    pts[i]->vars[attr_idx] = VarValue(mat * *uv);
+                    const_cast<sm::vec3&>(data[i]) = mat * data[i];
                 }
             }
         }
@@ -56,13 +57,13 @@ void UVTransform::Execute(Evaluator& eval)
 
         case GroupType::Vertices:
         {
-            auto attr_idx = attr.QueryAttrIdx(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_UV);
-            if (attr_idx >= 0)
+            auto list = attr.QueryParmList(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_UV);
+            if (list)
             {
-                auto& vts = attr.GetVertices();
+                assert(list->Type() == ParmType::Float3);
+                auto& data = std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems();
                 for (auto i : group->GetItems()) {
-                    auto uv = static_cast<const sm::vec3*>(vts[i]->vars[attr_idx].p);
-                    vts[i]->vars[attr_idx] = VarValue(mat * *uv);
+                    const_cast<sm::vec3&>(data[i]) = mat * data[i];
                 }
             }
         }
@@ -71,23 +72,21 @@ void UVTransform::Execute(Evaluator& eval)
     }
     else
     {
-        auto attr_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
-        if (attr_idx >= 0)
+        auto list = attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
+        if (list)
         {
-            for (auto& pt : attr.GetPoints()) {
-                auto uv = static_cast<const sm::vec3*>(pt->vars[attr_idx].p);
-                pt->vars[attr_idx] = VarValue(mat * *uv);
+            assert(list->Type() == ParmType::Float3);
+            for (auto& v : std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems()) {
+                const_cast<sm::vec3&>(v) = mat * v;
             }
         }
-        else
+
+        list = attr.QueryParmList(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_UV);
+        if (list)
         {
-            attr_idx = attr.QueryAttrIdx(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_UV);
-            if (attr_idx >= 0)
-            {
-                for (auto& vt : attr.GetVertices()) {
-                    auto uv = static_cast<const sm::vec3*>(vt->vars[attr_idx].p);
-                    vt->vars[attr_idx] = VarValue(mat * *uv);
-                }
+            assert(list->Type() == ParmType::Float3);
+            for (auto& v : std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems()) {
+                const_cast<sm::vec3&>(v) = mat * v;
             }
         }
     }

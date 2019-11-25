@@ -33,8 +33,8 @@ public:
     virtual void Execute(Evaluator& eval) override;
 
 private:
-    void CalcPerimeter(std::string& name, std::vector<VarValue>& val) const;
-    void CalcArea(std::string& name, std::vector<VarValue>& val) const;
+    void CalcPerimeter(std::string& name, std::vector<float>& val) const;
+    void CalcArea(std::string& name, std::vector<float>& val) const;
 
     RTTR_ENABLE(Node)
 

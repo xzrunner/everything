@@ -9,6 +9,7 @@ namespace sop
 {
 
 class GeometryImpl;
+class ParmList;
 
 namespace node
 {
@@ -38,16 +39,13 @@ public:
 
 private:
     void CopyTo(const GeometryImpl& src, const GeometryImpl& dst);
-    void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, size_t norm_idx);
+    void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const ParmList& norm_list);
     void CopyTo(const GeometryImpl& src, const GeometryImpl& dst, const std::vector<sm::vec3>& norms);
 
-    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst,
-        const std::vector<GeoAttribute::VarDesc>& desc);
-    void CopyTo(const GeometryImpl& src, const GeoAttribute::Point& dst,
-        const std::vector<GeoAttribute::VarDesc>& desc, const sm::vec3& norm);
+    void CopyTo(const GeometryImpl& src, const GeoAttribute& dst, size_t dst_idx);
+    void CopyTo(const GeometryImpl& src, const GeoAttribute& dst, size_t dst_idx, const sm::vec3& norm);
 
-    sm::mat4 CalcMat(const GeoAttribute::Point& pt, const std::vector<GeoAttribute::VarDesc>& desc,
-        const sm::vec3& norm) const;
+    sm::mat4 CalcMat(const GeoAttribute& attr, size_t p_idx, const sm::vec3& norm) const;
 
     RTTR_ENABLE(Node)
 

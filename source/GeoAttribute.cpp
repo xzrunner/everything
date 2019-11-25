@@ -1,4 +1,5 @@
 #include "sop/GeoAttribute.h"
+#include "sop/ParmList.h"
 
 #include <halfedge/Polyline.h>
 #include <SM_Plane.h>
@@ -81,8 +82,13 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
         }
     }
 
-    for (int i = 0, n = static_cast<int>(GeoAttrClass::MaxTypeNum); i < n; ++i) {
-        m_var_descs[i] = attr.m_var_descs[i];
+    // parm lists
+    for (size_t i = 0; i < MAX_LSIT_COUNT; ++i) 
+    {
+        m_parm_lists[i].reserve(attr.m_parm_lists[i].size());
+        for (auto& src : attr.m_parm_lists[i]) {
+            m_parm_lists[i].push_back(src->Clone());
+        }
     }
 
     SetupAABB();
@@ -205,86 +211,68 @@ void GeoAttribute::ChangePointsOrder(const std::vector<size_t>& order)
     SetupAttrIndices();
 }
 
-void GeoAttribute::AddAttr(GeoAttrClass cls, const VarDesc& var_desc,
-                           const std::vector<VarValue>& var_list)
+void GeoAttribute::AddParmList(GeoAttrClass cls, const std::shared_ptr<ParmList>& list)
 {
     assert(cls >= static_cast<GeoAttrClass>(0)
         && cls < GeoAttrClass::MaxTypeNum);
 
-    int idx = -1;
-    auto& descs = m_var_descs[static_cast<int>(cls)];
-    for (int i = 0, n = descs.size(); i < n; ++i) {
-        if (descs[i].GetName() == var_desc.GetName()) {
-            idx = i;
-            descs[i].SetType(var_desc.GetType());
-            break;
+    auto& lists = m_parm_lists[static_cast<size_t>(cls)];
+    for (auto& l : lists) {
+        if (l->GetName() == list->GetName()) {
+            l = list;
+            return;
         }
     }
 
-    if (idx >= 0)
-    {
-        switch (cls)
-        {
-        case GeoAttrClass::Point:
-            assert(var_list.size() == m_points.size());
-            for (int i = 0, n = var_list.size(); i < n; ++i) {
-                m_points[i]->vars[idx] = var_list[i];
-            }
-            break;
-        case GeoAttrClass::Vertex:
-            assert(var_list.size() == m_vertices.size());
-            for (int i = 0, n = var_list.size(); i < n; ++i) {
-                m_vertices[i]->vars[idx] = var_list[i];
-            }
-            break;
-        case GeoAttrClass::Primitive:
-            assert(var_list.size() == m_primtives.size());
-            for (int i = 0, n = var_list.size(); i < n; ++i) {
-                m_primtives[i]->vars[idx] = var_list[i];
-            }
-            break;
-        case GeoAttrClass::Detail:
-            assert(var_list.size() == 1);
-            m_detail.vars[idx] = var_list[0];
-            break;
-        default:
-            assert(0);
-        }
-    }
-    else
-    {
-        descs.push_back(var_desc);
-        switch (cls)
-        {
-        case GeoAttrClass::Point:
-            assert(var_list.size() == m_points.size());
-            for (int i = 0, n = var_list.size(); i < n; ++i) {
-                m_points[i]->vars.push_back(var_list[i]);
-            }
-            break;
-        case GeoAttrClass::Vertex:
-            assert(var_list.size() == m_vertices.size());
-            for (int i = 0, n = var_list.size(); i < n; ++i) {
-                m_vertices[i]->vars.push_back(var_list[i]);
-            }
-            break;
-        case GeoAttrClass::Primitive:
-            assert(var_list.size() == m_primtives.size());
-            for (int i = 0, n = var_list.size(); i < n; ++i) {
-                m_primtives[i]->vars.push_back(var_list[i]);
-            }
-            break;
-        case GeoAttrClass::Detail:
-            assert(var_list.size() == 1);
-            m_detail.vars.push_back(var_list[0]);
-            break;
-        default:
-            assert(0);
-        }
-    }
+    lists.push_back(list);
 }
 
-Variable GeoAttribute::QueryAttr(GeoAttrClass cls, const std::string& name, size_t index) const
+bool GeoAttribute::RemoveParmList(GeoAttrClass cls, const std::string& name)
+{
+    assert(cls >= static_cast<GeoAttrClass>(0)
+        && cls < GeoAttrClass::MaxTypeNum);
+
+    auto& lists = m_parm_lists[static_cast<size_t>(cls)];
+    for (auto& itr = lists.begin(); itr != lists.end(); ++itr) {
+        if ((*itr)->GetName() == name) {
+            lists.erase(itr);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+std::shared_ptr<ParmList>
+GeoAttribute::QueryParmList(GeoAttrClass cls, const std::string& name) const
+{
+    assert(cls >= static_cast<GeoAttrClass>(0)
+        && cls < GeoAttrClass::MaxTypeNum);
+
+    auto& lists = m_parm_lists[static_cast<size_t>(cls)];
+    for (auto& l : lists) {
+        if (l->GetName() == name) {
+            return l;
+        }
+    }
+
+    return nullptr;
+}
+
+std::shared_ptr<ParmList>
+GeoAttribute::QueryParmList(GeoAttrClass cls, GeoAttr attr) const
+{
+    return QueryParmList(cls, GeoAttrNames[attr]);
+}
+
+void GeoAttribute::SetParmLists(GeoAttrClass cls, const std::vector<std::shared_ptr<ParmList>>& lists)
+{
+    assert(cls >= static_cast<GeoAttrClass>(0)
+        && cls < GeoAttrClass::MaxTypeNum);
+    m_parm_lists[static_cast<size_t>(cls)] = lists;
+}
+
+Variable GeoAttribute::QueryParm(GeoAttrClass cls, const std::string& name, size_t index) const
 {
     if (cls == GeoAttrClass::Point && name == GeoAttrNames[GEO_ATTR_POS])
     {
@@ -297,63 +285,21 @@ Variable GeoAttribute::QueryAttr(GeoAttrClass cls, const std::string& name, size
 
     assert(cls >= static_cast<GeoAttrClass>(0)
         && cls < GeoAttrClass::MaxTypeNum);
-
-    int attr_idx = -1;
-    auto& descs = m_var_descs[static_cast<int>(cls)];
-    for (int i = 0, n = descs.size(); i < n; ++i) {
-        if (descs[i].GetName() == name) {
-            attr_idx = i;
-            break;
-        }
-    }
-    if (attr_idx < 0) {
+    auto list = QueryParmList(cls, name);
+    if (!list || index >= list->Size()) {
         return Variable();
     }
 
-    VarValue val;
-    switch (cls)
+    switch (list->Type())
     {
-    case GeoAttrClass::Point:
-        if (index >= m_points.size()) {
-            return Variable();
-        }
-        assert(m_points[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrClass::Point)].size());
-        val = m_points[index]->vars[attr_idx];
-        break;
-    case GeoAttrClass::Vertex:
-        if (index >= m_vertices.size()) {
-            return Variable();
-        }
-        assert(m_vertices[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrClass::Vertex)].size());
-        val = m_vertices[index]->vars[attr_idx];
-        break;
-    case GeoAttrClass::Primitive:
-        if (index >= m_primtives.size()) {
-            return Variable();
-        }
-        assert(m_primtives[index]->vars.size() == m_var_descs[static_cast<int>(GeoAttrClass::Primitive)].size());
-        val = m_primtives[index]->vars[attr_idx];
-        break;
-    case GeoAttrClass::Detail:
-        val = m_detail.vars[attr_idx];
-        break;
-    default:
-        return Variable();
-    }
-
-    switch (descs[attr_idx].GetType())
-    {
-    case GeoAttrType::Bool:
-        return Variable(val.b);
-    case GeoAttrType::Int:
-        return Variable(val.i);
-    case GeoAttrType::Float:
-        return Variable(val.f);
-    case GeoAttrType::Double:
-        return Variable(val.d);
-    case GeoAttrType::Vector:
-    case GeoAttrType::Float3:
-        return Variable(*static_cast<const sm::vec3*>(val.p));
+    case ParmType::Boolean:
+        return Variable(std::static_pointer_cast<ParmBoolList>(list)->GetAllItems()[index]);
+    case ParmType::Integer:
+        return Variable(std::static_pointer_cast<ParmIntList>(list)->GetAllItems()[index]);
+    case ParmType::Float:
+        return Variable(std::static_pointer_cast<ParmFltList>(list)->GetAllItems()[index]);
+    case ParmType::Float3:
+        return Variable(std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems()[index]);
     default:
         assert(0);
         return Variable();
@@ -433,68 +379,14 @@ void GeoAttribute::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
     SetupAABB();
 }
 
-std::vector<VarValue> GeoAttribute::GetDefaultValues(GeoAttrClass cls) const
-{
-    std::vector<VarValue> ret;
-
-    assert(cls >= static_cast<GeoAttrClass>(0)
-        && cls < GeoAttrClass::MaxTypeNum);
-
-    auto& descs = m_var_descs[static_cast<int>(cls)];
-    ret.reserve(descs.size());
-    for (auto& d : descs)
-    {
-        switch (d.GetType())
-        {
-        case GeoAttrType::Bool:
-            ret.push_back(VarValue(false));
-            break;
-        case GeoAttrType::Int:
-            ret.push_back(VarValue(0));
-            break;
-        case GeoAttrType::Float:
-            ret.push_back(VarValue(0.0f));
-            break;
-        case GeoAttrType::Double:
-            ret.push_back(VarValue(0.0));
-            break;
-        case GeoAttrType::Vector:
-        case GeoAttrType::Float3:
-            ret.push_back(VarValue(sm::vec3()));
-            break;
-        default:
-            assert(0);
-        }
-    }
-
-    return ret;
-}
-
-int GeoAttribute::QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const
-{
-    return QueryAttrIdx(cls, GeoAttrNames[attr]);
-}
-
-int GeoAttribute::QueryAttrIdx(GeoAttrClass cls, const std::string& name) const
-{
-    auto& desc = GetAttrDesc(cls);
-    for (int i = 0, n = desc.size(); i < n; ++i) {
-        if (desc[i].GetName() == name) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 void GeoAttribute::Clear()
 {
     m_points.clear();
     m_vertices.clear();
     m_primtives.clear();
-    m_detail.vars.clear();
 
-    for (auto& desc : m_var_descs) {
-        desc.clear();
+    for (auto& lists : m_parm_lists) {
+        lists.clear();
     }
 
     m_aabb.MakeEmpty();
@@ -521,33 +413,39 @@ void GeoAttribute::SetupAABB()
     }
 }
 
-void GeoAttribute::CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass cls,
-                                   std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars)
+void GeoAttribute::CombineParmLists(const GeoAttribute& attr, GeoAttrClass cls)
 {
-    auto& d_desc = m_var_descs[static_cast<int>(cls)];
-    const auto& s_desc = attr.m_var_descs[static_cast<int>(cls)];
-
-    indices.clear();
-    for (int i = 0, n = d_desc.size(); i < n; ++i) {
-        indices.push_back((static_cast<uint32_t>(i) << 16) | 0x0000ffff);
+    auto& src_lists = attr.GetAllParmLists()[static_cast<int>(cls)];
+    if (src_lists.empty()) {
+        return;
     }
-    for (int i = 0, n = s_desc.size(); i < n; ++i)
+
+    const auto old_sz = GetSize(cls);
+    const auto tot_sz = old_sz + attr.GetSize(cls);
+
+    auto& dst_lists = m_parm_lists[static_cast<int>(cls)];
+    for (auto& list : dst_lists)
     {
-        bool find = false;
-        for (int j = 0, m = d_desc.size(); j < m; ++j)
-        {
-            if (s_desc[i].GetName() == d_desc[j].GetName()) {
-                indices[j] = (indices[j] & 0xffff0000) | static_cast<uint32_t>(i);
-                find = true;
-            }
-        }
-        if (!find) {
-            d_desc.push_back(s_desc[i]);
-            indices.push_back(0xffff0000 | static_cast<uint32_t>(i));
+        auto new_list = attr.QueryParmList(cls, list->GetName());
+        if (new_list) {
+            list->Append(*new_list);
+        } else {
+            list->Resize(tot_sz);
         }
     }
 
-    default_vars = GetDefaultValues(cls);
+    for (auto& list : src_lists)
+    {
+        auto old_list = QueryParmList(cls, list->GetName());
+        if (old_list) {
+            continue;
+        }
+        
+        auto new_list = list->Clone(false);
+        new_list->Resize(old_sz);
+        new_list->Append(*list);
+        AddParmList(cls, new_list);
+    }
 }
 
 void GeoAttribute::CombineTopoID(const GeoAttribute& attr)
@@ -700,34 +598,11 @@ void GeoAttribute::CombineBrushID(const GeoAttribute& attr)
 
 void GeoAttribute::CombinePoints(const GeoAttribute& attr)
 {
-    std::vector<uint32_t> indices;
-    std::vector<VarValue> default_vars;
-    CombineAttrDesc(attr, GeoAttrClass::Point, indices, default_vars);
+    CombineParmLists(attr, GeoAttrClass::Point);
 
-    for (auto& p : m_points)
-    {
-        auto vars = default_vars;
-        for (size_t i = 0, n = indices.size(); i < n; ++i)
-        {
-            uint32_t idx = indices[i] >> 16;
-            if (idx != 0xffff) {
-                vars[i] = p->vars[idx];
-            }
-        }
-        p->vars = vars;
-    }
     for (auto& p : attr.m_points)
     {
-        auto vars = default_vars;
-        for (size_t i = 0, n = indices.size(); i < n; ++i)
-        {
-            uint32_t idx = indices[i] & 0x0000ffff;
-            if (idx != 0xffff) {
-                vars[i] = p->vars[idx];
-            }
-        }
         auto point = std::make_shared<Point>(p->pos);
-        point->vars = vars;
         point->topo_id = p->topo_id;
         point->prim_id = p->prim_id;
         m_points.push_back(point);
@@ -736,97 +611,34 @@ void GeoAttribute::CombinePoints(const GeoAttribute& attr)
 
 void GeoAttribute::CombineVertices(const GeoAttribute& attr)
 {
-    std::vector<uint32_t> indices;
-    std::vector<VarValue> default_vars;
-    CombineAttrDesc(attr, GeoAttrClass::Vertex, indices, default_vars);
-
-    for (auto& v : m_vertices)
-    {
-        auto vars = default_vars;
-        for (size_t i = 0, n = indices.size(); i < n; ++i)
-        {
-            uint32_t idx = indices[i] >> 16;
-            if (idx != 0xffff) {
-                vars[i] = v->vars[idx];
-            }
-        }
-        v->vars = vars;
-    }
-
-    std::map<std::shared_ptr<Point>, size_t> point2idx;
-    for (size_t i = 0, n = attr.m_points.size(); i < n; ++i) {
-        point2idx.insert({ attr.m_points[i], i });
-    }
+    CombineParmLists(attr, GeoAttrClass::Vertex);
 
     size_t ori_pt_count = m_points.size() - attr.m_points.size();
     for (auto& v : attr.m_vertices)
     {
         auto vertex = std::make_shared<Vertex>();
-
-        auto vars = default_vars;
-        for (size_t i = 0, n = indices.size(); i < n; ++i)
-        {
-            uint32_t idx = indices[i] & 0x0000ffff;
-            if (idx != 0xffff) {
-                vars[i] = v->vars[idx];
-            }
-        }
-        vertex->vars = vars;
-
-        auto itr = point2idx.find(v->point);
-        assert(itr != point2idx.end());
-        vertex->point = m_points[ori_pt_count + itr->second];
-
+        vertex->point = m_points[ori_pt_count + v->point->attr_idx];
         m_vertices.push_back(vertex);
     }
 }
 
 void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
 {
-    std::vector<uint32_t> indices;
-    std::vector<VarValue> default_vars;
-    CombineAttrDesc(attr, GeoAttrClass::Primitive, indices, default_vars);
-
-    for (auto& prim : m_primtives)
-    {
-        auto vars = default_vars;
-        for (size_t i = 0, n = indices.size(); i < n; ++i)
-        {
-            uint32_t idx = indices[i] >> 16;
-            if (idx != 0xffff) {
-                vars[i] = prim->vars[idx];
-            }
-        }
-        prim->vars = vars;
-    }
-
-    std::map<std::shared_ptr<Vertex>, size_t> vert2idx;
-    for (size_t i = 0, n = attr.m_vertices.size(); i < n; ++i) {
-        vert2idx.insert({ attr.m_vertices[i], i });
-    }
+    CombineParmLists(attr, GeoAttrClass::Primitive);
 
     size_t ori_vt_count = m_vertices.size() - attr.m_vertices.size();
     for (auto& src_prim : attr.m_primtives)
     {
         auto dst_prim = std::make_shared<Primitive>(src_prim->type);
 
-        auto vars = default_vars;
-        for (size_t i = 0, n = indices.size(); i < n; ++i)
-        {
-            uint32_t idx = indices[i] & 0x0000ffff;
-            if (idx != 0xffff) {
-                vars[i] = src_prim->vars[idx];
-            }
-        }
-        dst_prim->vars = vars;
-
         dst_prim->vertices.reserve(src_prim->vertices.size());
         for (auto& src_v : src_prim->vertices)
         {
             assert(src_v->point->prim_id == src_prim->prim_id);
-            auto itr = vert2idx.find(src_v);
-            assert(itr != vert2idx.end());
-            auto v = m_vertices[ori_vt_count + itr->second];
+            if (ori_vt_count + src_v->attr_idx >= m_vertices.size()) {
+                int zz = 0;
+            }
+            auto v = m_vertices[ori_vt_count + src_v->attr_idx];
             dst_prim->vertices.push_back(v);
             v->prim = dst_prim;
         }
@@ -840,26 +652,7 @@ void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
 
 void GeoAttribute::CombineDetail(const GeoAttribute& attr)
 {
-    std::vector<uint32_t> indices;
-    std::vector<VarValue> default_vars;
-    CombineAttrDesc(attr, GeoAttrClass::Detail, indices, default_vars);
-
-    std::vector<VarValue> vars;
-    vars.reserve(indices.size());
-    for (auto& idx : indices)
-    {
-        uint32_t old_idx = idx >> 16;
-        uint32_t new_idx = idx & 0x0000ffff;
-        if (new_idx != 0xffff) {
-            vars.push_back(attr.m_detail.vars[new_idx]);
-        } else {
-            assert(old_idx != 0xffff);
-            vars.push_back(attr.m_detail.vars[old_idx]);
-        }
-    }
-    assert(vars.size() == default_vars.size());
-
-    m_detail.vars = vars;
+    CombineParmLists(attr, GeoAttrClass::Detail);
 }
 
 void GeoAttribute::UpdatePointsChanged(bool del_unused_pt)
@@ -940,6 +733,8 @@ void GeoAttribute::UpdateVerticesChanged(bool del_unused_pt)
     if (prim_dirty) {
         UpdatePrimitivesChanged(del_unused_pt);
     }
+
+    SetupAttrIndices();
 }
 
 void GeoAttribute::UpdatePrimitivesChanged(bool del_unused_pt)
@@ -964,6 +759,8 @@ void GeoAttribute::UpdatePrimitivesChanged(bool del_unused_pt)
     if (v_dirty) {
         UpdateVerticesChanged(del_unused_pt);
     }
+
+    SetupAttrIndices();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -987,7 +784,6 @@ GeoAttribute::Vertex::Vertex(const Vertex& vert)
 GeoAttribute::Vertex&
 GeoAttribute::Vertex::operator = (const Vertex& vert)
 {
-    vars     = vert.vars;
     attr_idx = vert.attr_idx;
 
     return *this;
@@ -1011,7 +807,6 @@ GeoAttribute::Primitive&
 GeoAttribute::Primitive::operator = (const Primitive& prim)
 {
     type     = prim.type;
-    vars     = prim.vars;
     attr_idx = prim.attr_idx;
     topo_id  = prim.topo_id;
     prim_id  = prim.prim_id;
@@ -1028,30 +823,6 @@ sm::vec3 GeoAttribute::Primitive::CalcNormal() const
         vertices[2]->point->pos
     );
     return plane.normal;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// struct GeoAttribute::VarDesc
-//////////////////////////////////////////////////////////////////////////
-
-GeoAttribute::VarDesc::VarDesc(GeoAttr attr)
-    : m_attr(attr)
-    , m_name(GeoAttrNames[attr])
-    , m_type(GeoAttrTypes[attr])
-{
-}
-
-GeoAttribute::VarDesc::VarDesc(const std::string& name, GeoAttrType type)
-    : m_attr(GEO_ATTR_UNKNOWN)
-    , m_name(name)
-    , m_type(type)
-{
-    for (int i = 0; i < GEO_ATTR_UNKNOWN; ++i) {
-        if (GeoAttrNames[i] == name) {
-            m_attr = static_cast<GeoAttr>(i);
-            break;
-        }
-    }
 }
 
 }

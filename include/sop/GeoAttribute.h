@@ -2,7 +2,6 @@
 
 #include "sop/GeoAttrClass.h"
 #include "sop/Variable.h"
-#include "sop/VarValue.h"
 #include "sop/GeoAttrType.h"
 #include "sop/GeoAttrDefine.h"
 
@@ -19,6 +18,7 @@ namespace sop
 {
 
 class GeoShape;
+class ParmList;
 
 class GeoAttribute : boost::noncopyable
 {
@@ -29,8 +29,6 @@ public:
         Point(const sm::vec3& pos);
 
         sm::vec3 pos;
-
-        std::vector<VarValue> vars;
 
         size_t attr_idx = 0;
 
@@ -49,8 +47,6 @@ public:
 
         std::shared_ptr<Point>   point = nullptr;
         std::weak_ptr<Primitive> prim;
-
-        std::vector<VarValue> vars;
 
         size_t attr_idx = 0;
 
@@ -76,8 +72,6 @@ public:
 
         Type type = Type::PolygonFace;
 
-        std::vector<VarValue> vars;
-
         size_t attr_idx = 0;
 
         he::TopoID topo_id;
@@ -88,30 +82,8 @@ public:
 
     struct Detail
     {
-        std::vector<VarValue> vars;
 
     }; // Detail
-
-    class VarDesc
-    {
-    public:
-        VarDesc(GeoAttr attr);
-        VarDesc(const std::string& name, GeoAttrType type);
-
-        auto& GetAttr() const { return m_attr; }
-
-        auto& GetName() const { return m_name; }
-        auto& GetType() const { return m_type; }
-
-        void SetType(GeoAttrType type) { m_type = type; }
-
-    private:
-        GeoAttr     m_attr = GEO_ATTR_UNKNOWN;
-
-        std::string m_name;
-        GeoAttrType m_type;
-
-    }; // VarDesc
 
 public:
     GeoAttribute() {}
@@ -129,8 +101,15 @@ public:
 
     void ChangePointsOrder(const std::vector<size_t>& order);
 
-    void AddAttr(GeoAttrClass cls, const VarDesc& var_desc, const std::vector<VarValue>& var_list);
-    Variable QueryAttr(GeoAttrClass cls, const std::string& name, size_t index) const;
+    void AddParmList(GeoAttrClass cls, const std::shared_ptr<ParmList>& list);
+    bool RemoveParmList(GeoAttrClass cls, const std::string& name);
+    std::shared_ptr<ParmList> QueryParmList(GeoAttrClass cls, const std::string& name) const;
+    std::shared_ptr<ParmList> QueryParmList(GeoAttrClass cls, GeoAttr attr) const;
+
+    auto& GetAllParmLists() const { return m_parm_lists; }
+    void SetParmLists(GeoAttrClass cls, const std::vector<std::shared_ptr<ParmList>>& lists);
+
+    Variable QueryParm(GeoAttrClass cls, const std::string& name, size_t index) const;
 
     void Combine(const GeoAttribute& attr);
 
@@ -138,26 +117,13 @@ public:
 
     auto& GetAABB() const { return m_aabb; }
 
-    auto& GetAttrDesc(GeoAttrClass cls) const {
-        return m_var_descs[static_cast<int>(cls)];
-    }
-    void SetAttrDesc(GeoAttrClass cls, const std::vector<VarDesc>& desc) {
-        m_var_descs[static_cast<int>(cls)] = desc;
-    }
-
-    std::vector<VarValue> GetDefaultValues(GeoAttrClass cls) const;
-
-    int QueryAttrIdx(GeoAttrClass cls, GeoAttr attr) const;
-    int QueryAttrIdx(GeoAttrClass cls, const std::string& name) const;
-
 private:
     void Clear();
 
     void SetupAttrIndices();
     void SetupAABB();
 
-    void CombineAttrDesc(const GeoAttribute& attr, GeoAttrClass cls,
-        std::vector<uint32_t>& indices, std::vector<VarValue>& default_vars);
+    void CombineParmLists(const GeoAttribute& attr, GeoAttrClass cls);
 
     void CombineTopoID(const GeoAttribute& attr);
     void CombineBrushID(const GeoAttribute& attr);
@@ -177,7 +143,8 @@ private:
     std::vector<std::shared_ptr<Primitive>> m_primtives;
     Detail                                  m_detail;
 
-    std::vector<VarDesc> m_var_descs[static_cast<int>(GeoAttrClass::MaxTypeNum)];
+    static const size_t MAX_LSIT_COUNT = static_cast<size_t>(GeoAttrClass::MaxTypeNum);
+    std::vector<std::shared_ptr<ParmList>> m_parm_lists[MAX_LSIT_COUNT];
 
     sm::cube m_aabb;
 

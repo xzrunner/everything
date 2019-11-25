@@ -2,6 +2,7 @@
 #include "sop/GroupMgr.h"
 #include "sop/GeoAttribute.h"
 #include "sop/CompTopoPolyline.h"
+#include "sop/ParmList.h"
 
 #include <halfedge/Polyhedron.h>
 #include <halfedge/Polyline.h>
@@ -110,19 +111,22 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
             itr.second = idx++;
         }
 
-        auto attr_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
-        if (attr_idx >= 0)
+        auto uv_list = attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
+        if (uv_list)
         {
             auto& pts = attr.GetPoints();
-
+            assert(uv_list->Type() == ParmType::Float3);
+            auto& uv_data = std::static_pointer_cast<ParmFlt3List>(uv_list)->GetAllItems();
             for (auto& prim : prims)
             {
                 std::vector<sm::vec2> uvs(prim->vertices.size());
                 for (size_t j = 0, m = prim->vertices.size(); j < m; ++j)
                 {
                     auto& v = prim->vertices[j];
-                    auto uv = static_cast<const sm::vec3*>(pts[v->point->attr_idx]->vars[attr_idx].p);
-                    uvs[j].Set(uv->x, uv->y);
+                    auto idx = v->point->attr_idx;
+                    assert(idx < uv_data.size());
+                    auto& uv = uv_data[idx];
+                    uvs[j].Set(uv.x, uv.y);
                 }
 
                 auto b_idx = brush_id2idx.find(prim->prim_id);
@@ -132,18 +136,22 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
         }
         else
         {
-            attr_idx = attr.QueryAttrIdx(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_UV);
-            if (attr_idx >= 0)
+            auto uv_list = attr.QueryParmList(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_UV);
+            if (uv_list)
             {
                 auto& vts = attr.GetVertices();
+                assert(uv_list->Type() == ParmType::Float3);
+                auto& uv_data = std::static_pointer_cast<ParmFlt3List>(uv_list)->GetAllItems();
                 for (auto& prim : prims)
                 {
                     std::vector<sm::vec2> uvs(prim->vertices.size());
                     for (size_t j = 0, m = prim->vertices.size(); j < m; ++j)
                     {
                         auto& v = prim->vertices[j];
-                        auto uv = static_cast<const sm::vec3*>(vts[v->attr_idx]->vars[attr_idx].p);
-                        uvs[j].Set(uv->x, uv->y);
+                        auto idx = v->attr_idx;
+                        assert(idx < uv_data.size());
+                        auto& uv = uv_data[idx];
+                        uvs[j].Set(uv.x, uv.y);
                     }
 
                     auto b_idx = brush_id2idx.find(prim->prim_id);

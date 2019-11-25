@@ -1,6 +1,7 @@
 #include "sop/node/AttributeCreate.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeometryImpl.h"
+#include "sop/ParmList.h"
 
 namespace sop
 {
@@ -30,93 +31,6 @@ void AttributeCreate::Execute(Evaluator& eval)
     assert(IsNumberValid());
     for (size_t i = 0, n = m_item_names.size(); i < n; ++i)
     {
-        size_t num = 0;
-        switch (m_item_classes[i])
-        {
-        case GeoAttrClass::Point:
-            num = m_geo_impl->GetAttr().GetPoints().size();
-            break;
-        case GeoAttrClass::Vertex:
-            num = m_geo_impl->GetAttr().GetVertices().size();
-            break;
-        case GeoAttrClass::Primitive:
-            num = m_geo_impl->GetAttr().GetPrimtives().size();
-            break;
-        case GeoAttrClass::Detail:
-            num = 1;
-            break;
-        default:
-            assert(0);
-        }
-
-        std::vector<VarValue> vars;
-        // int
-        if (m_item_types[i] == ItemType::Integer && m_item_comp_sizes[i] == 1)
-        {
-            if (group)
-            {
-                vars.resize(num, VarValue(static_cast<int>(m_item_default_vals[i].x)));
-                for (auto& i : group->GetItems()) {
-                    vars[i] = VarValue(static_cast<int>(m_item_values[i].x));
-                }
-            }
-            else
-            {
-                vars.resize(num, VarValue(static_cast<int>(m_item_values[i].x)));
-            }
-        }
-        // float
-        else if (m_item_types[i] == ItemType::Float && m_item_comp_sizes[i] == 1)
-        {
-            if (group)
-            {
-                vars.resize(num, VarValue(static_cast<float>(m_item_default_vals[i].x)));
-                for (auto& i : group->GetItems()) {
-                    vars[i] = VarValue(static_cast<float>(m_item_values[i].x));
-                }
-            }
-            else
-            {
-                vars.resize(num, VarValue(static_cast<float>(m_item_values[i].x)));
-            }
-        }
-        // float3
-        else if ((m_item_types[i] == ItemType::Float || m_item_types[i] == ItemType::Vector)
-              && m_item_comp_sizes[i] == 3)
-        {
-            if (group)
-            {
-                vars.resize(num, VarValue(static_cast<sm::vec3>(m_item_default_vals[i].xyzw)));
-                for (auto& i : group->GetItems()) {
-                    vars[i] = VarValue(static_cast<sm::vec3>(m_item_values[i].xyzw));
-                }
-            }
-            else
-            {
-                vars.resize(num, VarValue(static_cast<sm::vec3>(m_item_values[i].xyzw)));
-            }
-        }
-        // string
-        else if (m_item_types[i] == ItemType::String)
-        {
-            if (group)
-            {
-                vars.resize(num, VarValue(std::string()));
-                for (auto& i : group->GetItems()) {
-                    vars[i] = VarValue(m_item_strings[i]);
-                }
-            }
-            else
-            {
-                vars.resize(num, VarValue(m_item_strings[i]));
-            }
-        }
-        // todo
-        else
-        {
-            assert(0);
-        }
-
         GeoAttrType type;
         switch (m_item_types[i])
         {
@@ -168,7 +82,91 @@ void AttributeCreate::Execute(Evaluator& eval)
             // todo *Array
             assert(0);
         }
-        m_geo_impl->GetAttr().AddAttr(m_item_classes[i], GeoAttribute::VarDesc(m_item_names[i], type), vars);
+
+        const size_t num = m_geo_impl->GetAttr().GetSize(m_item_classes[i]);
+
+        // int
+        if (m_item_types[i] == ItemType::Integer && m_item_comp_sizes[i] == 1)
+        {
+            std::vector<int> data;
+            if (group)
+            {
+                data.resize(num, static_cast<int>(m_item_default_vals[i].x));
+                for (auto& i : group->GetItems()) {
+                    data[i] = static_cast<int>(m_item_values[i].x);
+                }
+            }
+            else
+            {
+                data.resize(num, static_cast<int>(m_item_values[i].x));
+            }
+            m_geo_impl->GetAttr().AddParmList(m_item_classes[i],
+                std::make_shared<ParmIntList>(m_item_names[i], type, data)
+            );
+        }
+        // float
+        else if (m_item_types[i] == ItemType::Float && m_item_comp_sizes[i] == 1)
+        {
+            std::vector<float> data;
+            if (group)
+            {
+                data.resize(num, static_cast<float>(m_item_default_vals[i].x));
+                for (auto& i : group->GetItems()) {
+                    data[i] = static_cast<float>(m_item_values[i].x);
+                }
+            }
+            else
+            {
+                data.resize(num, static_cast<float>(m_item_values[i].x));
+            }
+            m_geo_impl->GetAttr().AddParmList(m_item_classes[i],
+                std::make_shared<ParmFltList>(m_item_names[i], type, data)
+            );
+        }
+        // float3
+        else if ((m_item_types[i] == ItemType::Float || m_item_types[i] == ItemType::Vector)
+              && m_item_comp_sizes[i] == 3)
+        {
+            std::vector<sm::vec3> data;
+            if (group)
+            {
+                data.resize(num, static_cast<sm::vec3>(m_item_default_vals[i].xyzw));
+                for (auto& i : group->GetItems()) {
+                    data[i] = static_cast<sm::vec3>(m_item_values[i].xyzw);
+                }
+            }
+            else
+            {
+                data.resize(num, static_cast<sm::vec3>(m_item_values[i].xyzw));
+            }
+            m_geo_impl->GetAttr().AddParmList(m_item_classes[i],
+                std::make_shared<ParmFlt3List>(m_item_names[i], type, data)
+            );
+        }
+        // string
+        else if (m_item_types[i] == ItemType::String)
+        {
+            std::vector<std::string> data;
+            if (group)
+            {
+                data.resize(num, std::string());
+                for (auto& i : group->GetItems()) {
+                    data[i] = m_item_strings[i];
+                }
+            }
+            else
+            {
+                data.resize(num, m_item_strings[i]);
+            }
+            m_geo_impl->GetAttr().AddParmList(m_item_classes[i],
+                std::make_shared<ParmStrList>(m_item_names[i], type, data)
+            );
+        }
+        // todo
+        else
+        {
+            assert(0);
+        }
     }
 }
 
@@ -182,7 +180,7 @@ bool AttributeCreate::IsNumberValid() const
         && m_item_flt_infos.size() == num
         && m_item_comp_sizes.size() == num
         && m_item_strings.size() == num
-        ;
+    ;
 }
 
 }

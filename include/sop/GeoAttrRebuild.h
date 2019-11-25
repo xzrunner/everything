@@ -1,6 +1,5 @@
 #pragma once
 
-#include "sop/VarValue.h"
 #include "sop/GeoAttribute.h"
 
 #include <map>
@@ -22,12 +21,12 @@ public:
 private:
     struct AttrDump
     {
-        std::map<uint64_t, std::vector<VarValue>> points;
-        std::map<uint64_t, std::vector<VarValue>> vertices;
-        std::map<uint64_t, std::vector<VarValue>> primitives;
-        std::vector<VarValue>                     detail;
+        static const size_t MAX_LSIT_COUNT = static_cast<size_t>(GeoAttrClass::MaxTypeNum);
+        std::vector<std::shared_ptr<ParmList>> parm_lists[MAX_LSIT_COUNT];
 
-        std::vector<GeoAttribute::VarDesc> var_descs[static_cast<int>(GeoAttrClass::MaxTypeNum)];
+        std::map<uint64_t, uint32_t> points;
+        std::map<uint64_t, uint32_t> vertices;
+        std::map<uint64_t, uint32_t> primitives;
     };
 
 private:

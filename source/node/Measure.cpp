@@ -1,6 +1,7 @@
 #include "sop/node/Measure.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeometryImpl.h"
+#include "sop/ParmList.h"
 
 #include <SM_Calc.h>
 
@@ -25,21 +26,23 @@ void Measure::Execute(Evaluator& eval)
     case Type::Perimeter:
     {
         std::string name;
-        std::vector<VarValue> val;
+        std::vector<float> val;
         CalcPerimeter(name, val);
 
-        GeoAttribute::VarDesc desc(name, GeoAttrType::Float);
-        attr.AddAttr(GeoAttrClass::Primitive, desc, val);
+        attr.AddParmList(GeoAttrClass::Primitive,
+            std::make_shared<ParmFltList>(name, GeoAttrType::Float, val)
+        );
     }
         break;
     case Type::Area:
     {
         std::string name;
-        std::vector<VarValue> val;
+        std::vector<float> val;
         CalcArea(name, val);
 
-        GeoAttribute::VarDesc desc(name, GeoAttrType::Float);
-        attr.AddAttr(GeoAttrClass::Primitive, desc, val);
+        attr.AddParmList(GeoAttrClass::Primitive,
+            std::make_shared<ParmFltList>(name, GeoAttrType::Float, val)
+        );
     }
         break;
     default:
@@ -47,7 +50,7 @@ void Measure::Execute(Evaluator& eval)
     }
 }
 
-void Measure::CalcPerimeter(std::string& name, std::vector<VarValue>& val) const
+void Measure::CalcPerimeter(std::string& name, std::vector<float>& val) const
 {
     name = m_attr_name.empty() ? "perimeter" : m_attr_name;
 
@@ -72,7 +75,7 @@ void Measure::CalcPerimeter(std::string& name, std::vector<VarValue>& val) const
                     vts[i]->point->pos, vts[i + 1]->point->pos
                 );
             }
-            val.push_back(VarValue(len));
+            val.push_back(len);
         }
         break;
     case GeoAdaptor::Type::Brush:
@@ -86,7 +89,7 @@ void Measure::CalcPerimeter(std::string& name, std::vector<VarValue>& val) const
                     vts[i]->point->pos, vts[(i + 1) % n]->point->pos
                 );
             }
-            val.push_back(VarValue(len));
+            val.push_back(len);
         }
         break;
     default:
@@ -94,7 +97,7 @@ void Measure::CalcPerimeter(std::string& name, std::vector<VarValue>& val) const
     }
 }
 
-void Measure::CalcArea(std::string& name, std::vector<VarValue>& val) const
+void Measure::CalcArea(std::string& name, std::vector<float>& val) const
 {
     name = m_attr_name.empty() ? "area" : m_attr_name;
 
@@ -109,7 +112,7 @@ void Measure::CalcArea(std::string& name, std::vector<VarValue>& val) const
     {
     case GeoAdaptor::Type::Shape:
         for (auto prim : prims) {
-            val.push_back(VarValue(0.0f));
+            val.push_back(0.0f);
         }
         break;
     case GeoAdaptor::Type::Brush:
@@ -122,7 +125,7 @@ void Measure::CalcArea(std::string& name, std::vector<VarValue>& val) const
                 vts.push_back(v->point->pos);
             }
             float area = sm::get_polygon_area(vts);
-            val.push_back(VarValue(area));
+            val.push_back(area);
         }
         break;
     default:

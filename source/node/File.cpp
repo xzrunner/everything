@@ -2,6 +2,7 @@
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeoAdaptor.h"
+#include "sop/ParmList.h"
 
 #include <model/AssimpHelper.h>
 #include <model/BrushModel.h>
@@ -76,22 +77,21 @@ void File::Execute(Evaluator& eval)
     if (!normals.empty())
     {
         assert(normals.size() == attr.GetPoints().size());
-        std::vector<VarValue> vars;
-        vars.reserve(normals.size());
-        for (auto& norm : normals) {
-            vars.push_back(VarValue(norm));
-        }
-        attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_NORM, vars);
+        attr.AddParmList(GeoAttrClass::Point,
+            std::make_shared<ParmFlt3List>(GEO_ATTR_NORM, normals)
+        );
     }
     if (!texcoords.empty())
     {
         assert(texcoords.size() == attr.GetPoints().size());
-        std::vector<VarValue> vars;
-        vars.reserve(texcoords.size());
+        std::vector<sm::vec3> data;
+        data.reserve(texcoords.size());
         for (auto& tc : texcoords) {
-            vars.push_back(VarValue(sm::vec3(tc.x, tc.y, 0)));
+            data.push_back(sm::vec3(tc.x, tc.y, 0));
         }
-        attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_UV, vars);
+        attr.AddParmList(GeoAttrClass::Point,
+            std::make_shared<ParmFlt3List>(GEO_ATTR_UV, data)
+        );
     }
 }
 

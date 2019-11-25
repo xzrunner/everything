@@ -187,9 +187,6 @@
     <ClInclude Include="..\..\..\include\sop\VarType.h">
       <Filter>dataset\variable</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\VarValue.h">
-      <Filter>dataset\variable</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\Color.h">
       <Filter>nodes\material</Filter>
     </ClInclude>
@@ -449,6 +446,9 @@
     <ClInclude Include="..\..\..\include\sop\node\Grid.parm.h">
       <Filter>nodes\primitive</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\ParmList.h">
+      <Filter>dataset\parameters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -548,9 +548,6 @@
       <Filter>dataset\geometry\group</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\Variable.cpp">
-      <Filter>dataset\variable</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\VarValue.cpp">
       <Filter>dataset\variable</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Color.cpp">
@@ -664,6 +661,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp">
       <Filter>nodes\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\ParmList.cpp">
+      <Filter>dataset\parameters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

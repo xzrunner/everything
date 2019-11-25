@@ -1,6 +1,7 @@
 #include "sop/node/Carve.h"
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
+#include "sop/ParmList.h"
 
 #include <SM_Calc.h>
 #include <halfedge/Polyline.h>
@@ -96,29 +97,30 @@ void Carve::Execute(Evaluator& eval)
     assert(s_idx_int <= e_idx_int);
 
     // calc normal
-    int norm_idx = prev_geo->GetAttr().QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
+    auto src_norm_list = prev_geo->GetAttr().QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
     sm::vec3 s_norm, e_norm;
-    if (norm_idx >= 0)
+    if (src_norm_list)
     {
+        auto& data = std::static_pointer_cast<ParmFlt3List>(src_norm_list)->GetAllItems();
         auto& attr = prev_geo->GetAttr();
         if (s_idx_frac == 0)
         {
-            s_norm = *static_cast<const sm::vec3*>(attr.GetPoints()[s_idx_int]->vars[norm_idx].p);
+            s_norm = data[s_idx_int];
         }
         else
         {
-            auto prev = *static_cast<const sm::vec3*>(attr.GetPoints()[s_idx_int]->vars[norm_idx].p);
-            auto next = *static_cast<const sm::vec3*>(attr.GetPoints()[s_idx_int + 1]->vars[norm_idx].p);
+            auto prev = data[s_idx_int];
+            auto next = data[s_idx_int + 1];
             s_norm = prev + (next - prev) * s_idx_frac;
         }
         if (e_idx_frac == 0)
         {
-            e_norm = *static_cast<const sm::vec3*>(attr.GetPoints()[e_idx_int]->vars[norm_idx].p);
+            e_norm = data[e_idx_int];
         }
         else
         {
-            auto prev = *static_cast<const sm::vec3*>(attr.GetPoints()[e_idx_int]->vars[norm_idx].p);
-            auto next = *static_cast<const sm::vec3*>(attr.GetPoints()[e_idx_int + 1]->vars[norm_idx].p);
+            auto prev = data[e_idx_int];
+            auto next = data[e_idx_int + 1];
             e_norm = prev + (next - prev) * e_idx_frac;
         }
     }
@@ -151,38 +153,36 @@ void Carve::Execute(Evaluator& eval)
     m_geo_impl->SetTopoLines({ line });
 
     // update point attrs
-    auto& prev_attr = prev_geo->GetAttr();
-    auto& attr = m_geo_impl->GetAttr();
-    attr.SetAttrDesc(GeoAttrClass::Point,
-        prev_attr.GetAttrDesc(GeoAttrClass::Point));
+    //auto& prev_attr = prev_geo->GetAttr();
+    //auto& attr = m_geo_impl->GetAttr();
+    //auto dst_norm_list = src_norm_list->Clone(false);
+    //auto& dst_norm_list_data = std::static_pointer_cast<ParmFlt3List>(dst_norm_list)->GetAllItems();
+    //auto& pts = m_geo_impl->GetAttr().GetPoints();
+    //dst_norm_list->Resize(pts.size());
 
-    auto default_vars = prev_attr.GetDefaultValues(GeoAttrClass::Point);
-    auto& prev_pts = prev_attr.GetPoints();
-    assert(prev_pts.size() == vertices.size());
-    auto& pts = attr.GetPoints();
-
-    size_t idx = 0;
-    if (start == vertices[s_idx_int]) {
-        pts[idx++]->vars = prev_pts[s_idx_int]->vars;
-    }  else  {
-        pts[idx++]->vars = default_vars;
-        if (norm_idx >= 0 && s_idx_frac != 0) {
-            pts[idx - 1]->vars[norm_idx] = VarValue(s_norm);
-        }
-    }
-    for (size_t i = s_idx_int + 1; i <= e_idx_int; ++i) {
-        pts[idx++]->vars = prev_pts[i]->vars;
-    }
-    if (end != vertices[e_idx_int]) {
-        if (end == vertices[e_idx_int]) {
-            pts[idx++]->vars = prev_pts[e_idx_int]->vars;
-        } else {
-            pts[idx++]->vars = default_vars;
-            if (norm_idx >= 0 && e_idx_frac != 0) {
-                pts[idx - 1]->vars[norm_idx] = VarValue(e_norm);
-            }
-        }
-    }
+    //size_t idx = 0;
+    //if (start == vertices[s_idx_int]) {
+    //    dst_norm_list_data[idx++] = prev_pts[s_idx_int]->vars;
+    //}  else  {
+    //    if (src_norm_list && s_idx_frac != 0) {
+    //        auto& data = std::static_pointer_cast<ParmFlt3List>(src_norm_list)->GetAllItems();
+    //        const_cast<sm::vec3&>(data[idx - 1]) = s_norm;
+    //    }
+    //}
+    //for (size_t i = s_idx_int + 1; i <= e_idx_int; ++i) {
+    //    ++idx;
+    //}
+    //if (end != vertices[e_idx_int])
+    //{
+    //    if (end == vertices[e_idx_int]) {
+    //        pts[idx++]->vars = prev_pts[e_idx_int]->vars;
+    //    } else {
+    //        if (src_norm_list && e_idx_frac != 0) {
+    //            auto& data = std::static_pointer_cast<ParmFlt3List>(src_norm_list)->GetAllItems();
+    //            const_cast<sm::vec3&>(data[idx - 1]) = e_norm;
+    //        }
+    //    }
+    //}
 }
 
 }

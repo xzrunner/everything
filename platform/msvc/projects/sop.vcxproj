@@ -80,6 +80,7 @@
     <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node_parms_gen.h" />
+    <ClInclude Include="..\..\..\include\sop\ParmList.h" />
     <ClInclude Include="..\..\..\include\sop\rttr_prop_gen.h" />
     <ClInclude Include="..\..\..\include\sop\ParmType.h" />
     <ClInclude Include="..\..\..\include\sop\PyCommonTypes.h" />
@@ -135,7 +136,6 @@
     <ClInclude Include="..\..\..\include\sop\VarBuffer.h" />
     <ClInclude Include="..\..\..\include\sop\Variable.h" />
     <ClInclude Include="..\..\..\include\sop\VarType.h" />
-    <ClInclude Include="..\..\..\include\sop\VarValue.h" />
     <ClInclude Include="..\..\..\include\sop\VexFuncs.h" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +164,7 @@
     <ClCompile Include="..\..\..\source\node\UVQuickShade.cpp" />
     <ClCompile Include="..\..\..\source\node\UVTransform.cpp" />
     <ClCompile Include="..\..\..\source\node\UVUnwrap.cpp" />
+    <ClCompile Include="..\..\..\source\ParmList.cpp" />
     <ClCompile Include="..\..\..\source\PyCommonTypes.cpp" />
     <ClCompile Include="..\..\..\source\PyLoader.cpp" />
     <ClCompile Include="..\..\..\source\PyNodeProxy.cpp" />
@@ -209,7 +210,6 @@
     <ClCompile Include="..\..\..\source\node\Transform.cpp" />
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />
     <ClCompile Include="..\..\..\source\Variable.cpp" />
-    <ClCompile Include="..\..\..\source\VarValue.cpp" />
     <ClCompile Include="..\..\..\source\VexFuncs.cpp" />
   </ItemGroup>
   <ItemGroup>

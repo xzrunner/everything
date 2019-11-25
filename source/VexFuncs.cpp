@@ -2,6 +2,7 @@
 #include "sop/EvalContext.h"
 #include "sop/GeometryImpl.h"
 #include "sop/Evaluator.h"
+#include "sop/ParmList.h"
 #include "sop/node/Geometry.h"
 
 #include <vexc/EvalAST.h>
@@ -159,7 +160,7 @@ void SetupVexFuncs()
         assert(params[3].type == vexc::VarType::Int);
         int component = params[3].i;
 
-        auto var = geo->GetAttr().QueryAttr(GeoAttrClass::Point, attrib_name, point_num);
+        auto var = geo->GetAttr().QueryParm(GeoAttrClass::Point, attrib_name, point_num);
         return ToVexcVar(*ctx, var, component);
     });
 
@@ -198,7 +199,7 @@ void SetupVexFuncs()
         assert(params[3].type == vexc::VarType::Int);
         int component = params[3].i;
 
-        auto var = geo->GetAttr().QueryAttr(GeoAttrClass::Primitive, attrib_name, prim_num);
+        auto var = geo->GetAttr().QueryParm(GeoAttrClass::Primitive, attrib_name, prim_num);
         return ToVexcVar(*ctx, var, component);
     });
 
@@ -239,81 +240,23 @@ void SetupVexFuncs()
         }
 
         auto& attr = geo->GetAttr();
-
-        auto& desc = attr.GetAttrDesc(cls);
-        int attr_idx = -1;
-        for (int i = 0, n = desc.size(); i < n; ++i) {
-            if (desc[i].GetName() == attr_name) {
-                attr_idx = i;
-                break;
-            }
-        }
-
-        if (attr_idx == -1)
+        auto list = attr.QueryParmList(cls, attr_name);
+        if (list)
         {
-            attr_idx = desc.size();
-
-            auto new_desc = desc;
-            new_desc.push_back({ attr_name, GeoAttrType::Float });
-            const_cast<GeoAttribute&>(attr).SetAttrDesc(cls, new_desc);
-
-            switch (cls)
-            {
-            case GeoAttrClass::Point:
-                for (auto& p : attr.GetPoints()) {
-                    p->vars.push_back(VarValue());
-                }
-                break;
-            case GeoAttrClass::Vertex:
-                for (auto& v : attr.GetVertices()) {
-                    v->vars.push_back(VarValue());
-                }
-                break;
-            case GeoAttrClass::Primitive:
-                for (auto& prim : attr.GetPrimtives()) {
-                    prim->vars.push_back(VarValue());
-                }
-                break;
-            case GeoAttrClass::Detail:
-            {
-                auto& detail = const_cast<GeoAttribute::Detail&>(attr.GetDetail());
-                detail.vars.push_back(VarValue());
-            }
-                break;
-            default:
-                assert(0);
-            }
+            assert(list->Type() == ParmType::Float);
+            auto& items = std::static_pointer_cast<ParmFltList>(list)->GetAllItems();
+            assert(element_num < static_cast<int>(items.size()));
+            const_cast<std::vector<float>&>(items)[element_num] = value;
         }
-
-        switch (cls)
+        else
         {
-        case GeoAttrClass::Point:
-        {
-            auto& pts = attr.GetPoints();
-            assert(element_num >= 0 && element_num < static_cast<int>(pts.size()));
-            pts[element_num]->vars[attr_idx].f = value;
-        }
-            break;
-        case GeoAttrClass::Vertex:
-        {
-            auto& vts = attr.GetVertices();
-            assert(element_num >= 0 && element_num < static_cast<int>(vts.size()));
-            vts[element_num]->vars[attr_idx].f = value;
-        }
-            break;
-        case GeoAttrClass::Primitive:
-        {
-            auto& prims = attr.GetPrimtives();
-            assert(element_num >= 0 && element_num < static_cast<int>(prims.size()));
-            prims[element_num]->vars[attr_idx].f = value;
-        }
-            break;
-        case GeoAttrClass::Detail:
-        {
-            auto& detail = const_cast<GeoAttribute::Detail&>(attr.GetDetail());
-            detail.vars[attr_idx].f = value;
-        }
-            break;
+            const size_t num = attr.GetSize(cls);
+            std::vector<float> data(num, 0);
+            assert(element_num < static_cast<int>(num));
+            data[element_num] = value;
+            attr.AddParmList(cls,
+                std::make_shared<ParmFltList>(attr_name, GeoAttrType::Float, data)
+            );
         }
 
         return vexc::Variant();
@@ -496,13 +439,16 @@ void SetupVexFuncs()
                 return vexc::Variant();
             }
 
-            auto norm_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_NORM);
-            if (norm_idx < 0) {
+            auto norm_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
+            if (!norm_list) {
                 return vexc::Variant();
             }
 
-            auto v3 = static_cast<const sm::vec3*>(points[ctx->attr_idx]->vars[norm_idx].p);
-            auto new_v3 = ctx->var_buf.Clone(*v3);
+            assert(norm_list->Type() == ParmType::Float3);
+            auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
+            assert(ctx->attr_idx < static_cast<int>(norm_data.size()));
+            auto& v3 = norm_data[ctx->attr_idx];
+            auto new_v3 = ctx->var_buf.Clone(v3);
             return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
         }
         else if (strcmp(sym, "@ptnum") == 0)
@@ -526,7 +472,7 @@ void SetupVexFuncs()
             }
 
             auto attr_name = std::string(&sym[1]);
-            auto var = geo->GetAttr().QueryAttr(ctx->attr_type, attr_name, ctx->attr_idx);
+            auto var = geo->GetAttr().QueryParm(ctx->attr_type, attr_name, ctx->attr_idx);
             return ToVexcVar(*ctx, var);
         }
         else if (strcmp(sym, "$SIZEX") == 0)
@@ -604,17 +550,21 @@ void SetupVexFuncs()
             }
 
             auto val_r = static_cast<const sm::vec3*>(var.p);
-            auto up_idx = attr.QueryAttrIdx(GeoAttrClass::Point, GEO_ATTR_UP);
-            if (up_idx >= 0)
+            auto up_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_UP);
+            if (up_list)
             {
-                auto val_l = static_cast<const sm::vec3*>(points[ctx->attr_idx]->vars[up_idx].p);
-                const_cast<sm::vec3&>(*val_l) = *val_r;
+                assert(up_list->Type() == ParmType::Float3);
+                auto& up_data = std::static_pointer_cast<ParmFlt3List>(up_list)->GetAllItems();
+                assert(ctx->attr_idx < static_cast<int>(up_data.size()));
+                const_cast<std::vector<sm::vec3>&>(up_data)[ctx->attr_idx] = *val_r;
             }
             else
             {
-                std::vector<VarValue> vars(points.size(), VarValue(sm::vec3(0, 0, 0)));
-                vars[ctx->attr_idx] = VarValue(*val_r);
-                attr.AddAttr(GeoAttrClass::Point, GEO_ATTR_UP, vars);
+                std::vector<sm::vec3> data(points.size(), sm::vec3(0, 0, 0));
+                data[ctx->attr_idx] = *val_r;
+                attr.AddParmList(GeoAttrClass::Point,
+                    std::make_shared<ParmFlt3List>(GEO_ATTR_UP, data)
+                );
             }
         }
         else
