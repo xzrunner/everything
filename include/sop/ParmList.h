@@ -33,6 +33,8 @@ public:
 
     virtual size_t Size() const = 0;
 
+    auto& GetAttr() const { return m_attr; }
+
     auto& GetName() const { return m_name; }
     auto& GetType() const { return m_type; }
 

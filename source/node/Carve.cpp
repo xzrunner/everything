@@ -152,37 +152,68 @@ void Carve::Execute(Evaluator& eval)
     auto line = std::make_shared<he::Polyline>(line_vertices, line_polylines);
     m_geo_impl->SetTopoLines({ line });
 
-    // update point attrs
-    //auto& prev_attr = prev_geo->GetAttr();
-    //auto& attr = m_geo_impl->GetAttr();
-    //auto dst_norm_list = src_norm_list->Clone(false);
-    //auto& dst_norm_list_data = std::static_pointer_cast<ParmFlt3List>(dst_norm_list)->GetAllItems();
-    //auto& pts = m_geo_impl->GetAttr().GetPoints();
-    //dst_norm_list->Resize(pts.size());
+    auto& dst_lists = const_cast<std::vector<std::shared_ptr<ParmList>>&>(
+        m_geo_impl->GetAttr().GetAllParmLists()[static_cast<int>(GeoAttrClass::Point)]
+    );
+    auto& src_lists = prev_geo->GetAttr().GetAllParmLists()[static_cast<int>(GeoAttrClass::Point)];
+    dst_lists.reserve(src_lists.size());
+    for (auto& s : src_lists) 
+    {
+        auto d = s->Clone(false);
+        d->Resize(m_geo_impl->GetAttr().GetPoints().size());
+        dst_lists.push_back(d);
+    }
 
-    //size_t idx = 0;
-    //if (start == vertices[s_idx_int]) {
-    //    dst_norm_list_data[idx++] = prev_pts[s_idx_int]->vars;
-    //}  else  {
-    //    if (src_norm_list && s_idx_frac != 0) {
-    //        auto& data = std::static_pointer_cast<ParmFlt3List>(src_norm_list)->GetAllItems();
-    //        const_cast<sm::vec3&>(data[idx - 1]) = s_norm;
-    //    }
-    //}
-    //for (size_t i = s_idx_int + 1; i <= e_idx_int; ++i) {
-    //    ++idx;
-    //}
-    //if (end != vertices[e_idx_int])
-    //{
-    //    if (end == vertices[e_idx_int]) {
-    //        pts[idx++]->vars = prev_pts[e_idx_int]->vars;
-    //    } else {
-    //        if (src_norm_list && e_idx_frac != 0) {
-    //            auto& data = std::static_pointer_cast<ParmFlt3List>(src_norm_list)->GetAllItems();
-    //            const_cast<sm::vec3&>(data[idx - 1]) = e_norm;
-    //        }
-    //    }
-    //}
+    // update point attrs
+    auto& prev_attr = prev_geo->GetAttr();
+    auto& attr = m_geo_impl->GetAttr();
+    auto& pts = m_geo_impl->GetAttr().GetPoints();
+
+    assert(src_lists.size() == dst_lists.size());
+
+    auto dst_norm_list = m_geo_impl->GetAttr().QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
+
+    size_t idx = 0;
+    if (start == vertices[s_idx_int]) 
+    {
+        for (size_t i = 0, n = src_lists.size(); i < n; ++i) {
+            dst_lists[i]->CopyFrom(idx, *src_lists[i], s_idx_int);
+        }
+        ++idx;
+    }  
+    else  
+    {
+        ++idx;
+        if (dst_norm_list && s_idx_frac != 0) {
+            auto& data = std::static_pointer_cast<ParmFlt3List>(dst_norm_list)->GetAllItems();
+            const_cast<sm::vec3&>(data[idx - 1]) = s_norm;
+        }
+    }
+    for (size_t i = s_idx_int + 1; i <= e_idx_int; ++i) 
+    {
+        for (size_t i = 0, n = src_lists.size(); i < n; ++i) {
+            dst_lists[i]->CopyFrom(idx, *src_lists[i], i);
+        }
+        ++idx;
+    }
+    if (end != vertices[e_idx_int])
+    {
+        if (end == vertices[e_idx_int]) 
+        {
+            for (size_t i = 0, n = src_lists.size(); i < n; ++i) {
+                dst_lists[i]->CopyFrom(idx, *src_lists[i], e_idx_int);
+            }
+            ++idx;
+        } 
+        else 
+        {
+            ++idx;
+            if (dst_norm_list && e_idx_frac != 0) {
+                auto& data = std::static_pointer_cast<ParmFlt3List>(dst_norm_list)->GetAllItems();
+                const_cast<sm::vec3&>(data[idx - 1]) = e_norm;
+            }
+        }
+    }
 }
 
 }
