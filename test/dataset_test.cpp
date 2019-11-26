@@ -17,7 +17,7 @@
 
 #include <catch/catch.hpp>
 
-TEST_CASE("node prop")
+TEST_CASE("node parm")
 {
     test::init();
 
@@ -28,34 +28,34 @@ TEST_CASE("node prop")
 
     eval.Update();
 
-    auto& props = const_cast<sop::NodePropsMgr&>(box->GetProps());
+    auto& parms = const_cast<sop::NodeParmsMgr&>(box->GetParms());
 
-    props.Add("prop0", sop::Variable(1.1f));
-    props.Add("prop1", sop::Variable(2));
-    props.Add("prop2", sop::Variable(sm::vec3(4, 5, 6)));
-    props.Add("prop3", sop::Variable(true));
-    props.Add("prop4", sop::Variable("zz"));
+    parms.AddParm("parm0", sop::Variable(1.1f));
+    parms.AddParm("parm1", sop::Variable(2));
+    parms.AddParm("parm2", sop::Variable(sm::vec3(4, 5, 6)));
+    parms.AddParm("parm3", sop::Variable(true));
+    parms.AddParm("parm4", sop::Variable("zz"));
 
-    REQUIRE(props.Size() == 5);
+    REQUIRE(parms.ExternalParmSize() == 5);
 
-    test::check_prop(box, "prop0", sop::Variable(1.1f));
-    test::check_prop(box, "prop1", sop::Variable(2));
-    test::check_prop(box, "prop2", sop::Variable(sm::vec3(4, 5, 6)));
-    test::check_prop(box, "prop3", sop::Variable(true));
-    test::check_prop(box, "prop4", sop::Variable("zz"));
+    test::check_parm(box, "parm0", sop::Variable(1.1f));
+    test::check_parm(box, "parm1", sop::Variable(2));
+    test::check_parm(box, "parm2", sop::Variable(sm::vec3(4, 5, 6)));
+    test::check_parm(box, "parm3", sop::Variable(true));
+    test::check_parm(box, "parm4", sop::Variable("zz"));
 
-    props.Remove("prop2");
-    test::check_prop(box, "prop2", sop::Variable());
+    parms.RemoveParm("parm2");
+    test::check_parm(box, "parm2", sop::Variable());
 
-    REQUIRE(props.Size() == 4);
+    REQUIRE(parms.ExternalParmSize() == 4);
 
-    props.Clear();
-    test::check_prop(box, "prop3", sop::Variable());
+    parms.ClearAllParms();
+    test::check_parm(box, "parm3", sop::Variable());
 
-    REQUIRE(props.Size() == 0);
+    REQUIRE(parms.ExternalParmSize() == 0);
 }
 
-TEST_CASE("parent node prop")
+TEST_CASE("parent node parm")
 {
     test::init();
 
@@ -76,12 +76,12 @@ TEST_CASE("parent node prop")
 
     sop::node::Geometry::AddChild(geo, box);
 
-    auto& geo_props = const_cast<sop::NodePropsMgr&>(geo->GetProps());
-    geo_props.Add("BoxLength", sop::Variable(8));
-    geo_props.Add("BoxWidth",  sop::Variable(5));
-    geo_props.Add("BoxHeight", sop::Variable(3));
+    auto& geo_parms = const_cast<sop::NodeParmsMgr&>(geo->GetParms());
+    geo_parms.AddParm("BoxLength", sop::Variable(8));
+    geo_parms.AddParm("BoxWidth",  sop::Variable(5));
+    geo_parms.AddParm("BoxHeight", sop::Variable(3));
 
-    SECTION("direct props")
+    SECTION("direct parms")
     {
         auto& box_parms = const_cast<sop::NodeParmsMgr&>(box->GetParms());
         //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
@@ -102,7 +102,7 @@ TEST_CASE("parent node prop")
         test::check_aabb(box, sm::vec3(-4, 0, -2.5f), sm::vec3(4, 3, 2.5f));
     }
 
-    SECTION("node to props")
+    SECTION("node to parms")
     {
         auto& box_parms = const_cast<sop::NodeParmsMgr&>(box->GetParms());
         //box_parms.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
@@ -124,7 +124,7 @@ TEST_CASE("parent node prop")
     }
 }
 
-TEST_CASE("use other's prop")
+TEST_CASE("use other's parm")
 {
     test::init();
 
@@ -132,10 +132,10 @@ TEST_CASE("use other's prop")
 
     auto null = std::make_shared<sop::node::Null>();
     null->SetName("controller");
-    auto& null_props = const_cast<sop::NodePropsMgr&>(null->GetProps());
-    const int h_idx = null_props.Add("Height", sop::Variable(3.0f));
-    const int w_idx = null_props.Add("Width",  sop::Variable(8.0f));
-    const int l_idx = null_props.Add("Length", sop::Variable(5.0f));
+    auto& null_parms = const_cast<sop::NodeParmsMgr&>(null->GetParms());
+    null_parms.AddParm("Height", sop::Variable(3.0f));
+    null_parms.AddParm("Width",  sop::Variable(8.0f));
+    null_parms.AddParm("Length", sop::Variable(5.0f));
     eval.AddNode(null);
 
     auto box = std::make_shared<sop::node::Box>();
@@ -159,7 +159,7 @@ TEST_CASE("use other's prop")
         test::check_aabb(box, sm::vec3(-4, -1.5f, -2.5f), sm::vec3(4, 1.5f, 2.5f));
     }
     {
-        null_props.SetValue(h_idx, sop::Variable(4.0f));
+        null_parms.SetValue("Height", sop::Variable(4.0f));
 
         eval.MakeDirty();
         eval.Update();

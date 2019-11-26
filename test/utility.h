@@ -40,7 +40,7 @@ void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
 void check_group_num(const sop::NodePtr& node, const std::string& name, size_t num);
 void check_group_type(const sop::NodePtr& node, const std::string& name, sop::GroupType type);
 
-void check_prop(const sop::NodePtr& node, const std::string& key, const sop::Variable& val);
+void check_parm(const sop::NodePtr& node, const std::string& key, const sop::Variable& val);
 void check_parm(const sop::NodePtr& node, const std::string& key, const sop::Variable& val);
 
 }

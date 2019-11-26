@@ -172,11 +172,11 @@ TEST_CASE("desc")
         REQUIRE(sz_y.f == Approx(2.0f));
     }
 
-    // fixme: prepare geo for prop
-    //SECTION("prop")
+    // fixme: prepare geo for parm
+    //SECTION("parm")
     //{
-    //    auto& props = const_cast<sop::NodePropsMgr&>(box->GetProps());
-    //    props.SetExpr(sop::node::Box::POS_Y, "$SIZEY/2");
+    //    auto& parms = const_cast<sop::NodePropsMgr&>(box->GetProps());
+    //    parms.SetExpr(sop::node::Box::POS_Y, "$SIZEY/2");
 
     //    eval.Update();
 

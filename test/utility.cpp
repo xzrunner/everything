@@ -314,42 +314,6 @@ void check_group_type(const sop::NodePtr& node, const std::string& name, sop::Gr
     REQUIRE(group->GetType() == type);
 }
 
-void check_prop(const sop::NodePtr& node, const std::string& key, const sop::Variable& val)
-{
-    auto find = node->GetProps().Query(key);
-    REQUIRE(find.type == val.type);
-    if (find.type == sop::VarType::Invalid) {
-        return;
-    }
-    switch (val.type)
-    {
-    case sop::VarType::Bool:
-        REQUIRE(find.b == val.b);
-        break;
-    case sop::VarType::Int:
-        REQUIRE(find.i == val.i);
-        break;
-    case sop::VarType::Float:
-        REQUIRE(find.f == Approx(val.f));
-        break;
-    case sop::VarType::Float3:
-    {
-        auto v0 = static_cast<const float*>(find.p);
-        auto v1 = static_cast<const float*>(val.p);
-        REQUIRE(v0[0] == v1[0]);
-        REQUIRE(v0[1] == v1[1]);
-        REQUIRE(v0[2] == v1[2]);
-    }
-        break;
-    case sop::VarType::String:
-        REQUIRE(strcmp(static_cast<const char*>(find.p),
-            static_cast<const char*>(val.p)) == 0);
-        break;
-    default:
-        assert(0);
-    }
-}
-
 void check_parm(const sop::NodePtr& node, const std::string& key, const sop::Variable& val)
 {
     auto find = node->GetParms().Query(key);

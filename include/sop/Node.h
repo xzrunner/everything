@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sop/NodeVarType.h"
-#include "sop/NodePropsMgr.h"
 #include "sop/NodeParmsMgr.h"
 
 #include <hdiop/NodeImpl.h>
@@ -29,7 +28,6 @@ public:
     void SetParent(const std::shared_ptr<Node>& node);
     auto GetParent() const { return m_parent.lock(); }
 
-    auto& GetProps() const { return m_props; }
     auto& GetParms() const { return m_parms; }
 
     auto GetLevel() const { return m_level; }
@@ -37,7 +35,6 @@ public:
 protected:
     std::shared_ptr<GeometryImpl> m_geo_impl = nullptr;
 
-    NodePropsMgr m_props;
     NodeParmsMgr m_parms;
 
 private:

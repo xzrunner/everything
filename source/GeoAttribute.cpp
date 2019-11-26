@@ -83,7 +83,7 @@ GeoAttribute& GeoAttribute::operator = (const GeoAttribute& attr)
     }
 
     // parm lists
-    for (size_t i = 0; i < MAX_LSIT_COUNT; ++i) 
+    for (size_t i = 0; i < MAX_LSIT_COUNT; ++i)
     {
         m_parm_lists[i].reserve(attr.m_parm_lists[i].size());
         for (auto& src : attr.m_parm_lists[i]) {
@@ -440,7 +440,7 @@ void GeoAttribute::CombineParmLists(const GeoAttribute& attr, GeoAttrClass cls)
         if (old_list) {
             continue;
         }
-        
+
         auto new_list = list->Clone(false);
         new_list->Resize(old_sz);
         new_list->Append(*list);
@@ -635,9 +635,6 @@ void GeoAttribute::CombinePrimitives(const GeoAttribute& attr)
         for (auto& src_v : src_prim->vertices)
         {
             assert(src_v->point->prim_id == src_prim->prim_id);
-            if (ori_vt_count + src_v->attr_idx >= m_vertices.size()) {
-                int zz = 0;
-            }
             auto v = m_vertices[ori_vt_count + src_v->attr_idx];
             dst_prim->vertices.push_back(v);
             v->prim = dst_prim;

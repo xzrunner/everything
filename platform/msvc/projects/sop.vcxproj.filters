@@ -299,9 +299,6 @@
     <ClInclude Include="..\..\..\include\sop\node\AttributeVOP.h">
       <Filter>nodes\attribute</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\NodePropsMgr.h">
-      <Filter>dataset\parameters</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\ParmType.h">
       <Filter>dataset\parameters</Filter>
     </ClInclude>
@@ -652,9 +649,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\AttributeVOP.cpp">
       <Filter>nodes\attribute</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\NodePropsMgr.cpp">
-      <Filter>dataset\parameters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\NodeParmsMgr.cpp">
       <Filter>dataset\parameters</Filter>
