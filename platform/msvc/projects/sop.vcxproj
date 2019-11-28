@@ -107,7 +107,7 @@
     <ClInclude Include="..\..\..\include\sop\node\ForeachPrimBegin.h" />
     <ClInclude Include="..\..\..\include\sop\node\ForeachPrimEnd.h" />
     <ClInclude Include="..\..\..\include\sop\node\Fuse.h" />
-    <ClInclude Include="..\..\..\include\sop\node\Geometry.h" />
+    <ClInclude Include="..\..\..\include\sop\node\Subnetwork.h" />
     <ClInclude Include="..\..\..\include\sop\node\GroupExpression.h" />
     <ClInclude Include="..\..\..\include\sop\node\Knife.h" />
     <ClInclude Include="..\..\..\include\sop\node\Line.h" />
@@ -190,7 +190,7 @@
     <ClCompile Include="..\..\..\source\node\Delete.cpp" />
     <ClCompile Include="..\..\..\source\node\ForeachPrimEnd.cpp" />
     <ClCompile Include="..\..\..\source\node\Fuse.cpp" />
-    <ClCompile Include="..\..\..\source\node\Geometry.cpp" />
+    <ClCompile Include="..\..\..\source\node\Subnetwork.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupCreate.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupExpression.cpp" />
     <ClCompile Include="..\..\..\source\node\Knife.cpp" />

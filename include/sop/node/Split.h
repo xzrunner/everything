@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sop/node/Geometry.h"
+#include "sop/node/Subnetwork.h"
 
 namespace sop
 {
@@ -10,7 +10,7 @@ namespace node
 class Blast;
 class Output;
 
-class Split : public Geometry
+class Split : public Subnetwork
 {
 public:
     enum OutPortIdx
@@ -38,7 +38,7 @@ public:
 private:
     void InitSubNodes();
 
-    RTTR_ENABLE(Geometry)
+    RTTR_ENABLE(Subnetwork)
 
 #define PARM_FILEPATH "sop/node/Split.parm.h"
 #include "sop/node_parms_gen.h"

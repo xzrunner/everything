@@ -1,6 +1,6 @@
 #include "sop/Evaluator.h"
 #include "sop/EvalContext.h"
-#include "sop/node/Geometry.h"
+#include "sop/node/Subnetwork.h"
 #include "sop/node/ObjectMerge.h"
 
 #include <vexc/EvalAST.h>
@@ -281,9 +281,9 @@ NodePtr Evaluator::QueryNodeByPath(const std::string& path) const
 
         // query child
         assert(curr_node);
-        if (curr_node->get_type() == rttr::type::get<node::Geometry>())
+        if (curr_node->get_type() == rttr::type::get<node::Subnetwork>())
         {
-            auto child = std::static_pointer_cast<node::Geometry>(curr_node)->QueryChild(t);
+            auto child = std::static_pointer_cast<node::Subnetwork>(curr_node)->QueryChild(t);
             if (child) {
                 curr_node = child;
                 continue;
@@ -322,9 +322,9 @@ const Node* Evaluator::QueryNodeByPath(const Node* base, const std::string& path
 
         // query child
         assert(curr_node);
-        if (curr_node->get_type() == rttr::type::get<node::Geometry>())
+        if (curr_node->get_type() == rttr::type::get<node::Subnetwork>())
         {
-            auto child = static_cast<const node::Geometry*>(curr_node)->QueryChild(t);
+            auto child = static_cast<const node::Subnetwork*>(curr_node)->QueryChild(t);
             if (child) {
                 curr_node = child.get();
                 continue;

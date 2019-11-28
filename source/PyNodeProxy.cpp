@@ -3,7 +3,7 @@
 
 #include "sop/PyNodeProxy.h"
 #include "sop/Evaluator.h"
-#include "sop/node/Geometry.h"
+#include "sop/node/Subnetwork.h"
 #include "sop/node/Merge.h"
 
 using namespace boost::python;
@@ -34,7 +34,7 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
                       bool run_init_scripts, bool load_contents, bool exact_type_name)
 {
     assert(m_node);
-    auto parent = std::dynamic_pointer_cast<node::Geometry>(m_node);
+    auto parent = std::dynamic_pointer_cast<node::Subnetwork>(m_node);
     assert(parent);
 
     auto child = CreateNodeByName(type);
@@ -44,7 +44,7 @@ NodeProxy::CreateNode(const std::string& type, const std::string& name,
     m_eval->AddNode(child);
 
     child->SetName(name);
-    node::Geometry::AddChild(parent, child);
+    node::Subnetwork::AddChild(parent, child);
 
     return std::make_shared<NodeProxy>(child);
 }
@@ -74,7 +74,7 @@ std::shared_ptr<NodeProxy> NodeProxy::GetParent()
 std::shared_ptr<NodeProxy> NodeProxy::GetChild(const std::string& name)
 {
     assert(m_node);
-    auto parent = std::dynamic_pointer_cast<node::Geometry>(m_node);
+    auto parent = std::dynamic_pointer_cast<node::Subnetwork>(m_node);
     assert(parent);
 
     auto child = parent->QueryChild(name);

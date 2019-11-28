@@ -9,10 +9,10 @@ namespace sop
 namespace node
 {
 
-class Geometry : public Node
+class Subnetwork : public Node
 {
 public:
-    Geometry()
+    Subnetwork()
     {
         m_imports = {
             {{ NodeVarType::Any, "in" }}
@@ -25,7 +25,7 @@ public:
     virtual void Execute(Evaluator& eval) override;
 
     void ClearChildren() { m_children.clear(); }
-    static void AddChild(const std::shared_ptr<Geometry>& parent,
+    static void AddChild(const std::shared_ptr<Subnetwork>& parent,
         const std::shared_ptr<Node>& child);
 
     std::shared_ptr<Node> QueryChild(const std::string& name) const;
@@ -37,7 +37,7 @@ protected:
 
     RTTR_ENABLE(Node)
 
-}; // Geometry
+}; // Subnetwork
 
 }
 }

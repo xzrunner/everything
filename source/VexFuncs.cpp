@@ -3,7 +3,7 @@
 #include "sop/GeometryImpl.h"
 #include "sop/Evaluator.h"
 #include "sop/ParmList.h"
-#include "sop/node/Geometry.h"
+#include "sop/node/Subnetwork.h"
 
 #include <vexc/EvalAST.h>
 #include <vexc/StringPool.h>
@@ -95,9 +95,9 @@ vexc::Variant eval_channel(const std::vector<vexc::Variant>& params, const void*
 
         // query child
         assert(curr_node);
-        if (curr_node->get_type() == rttr::type::get<sop::node::Geometry>())
+        if (curr_node->get_type() == rttr::type::get<sop::node::Subnetwork>())
         {
-            auto child = static_cast<const sop::node::Geometry*>(curr_node)->QueryChild(t);
+            auto child = static_cast<const sop::node::Subnetwork*>(curr_node)->QueryChild(t);
             if (child) {
                 curr_node = child.get();
                 continue;

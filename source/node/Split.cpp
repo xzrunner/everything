@@ -1,5 +1,5 @@
 #include "sop/node/Split.h"
-#include "sop/node/Geometry.h"
+#include "sop/node/Subnetwork.h"
 #include "sop/node/Blast.h"
 #include "sop/node/Output.h"
 #include "sop/NodeHelper.h"

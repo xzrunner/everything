@@ -136,9 +136,6 @@
     <ClInclude Include="..\..\..\include\sop\node\ForeachPrimBegin.h">
       <Filter>nodes\utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\node\Geometry.h">
-      <Filter>nodes</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\NodeHelper.h">
       <Filter>tools</Filter>
     </ClInclude>
@@ -446,6 +443,9 @@
     <ClInclude Include="..\..\..\include\sop\parm_cfg.h">
       <Filter>dataset\parameters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\Subnetwork.h">
+      <Filter>nodes\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -501,9 +501,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\Node.cpp">
       <Filter>dataset\node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\node\Geometry.cpp">
-      <Filter>nodes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\NodeHelper.cpp">
       <Filter>tools</Filter>
@@ -658,6 +655,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\ParmList.cpp">
       <Filter>dataset\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\Subnetwork.cpp">
+      <Filter>nodes\utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

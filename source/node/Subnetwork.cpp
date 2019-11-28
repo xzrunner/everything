@@ -1,4 +1,4 @@
-#include "sop/node/Geometry.h"
+#include "sop/node/Subnetwork.h"
 #include "sop/NodeHelper.h"
 #include "sop/node/Output.h"
 
@@ -7,7 +7,7 @@ namespace sop
 namespace node
 {
 
-void Geometry::Execute(Evaluator& eval)
+void Subnetwork::Execute(Evaluator& eval)
 {
     for (auto& c : m_children) {
         if (NodeHelper::IsRoot(*c)) {
@@ -16,8 +16,8 @@ void Geometry::Execute(Evaluator& eval)
     }
 }
 
-void Geometry::AddChild(const std::shared_ptr<Geometry>& parent,
-                        const std::shared_ptr<Node>& child)
+void Subnetwork::AddChild(const std::shared_ptr<Subnetwork>& parent,
+                            const std::shared_ptr<Node>& child)
 {
     if (!parent || !child) {
         return;
@@ -33,7 +33,7 @@ void Geometry::AddChild(const std::shared_ptr<Geometry>& parent,
 }
 
 std::shared_ptr<Node>
-Geometry::QueryChild(const std::string& name) const
+Subnetwork::QueryChild(const std::string& name) const
 {
     for (auto& c : m_children) {
         if (c->GetName() == name) {
@@ -43,10 +43,10 @@ Geometry::QueryChild(const std::string& name) const
     return nullptr;
 }
 
-std::shared_ptr<Node> 
-Geometry::QueryOutput(int idx) const
+std::shared_ptr<Node>
+Subnetwork::QueryOutput(int idx) const
 {
-    for (auto& c : m_children) 
+    for (auto& c : m_children)
     {
         if (c->get_type() == rttr::type::get<node::Output>()) {
             auto output = std::static_pointer_cast<node::Output>(c);

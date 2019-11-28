@@ -1,7 +1,5 @@
 #include "sop/RTTRInfo.h"
 
-// base
-#include "sop/node/Geometry.h"
 // attribute
 #include "sop/node/AttributeCreate.h"
 #include "sop/node/AttributePromote.h"
@@ -60,7 +58,10 @@
 #include "sop/node/Output.h"
 #include "sop/node/Python.h"
 #include "sop/node/Split.h"
+#include "sop/node/Subnetwork.h"
 #include "sop/node/Switch.h"
+
+#include <rttr/registration.h>
 
 #define REGIST_NODE_TYPE(type, name)                           \
 	rttr::registration::class_<sop::node::type>("sop::"#name)  \
@@ -128,8 +129,6 @@ rttr::registration::enumeration<sop::GeoAttrClass>("sop_geo_attr_class")
     REGIST_ENUM_ITEM(sop::GeoAttrClass::Primitive, "primitive", "Primitive"),
     REGIST_ENUM_ITEM(sop::GeoAttrClass::Detail,    "detail",    "Detail")
 );
-
-REGIST_NODE_TYPE(Geometry, geometry)
 
 // widgets
 
@@ -650,6 +649,7 @@ rttr::registration::class_<sop::node::Split>("sop::split")
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
+REGIST_NODE_TYPE(Subnetwork, subnetwork)
 rttr::registration::class_<sop::node::Switch>("sop::switch")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Switch.parm.h"
