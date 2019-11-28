@@ -3,7 +3,7 @@
 #include "sop/NodeVarType.h"
 #include "sop/NodeParmsMgr.h"
 
-#include <hdiop/NodeImpl.h>
+#include <hdiop/Node.h>
 #include <node0/typedef.h>
 
 namespace sop
@@ -11,7 +11,7 @@ namespace sop
 
 class GeometryImpl;
 
-class Node : public hdiop::NodeImpl<NodeVarType>
+class Node : public hdiop::Node<NodeVarType>
 {
 public:
     Node();
@@ -44,7 +44,7 @@ private:
 
     mutable bool m_dirty = true;
 
-    RTTR_ENABLE(hdiop::NodeImpl<NodeVarType>)
+    RTTR_ENABLE(hdiop::Node<NodeVarType>)
 
 }; // Node
 

@@ -76,8 +76,8 @@ RTTR_REGISTRATION
 
 // base
 
-rttr::registration::class_<hdiop::NodePort<sop::NodeVarType>>("sop::Node::Port")
-	.property("var", &hdiop::NodePort<sop::NodeVarType>::var)
+rttr::registration::class_<hdiop::Node<sop::NodeVarType>::Port>("sop::Node::Port")
+	.property("var", &hdiop::Node<sop::NodeVarType>::Port::var)
 ;
 
 rttr::registration::class_<sop::Node>("sop::Node")

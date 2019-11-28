@@ -23,9 +23,9 @@ public:
     void PropChanged(const NodePtr& node);
 
     // update node conn
-    void Connect(const hdiop::NodePortAddr& from, const hdiop::NodePortAddr& to);
-    void Disconnect(const hdiop::NodePortAddr& from, const hdiop::NodePortAddr& to);
-    void RebuildConnections(const std::vector<std::pair<hdiop::NodePortAddr, hdiop::NodePortAddr>>& conns);
+    void Connect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to);
+    void Disconnect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to);
+    void RebuildConnections(const std::vector<std::pair<hdiop::Node<NodeVarType>::PortAddr, hdiop::Node<NodeVarType>::PortAddr>>& conns);
 
     void Update();
 

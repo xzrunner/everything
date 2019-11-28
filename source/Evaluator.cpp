@@ -80,7 +80,7 @@ void Evaluator::PropChanged(const NodePtr& node)
     m_dirty = true;
 }
 
-void Evaluator::Connect(const hdiop::NodePortAddr& from, const hdiop::NodePortAddr& to)
+void Evaluator::Connect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to)
 {
     hdiop::make_connecting<NodeVarType>(from, to);
 
@@ -91,7 +91,7 @@ void Evaluator::Connect(const hdiop::NodePortAddr& from, const hdiop::NodePortAd
     m_dirty = true;
 }
 
-void Evaluator::Disconnect(const hdiop::NodePortAddr& from, const hdiop::NodePortAddr& to)
+void Evaluator::Disconnect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to)
 {
     hdiop::disconnect<NodeVarType>(from, to);
 
@@ -102,7 +102,7 @@ void Evaluator::Disconnect(const hdiop::NodePortAddr& from, const hdiop::NodePor
     m_dirty = true;
 }
 
-void Evaluator::RebuildConnections(const std::vector<std::pair<hdiop::NodePortAddr, hdiop::NodePortAddr>>& conns)
+void Evaluator::RebuildConnections(const std::vector<std::pair<hdiop::Node<NodeVarType>::PortAddr, hdiop::Node<NodeVarType>::PortAddr>>& conns)
 {
     // update dirty
     for (auto itr : m_nodes_map) {
@@ -115,10 +115,10 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<hdiop::NodePortAd
     for (auto itr : m_nodes_map)
     {
         for (auto& in : itr.second->GetImports()) {
-            const_cast<hdiop::NodePort<sop::NodeVarType>&>(in).conns.clear();
+            const_cast<hdiop::Node<NodeVarType>::Port&>(in).conns.clear();
         }
         for (auto& out : itr.second->GetExports()) {
-            const_cast<hdiop::NodePort<sop::NodeVarType>&>(out).conns.clear();
+            const_cast<hdiop::Node<NodeVarType>::Port&>(out).conns.clear();
         }
     }
 

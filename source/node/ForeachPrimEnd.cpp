@@ -4,8 +4,7 @@
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
 #include "sop/GroupRebuild.h"
-
-#include <hdiop/typedef.h>
+#include "sop/VarType.h"
 
 #include <queue>
 
@@ -55,7 +54,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval)
 
 NodePtr ForeachPrimEnd::FindForeachBegin() const
 {
-    std::queue<hdiop::NodePtr> buf;
+    std::queue<std::shared_ptr<hdiop::Node<NodeVarType>>> buf;
     assert(m_imports.size() == 1);
     if (m_imports[0].conns.empty()) {
         return nullptr;
