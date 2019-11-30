@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sop/typedef.h"
-#include "sop/Variable.h"
 #include "sop/Group.h"
 
 namespace sop

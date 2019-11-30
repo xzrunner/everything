@@ -31,7 +31,7 @@ public:
 
     void MakeDirty(bool all_nodes_dirty = true);
 
-    Variable CalcExpr(const std::string& expr, const EvalContext& ctx) const;
+    hdiop::Variable CalcExpr(const std::string& expr, const EvalContext& ctx) const;
     void RunStatement(const std::string& stmt, const EvalContext& ctx) const;
 
     void Rename(const std::string& from, const std::string& to);

@@ -1,12 +1,12 @@
 #pragma once
 
 #include "sop/GeoAttrClass.h"
-#include "sop/Variable.h"
 #include "sop/GeoAttrDefine.h"
 
 #include <SM_Cube.h>
 #include <halfedge/typedef.h>
 #include <halfedge/TopoID.h>
+#include <hdiop/Variable.h>
 
 #include <vector>
 #include <memory>
@@ -108,7 +108,7 @@ public:
     auto& GetAllParmLists() const { return m_parm_lists; }
     void SetParmLists(GeoAttrClass cls, const std::vector<std::shared_ptr<ParmList>>& lists);
 
-    Variable QueryParm(GeoAttrClass cls, const std::string& name, size_t index) const;
+    hdiop::Variable QueryParm(GeoAttrClass cls, const std::string& name, size_t index) const;
 
     void Combine(const GeoAttribute& attr);
 

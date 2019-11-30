@@ -52,9 +52,6 @@
     <Filter Include="nodes\rigging">
       <UniqueIdentifier>{5c508275-c4a4-496e-b4ca-164d3d3cc863}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dataset\variable">
-      <UniqueIdentifier>{be21ea6b-24ff-4342-8879-5f0c3734f99a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="dataset\parameters">
       <UniqueIdentifier>{6d52b5e1-9159-465a-be04-ae206f8e7160}</UniqueIdentifier>
     </Filter>
@@ -177,12 +174,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\GroupMgr.h">
       <Filter>dataset\geometry\group</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\Variable.h">
-      <Filter>dataset\variable</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\VarType.h">
-      <Filter>dataset\variable</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\Color.h">
       <Filter>nodes\material</Filter>
@@ -540,9 +531,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\GroupMgr.cpp">
       <Filter>dataset\geometry\group</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\Variable.cpp">
-      <Filter>dataset\variable</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Color.cpp">
       <Filter>nodes\material</Filter>

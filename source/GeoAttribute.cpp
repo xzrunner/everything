@@ -272,14 +272,14 @@ void GeoAttribute::SetParmLists(GeoAttrClass cls, const std::vector<std::shared_
     m_parm_lists[static_cast<size_t>(cls)] = lists;
 }
 
-Variable GeoAttribute::QueryParm(GeoAttrClass cls, const std::string& name, size_t index) const
+hdiop::Variable GeoAttribute::QueryParm(GeoAttrClass cls, const std::string& name, size_t index) const
 {
     if (cls == GeoAttrClass::Point && name == GeoAttrNames[GEO_ATTR_POS])
     {
         if (index >= 0 && index < m_points.size()) {
-            return Variable(m_points[index]->pos);
+            return hdiop::Variable(m_points[index]->pos);
         } else {
-            return Variable();
+            return hdiop::Variable();
         }
     }
 
@@ -287,22 +287,22 @@ Variable GeoAttribute::QueryParm(GeoAttrClass cls, const std::string& name, size
         && cls < GeoAttrClass::MaxTypeNum);
     auto list = QueryParmList(cls, name);
     if (!list || index >= list->Size()) {
-        return Variable();
+        return hdiop::Variable();
     }
 
     switch (list->Type())
     {
     case ParmType::Boolean:
-        return Variable(std::static_pointer_cast<ParmBoolList>(list)->GetAllItems()[index]);
+        return hdiop::Variable(std::static_pointer_cast<ParmBoolList>(list)->GetAllItems()[index]);
     case ParmType::Int:
-        return Variable(std::static_pointer_cast<ParmIntList>(list)->GetAllItems()[index]);
+        return hdiop::Variable(std::static_pointer_cast<ParmIntList>(list)->GetAllItems()[index]);
     case ParmType::Float:
-        return Variable(std::static_pointer_cast<ParmFltList>(list)->GetAllItems()[index]);
+        return hdiop::Variable(std::static_pointer_cast<ParmFltList>(list)->GetAllItems()[index]);
     case ParmType::Float3:
-        return Variable(std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems()[index]);
+        return hdiop::Variable(std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems()[index]);
     default:
         assert(0);
-        return Variable();
+        return hdiop::Variable();
     }
 }
 

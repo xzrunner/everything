@@ -133,8 +133,6 @@
     <ClInclude Include="..\..\..\include\sop\NodeVarType.h" />
     <ClInclude Include="..\..\..\include\sop\Widgets.h" />
     <ClInclude Include="..\..\..\include\sop\VarBuffer.h" />
-    <ClInclude Include="..\..\..\include\sop\Variable.h" />
-    <ClInclude Include="..\..\..\include\sop\VarType.h" />
     <ClInclude Include="..\..\..\include\sop\VexFuncs.h" />
   </ItemGroup>
   <ItemGroup>
@@ -207,7 +205,6 @@
     <ClCompile Include="..\..\..\source\node\Switch.cpp" />
     <ClCompile Include="..\..\..\source\node\Transform.cpp" />
     <ClCompile Include="..\..\..\source\RegistRTTR.cpp" />
-    <ClCompile Include="..\..\..\source\Variable.cpp" />
     <ClCompile Include="..\..\..\source\VexFuncs.cpp" />
   </ItemGroup>
   <ItemGroup>

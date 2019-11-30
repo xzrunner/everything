@@ -23,7 +23,7 @@ void NodeParmsMgr::SetExpr(const std::string& key, const std::string& val)
     m_exprs_map.insert({ key, val });
 }
 
-void NodeParmsMgr::AddParm(const std::string& key, const Variable& val)
+void NodeParmsMgr::AddParm(const std::string& key, const hdiop::Variable& val)
 {
     m_parms_map.insert({ key, val });
 }
@@ -44,7 +44,7 @@ void NodeParmsMgr::ClearAllParms()
     m_parms_map.clear();
 }
 
-bool NodeParmsMgr::SetValue(const std::string& key, const Variable& val)
+bool NodeParmsMgr::SetValue(const std::string& key, const hdiop::Variable& val)
 {
     auto in = ParseInternalKey(key);
     if (in.prop.is_valid()) {
@@ -60,7 +60,7 @@ bool NodeParmsMgr::SetValue(const std::string& key, const Variable& val)
 }
 
 bool NodeParmsMgr::SetArrayValue(const std::string& array_key, size_t idx,
-                                 const Variable& val, const std::string& sub_key)
+                                 const hdiop::Variable& val, const std::string& sub_key)
 {
     auto in = ParseInternalKey(array_key);
     if (in.prop.is_valid()) {
@@ -88,7 +88,7 @@ bool NodeParmsMgr::Update(const Evaluator& eval)
         auto& expr = itr.second;
 
         auto val = eval.CalcExpr(expr, EvalContext(eval, m_node));
-        if (val.type == VarType::String) {
+        if (val.type == hdiop::VarType::String) {
             auto str = static_cast<const char*>(val.p);
             val = eval.CalcExpr(str, EvalContext(eval, m_node));
         }
@@ -101,9 +101,9 @@ bool NodeParmsMgr::Update(const Evaluator& eval)
     return dirty;
 }
 
-Variable NodeParmsMgr::Query(const std::string& key) const
+hdiop::Variable NodeParmsMgr::Query(const std::string& key) const
 {
-    Variable ret;
+    hdiop::Variable ret;
 
     auto in = ParseInternalKey(key);
     if (in.prop.is_valid())
@@ -112,7 +112,7 @@ Variable NodeParmsMgr::Query(const std::string& key) const
         if (type == rttr::type::get<float>())
         {
             auto f = in.prop.get_value(m_node).get_value<float>();
-            return Variable(f);
+            return hdiop::Variable(f);
         }
         else if (type == rttr::type::get<sm::vec3>())
         {
@@ -120,11 +120,11 @@ Variable NodeParmsMgr::Query(const std::string& key) const
             switch (key.back())
             {
             case 'x':
-                return Variable(v3.x);
+                return hdiop::Variable(v3.x);
             case 'y':
-                return Variable(v3.y);
+                return hdiop::Variable(v3.y);
             case 'z':
-                return Variable(v3.z);
+                return hdiop::Variable(v3.z);
             default:
                 assert(0);
             }
@@ -134,7 +134,7 @@ Variable NodeParmsMgr::Query(const std::string& key) const
             assert(0);
         }
 
-        return Variable();
+        return hdiop::Variable();
     }
 
     auto ex = ParseExternalKey(key);
@@ -142,7 +142,7 @@ Variable NodeParmsMgr::Query(const std::string& key) const
         return *ex.var;
     }
 
-    return Variable();
+    return hdiop::Variable();
 }
 
 bool NodeParmsMgr::IsExist(const std::string& key) const
@@ -243,7 +243,7 @@ NodeParmsMgr::ParseExternalKey(const std::string& key) const
     return ExKeyInfo("", nullptr);
 }
 
-bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int comp_idx)
+bool NodeParmsMgr::SetInternalVal(rttr::property prop, const hdiop::Variable& val, int comp_idx)
 {
     assert(prop.is_valid());
 
@@ -257,7 +257,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
     {
         switch (val.type)
         {
-        case VarType::Float:
+        case hdiop::VarType::Float:
         {
             auto idx = static_cast<int>(val.f);
             assert(fabs(val.f - idx) < FLT_EPSILON);
@@ -281,7 +281,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
             return true;
         }
             break;
-        case VarType::String:
+        case hdiop::VarType::String:
         {
             auto dst = var.get_value<int>();
             auto src = prop.get_enumeration().name_to_value(static_cast<const char*>(val.p));
@@ -302,7 +302,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
     {
         switch (src_type)
         {
-        case VarType::Float:
+        case hdiop::VarType::Float:
         {
             auto dst = var.get_value<bool>();
             assert(val.f == 0.0f || val.f == 1.0f);
@@ -324,7 +324,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
     {
         switch (src_type)
         {
-        case VarType::Float:
+        case hdiop::VarType::Float:
         {
             auto dst = var.get_value<int>();
             auto src = static_cast<int>(val.f);
@@ -346,7 +346,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
     {
         switch (src_type)
         {
-        case VarType::Float:
+        case hdiop::VarType::Float:
         {
             auto dst = var.get_value<unsigned int>();
             auto src = static_cast<unsigned int>(val.f);
@@ -368,7 +368,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
     {
         switch (src_type)
         {
-        case VarType::Float:
+        case hdiop::VarType::Float:
             if (var.get_value<float>() == val.f) {
                 return false;
             } else {
@@ -385,7 +385,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
     {
         switch (src_type)
         {
-        case VarType::Int:
+        case hdiop::VarType::Int:
         {
             assert(comp_idx >= 0 && comp_idx < 3);
             auto dst = var.get_value<sm::vec3>();
@@ -400,7 +400,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
             }
         }
             break;
-        case VarType::Float:
+        case hdiop::VarType::Float:
         {
             assert(comp_idx >= 0 && comp_idx < 3);
             auto dst = var.get_value<sm::vec3>();
@@ -415,7 +415,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
             }
         }
             break;
-        case VarType::Float3:
+        case hdiop::VarType::Float3:
         {
             auto dst = var.get_value<sm::vec3>();
             auto src = static_cast<const sm::vec3*>(val.p);
@@ -438,10 +438,10 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
         std::string src;
         switch (val.type)
         {
-        case VarType::Float:
+        case hdiop::VarType::Float:
             src = std::to_string(val.f);
             break;
-        case VarType::String:
+        case hdiop::VarType::String:
             src = static_cast<const char*>(val.p);
             break;
         default:
@@ -461,7 +461,7 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
         auto dst = var.get_value<std::vector<std::string>>();
         switch (val.type)
         {
-        case VarType::String:
+        case hdiop::VarType::String:
         {
             std::vector<std::string> src;
             std::string s = static_cast<const char*>(val.p);
@@ -486,16 +486,16 @@ bool NodeParmsMgr::SetInternalVal(rttr::property prop, const Variable& val, int 
     return false;
 }
 
-bool NodeParmsMgr::SetExternalVal(const Variable* dst, const Variable& val, int comp_idx)
+bool NodeParmsMgr::SetExternalVal(const hdiop::Variable* dst, const hdiop::Variable& val, int comp_idx)
 {
     assert(dst);
     if (dst->type == val.type)
     {
         assert(comp_idx < 0);
-        const_cast<Variable&>(*dst) = val;
+        const_cast<hdiop::Variable&>(*dst) = val;
         return true;
     }
-    else if (dst->type == VarType::Float3 && val.type == VarType::Float && comp_idx >= 0)
+    else if (dst->type == hdiop::VarType::Float3 && val.type == hdiop::VarType::Float && comp_idx >= 0)
     {
         auto v3 = static_cast<const sm::vec3*>(val.p);
         assert(comp_idx <= 2);
@@ -507,7 +507,7 @@ bool NodeParmsMgr::SetExternalVal(const Variable* dst, const Variable& val, int 
 }
 
 bool NodeParmsMgr::SetInternalArrayVal(rttr::property prop, size_t idx,
-                                       const Variable& val, const std::string& sub_key)
+                                       const hdiop::Variable& val, const std::string& sub_key)
 {
     assert(prop.is_valid());
 
@@ -529,7 +529,7 @@ bool NodeParmsMgr::SetInternalArrayVal(rttr::property prop, size_t idx,
     auto src_type = val.type;
     switch (src_type)
     {
-    case VarType::Float:
+    case hdiop::VarType::Float:
     {
         auto dst_type = view.get_value(idx).get_type();
         auto dst_wrapped_type = view.get_value(idx).extract_wrapped_value().get_type();
@@ -616,7 +616,7 @@ bool NodeParmsMgr::SetInternalArrayVal(rttr::property prop, size_t idx,
         }
     }
         break;
-    case VarType::Float3:
+    case hdiop::VarType::Float3:
     {
         auto dst_wrapped_type = view.get_value(idx).extract_wrapped_value().get_type();
         if (dst_wrapped_type == rttr::type::get<sm::vec3>())
@@ -665,7 +665,7 @@ bool NodeParmsMgr::SetInternalArrayVal(rttr::property prop, size_t idx,
         }
     }
         break;
-    case VarType::String:
+    case hdiop::VarType::String:
     {
         auto dst_wrapped_type = view.get_value(idx).extract_wrapped_value().get_type();
         if (dst_wrapped_type.is_enumeration())
@@ -746,8 +746,8 @@ bool NodeParmsMgr::SetInternalArrayVal(rttr::property prop, size_t idx,
     return false;
 }
 
-bool NodeParmsMgr::SetExternalArrayVal(const Variable* dst, size_t idx,
-                                       const Variable& val, const std::string& sub_key)
+bool NodeParmsMgr::SetExternalArrayVal(const hdiop::Variable* dst, size_t idx,
+                                       const hdiop::Variable& val, const std::string& sub_key)
 {
     assert(0);
     return false;

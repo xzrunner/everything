@@ -110,7 +110,7 @@ bool fetch_end_color_ramp(const std::string& str, int& out_num, std::string& out
     return false;
 }
 
-bool parm_set_val(sop::NodeParmsMgr& parms, const std::string& key, const sop::Variable& val)
+bool parm_set_val(sop::NodeParmsMgr& parms, const std::string& key, const hdiop::Variable& val)
 {
     if (parms.IsExist(key))
     {
@@ -163,7 +163,7 @@ void Parm::Set(float val)
 {
     assert(m_node);
     auto& parms = const_cast<NodeParmsMgr&>(m_node->GetParms());
-    if (!parm_set_val(parms, m_name, Variable(val))) {
+    if (!parm_set_val(parms, m_name, hdiop::Variable(val))) {
         auto type = m_node->get_type().get_name().to_string();
         printf("parm_set_float %s, %s\n", type.c_str(), m_name.c_str());
     }
@@ -173,7 +173,7 @@ void Parm::Set(const std::string& val)
 {
     assert(m_node);
     auto& parms = const_cast<NodeParmsMgr&>(m_node->GetParms());
-    if (!parm_set_val(parms, m_name, Variable(val))) {
+    if (!parm_set_val(parms, m_name, hdiop::Variable(val))) {
         auto type = m_node->get_type().get_name().to_string();
         printf("parm_set_str %s, %s\n", type.c_str(), m_name.c_str());
     }
@@ -183,7 +183,7 @@ void Parm::Set(int val)
 {
     assert(m_node);
     auto& parms = const_cast<NodeParmsMgr&>(m_node->GetParms());
-    if (!parm_set_val(parms, m_name, Variable(val))) {
+    if (!parm_set_val(parms, m_name, hdiop::Variable(val))) {
         auto type = m_node->get_type().get_name().to_string();
         printf("parm_set_int %s, %s\n", type.c_str(), m_name.c_str());
     }
@@ -203,7 +203,7 @@ void ParmTuple::Set(const boost::python::tuple& val)
         v3.xyz[i] = boost::python::extract<float>(val[i]);
     }
 
-    if (!parm_set_val(parms, m_name, Variable(v3))) {
+    if (!parm_set_val(parms, m_name, hdiop::Variable(v3))) {
         auto type = m_node->get_type().get_name().to_string();
         printf("parm_set_tuple %s, %s\n", type.c_str(), m_name.c_str());
     }

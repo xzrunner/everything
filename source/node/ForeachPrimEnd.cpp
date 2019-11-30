@@ -4,7 +4,6 @@
 #include "sop/GeometryImpl.h"
 #include "sop/NodeHelper.h"
 #include "sop/GroupRebuild.h"
-#include "sop/VarType.h"
 
 #include <queue>
 

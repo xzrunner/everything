@@ -163,10 +163,10 @@ void Evaluator::MakeDirty(bool all_nodes_dirty)
     }
 }
 
-Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) const
+hdiop::Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) const
 {
     if (str.empty()) {
-        return Variable();
+        return hdiop::Variable();
     }
 
     vexc::Parser parser(str.c_str());
@@ -175,25 +175,25 @@ Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) con
     switch (val.type)
     {
     case vexc::VarType::Invalid:
-        return Variable();
+        return hdiop::Variable();
     case vexc::VarType::Bool:
-        return Variable(val.b);
+        return hdiop::Variable(val.b);
     case vexc::VarType::Int:
-        return Variable(val.i);
+        return hdiop::Variable(val.i);
     case vexc::VarType::Float:
-        return Variable(val.f);
+        return hdiop::Variable(val.f);
     case vexc::VarType::Float3:
     {
         auto f3 = static_cast<const float*>(val.p);
-        return Variable(sm::vec3(f3[0], f3[1], f3[2]));
+        return hdiop::Variable(sm::vec3(f3[0], f3[1], f3[2]));
     }
     case vexc::VarType::Double:
-        return Variable(static_cast<float>(val.d));
+        return hdiop::Variable(static_cast<float>(val.d));
     case vexc::VarType::String:
-        return Variable(vexc::StringPool::VoidToString(val.p));
+        return hdiop::Variable(vexc::StringPool::VoidToString(val.p));
     default:
         assert(0);
-        return Variable();
+        return hdiop::Variable();
     }
 }
 
