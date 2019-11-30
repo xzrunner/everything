@@ -1,6 +1,7 @@
 #include "sop/node/AttributeVOP.h"
 #include "sop/NodeHelper.h"
 #include "sop/GeometryImpl.h"
+#include "sop/ParmList.h"
 
 #include <vop/Evaluator.h>
 #include <vop/node/GeoGlobalParams.h>
@@ -27,8 +28,11 @@ void AttributeVOP::Execute(Evaluator& eval)
     auto& src_pts = prev_geo->GetAttr().GetPoints();
     auto& dst_pts = m_geo_impl->GetAttr().GetPoints();
     assert(src_pts.size() == dst_pts.size());
+
+    std::vector<sm::vec3> colors;
     for (size_t i = 0, n = src_pts.size(); i < n; ++i)
     {
+        // pos
         auto& src_p = src_pts[i];
         m_input->SetPos(src_p->pos);
         auto& dst_p = dst_pts[i];
@@ -37,6 +41,20 @@ void AttributeVOP::Execute(Evaluator& eval)
             dst_p->pos = pos;
             dirty = true;
         }
+
+        // color
+        auto col = m_output->GetColor();
+        if (col.IsValid()) {
+            colors.push_back(col);
+        }
+    }
+
+    if (!colors.empty())
+    {
+        assert(colors.size() == src_pts.size());
+        auto list = std::make_shared<ParmFlt3List>(GEO_ATTR_CD, colors);
+        m_geo_impl->GetAttr().AddParmList(GeoAttrClass::Point, list);
+        dirty = true;
     }
 
     if (dirty) {
