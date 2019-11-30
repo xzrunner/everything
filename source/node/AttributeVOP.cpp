@@ -23,6 +23,26 @@ void AttributeVOP::Execute(Evaluator& eval)
 
     m_geo_impl = std::make_shared<GeometryImpl>(*prev_geo);
 
+    if (!m_eval) {
+        return;
+    }
+
+    std::shared_ptr<vop::node::GeoGlobalParams> input  = nullptr;
+    std::shared_ptr<vop::node::GeoOutputVars>   output = nullptr;
+    for (auto& node : m_eval->GetAllNodes())
+    {
+        const auto type = node->get_type();
+        if (type == rttr::type::get<vop::node::GeoGlobalParams>()) {
+            input = std::static_pointer_cast<vop::node::GeoGlobalParams>(node);
+        }
+        if (type == rttr::type::get<vop::node::GeoOutputVars>()) {
+            output = std::static_pointer_cast<vop::node::GeoOutputVars>(node);
+        }
+    }
+    if (!input || !output) {
+        return;
+    }
+
     bool dirty = false;
 
     auto& src_pts = prev_geo->GetAttr().GetPoints();
@@ -34,16 +54,16 @@ void AttributeVOP::Execute(Evaluator& eval)
     {
         // pos
         auto& src_p = src_pts[i];
-        m_input->SetPos(src_p->pos);
+        input->SetPos(src_p->pos);
         auto& dst_p = dst_pts[i];
-        auto pos = m_output->GetPos();
+        auto pos = output->GetPos();
         if (pos.IsValid() && dst_p->pos != pos) {
             dst_p->pos = pos;
             dirty = true;
         }
 
         // color
-        auto col = m_output->GetColor();
+        auto col = output->GetColor();
         if (col.IsValid()) {
             colors.push_back(col);
         }
@@ -62,19 +82,20 @@ void AttributeVOP::Execute(Evaluator& eval)
     }
 }
 
+void AttributeVOP::SetEval(const std::shared_ptr<vop::Evaluator>& eval)
+{
+    if (m_eval != eval) {
+        m_eval = eval;
+        SetDirty(true);
+    }
+}
+
 void AttributeVOP::InitEval()
 {
     m_eval = std::make_shared<vop::Evaluator>();
 
-    m_input  = std::make_shared<vop::node::GeoGlobalParams>();
-    m_output = std::make_shared<vop::node::GeoOutputVars>();
-    m_eval->AddNode(m_input);
-    m_eval->AddNode(m_output);
-}
-
-const std::vector<std::shared_ptr<vop::Node>>& AttributeVOP::GetAllChildren() const
-{
-    return m_eval->GetAllNodes();
+    m_eval->AddNode(std::make_shared<vop::node::GeoGlobalParams>());
+    m_eval->AddNode(std::make_shared<vop::node::GeoOutputVars>());
 }
 
 }
