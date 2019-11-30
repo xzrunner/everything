@@ -54,6 +54,7 @@ void Split::Execute(Evaluator& eval)
     sub_eval.Connect({ m_children[SUB_BLAST_0], 0 }, { m_children[SUB_OUTPUT_0], 0 });
     sub_eval.Connect({ m_children[SUB_BLAST_1], 0 }, { m_children[SUB_OUTPUT_1], 0 });
 
+    sub_eval.MakeDirty();
     sub_eval.Update();
 
     if (m_children[SUB_OUTPUT_0]) {
@@ -87,6 +88,16 @@ void Split::InitSubNodes()
     output1->SetName("output2");
     output1->SetOutputIdx(1);
     m_children[SUB_OUTPUT_1] = output1;
+
+    for (auto& c : m_children) {
+        c->ClearConnections();
+    }
+
+    //hdiop::make_connecting<NodeVarType>({ prev_node, 0 }, { m_children[SUB_BLAST_0], 0 });
+    //hdiop::make_connecting<NodeVarType>({ prev_node, 0 }, { m_children[SUB_BLAST_1], 0 });
+
+    hdiop::make_connecting<NodeVarType>({ m_children[SUB_BLAST_0], 0 }, { m_children[SUB_OUTPUT_0], 0 });
+    hdiop::make_connecting<NodeVarType>({ m_children[SUB_BLAST_1], 0 }, { m_children[SUB_OUTPUT_1], 0 });
 }
 
 }
