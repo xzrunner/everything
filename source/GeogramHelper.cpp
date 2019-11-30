@@ -54,7 +54,7 @@ void GeogramHelper::LoadTexcoordsFromMesh(GeoAttribute& dst, const GEO::Mesh& sr
             data[prim->vertices[idx]->attr_idx].Set(tx, ty, 0);
         }
     }
-    dst.AddParmList(GeoAttrClass::Vertex, 
+    dst.AddParmList(GeoAttrClass::Vertex,
         std::make_shared<ParmFlt3List>(GEO_ATTR_UV, data)
     );
 }
@@ -69,7 +69,7 @@ void GeogramHelper::LoadTexcoordsToMesh(GEO::Mesh& dst, const GeoAttribute& src)
     assert(uv_list);
     size_t idx = 0;
     auto& prims = src.GetPrimtives();
-    assert(uv_list->Type() == ParmType::Float3);
+    assert(uv_list->GetType() == ParmType::Float3);
     auto& uv_data = std::static_pointer_cast<ParmFlt3List>(uv_list)->GetAllItems();
     for (auto& prim : prims)
     {

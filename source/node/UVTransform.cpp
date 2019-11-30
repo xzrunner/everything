@@ -46,7 +46,7 @@ void UVTransform::Execute(Evaluator& eval)
             auto list = attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
             if (list)
             {
-                assert(list->Type() == ParmType::Float3);
+                assert(list->GetType() == ParmType::Float3);
                 auto& data = std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems();
                 for (auto i : group->GetItems()) {
                     const_cast<sm::vec3&>(data[i]) = mat * data[i];
@@ -60,7 +60,7 @@ void UVTransform::Execute(Evaluator& eval)
             auto list = attr.QueryParmList(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_UV);
             if (list)
             {
-                assert(list->Type() == ParmType::Float3);
+                assert(list->GetType() == ParmType::Float3);
                 auto& data = std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems();
                 for (auto i : group->GetItems()) {
                     const_cast<sm::vec3&>(data[i]) = mat * data[i];
@@ -75,7 +75,7 @@ void UVTransform::Execute(Evaluator& eval)
         auto list = attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
         if (list)
         {
-            assert(list->Type() == ParmType::Float3);
+            assert(list->GetType() == ParmType::Float3);
             for (auto& v : std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems()) {
                 const_cast<sm::vec3&>(v) = mat * v;
             }
@@ -84,7 +84,7 @@ void UVTransform::Execute(Evaluator& eval)
         list = attr.QueryParmList(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_UV);
         if (list)
         {
-            assert(list->Type() == ParmType::Float3);
+            assert(list->GetType() == ParmType::Float3);
             for (auto& v : std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems()) {
                 const_cast<sm::vec3&>(v) = mat * v;
             }

@@ -115,7 +115,7 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
         if (uv_list)
         {
             auto& pts = attr.GetPoints();
-            assert(uv_list->Type() == ParmType::Float3);
+            assert(uv_list->GetType() == ParmType::Float3);
             auto& uv_data = std::static_pointer_cast<ParmFlt3List>(uv_list)->GetAllItems();
             for (auto& prim : prims)
             {
@@ -140,7 +140,7 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
             if (uv_list)
             {
                 auto& vts = attr.GetVertices();
-                assert(uv_list->Type() == ParmType::Float3);
+                assert(uv_list->GetType() == ParmType::Float3);
                 auto& uv_data = std::static_pointer_cast<ParmFlt3List>(uv_list)->GetAllItems();
                 for (auto& prim : prims)
                 {

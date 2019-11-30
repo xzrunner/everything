@@ -244,7 +244,7 @@ void SetupVexFuncs()
         auto list = attr.QueryParmList(cls, attr_name);
         if (list)
         {
-            assert(list->Type() == ParmType::Float);
+            assert(list->GetType() == ParmType::Float);
             auto& items = std::static_pointer_cast<ParmFltList>(list)->GetAllItems();
             assert(element_num < static_cast<int>(items.size()));
             const_cast<std::vector<float>&>(items)[element_num] = value;
@@ -445,7 +445,7 @@ void SetupVexFuncs()
                 return vexc::Variant();
             }
 
-            assert(norm_list->Type() == ParmType::Float3);
+            assert(norm_list->GetType() == ParmType::Float3);
             auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
             assert(ctx->attr_idx < static_cast<int>(norm_data.size()));
             auto& v3 = norm_data[ctx->attr_idx];
@@ -554,7 +554,7 @@ void SetupVexFuncs()
             auto up_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_UP);
             if (up_list)
             {
-                assert(up_list->Type() == ParmType::Float3);
+                assert(up_list->GetType() == ParmType::Float3);
                 auto& up_data = std::static_pointer_cast<ParmFlt3List>(up_list)->GetAllItems();
                 assert(ctx->attr_idx < static_cast<int>(up_data.size()));
                 const_cast<std::vector<sm::vec3>&>(up_data)[ctx->attr_idx] = *val_r;

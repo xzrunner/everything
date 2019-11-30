@@ -290,7 +290,7 @@ hdiop::Variable GeoAttribute::QueryParm(GeoAttrClass cls, const std::string& nam
         return hdiop::Variable();
     }
 
-    switch (list->Type())
+    switch (list->GetType())
     {
     case ParmType::Boolean:
         return hdiop::Variable(std::static_pointer_cast<ParmBoolList>(list)->GetAllItems()[index]);

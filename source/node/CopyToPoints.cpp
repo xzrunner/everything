@@ -120,7 +120,7 @@ void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst, cons
         }
     }
 
-    assert(norm_list.Type() == ParmType::Float3);
+    assert(norm_list.GetType() == ParmType::Float3);
     auto& data = static_cast<const ParmFlt3List&>(norm_list).GetAllItems();
     if (tar_group) {
         for (auto i : tar_group->GetItems()) {
@@ -262,7 +262,7 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute& attr, size_t p_idx, const sm:
 
     // pivot matrix (translate by -pivot)
     auto pivot_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_PIVOT);
-    if (pivot_list && pivot_list->Type() == ParmType::Float3)
+    if (pivot_list && pivot_list->GetType() == ParmType::Float3)
     {
         assert(pivot_list->Size() > p_idx);
         auto& pivot = std::static_pointer_cast<ParmFlt3List>(pivot_list)->GetAllItems()[p_idx];
@@ -271,7 +271,7 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute& attr, size_t p_idx, const sm:
 
     // orient matrix
     auto orient_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_ORIENT);
-    if (orient_list && orient_list->Type() == ParmType::Float4)
+    if (orient_list && orient_list->GetType() == ParmType::Float4)
     {
         assert(orient_list->Size() > p_idx);
         auto& orient = std::static_pointer_cast<ParmFlt4List>(orient_list)->GetAllItems()[p_idx];
@@ -280,14 +280,14 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute& attr, size_t p_idx, const sm:
 
     // scale matrix (scale * pscale)
     auto pscale_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_PSCALE);
-    if (pscale_list && pscale_list->Type() == ParmType::Float)
+    if (pscale_list && pscale_list->GetType() == ParmType::Float)
     {
         assert(pscale_list->Size() > p_idx);
         auto& pscale = std::static_pointer_cast<ParmFltList>(pscale_list)->GetAllItems()[p_idx];
         s_mt = sm::mat4::Scaled(pscale, pscale, pscale) * s_mt;
     }
     auto scale_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_SCALE);
-    if (scale_list && scale_list->Type() == ParmType::Float3)
+    if (scale_list && scale_list->GetType() == ParmType::Float3)
     {
         assert(scale_list->Size() > p_idx);
         auto& scale = std::static_pointer_cast<ParmFlt3List>(scale_list)->GetAllItems()[p_idx];
@@ -297,21 +297,21 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute& attr, size_t p_idx, const sm:
     // alignment matrix, defined by N or v and up.
     sm::vec3 N, v, up;
     auto norm_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
-    if (norm_list && norm_list->Type() == ParmType::Float3) {
+    if (norm_list && norm_list->GetType() == ParmType::Float3) {
         assert(p_idx < norm_list->Size());
         N = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems()[p_idx];
     } else {
         N = norm;
     }
     auto spd_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_SPD);
-    if (spd_list && spd_list->Type() == ParmType::Float3) {
+    if (spd_list && spd_list->GetType() == ParmType::Float3) {
         assert(p_idx < spd_list->Size());
         v = std::static_pointer_cast<ParmFlt3List>(spd_list)->GetAllItems()[p_idx];
     } else {
         v.MakeInvalid();
     }
     auto up_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_UP);
-    if (up_list && up_list->Type() == ParmType::Float3) {
+    if (up_list && up_list->GetType() == ParmType::Float3) {
         assert(p_idx < up_list->Size());
         up = std::static_pointer_cast<ParmFlt3List>(up_list)->GetAllItems()[p_idx];
     } else {
@@ -331,7 +331,7 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute& attr, size_t p_idx, const sm:
 
     // rot matrix
     auto rot_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_ROT);
-    if (rot_list && rot_list->Type() == ParmType::Float4) {
+    if (rot_list && rot_list->GetType() == ParmType::Float4) {
         assert(rot_list->Size() > p_idx);
         auto& rot = std::static_pointer_cast<ParmFlt4List>(rot_list)->GetAllItems()[p_idx];
         r_mt = sm::mat4(sm::Quaternion(rot.x, rot.y, rot.z, rot.w));
@@ -341,7 +341,7 @@ sm::mat4 CopyToPoints::CalcMat(const GeoAttribute& attr, size_t p_idx, const sm:
     auto& pos = attr.GetPoints()[p_idx]->pos;
     t_mt = sm::mat4::Translated(pos.x, pos.y, pos.z) * t_mt;
     auto trans_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_TRANS);
-    if (trans_list && trans_list->Type() == ParmType::Float3) {
+    if (trans_list && trans_list->GetType() == ParmType::Float3) {
         assert(trans_list->Size() > p_idx);
         auto& trans = std::static_pointer_cast<ParmFlt3List>(trans_list)->GetAllItems()[p_idx];
         t_mt = sm::mat4::Translated(trans.x, trans.y, trans.z) * t_mt;

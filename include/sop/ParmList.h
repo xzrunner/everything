@@ -21,8 +21,6 @@ public:
 
     ParmList& operator = (const ParmList& list);
 
-    virtual ParmType Type() const = 0;
-
     virtual std::shared_ptr<ParmList> Clone(bool clone_items = true) const = 0;
 
     virtual void CopyFrom(size_t dst_idx, const ParmList& src, size_t src_idx) = 0;
@@ -46,7 +44,7 @@ protected:
 
 }; // ParmList
 
-template <typename T, ParmType PT>
+template <typename T>
 class ParmListImpl : public ParmList
 {
 public:
@@ -61,28 +59,26 @@ public:
     {
     }
 
-    virtual ParmType Type() const override { return PT; }
-
     virtual std::shared_ptr<ParmList> Clone(bool clone_items = true) const override
     {
         if (clone_items) {
-            return std::make_shared<ParmListImpl<T, PT>>(m_name, m_type, m_items);
+            return std::make_shared<ParmListImpl<T>>(m_name, m_type, m_items);
         } else {
-            return std::make_shared<ParmListImpl<T, PT>>(m_name, m_type, std::vector<T>());
+            return std::make_shared<ParmListImpl<T>>(m_name, m_type, std::vector<T>());
         }
     }
 
     virtual void CopyFrom(size_t dst_idx, const ParmList& src, size_t src_idx) override
     {
-        if (Type() == src.Type()) {
-            m_items[dst_idx] = static_cast<const ParmListImpl<T, PT>&>(src).m_items[src_idx];
+        if (GetType() == src.GetType()) {
+            m_items[dst_idx] = static_cast<const ParmListImpl<T>&>(src).m_items[src_idx];
         }
     }
     virtual void Append(const ParmList& list) override
     {
-        if (Type() == list.Type())
+        if (GetType() == list.GetType())
         {
-            auto& src = static_cast<const ParmListImpl<T, PT>&>(list).m_items;
+            auto& src = static_cast<const ParmListImpl<T>&>(list).m_items;
             std::copy(src.begin(), src.end(), std::back_inserter(m_items));
         }
         else
@@ -103,18 +99,18 @@ private:
 
 }; // ParmListImpl
 
-typedef ParmListImpl<bool, ParmType::Boolean> ParmBoolList;
+typedef ParmListImpl<bool> ParmBoolList;
 
-typedef ParmListImpl<int,       ParmType::Int>  ParmIntList;
-typedef ParmListImpl<sm::ivec2, ParmType::Int2> ParmInt2List;
-typedef ParmListImpl<sm::ivec3, ParmType::Int3> ParmInt3List;
-typedef ParmListImpl<sm::ivec4, ParmType::Int4> ParmInt4List;
+typedef ParmListImpl<int>       ParmIntList;
+typedef ParmListImpl<sm::ivec2> ParmInt2List;
+typedef ParmListImpl<sm::ivec3> ParmInt3List;
+typedef ParmListImpl<sm::ivec4> ParmInt4List;
 
-typedef ParmListImpl<float,    ParmType::Float>  ParmFltList;
-typedef ParmListImpl<sm::vec2, ParmType::Float2> ParmFlt2List;
-typedef ParmListImpl<sm::vec3, ParmType::Float3> ParmFlt3List;
-typedef ParmListImpl<sm::vec4, ParmType::Float4> ParmFlt4List;
+typedef ParmListImpl<float>    ParmFltList;
+typedef ParmListImpl<sm::vec2> ParmFlt2List;
+typedef ParmListImpl<sm::vec3> ParmFlt3List;
+typedef ParmListImpl<sm::vec4> ParmFlt4List;
 
-typedef ParmListImpl<std::string, ParmType::String> ParmStrList;
+typedef ParmListImpl<std::string> ParmStrList;
 
 }

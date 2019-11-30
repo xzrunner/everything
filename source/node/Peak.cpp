@@ -75,12 +75,12 @@ void Peak::TranslatePoints(float dist, const std::shared_ptr<Group>& group)
     auto norm_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
     if (norm_list)
     {
-        assert(norm_list->Type() == ParmType::Float3);
+        assert(norm_list->GetType() == ParmType::Float3);
         auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
         auto& pts = attr.GetPoints();
         if (group)
         {
-            for (auto& i : group->GetItems()) 
+            for (auto& i : group->GetItems())
             {
                 auto& p = pts[i];
                 assert(i < norm_data.size());
@@ -126,12 +126,12 @@ void Peak::TranslateVertices(float dist, const std::shared_ptr<Group>& group)
     auto norm_list = attr.QueryParmList(GeoAttrClass::Vertex, GEO_ATTR_NORM);
     if (norm_list)
     {
-        assert(norm_list->Type() == ParmType::Float3);
+        assert(norm_list->GetType() == ParmType::Float3);
         auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
         auto& vts = attr.GetVertices();
         if (group)
         {
-            for (auto& i : group->GetItems()) 
+            for (auto& i : group->GetItems())
             {
                 auto& v = vts[i];
                 assert(i < norm_data.size());
