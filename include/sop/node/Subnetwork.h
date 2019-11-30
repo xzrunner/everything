@@ -24,6 +24,8 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
+    auto& GetAllChildren() const { return m_children; }
+
     void ClearChildren() { m_children.clear(); }
     static void AddChild(const std::shared_ptr<Subnetwork>& parent,
         const std::shared_ptr<Node>& child);

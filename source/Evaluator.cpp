@@ -15,6 +15,13 @@
 namespace sop
 {
 
+void Evaluator::NodeChaged(const NodePtr& node)
+{
+    SetTreeDirty(node);
+
+    m_dirty = true;
+}
+
 void Evaluator::AddNode(const NodePtr& node)
 {
     auto name = node->GetName();
@@ -112,14 +119,8 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<hdiop::Node<NodeV
     }
 
     // remove conns
-    for (auto itr : m_nodes_map)
-    {
-        for (auto& in : itr.second->GetImports()) {
-            const_cast<hdiop::Node<NodeVarType>::Port&>(in).conns.clear();
-        }
-        for (auto& out : itr.second->GetExports()) {
-            const_cast<hdiop::Node<NodeVarType>::Port&>(out).conns.clear();
-        }
+    for (auto itr : m_nodes_map) {
+        itr.second->ClearConnections();
     }
 
     // add conns

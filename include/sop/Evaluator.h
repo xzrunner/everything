@@ -14,6 +14,9 @@ struct EvalContext;
 class Evaluator
 {
 public:
+    // update node
+    void NodeChaged(const NodePtr& node);
+
     // update nodes
     void AddNode(const NodePtr& node);
     void RemoveNode(const NodePtr& node);

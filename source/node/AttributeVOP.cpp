@@ -54,5 +54,10 @@ void AttributeVOP::InitEval()
     m_eval->AddNode(m_output);
 }
 
+const std::vector<std::shared_ptr<vop::Node>>& AttributeVOP::GetAllChildren() const
+{
+    return m_eval->GetAllNodes();
+}
+
 }
 }
