@@ -26,6 +26,8 @@ void Color::Execute(Evaluator& eval)
         GEO_ATTR_CD, std::vector<sm::vec3>(num, m_color)
     );
     attr.AddParmList(m_attr_add_to, list);
+
+    m_geo_impl->UpdateByAttr();
 }
 
 }

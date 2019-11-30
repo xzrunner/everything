@@ -39,20 +39,7 @@ void GeoAdaptor::UpdateByBrush(GeoAttribute& attr, const model::BrushModel& brus
 {
     assert(m_type == Type::Brush);
 
-    std::vector<std::vector<std::vector<sm::vec2>>> texcoords;
-    texcoords.resize(brush_model.GetBrushes().size());
-    for (int i = 0, n = texcoords.size(); i < n; ++i)
-    {
-        auto& brush = brush_model.GetBrushes()[i];
-        auto& faces = brush.impl->Faces();
-        texcoords[i].resize(faces.size());
-        for (int j = 0, m = faces.size(); j < m; ++j) {
-            texcoords[i][j].resize(faces[j]->points.size(), sm::vec2(0, 0));
-        }
-    }
-
-    std::shared_ptr<model::Model> model =
-        model::BrushBuilder::PolymeshFromBrush(brush_model, texcoords);
+    std::shared_ptr<model::Model> model = model::BrushBuilder::PolymeshFromBrushPN(brush_model);
     UpdateModel(model);
 
     BrushToAttr(attr, brush_model);
@@ -98,7 +85,9 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
         auto& prims = attr.GetPrimtives();
 
         std::vector<std::vector<std::vector<sm::vec2>>> texcoords;
+        std::vector<std::vector<std::vector<sm::vec3>>> colors;
         texcoords.resize(brush_model->GetBrushes().size());
+        colors.resize(brush_model->GetBrushes().size());
 
         std::map<size_t, size_t> brush_id2idx;
         for (auto& prim : prims) {
@@ -161,17 +150,71 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
             }
             else
             {
-                for (auto& prim : prims)
-                {
-                    auto b_idx = brush_id2idx.find(prim->prim_id);
-                    assert(b_idx != brush_id2idx.end());
-                    texcoords[b_idx->second].push_back({ prim->vertices.size(), sm::vec2(0, 0) });
-                }
+                texcoords.clear();
             }
         }
 
-        std::shared_ptr<model::Model> model =
-            model::BrushBuilder::PolymeshFromBrush(*brush_model, texcoords);
+        auto cd_list = attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_CD);
+        if (cd_list)
+        {
+            auto& pts = attr.GetPoints();
+            assert(cd_list->GetType() == ParmType::Vector);
+            auto& cd_data = std::static_pointer_cast<ParmFlt3List>(cd_list)->GetAllItems();
+            for (auto& prim : prims)
+            {
+                std::vector<sm::vec3> cds(prim->vertices.size());
+                for (size_t j = 0, m = prim->vertices.size(); j < m; ++j)
+                {
+                    auto& v = prim->vertices[j];
+                    auto idx = v->point->attr_idx;
+                    assert(idx < cd_data.size());
+                    cds[j] = cd_data[idx];
+                }
+
+                auto b_idx = brush_id2idx.find(prim->prim_id);
+                assert(b_idx != brush_id2idx.end());
+                colors[b_idx->second].push_back(cds);
+            }
+        }
+        else
+        {
+            auto cd_list = attr.QueryParmList(GeoAttrClass::Vertex, GeoAttr::GEO_ATTR_CD);
+            if (cd_list)
+            {
+                auto& vts = attr.GetVertices();
+                assert(cd_list->GetType() == ParmType::Float3);
+                auto& cd_data = std::static_pointer_cast<ParmFlt3List>(cd_list)->GetAllItems();
+                for (auto& prim : prims)
+                {
+                    std::vector<sm::vec3> cds(prim->vertices.size());
+                    for (size_t j = 0, m = prim->vertices.size(); j < m; ++j)
+                    {
+                        auto& v = prim->vertices[j];
+                        auto idx = v->attr_idx;
+                        assert(idx < cd_data.size());
+                        cds[j] = cd_data[idx];
+                    }
+
+                    auto b_idx = brush_id2idx.find(prim->prim_id);
+                    assert(b_idx != brush_id2idx.end());
+                    colors[b_idx->second].push_back(cds);
+                }
+            }
+            else
+            {
+                colors.clear();
+            }
+        }
+
+        std::shared_ptr<model::Model> model = nullptr;
+        if (!texcoords.empty()) {
+            model = model::BrushBuilder::PolymeshFromBrushPNT(*brush_model, texcoords);
+        } else if (!colors.empty()) {
+            model = model::BrushBuilder::PolymeshFromBrushPNC(*brush_model, colors);
+        } else {
+            model = model::BrushBuilder::PolymeshFromBrushPN(*brush_model);
+        }
+
         UpdateModel(model);
     }
         break;
