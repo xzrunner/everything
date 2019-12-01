@@ -94,8 +94,13 @@ void AttributeVOP::InitEval()
 {
     m_eval = std::make_shared<vop::Evaluator>();
 
-    m_eval->AddNode(std::make_shared<vop::node::GeoGlobalParams>());
-    m_eval->AddNode(std::make_shared<vop::node::GeoOutputVars>());
+    auto input = std::make_shared<vop::node::GeoGlobalParams>();
+    input->SetName("input");
+    m_eval->AddNode(input);
+
+    auto output = std::make_shared<vop::node::GeoOutputVars>();
+    output->SetName("output");
+    m_eval->AddNode(output);
 }
 
 }
