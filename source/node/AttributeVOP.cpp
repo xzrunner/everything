@@ -45,13 +45,39 @@ void AttributeVOP::Execute(Evaluator& eval)
 
     bool dirty = false;
 
-    auto& src_pts = prev_geo->GetAttr().GetPoints();
+    auto& src_attr = prev_geo->GetAttr();
+    auto& src_pts = src_attr.GetPoints();
     auto& dst_pts = m_geo_impl->GetAttr().GetPoints();
     assert(src_pts.size() == dst_pts.size());
 
-    std::vector<sm::vec3> colors;
+    input->SetPointIdx(0);
+    input->SetPrimIdx(0);
+    input->SetVertexIdx(0);
+    input->SetPointNum(src_pts.size());
+    input->SetPrimNum(src_attr.GetPrimtives().size());
+    input->SetVertexNum(src_attr.GetVertices().size());
+
+    auto cd_list = src_attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_CD);
+    auto uv_list = src_attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_UV);
+    auto n_list  = src_attr.QueryParmList(GeoAttrClass::Point, GeoAttr::GEO_ATTR_NORM);
+
+    std::vector<sm::vec3> colors, normals;
     for (size_t i = 0, n = src_pts.size(); i < n; ++i)
     {
+        input->SetPointIdx(i);
+        if (cd_list) {
+            assert(i < cd_list->Size() && cd_list->GetType() == ParmType::Float3);
+            input->SetColor(std::static_pointer_cast<ParmFlt3List>(cd_list)->GetAllItems()[i]);
+        }
+        if (uv_list) {
+            assert(i < uv_list->Size() && uv_list->GetType() == ParmType::Float3);
+            input->SetUV(std::static_pointer_cast<ParmFlt3List>(uv_list)->GetAllItems()[i]);
+        }
+        if (n_list) {
+            assert(i < n_list->Size() && n_list->GetType() == ParmType::Float3);
+            input->SetNormal(std::static_pointer_cast<ParmFlt3List>(n_list)->GetAllItems()[i]);
+        }
+
         // pos
         auto& src_p = src_pts[i];
         input->SetPos(src_p->pos);
@@ -67,12 +93,26 @@ void AttributeVOP::Execute(Evaluator& eval)
         if (col.IsValid()) {
             colors.push_back(col);
         }
+
+        // normal
+        auto norm = output->GetNormal();
+        if (norm.IsValid()) {
+            normals.push_back(norm);
+        }
     }
 
     if (!colors.empty())
     {
         assert(colors.size() == src_pts.size());
         auto list = std::make_shared<ParmFlt3List>(GEO_ATTR_CD, colors);
+        m_geo_impl->GetAttr().AddParmList(GeoAttrClass::Point, list);
+        dirty = true;
+    }
+
+    if (!normals.empty())
+    {
+        assert(normals.size() == src_pts.size());
+        auto list = std::make_shared<ParmFlt3List>(GEO_ATTR_NORM, normals);
         m_geo_impl->GetAttr().AddParmList(GeoAttrClass::Point, list);
         dirty = true;
     }
