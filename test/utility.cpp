@@ -68,7 +68,7 @@ void InitRender()
     ur::Blackboard::Instance()->SetRenderContext(ur_rc);
 }
 
-void InitEverything()
+void InitSOP()
 {
     sop::SOP::Instance();
 }
@@ -85,7 +85,7 @@ void init()
     {
         InitGL();
         InitRender();
-        InitEverything();
+        InitSOP();
 
         inited = true;
     }
