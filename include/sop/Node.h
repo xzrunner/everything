@@ -22,9 +22,6 @@ public:
 
     std::shared_ptr<GeometryImpl> GetGeometry() const { return m_geo_impl; }
 
-    bool IsDirty() const { return m_dirty; }
-    void SetDirty(bool dirty) const { m_dirty = dirty; }
-
     void SetParent(const std::shared_ptr<Node>& node);
     auto GetParent() const { return m_parent.lock(); }
 
@@ -41,8 +38,6 @@ private:
     std::weak_ptr<Node> m_parent;
 
     size_t m_level = 0;
-
-    mutable bool m_dirty = true;
 
     RTTR_ENABLE(hdiop::Node<NodeVarType>)
 
