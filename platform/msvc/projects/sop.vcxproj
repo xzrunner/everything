@@ -78,10 +78,8 @@
     <ClInclude Include="..\..\..\include\sop\node\UVTransform.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.h" />
     <ClInclude Include="..\..\..\include\sop\node\UVUnwrap.parm.h" />
-    <ClInclude Include="..\..\..\include\sop\node_parms_gen.h" />
     <ClInclude Include="..\..\..\include\sop\ParmList.h" />
     <ClInclude Include="..\..\..\include\sop\parm_cfg.h" />
-    <ClInclude Include="..\..\..\include\sop\rttr_prop_gen.h" />
     <ClInclude Include="..\..\..\include\sop\ParmType.h" />
     <ClInclude Include="..\..\..\include\sop\PyCommonTypes.h" />
     <ClInclude Include="..\..\..\include\sop\PyLoader.h" />

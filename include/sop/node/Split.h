@@ -41,7 +41,7 @@ private:
     RTTR_ENABLE(Subnetwork)
 
 #define PARM_FILEPATH "sop/node/Split.parm.h"
-#include "sop/node_parms_gen.h"
+#include <hdiop/node_parms_gen.h>
 #undef PARM_FILEPATH
 
 }; // Split

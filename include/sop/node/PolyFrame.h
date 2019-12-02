@@ -55,7 +55,7 @@ private:
     RTTR_ENABLE(Node)
 
 #define PARM_FILEPATH "sop/node/PolyFrame.parm.h"
-#include "sop/node_parms_gen.h"
+#include <hdiop/node_parms_gen.h>
 #undef PARM_FILEPATH
 
 }; // PolyFrame

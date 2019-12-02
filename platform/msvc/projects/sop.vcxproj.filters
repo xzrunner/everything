@@ -293,17 +293,11 @@
     <ClInclude Include="..\..\..\include\sop\node\Box.parm.h">
       <Filter>nodes\primitive</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\node_parms_gen.h">
-      <Filter>dataset\parameters</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sop\NodeParmsMgr.h">
       <Filter>dataset\parameters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\RTTRInfo.h">
       <Filter>tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\sop\rttr_prop_gen.h">
-      <Filter>dataset\parameters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sop\node\Sort.parm.h">
       <Filter>nodes\attribute</Filter>
