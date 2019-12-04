@@ -33,19 +33,19 @@ void Grid::BuildModel()
     {
         for (int y = 0; y < m_rows; ++y)
         {
-            auto p = std::make_shared<pm3::Point>();
+            sm::vec3 pos;
             if (m_columns > 1) {
-                p->pos.x = static_cast<float>(m_size.x) / (m_columns - 1) * x - 0.5f * m_size.x;
+                pos.x = static_cast<float>(m_size.x) / (m_columns - 1) * x - 0.5f * m_size.x;
             } else {
-                p->pos.x = 0;
+                pos.x = 0;
             }
-            p->pos.y = 0;
+            pos.y = 0;
             if (m_rows > 1) {
-                p->pos.z = static_cast<float>(m_size.y) / (m_rows - 1) * y - 0.5f * m_size.y;
+                pos.z = static_cast<float>(m_size.y) / (m_rows - 1) * y - 0.5f * m_size.y;
             } else {
-                p->pos.z = 0;
+                pos.z = 0;
             }
-            points.push_back(p);
+            points.push_back(std::make_shared<pm3::Point>(pos));
         }
     }
     if (points.empty()) {

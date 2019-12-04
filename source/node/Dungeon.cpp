@@ -41,23 +41,10 @@ void Dungeon::BuildModel()
         }
         faces.push_back(f);
 
-        std::shared_ptr<pm3::Point> p = nullptr;
-
-        p = std::make_shared<pm3::Point>();
-        p->pos.Set(r.xmin, 0, r.ymin);
-        points.push_back(p);
-
-        p = std::make_shared<pm3::Point>();
-        p->pos.Set(r.xmin, 0, r.ymax);
-        points.push_back(p);
-
-        p = std::make_shared<pm3::Point>();
-        p->pos.Set(r.xmax, 0, r.ymax);
-        points.push_back(p);
-
-        p = std::make_shared<pm3::Point>();
-        p->pos.Set(r.xmax, 0, r.ymin);
-        points.push_back(p);
+        points.push_back(std::make_shared<pm3::Point>(sm::vec3(r.xmin, 0, r.ymin)));
+        points.push_back(std::make_shared<pm3::Point>(sm::vec3(r.xmin, 0, r.ymax)));
+        points.push_back(std::make_shared<pm3::Point>(sm::vec3(r.xmax, 0, r.ymax)));
+        points.push_back(std::make_shared<pm3::Point>(sm::vec3(r.xmax, 0, r.ymin)));
     }
 
     model::BrushModel::Brush brush;

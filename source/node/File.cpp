@@ -38,11 +38,8 @@ void File::Execute(Evaluator& eval)
 
         std::vector<pm3::PointPtr> points;
         points.reserve(src->vertices.size());
-        for (auto& s : src->vertices)
-        {
-            auto p = std::make_shared<pm3::Point>();
-            p->pos = s;
-            points.push_back(p);
+        for (auto& s : src->vertices) {
+            points.push_back(std::make_shared<pm3::Point>(s));
         }
 
         std::vector<pm3::FacePtr> faces;

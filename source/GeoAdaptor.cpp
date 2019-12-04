@@ -409,10 +409,6 @@ void GeoAdaptor::AttrToBrush(model::BrushModel& dst, const GeoAttribute& src)
 
     for (auto& p : src.m_points)
     {
-        auto point = std::make_shared<pm3::Point>();
-        point->pos = p->pos;
-        point->topo_id = p->topo_id;
-
         std::shared_ptr<Brush> b = nullptr;
         auto itr = brushes.find(p->prim_id);
         if (itr == brushes.end()) {
@@ -423,7 +419,7 @@ void GeoAdaptor::AttrToBrush(model::BrushModel& dst, const GeoAttribute& src)
         }
 
         b->pt2idx.insert({ p, b->points.size() });
-        b->points.push_back(point);
+        b->points.push_back(std::make_shared<pm3::Point>(p->pos, p->topo_id));
     }
 
     for (auto& prim : src.m_primtives)
