@@ -6,6 +6,9 @@
 #include <sop/node/Box.h>
 #include <sop/node/GroupCreate.h>
 #include <sop/node/Measure.h>
+#include <sop/node/Grid.h>
+#include <sop/node/Normal.h>
+#include <sop/node/AttributeWrangle.h>
 
 #include <catch/catch.hpp>
 
@@ -63,4 +66,29 @@ TEST_CASE("fetch attr use @")
     eval.Update();
 
     test::check_group_num(group, "selected", 2);
+}
+
+TEST_CASE("tmp")
+{
+    test::init();
+
+    sop::Evaluator eval;
+
+    auto grid = std::make_shared<sop::node::Grid>();
+    eval.AddNode(grid);
+
+    auto normal = std::make_shared<sop::node::Normal>();
+    eval.AddNode(normal);
+
+    eval.Connect({ grid, 0 }, { normal, 0 });
+
+    auto attr_vex = std::make_shared<sop::node::AttributeWrangle>();
+    attr_vex->SetVexExpr(R"(
+@Cd = float(@ptnum)/@numpt;
+)");
+    eval.AddNode(attr_vex);
+
+    eval.Connect({ normal, 0 }, { attr_vex, 0 });
+
+    eval.Update();
 }
