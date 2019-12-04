@@ -106,7 +106,13 @@ void NodeProxy::SetInput(int input_index, const std::shared_ptr<NodeProxy>& item
 
 NodePtr NodeProxy::CreateNodeByName(const std::string& name) const
 {
-    rttr::type type = rttr::type::get_by_name("sop::" + name);
+    std::string node_name;
+    if (name == "geometry") {
+        node_name = "sop::subnetwork";
+    } else {
+        node_name = "sop::" + name;
+    }
+    rttr::type type = rttr::type::get_by_name(node_name);
     if (!type.is_valid()) {
         assert(0);
         return nullptr;
