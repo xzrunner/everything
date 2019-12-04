@@ -23,6 +23,9 @@ public:
 
     virtual void Execute(Evaluator& eval) override;
 
+private:
+    std::string FormatExprStr() const;
+
     RTTR_ENABLE(Node)
 
 #define PARM_FILEPATH "sop/node/AttributeWrangle.parm.h"
