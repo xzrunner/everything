@@ -524,12 +524,29 @@ void SetupVexFuncs()
     });
 
     // SETTER
-    vexc::RegistSetter([](const char* sym, vexc::Variant var, const void* ud)
+    vexc::RegistSetter([](const char* sym, const char* member, vexc::Variant var, const void* ud)
     {
-        if (strcmp(sym, "@up") == 0 || strcmp(sym, "v@up") == 0)
+        auto set_pt_flt3 = [](sop::GeoAttr attr_type, vexc::Variant var, const void* ud, const char* member)
         {
-            if (var.type != vexc::VarType::Float3) {
-                return;
+            sm::vec3 v3;
+            if (var.type != vexc::VarType::Float3) 
+            {
+                switch (var.type)
+                {
+                case vexc::VarType::Float:
+                    v3.Set(var.f, var.f, var.f);
+                    var = vexc::Variant(vexc::VarType::Float3, (void*)(v3.xyz));
+                    break;
+                case vexc::VarType::Double:
+                {
+                    const float f = static_cast<float>(var.d);
+                    v3.Set(f, f, f);
+                    var = vexc::Variant(vexc::VarType::Float3, (void*)(v3.xyz));
+                }
+                    break;
+                default:
+                    return;
+                }
             }
 
             auto ctx = static_cast<const EvalContext*>(ud);
@@ -551,22 +568,47 @@ void SetupVexFuncs()
             }
 
             auto val_r = static_cast<const sm::vec3*>(var.p);
-            auto up_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_UP);
+            auto up_list = attr.QueryParmList(GeoAttrClass::Point, attr_type);
             if (up_list)
             {
-                assert(up_list->GetType() == ParmType::Float3);
+                assert(up_list->GetType() == ParmType::Float3 
+                    || up_list->GetType() == ParmType::Vector);
                 auto& up_data = std::static_pointer_cast<ParmFlt3List>(up_list)->GetAllItems();
                 assert(ctx->attr_idx < static_cast<int>(up_data.size()));
-                const_cast<std::vector<sm::vec3>&>(up_data)[ctx->attr_idx] = *val_r;
+                if (member)
+                {
+                    if (strcmp(member, "x") == 0) {
+                        const_cast<std::vector<sm::vec3>&>(up_data)[ctx->attr_idx].x = val_r->x;
+                    } else if (strcmp(member, "y") == 0) {
+                        const_cast<std::vector<sm::vec3>&>(up_data)[ctx->attr_idx].y = val_r->x;
+                    } else if (strcmp(member, "z") == 0) {
+                        const_cast<std::vector<sm::vec3>&>(up_data)[ctx->attr_idx].z = val_r->x;
+                    } else {
+                        assert(0);
+                    }
+                }
+                else
+                {
+                    const_cast<std::vector<sm::vec3>&>(up_data)[ctx->attr_idx] = *val_r;
+                }
             }
             else
             {
                 std::vector<sm::vec3> data(points.size(), sm::vec3(0, 0, 0));
                 data[ctx->attr_idx] = *val_r;
                 attr.AddParmList(GeoAttrClass::Point,
-                    std::make_shared<ParmFlt3List>(GEO_ATTR_UP, data)
+                    std::make_shared<ParmFlt3List>(attr_type, data)
                 );
             }
+        };
+
+        if (strcmp(sym, "@up") == 0 || strcmp(sym, "v@up") == 0)
+        {
+            set_pt_flt3(GEO_ATTR_UP, var, ud, member);
+        }
+        else if (strcmp(sym, "@Cd") == 0)
+        {
+            set_pt_flt3(GEO_ATTR_CD, var, ud, member);
         }
         else
         {
