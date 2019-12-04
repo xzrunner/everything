@@ -445,7 +445,7 @@ void SetupVexFuncs()
                 return vexc::Variant();
             }
 
-            assert(norm_list->GetType() == ParmType::Float3);
+            assert(norm_list->GetType() == ParmType::Vector);
             auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
             assert(ctx->attr_idx < static_cast<int>(norm_data.size()));
             auto& v3 = norm_data[ctx->attr_idx];

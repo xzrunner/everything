@@ -182,7 +182,7 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
             if (cd_list)
             {
                 auto& vts = attr.GetVertices();
-                assert(cd_list->GetType() == ParmType::Float3);
+                assert(cd_list->GetType() == ParmType::Vector);
                 auto& cd_data = std::static_pointer_cast<ParmFlt3List>(cd_list)->GetAllItems();
                 for (auto& prim : prims)
                 {

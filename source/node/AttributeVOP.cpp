@@ -66,7 +66,7 @@ void AttributeVOP::Execute(Evaluator& eval)
     {
         input->SetPointIdx(i);
         if (cd_list) {
-            assert(i < cd_list->Size() && cd_list->GetType() == ParmType::Float3);
+            assert(i < cd_list->Size() && cd_list->GetType() == ParmType::Vector);
             input->SetColor(std::static_pointer_cast<ParmFlt3List>(cd_list)->GetAllItems()[i]);
         }
         if (uv_list) {
@@ -74,7 +74,7 @@ void AttributeVOP::Execute(Evaluator& eval)
             input->SetUV(std::static_pointer_cast<ParmFlt3List>(uv_list)->GetAllItems()[i]);
         }
         if (n_list) {
-            assert(i < n_list->Size() && n_list->GetType() == ParmType::Float3);
+            assert(i < n_list->Size() && n_list->GetType() == ParmType::Vector);
             input->SetNormal(std::static_pointer_cast<ParmFlt3List>(n_list)->GetAllItems()[i]);
         }
 

@@ -70,7 +70,7 @@ PolyFrame::CalcPointsNormal() const
         auto norm_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
         if (norm_list)
         {
-            assert(norm_list->GetType() == ParmType::Float3);
+            assert(norm_list->GetType() == ParmType::Vector);
             auto& norm_data = std::static_pointer_cast<ParmFlt3List>(norm_list)->GetAllItems();
             assert(pts.size() == norm_data.size());
             norms = norm_data;

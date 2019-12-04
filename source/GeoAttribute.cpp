@@ -299,6 +299,7 @@ hdiop::Variable GeoAttribute::QueryParm(GeoAttrClass cls, const std::string& nam
     case ParmType::Float:
         return hdiop::Variable(std::static_pointer_cast<ParmFltList>(list)->GetAllItems()[index]);
     case ParmType::Float3:
+    case ParmType::Vector:
         return hdiop::Variable(std::static_pointer_cast<ParmFlt3List>(list)->GetAllItems()[index]);
     default:
         assert(0);
