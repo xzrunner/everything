@@ -161,8 +161,7 @@ TEST_CASE("use other's parm")
     {
         null_parms.SetValue("Height", hdiop::Variable(4.0f));
 
-        eval.MakeDirty();
-        eval.Update();
+        eval.Update(true);
 
         test::check_aabb(box, sm::vec3(-4, -2, -2.5f), sm::vec3(4, 2, 2.5f));
     }

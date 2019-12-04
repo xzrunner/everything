@@ -135,9 +135,9 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<hdiop::Node<NodeV
     m_dirty = true;
 }
 
-void Evaluator::Update()
+void Evaluator::Update(bool force)
 {
-    if (!m_dirty) {
+    if (!force && !m_dirty) {
         return;
     }
 

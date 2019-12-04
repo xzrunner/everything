@@ -30,7 +30,7 @@ public:
     void Disconnect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to);
     void RebuildConnections(const std::vector<std::pair<hdiop::Node<NodeVarType>::PortAddr, hdiop::Node<NodeVarType>::PortAddr>>& conns);
 
-    void Update();
+    void Update(bool force = false);
 
     void MakeDirty(bool all_nodes_dirty = true);
 
