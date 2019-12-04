@@ -25,7 +25,7 @@ TEST_CASE("single quotes")
 
     auto box2 = std::make_shared<sop::node::Box>();
     auto& parms_mgr = const_cast<sop::NodeParmsMgr&>(box2->GetParms());
-    //parms_mgr.SetExpr(static_cast<int>(sop::node::Box::Parm::Size), 
+    //parms_mgr.SetExpr(static_cast<int>(sop::node::Box::Parm::Size),
     //    "`ch(\"../box0/sizex\")`", 0);
     parms_mgr.SetExpr("sizex", "`ch(\"../box0/sizex\")`");
     eval.AddNode(box2);
@@ -68,7 +68,7 @@ TEST_CASE("fetch attr use @")
     test::check_group_num(group, "selected", 2);
 }
 
-TEST_CASE("tmp")
+TEST_CASE("joy of vex 01")
 {
     test::init();
 
@@ -78,17 +78,62 @@ TEST_CASE("tmp")
     eval.AddNode(grid);
 
     auto normal = std::make_shared<sop::node::Normal>();
+    normal->SetAttrAddTo(sop::node::Normal::AddToType::Points);
     eval.AddNode(normal);
 
     eval.Connect({ grid, 0 }, { normal, 0 });
 
     auto attr_vex = std::make_shared<sop::node::AttributeWrangle>();
-    attr_vex->SetVexExpr(R"(
-@Cd = float(@ptnum)/@numpt;
-)");
     eval.AddNode(attr_vex);
 
     eval.Connect({ normal, 0 }, { attr_vex, 0 });
 
+    attr_vex->SetVexExpr(R"(
+@Cd = @N;
+)");
     eval.Update();
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 11, hdiop::Variable(sm::vec3(0, 1, 0)), true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 87, hdiop::Variable(sm::vec3(0, 1, 0)), true);
+
+    attr_vex->SetVexExpr(R"(
+@Cd = @P;
+)");
+    eval.Update(true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 49, hdiop::Variable(sm::vec3(-0.555555f, 0, 5)), true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 97, hdiop::Variable(sm::vec3(5, 0, 2.777778f)), true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 53, hdiop::Variable(sm::vec3(0.555556f, 0, -1.666667f)), true);
+
+    // Attribute components
+
+    attr_vex->SetVexExpr(R"(
+@Cd = @P.x;
+)");
+    eval.Update(true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 56, hdiop::Variable(sm::vec3(0.555556f, 0.555556f, 0.555556f)), true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 87, hdiop::Variable(sm::vec3(3.888889f, 3.888889f, 3.888889f)), true);
+
+    attr_vex->SetVexExpr(R"(
+@Cd = @N.y;
+)");
+    eval.Update(true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 56, hdiop::Variable(sm::vec3(1, 1, 1)), true);
+
+    // Basic maths
+    attr_vex->SetVexExpr(R"(
+@Cd = @P.x -6 * 0.1;
+)");
+    eval.Update(true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 52, hdiop::Variable(sm::vec3(-0.044444f, -0.044444f, -0.044444f)), true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 79, hdiop::Variable(sm::vec3(2.177778f, 2.177778f, 2.177778f)), true);
+
+    // Assigning to components
+    attr_vex->SetVexExpr(R"(
+@Cd.x = @P.x-3 * 1.2;
+@Cd.y = @P.z+2;
+@Cd.z = @P.y;
+)");
+    eval.Update(true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 98, hdiop::Variable(sm::vec3(1.4f, 5.888889f, 0)), true);
+    test::check_attr_value(attr_vex, sop::GeoAttrClass::Point, "Cd", 82, hdiop::Variable(sm::vec3(0.288889f, -0.777778f, 0)), true);
+
 }
