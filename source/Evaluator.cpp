@@ -87,9 +87,9 @@ void Evaluator::PropChanged(const NodePtr& node)
     m_dirty = true;
 }
 
-void Evaluator::Connect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to)
+void Evaluator::Connect(const dag::Node<NodeVarType>::PortAddr& from, const dag::Node<NodeVarType>::PortAddr& to)
 {
-    hdiop::make_connecting<NodeVarType>(from, to);
+    dag::make_connecting<NodeVarType>(from, to);
 
     auto node = to.node.lock();
     assert(node && node->get_type().is_derived_from<Node>());
@@ -98,9 +98,9 @@ void Evaluator::Connect(const hdiop::Node<NodeVarType>::PortAddr& from, const hd
     m_dirty = true;
 }
 
-void Evaluator::Disconnect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to)
+void Evaluator::Disconnect(const dag::Node<NodeVarType>::PortAddr& from, const dag::Node<NodeVarType>::PortAddr& to)
 {
-    hdiop::disconnect<NodeVarType>(from, to);
+    dag::disconnect<NodeVarType>(from, to);
 
     auto node = to.node.lock();
     assert(node && node->get_type().is_derived_from<Node>());
@@ -109,7 +109,7 @@ void Evaluator::Disconnect(const hdiop::Node<NodeVarType>::PortAddr& from, const
     m_dirty = true;
 }
 
-void Evaluator::RebuildConnections(const std::vector<std::pair<hdiop::Node<NodeVarType>::PortAddr, hdiop::Node<NodeVarType>::PortAddr>>& conns)
+void Evaluator::RebuildConnections(const std::vector<std::pair<dag::Node<NodeVarType>::PortAddr, dag::Node<NodeVarType>::PortAddr>>& conns)
 {
     // update dirty
     for (auto itr : m_nodes_map) {
@@ -129,7 +129,7 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<hdiop::Node<NodeV
         auto node = conn.second.node.lock();
         assert(node && node->get_type().is_derived_from<Node>());
         SetTreeDirty(std::static_pointer_cast<Node>(node));
-        hdiop::make_connecting<NodeVarType>(conn.first, conn.second);
+        dag::make_connecting<NodeVarType>(conn.first, conn.second);
     }
 
     m_dirty = true;
@@ -164,10 +164,10 @@ void Evaluator::MakeDirty(bool all_nodes_dirty)
     }
 }
 
-hdiop::Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) const
+dag::Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx) const
 {
     if (str.empty()) {
-        return hdiop::Variable();
+        return dag::Variable();
     }
 
     vexc::Parser parser(str.c_str());
@@ -176,25 +176,25 @@ hdiop::Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& c
     switch (val.type)
     {
     case vexc::VarType::Invalid:
-        return hdiop::Variable();
+        return dag::Variable();
     case vexc::VarType::Bool:
-        return hdiop::Variable(val.b);
+        return dag::Variable(val.b);
     case vexc::VarType::Int:
-        return hdiop::Variable(val.i);
+        return dag::Variable(val.i);
     case vexc::VarType::Float:
-        return hdiop::Variable(val.f);
+        return dag::Variable(val.f);
     case vexc::VarType::Float3:
     {
         auto f3 = static_cast<const float*>(val.p);
-        return hdiop::Variable(sm::vec3(f3[0], f3[1], f3[2]));
+        return dag::Variable(sm::vec3(f3[0], f3[1], f3[2]));
     }
     case vexc::VarType::Double:
-        return hdiop::Variable(static_cast<float>(val.d));
+        return dag::Variable(static_cast<float>(val.d));
     case vexc::VarType::String:
-        return hdiop::Variable(vexc::StringPool::VoidToString(val.p));
+        return dag::Variable(vexc::StringPool::VoidToString(val.p));
     default:
         assert(0);
-        return hdiop::Variable();
+        return dag::Variable();
     }
 }
 

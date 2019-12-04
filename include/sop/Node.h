@@ -3,7 +3,7 @@
 #include "sop/NodeVarType.h"
 #include "sop/NodeParmsMgr.h"
 
-#include <hdiop/Node.h>
+#include <dag/Node.h>
 #include <node0/typedef.h>
 
 namespace sop
@@ -11,7 +11,7 @@ namespace sop
 
 class GeometryImpl;
 
-class Node : public hdiop::Node<NodeVarType>
+class Node : public dag::Node<NodeVarType>
 {
 public:
     Node();
@@ -39,7 +39,7 @@ private:
 
     size_t m_level = 0;
 
-    RTTR_ENABLE(hdiop::Node<NodeVarType>)
+    RTTR_ENABLE(dag::Node<NodeVarType>)
 
 }; // Node
 

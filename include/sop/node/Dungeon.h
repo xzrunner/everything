@@ -25,7 +25,7 @@ private:
     RTTR_ENABLE(Node)
 
 #define PARM_FILEPATH "sop/node/Dungeon.parm.h"
-#include <hdiop/node_parms_gen.h>
+#include <dag/node_parms_gen.h>
 #undef PARM_FILEPATH
 
 }; // Dungeon

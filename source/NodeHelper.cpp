@@ -71,10 +71,10 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
         {
             eval_ctx.attr_idx = i;
             auto v = eval.CalcExpr(expr, eval_ctx);
-            if (v.type == hdiop::VarType::Invalid) {
+            if (v.type == dag::VarType::Invalid) {
                 continue;
             }
-            assert(v.type == hdiop::VarType::Bool);
+            assert(v.type == dag::VarType::Bool);
             if (v.b) {
                 ret.push_back(i);
             }
@@ -93,10 +93,10 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
         {
             eval_ctx.attr_idx = vts[i]->point->attr_idx;
             auto v = eval.CalcExpr(expr, eval_ctx);
-            if (v.type == hdiop::VarType::Invalid) {
+            if (v.type == dag::VarType::Invalid) {
                 continue;
             }
-            assert(v.type == hdiop::VarType::Bool);
+            assert(v.type == dag::VarType::Bool);
             if (v.b) {
                 ret.push_back(i);
             }
@@ -118,9 +118,9 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
                 eval_ctx.attr_type = GeoAttrClass::Primitive;
                 eval_ctx.attr_idx  = i;
                 auto v = eval.CalcExpr(expr, eval_ctx);
-                if (v.type != hdiop::VarType::Invalid)
+                if (v.type != dag::VarType::Invalid)
                 {
-                    assert(v.type == hdiop::VarType::Bool);
+                    assert(v.type == dag::VarType::Bool);
                     if (v.b) {
                         ret.push_back(i);
                         continue;
@@ -135,11 +135,11 @@ NodeHelper::SelectGeoByExpr(GroupType type, const Evaluator& eval, const Node& n
                     eval_ctx.attr_type = GeoAttrClass::Point;
                     eval_ctx.attr_idx = v->point->attr_idx;
                     auto v = eval.CalcExpr(expr, eval_ctx);
-                    if (v.type == hdiop::VarType::Invalid) {
+                    if (v.type == dag::VarType::Invalid) {
                         select = false;
                         break;
                     }
-                    assert(v.type == hdiop::VarType::Bool);
+                    assert(v.type == dag::VarType::Bool);
                     if (!v.b) {
                         select = false;
                         break;

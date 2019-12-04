@@ -77,8 +77,8 @@ RTTR_REGISTRATION
 
 // base
 
-rttr::registration::class_<hdiop::Node<sop::NodeVarType>::Port>("sop::Node::Port")
-	.property("var", &hdiop::Node<sop::NodeVarType>::Port::var)
+rttr::registration::class_<dag::Node<sop::NodeVarType>::Port>("sop::Node::Port")
+	.property("var", &dag::Node<sop::NodeVarType>::Port::var)
 ;
 
 rttr::registration::class_<sop::Node>("sop::Node")
@@ -160,7 +160,7 @@ rttr::registration::class_<sop::node::AttributeCreate>("sop::attribcreate::2.0")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/AttributeCreate.parm.h"
 #define PARM_NODE_CLASS sop::node::AttributeCreate
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -190,7 +190,7 @@ rttr::registration::class_<sop::node::AttributePromote>("sop::attribpromote")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/AttributePromote.parm.h"
 #define PARM_NODE_CLASS sop::node::AttributePromote
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -198,7 +198,7 @@ rttr::registration::class_<sop::node::AttributeTransfer>("sop::attribtransfer")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/AttributeTransfer.parm.h"
 #define PARM_NODE_CLASS sop::node::AttributeTransfer
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -207,7 +207,7 @@ rttr::registration::class_<sop::node::AttributeWrangle>("sop::attribwrangle")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/AttributeWrangle.parm.h"
 #define PARM_NODE_CLASS sop::node::AttributeWrangle
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -215,7 +215,7 @@ rttr::registration::class_<sop::node::Measure>("sop::measure")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Measure.parm.h"
 #define PARM_NODE_CLASS sop::node::Measure
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -230,7 +230,7 @@ rttr::registration::class_<sop::node::Sort>("sop::sort")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Sort.parm.h"
 #define PARM_NODE_CLASS sop::node::Sort
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -248,7 +248,7 @@ rttr::registration::class_<sop::node::GroupCreate>("sop::groupcreate")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/GroupCreate.parm.h"
 #define PARM_NODE_CLASS sop::node::GroupCreate
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -264,7 +264,7 @@ rttr::registration::class_<sop::node::GroupExpression>("sop::groupexpression")
 .property("expressions", &sop::node::GroupExpression::GetExprsNum, &sop::node::GroupExpression::SetExprsNum)
 #define PARM_FILEPATH "sop/node/GroupExpression.parm.h"
 #define PARM_NODE_CLASS sop::node::GroupExpression
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -272,7 +272,7 @@ rttr::registration::class_<sop::node::GroupPromote>("sop::grouppromote")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/GroupPromote.parm.h"
 #define PARM_NODE_CLASS sop::node::GroupPromote
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -282,7 +282,7 @@ rttr::registration::class_<sop::node::File>("sop::file")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/File.parm.h"
 #define PARM_NODE_CLASS sop::node::File
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -290,7 +290,7 @@ rttr::registration::class_<sop::node::ObjectMerge>("sop::object_merge")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/ObjectMerge.parm.h"
 #define PARM_NODE_CLASS sop::node::ObjectMerge
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -300,7 +300,7 @@ rttr::registration::class_<sop::node::Delete>("sop::delete")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Delete.parm.h"
 #define PARM_NODE_CLASS sop::node::Delete
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -325,7 +325,7 @@ rttr::registration::class_<sop::node::Peak>("sop::peak")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Peak.parm.h"
 #define PARM_NODE_CLASS sop::node::Peak
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -333,7 +333,7 @@ rttr::registration::class_<sop::node::Transform>("sop::xform")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Transform.parm.h"
 #define PARM_NODE_CLASS sop::node::Transform
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -343,7 +343,7 @@ rttr::registration::class_<sop::node::Color>("sop::color")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Color.parm.h"
 #define PARM_NODE_CLASS sop::node::Color
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -352,7 +352,7 @@ rttr::registration::class_<sop::node::UVQuickShade>("sop::uvquickshade")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/UVQuickShade.parm.h"
 #define PARM_NODE_CLASS sop::node::UVQuickShade
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -360,7 +360,7 @@ rttr::registration::class_<sop::node::UVTransform>("sop::uvtransform::2.0")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/UVTransform.parm.h"
 #define PARM_NODE_CLASS sop::node::UVTransform
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -368,7 +368,7 @@ rttr::registration::class_<sop::node::UVUnwrap>("sop::uvunwrap")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/UVUnwrap.parm.h"
 #define PARM_NODE_CLASS sop::node::UVUnwrap
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -384,7 +384,7 @@ rttr::registration::class_<sop::node::Carve>("sop::carve")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Carve.parm.h"
 #define PARM_NODE_CLASS sop::node::Carve
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -397,7 +397,7 @@ rttr::registration::class_<sop::node::Add>("sop::add")
 .property("points", &sop::node::Add::GetPointsNum, &sop::node::Add::SetPointsNum)
 #define PARM_FILEPATH "sop/node/Add.parm.h"
 #define PARM_NODE_CLASS sop::node::Add
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -405,7 +405,7 @@ rttr::registration::class_<sop::node::Boolean>("sop::boolean::2.0")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Boolean.parm.h"
 #define PARM_NODE_CLASS sop::node::Boolean
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -430,7 +430,7 @@ rttr::registration::class_<sop::node::Divide>("sop::divide")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Divide.parm.h"
 #define PARM_NODE_CLASS sop::node::Divide
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -438,7 +438,7 @@ rttr::registration::class_<sop::node::Fuse>("sop::fuse")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Fuse.parm.h"
 #define PARM_NODE_CLASS sop::node::Fuse
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -452,7 +452,7 @@ rttr::registration::class_<sop::node::Knife>("sop::knife")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Knife.parm.h"
 #define PARM_NODE_CLASS sop::node::Knife
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -466,7 +466,7 @@ rttr::registration::class_<sop::node::Normal>("sop::normal")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Normal.parm.h"
 #define PARM_NODE_CLASS sop::node::Normal
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -481,7 +481,7 @@ rttr::registration::class_<sop::node::PolyExtrude>("sop::polyextrude::2.0")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/PolyExtrude.parm.h"
 #define PARM_NODE_CLASS sop::node::PolyExtrude
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -494,7 +494,7 @@ rttr::registration::class_<sop::node::PolyFill>("sop::polyfill")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/PolyFill.parm.h"
 #define PARM_NODE_CLASS sop::node::PolyFill
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -511,7 +511,7 @@ rttr::registration::class_<sop::node::PolyFrame>("sop::polyframe")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/PolyFrame.parm.h"
 #define PARM_NODE_CLASS sop::node::PolyFrame
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -531,7 +531,7 @@ rttr::registration::class_<sop::node::Box>("sop::box")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Box.parm.h"
 #define PARM_NODE_CLASS sop::node::Box
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -541,7 +541,7 @@ rttr::registration::class_<sop::node::Line>("sop::line")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Line.parm.h"
 #define PARM_NODE_CLASS sop::node::Line
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -549,7 +549,7 @@ rttr::registration::class_<sop::node::Primitive>("sop::primitive")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Primitive.parm.h"
 #define PARM_NODE_CLASS sop::node::Primitive
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -559,7 +559,7 @@ rttr::registration::class_<sop::node::Dungeon>("sop::dungeon")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Dungeon.parm.h"
 #define PARM_NODE_CLASS sop::node::Dungeon
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -572,7 +572,7 @@ rttr::registration::class_<sop::node::Blast>("sop::blast")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Blast.parm.h"
 #define PARM_NODE_CLASS sop::node::Blast
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -580,7 +580,7 @@ rttr::registration::class_<sop::node::CopyToPoints>("sop::copytopoints")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/CopyToPoints.parm.h"
 #define PARM_NODE_CLASS sop::node::CopyToPoints
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -588,7 +588,7 @@ rttr::registration::class_<sop::node::ForeachPrimBegin>("sop::block_begin")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/ForeachPrimBegin.parm.h"
 #define PARM_NODE_CLASS sop::node::ForeachPrimBegin
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -603,7 +603,7 @@ rttr::registration::class_<sop::node::ForeachPrimEnd>("sop::block_end")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/ForeachPrimEnd.parm.h"
 #define PARM_NODE_CLASS sop::node::ForeachPrimEnd
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -629,7 +629,7 @@ rttr::registration::class_<sop::node::Output>("sop::output")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Output.parm.h"
 #define PARM_NODE_CLASS sop::node::Output
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -637,7 +637,7 @@ rttr::registration::class_<sop::node::Python>("sop::python")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Python.parm.h"
 #define PARM_NODE_CLASS sop::node::Python
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -645,7 +645,7 @@ rttr::registration::class_<sop::node::Split>("sop::split")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Split.parm.h"
 #define PARM_NODE_CLASS sop::node::Split
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;
@@ -654,7 +654,7 @@ rttr::registration::class_<sop::node::Switch>("sop::switch")
 .constructor<>()
 #define PARM_FILEPATH "sop/node/Switch.parm.h"
 #define PARM_NODE_CLASS sop::node::Switch
-#include <hdiop/rttr_prop_gen.h>
+#include <dag/rttr_prop_gen.h>
 #undef PARM_NODE_CLASS
 #undef PARM_FILEPATH
 ;

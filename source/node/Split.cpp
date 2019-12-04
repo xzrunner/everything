@@ -93,11 +93,11 @@ void Split::InitSubNodes()
         c->ClearConnections();
     }
 
-    //hdiop::make_connecting<NodeVarType>({ prev_node, 0 }, { m_children[SUB_BLAST_0], 0 });
-    //hdiop::make_connecting<NodeVarType>({ prev_node, 0 }, { m_children[SUB_BLAST_1], 0 });
+    //dag::make_connecting<NodeVarType>({ prev_node, 0 }, { m_children[SUB_BLAST_0], 0 });
+    //dag::make_connecting<NodeVarType>({ prev_node, 0 }, { m_children[SUB_BLAST_1], 0 });
 
-    hdiop::make_connecting<NodeVarType>({ m_children[SUB_BLAST_0], 0 }, { m_children[SUB_OUTPUT_0], 0 });
-    hdiop::make_connecting<NodeVarType>({ m_children[SUB_BLAST_1], 0 }, { m_children[SUB_OUTPUT_1], 0 });
+    dag::make_connecting<NodeVarType>({ m_children[SUB_BLAST_0], 0 }, { m_children[SUB_OUTPUT_0], 0 });
+    dag::make_connecting<NodeVarType>({ m_children[SUB_BLAST_1], 0 }, { m_children[SUB_OUTPUT_1], 0 });
 }
 
 }

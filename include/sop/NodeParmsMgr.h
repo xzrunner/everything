@@ -1,6 +1,6 @@
 #pragma once
 
-#include <hdiop/Variable.h>
+#include <dag/Variable.h>
 
 #include <rttr/type>
 
@@ -20,18 +20,18 @@ public:
 
     void SetExpr(const std::string& key, const std::string& val);
 
-    void AddParm(const std::string& key, const hdiop::Variable& val);
+    void AddParm(const std::string& key, const dag::Variable& val);
     bool RemoveParm(const std::string& key);
     void ClearAllParms();
     size_t ExternalParmSize() const { return m_parms_map.size(); }
 
-    bool SetValue(const std::string& key, const hdiop::Variable& val);
+    bool SetValue(const std::string& key, const dag::Variable& val);
     bool SetArrayValue(const std::string& array_key, size_t idx,
-        const hdiop::Variable& val, const std::string& sub_key = "");
+        const dag::Variable& val, const std::string& sub_key = "");
 
     bool Update(const Evaluator& eval);
 
-    hdiop::Variable Query(const std::string& key) const;
+    dag::Variable Query(const std::string& key) const;
 
     bool IsExist(const std::string& key) const;
 
@@ -49,32 +49,32 @@ private:
 
     struct ExKeyInfo
     {
-        ExKeyInfo(const std::string& name, const hdiop::Variable* var, int comp = -1)
+        ExKeyInfo(const std::string& name, const dag::Variable* var, int comp = -1)
             : name(name), var(var), comp(comp) {}
 
         std::string name;
         int comp = -1;
 
-        const hdiop::Variable* var = nullptr;
+        const dag::Variable* var = nullptr;
     };
 
     InKeyInfo ParseInternalKey(const std::string& key) const;
     ExKeyInfo ParseExternalKey(const std::string& key) const;
 
-    bool SetInternalVal(rttr::property prop, const hdiop::Variable& val, int comp_idx = -1);
-    bool SetExternalVal(const hdiop::Variable* dst, const hdiop::Variable& val, int comp_idx = -1);
+    bool SetInternalVal(rttr::property prop, const dag::Variable& val, int comp_idx = -1);
+    bool SetExternalVal(const dag::Variable* dst, const dag::Variable& val, int comp_idx = -1);
 
     bool SetInternalArrayVal(rttr::property prop, size_t idx,
-        const hdiop::Variable& val, const std::string& sub_key);
-    bool SetExternalArrayVal(const hdiop::Variable* dst, size_t idx,
-        const hdiop::Variable& val, const std::string& sub_key);
+        const dag::Variable& val, const std::string& sub_key);
+    bool SetExternalArrayVal(const dag::Variable* dst, size_t idx,
+        const dag::Variable& val, const std::string& sub_key);
 
 private:
     Node& m_node;
 
     std::map<std::string, std::string> m_exprs_map;
 
-    std::map<std::string, hdiop::Variable> m_parms_map;
+    std::map<std::string, dag::Variable> m_parms_map;
 
 }; // NodeParmsMgr
 

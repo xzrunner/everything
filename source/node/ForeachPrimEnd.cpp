@@ -53,7 +53,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval)
 
 NodePtr ForeachPrimEnd::FindForeachBegin() const
 {
-    std::queue<std::shared_ptr<hdiop::Node<NodeVarType>>> buf;
+    std::queue<std::shared_ptr<dag::Node<NodeVarType>>> buf;
     assert(m_imports.size() == 1);
     if (m_imports[0].conns.empty()) {
         return nullptr;

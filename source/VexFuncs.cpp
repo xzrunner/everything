@@ -5,7 +5,7 @@
 #include "sop/ParmList.h"
 #include "sop/node/Subnetwork.h"
 
-#include <hdiop/Variable.h>
+#include <dag/Variable.h>
 #include <vexc/EvalAST.h>
 #include <vexc/StringPool.h>
 #include <cpputil/StringHelper.h>
@@ -13,19 +13,19 @@
 namespace
 {
 
-vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const hdiop::Variable& var, int component = -1)
+vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const dag::Variable& var, int component = -1)
 {
     switch (var.type)
     {
-    case hdiop::VarType::Invalid:
+    case dag::VarType::Invalid:
         return vexc::Variant();
-    case hdiop::VarType::Bool:
+    case dag::VarType::Bool:
         return vexc::Variant(var.b);
-    case hdiop::VarType::Int:
+    case dag::VarType::Int:
         return vexc::Variant(var.i);
-    case hdiop::VarType::Float:
+    case dag::VarType::Float:
         return vexc::Variant(var.f);
-    case hdiop::VarType::Float3:
+    case dag::VarType::Float3:
     {
         if (component != -1)
         {
@@ -40,9 +40,9 @@ vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const hdiop::Variable& var,
             return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
         }
     }
-    case hdiop::VarType::Double:
+    case dag::VarType::Double:
         return vexc::Variant(var.d);
-    //case hdiop::VarType::String:
+    //case dag::VarType::String:
     //{
     //    auto str = static_cast<const char*>(v.p);
     //    auto buf = vexc::StringPool::InsertAndQuery(str, strlen(str));
@@ -108,7 +108,7 @@ vexc::Variant eval_channel(const std::vector<vexc::Variant>& params, const void*
         // query prop
         assert(curr_node);
         auto var = curr_node->GetParms().Query(t);
-        if (var.type == hdiop::VarType::Invalid) {
+        if (var.type == dag::VarType::Invalid) {
             var = curr_node->GetParms().Query(t);
         }
         return ToVexcVar(*ctx, var);

@@ -26,15 +26,15 @@ public:
     void PropChanged(const NodePtr& node);
 
     // update node conn
-    void Connect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to);
-    void Disconnect(const hdiop::Node<NodeVarType>::PortAddr& from, const hdiop::Node<NodeVarType>::PortAddr& to);
-    void RebuildConnections(const std::vector<std::pair<hdiop::Node<NodeVarType>::PortAddr, hdiop::Node<NodeVarType>::PortAddr>>& conns);
+    void Connect(const dag::Node<NodeVarType>::PortAddr& from, const dag::Node<NodeVarType>::PortAddr& to);
+    void Disconnect(const dag::Node<NodeVarType>::PortAddr& from, const dag::Node<NodeVarType>::PortAddr& to);
+    void RebuildConnections(const std::vector<std::pair<dag::Node<NodeVarType>::PortAddr, dag::Node<NodeVarType>::PortAddr>>& conns);
 
     void Update(bool force = false);
 
     void MakeDirty(bool all_nodes_dirty = true);
 
-    hdiop::Variable CalcExpr(const std::string& expr, const EvalContext& ctx) const;
+    dag::Variable CalcExpr(const std::string& expr, const EvalContext& ctx) const;
     void RunStatement(const std::string& stmt, const EvalContext& ctx) const;
 
     void Rename(const std::string& from, const std::string& to);

@@ -38,11 +38,11 @@ void Delete::Execute(Evaluator& eval)
     {
         eval_ctx.attr_idx = i;
         auto v = eval.CalcExpr(m_filter_expr, eval_ctx);
-        assert(v.type == hdiop::VarType::Bool);
+        assert(v.type == dag::VarType::Bool);
         if ((v.b && m_del_selected == Delete::NegateSelected::Delete) ||
             (!v.b && m_del_selected == Delete::NegateSelected::Keep)) {
             bool b = false;
-            if (v.type == hdiop::VarType::Float) {
+            if (v.type == dag::VarType::Float) {
                 if (v.f == 0.0f) {
                     b = false;
                 } else if (v.f == 1.0f) {
@@ -50,7 +50,7 @@ void Delete::Execute(Evaluator& eval)
                 } else {
                     assert(0);
                 }
-            } else if (v.type == hdiop::VarType::Bool) {
+            } else if (v.type == dag::VarType::Bool) {
                 b = v.b;
             } else {
                 assert(0);

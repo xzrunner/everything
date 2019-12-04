@@ -30,27 +30,27 @@ TEST_CASE("node parm")
 
     auto& parms = const_cast<sop::NodeParmsMgr&>(box->GetParms());
 
-    parms.AddParm("parm0", hdiop::Variable(1.1f));
-    parms.AddParm("parm1", hdiop::Variable(2));
-    parms.AddParm("parm2", hdiop::Variable(sm::vec3(4, 5, 6)));
-    parms.AddParm("parm3", hdiop::Variable(true));
-    parms.AddParm("parm4", hdiop::Variable("zz"));
+    parms.AddParm("parm0", dag::Variable(1.1f));
+    parms.AddParm("parm1", dag::Variable(2));
+    parms.AddParm("parm2", dag::Variable(sm::vec3(4, 5, 6)));
+    parms.AddParm("parm3", dag::Variable(true));
+    parms.AddParm("parm4", dag::Variable("zz"));
 
     REQUIRE(parms.ExternalParmSize() == 5);
 
-    test::check_parm(box, "parm0", hdiop::Variable(1.1f));
-    test::check_parm(box, "parm1", hdiop::Variable(2));
-    test::check_parm(box, "parm2", hdiop::Variable(sm::vec3(4, 5, 6)));
-    test::check_parm(box, "parm3", hdiop::Variable(true));
-    test::check_parm(box, "parm4", hdiop::Variable("zz"));
+    test::check_parm(box, "parm0", dag::Variable(1.1f));
+    test::check_parm(box, "parm1", dag::Variable(2));
+    test::check_parm(box, "parm2", dag::Variable(sm::vec3(4, 5, 6)));
+    test::check_parm(box, "parm3", dag::Variable(true));
+    test::check_parm(box, "parm4", dag::Variable("zz"));
 
     parms.RemoveParm("parm2");
-    test::check_parm(box, "parm2", hdiop::Variable());
+    test::check_parm(box, "parm2", dag::Variable());
 
     REQUIRE(parms.ExternalParmSize() == 4);
 
     parms.ClearAllParms();
-    test::check_parm(box, "parm3", hdiop::Variable());
+    test::check_parm(box, "parm3", dag::Variable());
 
     REQUIRE(parms.ExternalParmSize() == 0);
 }
@@ -77,9 +77,9 @@ TEST_CASE("parent node parm")
     sop::node::Subnetwork::AddChild(geo, box);
 
     auto& geo_parms = const_cast<sop::NodeParmsMgr&>(geo->GetParms());
-    geo_parms.AddParm("BoxLength", hdiop::Variable(8));
-    geo_parms.AddParm("BoxWidth",  hdiop::Variable(5));
-    geo_parms.AddParm("BoxHeight", hdiop::Variable(3));
+    geo_parms.AddParm("BoxLength", dag::Variable(8));
+    geo_parms.AddParm("BoxWidth",  dag::Variable(5));
+    geo_parms.AddParm("BoxHeight", dag::Variable(3));
 
     SECTION("direct parms")
     {
@@ -133,9 +133,9 @@ TEST_CASE("use other's parm")
     auto null = std::make_shared<sop::node::Null>();
     null->SetName("controller");
     auto& null_parms = const_cast<sop::NodeParmsMgr&>(null->GetParms());
-    null_parms.AddParm("Height", hdiop::Variable(3.0f));
-    null_parms.AddParm("Width",  hdiop::Variable(8.0f));
-    null_parms.AddParm("Length", hdiop::Variable(5.0f));
+    null_parms.AddParm("Height", dag::Variable(3.0f));
+    null_parms.AddParm("Width",  dag::Variable(8.0f));
+    null_parms.AddParm("Length", dag::Variable(5.0f));
     eval.AddNode(null);
 
     auto box = std::make_shared<sop::node::Box>();
@@ -159,7 +159,7 @@ TEST_CASE("use other's parm")
         test::check_aabb(box, sm::vec3(-4, -1.5f, -2.5f), sm::vec3(4, 1.5f, 2.5f));
     }
     {
-        null_parms.SetValue("Height", hdiop::Variable(4.0f));
+        null_parms.SetValue("Height", dag::Variable(4.0f));
 
         eval.Update(true);
 
@@ -208,9 +208,9 @@ TEST_CASE("attr combine")
         eval.Update();
 
         test::check_attr_count(merge, sop::GeoAttrClass::Primitive, "perimeter", 7);
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 3, hdiop::Variable(4.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 4, hdiop::Variable(4.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 6, hdiop::Variable(3.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 3, dag::Variable(4.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 4, dag::Variable(4.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 6, dag::Variable(3.0f));
     }
 
     SECTION("area")
@@ -221,9 +221,9 @@ TEST_CASE("attr combine")
         eval.Update();
 
         test::check_attr_count(merge, sop::GeoAttrClass::Primitive, "area", 7);
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 2, hdiop::Variable(1.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 3, hdiop::Variable(1.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 6, hdiop::Variable(0.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 2, dag::Variable(1.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 3, dag::Variable(1.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 6, dag::Variable(0.0f));
     }
 }
 
@@ -268,10 +268,10 @@ setattrib(0, "point", "test1", @ptnum, 0, -@ptnum);
 
         test::check_attr_count(merge, sop::GeoAttrClass::Point, "test0", 16);
         test::check_attr_count(merge, sop::GeoAttrClass::Point, "test1", 16);
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 3,  hdiop::Variable(3.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 11, hdiop::Variable(0.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 5,  hdiop::Variable(0.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 13, hdiop::Variable(-5.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 3,  dag::Variable(3.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 11, dag::Variable(0.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 5,  dag::Variable(0.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 13, dag::Variable(-5.0f));
     }
 
     SECTION("same name")
@@ -286,10 +286,10 @@ setattrib(0, "point", "test0", @ptnum, 0, -@ptnum);
         eval.Update();
 
         test::check_attr_count(merge, sop::GeoAttrClass::Point, "test0", 16);
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 3,  hdiop::Variable(3.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 11, hdiop::Variable(-3.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 5,  hdiop::Variable(5.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 13, hdiop::Variable(-5.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 3,  dag::Variable(3.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 11, dag::Variable(-3.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 5,  dag::Variable(5.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 13, dag::Variable(-5.0f));
     }
 
     SECTION("part same")
@@ -310,9 +310,9 @@ setattrib(0, "point", "test1", @ptnum, 0, -@ptnum);
 
         test::check_attr_count(merge, sop::GeoAttrClass::Point, "test0", 16);
         test::check_attr_count(merge, sop::GeoAttrClass::Point, "test1", 16);
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 12, hdiop::Variable(1.1f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1",  4, hdiop::Variable(0.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 12, hdiop::Variable(-4.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test0", 12, dag::Variable(1.1f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1",  4, dag::Variable(0.0f));
+        test::check_attr_value(merge, sop::GeoAttrClass::Point, "test1", 12, dag::Variable(-4.0f));
     }
 }
 
@@ -352,5 +352,5 @@ TEST_CASE("attr blast")
     eval.Update();
 
     test::check_attr_count(blast, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-    test::check_attr_value(blast, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, hdiop::Variable(sm::vec3(0, 1, 0)));
+    test::check_attr_value(blast, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, dag::Variable(sm::vec3(0, 1, 0)));
 }
