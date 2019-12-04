@@ -265,6 +265,7 @@ void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
     auto var2 = geo->GetAttr().QueryParm(cls, name, idx);
+    REQUIRE(var2.type != hdiop::VarType::Invalid);
     if (!approx)
     {
         REQUIRE(var == var2);
