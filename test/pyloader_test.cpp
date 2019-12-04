@@ -2,7 +2,7 @@
 
 #include <sop/Evaluator.h>
 #include <sop/PyLoader.h>
-#include <sop/node/Geometry.h>
+#include <sop/node/Subnetwork.h>
 
 #include <catch/catch.hpp>
 
@@ -12,13 +12,13 @@ TEST_CASE("run file")
 
     sop::Evaluator eval;
 
-    auto p0 = std::make_shared<sop::node::Geometry>();
+    auto p0 = std::make_shared<sop::node::Subnetwork>();
     p0->SetName("obj");
     eval.AddNode(p0);
 
-    auto p1 = std::make_shared<sop::node::Geometry>();
+    auto p1 = std::make_shared<sop::node::Subnetwork>();
     p1->SetName("Cartoon_FarmHouse");
-    sop::node::Geometry::AddChild(p0, p1);
+    sop::node::Subnetwork::AddChild(p0, p1);
 
     sop::PyLoader loader(eval);
     loader.RunFile("D:/OneDrive/work/sop/hou/house.py");
@@ -30,13 +30,13 @@ TEST_CASE("merge two box")
 
     sop::Evaluator eval;
 
-    auto p0 = std::make_shared<sop::node::Geometry>();
+    auto p0 = std::make_shared<sop::node::Subnetwork>();
     p0->SetName("obj");
     eval.AddNode(p0);
 
-    auto p1 = std::make_shared<sop::node::Geometry>();
+    auto p1 = std::make_shared<sop::node::Subnetwork>();
     p1->SetName("Cartoon_FarmHouse");
-    sop::node::Geometry::AddChild(p0, p1);
+    sop::node::Subnetwork::AddChild(p0, p1);
 
     sop::PyLoader loader(eval);
     loader.RunFile("D:/OneDrive/work/sop/hou/merge_two_box.py");
