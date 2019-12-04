@@ -4,7 +4,6 @@
 #include <sop/EvalContext.h>
 
 #include <sop/node/Box.h>
-#include <sop/node/Geometry.h>
 #include <sop/node/GroupExpression.h>
 #include <sop/node/Blast.h>
 #include <sop/node/Measure.h>
@@ -31,7 +30,7 @@ TEST_CASE("getbox")
     SECTION("getbbox_center")
     {
         auto v = eval.CalcExpr("getbbox_center(0)", ctx);
-        REQUIRE(v.type == sop::VarType::Float3);
+        REQUIRE(v.type == hdiop::VarType::Float3);
         auto f3 = static_cast<const float*>(v.p);
         REQUIRE(f3[0] == Approx(4));
         REQUIRE(f3[1] == Approx(5));
@@ -41,7 +40,7 @@ TEST_CASE("getbox")
     SECTION("getbbox_size")
     {
         auto v = eval.CalcExpr("getbbox_size(0)", ctx);
-        REQUIRE(v.type == sop::VarType::Float3);
+        REQUIRE(v.type == hdiop::VarType::Float3);
         auto f3 = static_cast<const float*>(v.p);
         REQUIRE(f3[0] == Approx(1));
         REQUIRE(f3[1] == Approx(2));
@@ -168,7 +167,7 @@ TEST_CASE("desc")
 
         sop::EvalContext ctx(eval, *box);
         auto sz_y = eval.CalcExpr("$SIZEY", ctx);
-        REQUIRE(sz_y.type == sop::VarType::Float);
+        REQUIRE(sz_y.type == hdiop::VarType::Float);
         REQUIRE(sz_y.f == Approx(2.0f));
     }
 

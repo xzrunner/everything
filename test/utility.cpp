@@ -241,7 +241,7 @@ void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass cls,
     auto& attr = geo->GetAttr();
 
     auto var = attr.QueryParm(cls, name, 0);
-    REQUIRE(var.type != sop::VarType::Invalid);
+    REQUIRE(var.type != hdiop::VarType::Invalid);
     switch (cls)
     {
     case sop::GeoAttrClass::Point:
@@ -260,7 +260,7 @@ void check_attr_count(const sop::NodePtr& node, sop::GeoAttrClass cls,
 }
 
 void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
-                      const std::string& name, size_t idx, const sop::Variable& var, bool approx)
+                      const std::string& name, size_t idx, const hdiop::Variable& var, bool approx)
 {
     auto geo = node->GetGeometry();
     REQUIRE(geo != nullptr);
@@ -275,10 +275,10 @@ void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
         switch (var.type)
         {
 
-        case sop::VarType::Float:
+        case hdiop::VarType::Float:
             REQUIRE(var.f == Approx(var2.f));
             break;
-        case sop::VarType::Float3:
+        case hdiop::VarType::Float3:
         {
             auto v0 = static_cast<const float*>(var.p);
             auto v1 = static_cast<const float*>(var2.p);
@@ -287,7 +287,7 @@ void check_attr_value(const sop::NodePtr& node, sop::GeoAttrClass cls,
             REQUIRE(v0[2] == Approx(v1[2]));
         }
             break;
-        case sop::VarType::Double:
+        case hdiop::VarType::Double:
             REQUIRE(var.d == Approx(var2.d));
             break;
         default:
@@ -314,25 +314,25 @@ void check_group_type(const sop::NodePtr& node, const std::string& name, sop::Gr
     REQUIRE(group->GetType() == type);
 }
 
-void check_parm(const sop::NodePtr& node, const std::string& key, const sop::Variable& val)
+void check_parm(const sop::NodePtr& node, const std::string& key, const hdiop::Variable& val)
 {
     auto find = node->GetParms().Query(key);
     REQUIRE(find.type == val.type);
-    if (find.type == sop::VarType::Invalid) {
+    if (find.type == hdiop::VarType::Invalid) {
         return;
     }
     switch (val.type)
     {
-    case sop::VarType::Bool:
+    case hdiop::VarType::Bool:
         REQUIRE(find.b == val.b);
         break;
-    case sop::VarType::Int:
+    case hdiop::VarType::Int:
         REQUIRE(find.i == val.i);
         break;
-    case sop::VarType::Float:
+    case hdiop::VarType::Float:
         REQUIRE(find.f == Approx(val.f));
         break;
-    case sop::VarType::Float3:
+    case hdiop::VarType::Float3:
     {
         auto v0 = static_cast<const float*>(find.p);
         auto v1 = static_cast<const float*>(val.p);
@@ -341,7 +341,7 @@ void check_parm(const sop::NodePtr& node, const std::string& key, const sop::Var
         REQUIRE(v0[2] == v1[2]);
     }
         break;
-    case sop::VarType::String:
+    case hdiop::VarType::String:
         REQUIRE(strcmp(static_cast<const char*>(find.p),
             static_cast<const char*>(val.p)) == 0);
         break;

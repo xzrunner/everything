@@ -76,11 +76,11 @@ TEST_CASE("add to brush with attr")
 
     test::check_points_num(add, 10);
     test::check_attr_count(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 10);
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8, sop::Variable(sm::vec3(0, 0, 0)));
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 9, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8, hdiop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 9, hdiop::Variable(sm::vec3(0, 0, 0)));
 }
 
 TEST_CASE("add to shape")
@@ -133,10 +133,10 @@ TEST_CASE("add to shape with attr")
 
     test::check_points_num(add, 4);
     test::check_attr_count(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4);
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0, 0, 0)));
-    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, hdiop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(add, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, hdiop::Variable(sm::vec3(0, 0, 0)));
 }
 
 TEST_CASE("add with group")
@@ -444,7 +444,7 @@ TEST_CASE("fuse polyline")
 
     test::check_points_num(fuse, 1);
     test::check_point(fuse, 0, p);
-    test::check_attr_value(fuse, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
+    test::check_attr_value(fuse, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, hdiop::Variable(sm::vec3(1, 0, 0)));
 }
 
 TEST_CASE("fuse unique points")
@@ -535,7 +535,7 @@ TEST_CASE("fuse polyline2")
 
     test::check_points_num(fuse, 4);
     test::check_point(fuse, 0, p);
-    test::check_attr_value(fuse, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(1, 0, 0)));
+    test::check_attr_value(fuse, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, hdiop::Variable(sm::vec3(1, 0, 0)));
 }
 
 TEST_CASE("knife box")
@@ -721,7 +721,7 @@ TEST_CASE("normal box")
         eval.Update();
 
         test::check_attr_count(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 0, 0)));
+        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, hdiop::Variable(sm::vec3(0, 0, 0)));
     }
 }
 
@@ -765,7 +765,7 @@ TEST_CASE("normal plane")
 
         test::check_attr_count(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
         for (int i = 0; i < 4; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 1, 0)));
+            test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, hdiop::Variable(sm::vec3(0, 1, 0)));
         }
     }
 
@@ -777,7 +777,7 @@ TEST_CASE("normal plane")
 
         test::check_attr_count(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
         for (int i = 0; i < 4; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 1, 0)));
+            test::check_attr_value(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, hdiop::Variable(sm::vec3(0, 1, 0)));
         }
     }
 
@@ -788,7 +788,7 @@ TEST_CASE("normal plane")
         eval.Update();
 
         test::check_attr_count(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
+        test::check_attr_value(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, hdiop::Variable(sm::vec3(0, 1, 0)));
     }
 
     SECTION("add to detail")
@@ -798,7 +798,7 @@ TEST_CASE("normal plane")
         eval.Update();
 
         test::check_attr_count(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 1, 0)));
+        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, hdiop::Variable(sm::vec3(0, 1, 0)));
     }
 }
 
@@ -831,7 +831,7 @@ TEST_CASE("normal line")
 
         test::check_attr_count(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], n);
         for (int i = 0; i < n; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 0, 0)));
+            test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, hdiop::Variable(sm::vec3(0, 0, 0)));
         }
     }
 
@@ -843,7 +843,7 @@ TEST_CASE("normal line")
 
         test::check_attr_count(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], n);
         for (int i = 0; i < n; ++i) {
-            test::check_attr_value(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, sop::Variable(sm::vec3(0, 0, 0)));
+            test::check_attr_value(normal, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_NORM], i, hdiop::Variable(sm::vec3(0, 0, 0)));
         }
     }
 
@@ -854,7 +854,7 @@ TEST_CASE("normal line")
         eval.Update();
 
         test::check_attr_count(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0, 0, 0)));
+        test::check_attr_value(normal, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, hdiop::Variable(sm::vec3(0, 0, 0)));
     }
 
     SECTION("add to detail")
@@ -864,7 +864,7 @@ TEST_CASE("normal line")
         eval.Update();
 
         test::check_attr_count(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 1);
-        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, sop::Variable(sm::vec3(0 ,0, 0)));
+        test::check_attr_value(normal, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 0, hdiop::Variable(sm::vec3(0 ,0, 0)));
     }
 }
 
@@ -1101,9 +1101,9 @@ TEST_CASE("poly fill")
         eval.Update();
 
         test::check_attr_count(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 8);
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 
     SECTION("vertex attr rebuild")
@@ -1123,9 +1123,9 @@ TEST_CASE("poly fill")
         eval.Update();
 
         test::check_attr_count(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 24);
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Vertex, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 
     SECTION("primitive attr rebuild")
@@ -1145,10 +1145,10 @@ TEST_CASE("poly fill")
         eval.Update();
 
         test::check_attr_count(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 6);
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, sop::Variable(sm::vec3(0, 0, 0)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 1, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 3, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 4, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Primitive, sop::GeoAttrNames[sop::GEO_ATTR_CD], 5, hdiop::Variable(sm::vec3(0, 0, 0)));
     }
 
     SECTION("detail attr rebuild")
@@ -1168,7 +1168,7 @@ TEST_CASE("poly fill")
         eval.Update();
 
         test::check_attr_count(poly_fill, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0);
-        test::check_attr_value(poly_fill, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+        test::check_attr_value(poly_fill, sop::GeoAttrClass::Detail, sop::GeoAttrNames[sop::GEO_ATTR_CD], 0, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
     }
 }
 
@@ -1202,12 +1202,12 @@ TEST_CASE("poly frame shape(2 pts)")
     test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 2);
     test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 2);
 
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(0, 0, 0)));
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, sop::Variable(sm::vec3(0, 0, 0)));
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, sop::Variable(sm::vec3(-0.267261f, -0.534522f, -0.801784f)), true);
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, sop::Variable(sm::vec3(-0.267261f, -0.534522f, -0.801784f)), true);
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, sop::Variable(sm::vec3(0, 0, 0)));
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, sop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, hdiop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, hdiop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, hdiop::Variable(sm::vec3(-0.267261f, -0.534522f, -0.801784f)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, hdiop::Variable(sm::vec3(-0.267261f, -0.534522f, -0.801784f)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, hdiop::Variable(sm::vec3(0, 0, 0)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, hdiop::Variable(sm::vec3(0, 0, 0)));
 }
 
 TEST_CASE("poly frame shape - norm attr (2 pts)")
@@ -1267,12 +1267,12 @@ TEST_CASE("poly frame shape - norm attr (2 pts)")
     test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 2);
     test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 2);
 
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(-0.57735f, 0.57735f, -0.57735f)), true);
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, sop::Variable(sm::vec3(-0.57735f, 0.57735f, 0.57735f)), true);
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, sop::Variable(sm::vec3(0, 0, -1)));
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, sop::Variable(sm::vec3(0, 0, -1)));
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, sop::Variable(sm::vec3(0.57735f, 0.57735f, 0)), true);
-    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, sop::Variable(sm::vec3(0.57735f, 0.57735f, 0)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, hdiop::Variable(sm::vec3(-0.57735f, 0.57735f, -0.57735f)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, hdiop::Variable(sm::vec3(-0.57735f, 0.57735f, 0.57735f)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, hdiop::Variable(sm::vec3(0, 0, -1)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, hdiop::Variable(sm::vec3(0, 0, -1)));
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, hdiop::Variable(sm::vec3(0.57735f, 0.57735f, 0)), true);
+    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, hdiop::Variable(sm::vec3(0.57735f, 0.57735f, 0)), true);
 }
 
 TEST_CASE("poly frame shape - calc norm (3 pts)")
@@ -1308,15 +1308,15 @@ TEST_CASE("poly frame shape - calc norm (3 pts)")
         test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 3);
         test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 3);
 
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 2, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, sop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, sop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 2, sop::Variable(sm::vec3(0.57735f, 0.57735f, -0.57735f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, sop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, sop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 2, sop::Variable(sm::vec3(0.408248f, 0.408248f, 0.816497f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, hdiop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, hdiop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 2, hdiop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, hdiop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, hdiop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 2, hdiop::Variable(sm::vec3(0.57735f, 0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, hdiop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, hdiop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 2, hdiop::Variable(sm::vec3(0.408248f, 0.408248f, 0.816497f)), true);
     }
 
     SECTION("style two edges")
@@ -1329,15 +1329,15 @@ TEST_CASE("poly frame shape - calc norm (3 pts)")
         test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "T", 3);
         test::check_attr_count(polyframe, sop::GeoAttrClass::Point, "B", 3);
 
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 2, sop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, sop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, sop::Variable(sm::vec3(0, 0, -1)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 2, sop::Variable(sm::vec3(0.57735f, 0.57735f, -0.57735f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, sop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, sop::Variable(sm::vec3(0.707107f, 0.707107f, 0.0f)), true);
-        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 2, sop::Variable(sm::vec3(0.408248f, 0.408248f, 0.816497f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, hdiop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 1, hdiop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 2, hdiop::Variable(sm::vec3(-0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 0, hdiop::Variable(sm::vec3(-0.57735f, -0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 1, hdiop::Variable(sm::vec3(0, 0, -1)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "T", 2, hdiop::Variable(sm::vec3(0.57735f, 0.57735f, -0.57735f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 0, hdiop::Variable(sm::vec3(0.408248f, 0.408248f, -0.816497f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 1, hdiop::Variable(sm::vec3(0.707107f, 0.707107f, 0.0f)), true);
+        test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "B", 2, hdiop::Variable(sm::vec3(0.408248f, 0.408248f, 0.816497f)), true);
 
     }
 }
@@ -1371,5 +1371,5 @@ TEST_CASE("poly frame shape - calc norm (3 pts)")
 //    eval.Update();
 //
 //    // todo: how polyframe calc smoothed curve normal ?
-//    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, sop::Variable(sm::vec3(0, -1, 0)));
+//    test::check_attr_value(polyframe, sop::GeoAttrClass::Point, "N", 0, hdiop::Variable(sm::vec3(0, -1, 0)));
 //}

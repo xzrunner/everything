@@ -44,7 +44,7 @@ TEST_CASE("attribute create")
     eval.Update();
 
     test::check_attr_count(attr_create, sop::GeoAttrClass::Point, "new_attr", 1);
-    test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+    test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, hdiop::Variable(0.1f));
 }
 
 TEST_CASE("attribute promote")
@@ -84,11 +84,11 @@ TEST_CASE("attribute promote")
         eval.Update();
 
         test::check_attr_count(attr_create, sop::GeoAttrClass::Vertex, "new_attr", 24);
-        test::check_attr_value(attr_create, sop::GeoAttrClass::Vertex, "new_attr", 0, sop::Variable(0.1f));
+        test::check_attr_value(attr_create, sop::GeoAttrClass::Vertex, "new_attr", 0, hdiop::Variable(0.1f));
 
         test::check_attr_count(attr_promote, sop::GeoAttrClass::Vertex, "new_attr", 0);
         test::check_attr_count(attr_promote, sop::GeoAttrClass::Point, "new_attr", 8);
-        test::check_attr_value(attr_promote, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+        test::check_attr_value(attr_promote, sop::GeoAttrClass::Point, "new_attr", 0, hdiop::Variable(0.1f));
     }
 
     SECTION("point to vertex")
@@ -109,11 +109,11 @@ TEST_CASE("attribute promote")
         eval.Update();
 
         test::check_attr_count(attr_create, sop::GeoAttrClass::Point, "new_attr", 8);
-        test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+        test::check_attr_value(attr_create, sop::GeoAttrClass::Point, "new_attr", 0, hdiop::Variable(0.1f));
 
         test::check_attr_count(attr_promote, sop::GeoAttrClass::Point, "new_attr", 0);
         test::check_attr_count(attr_promote, sop::GeoAttrClass::Vertex, "new_attr", 24);
-        test::check_attr_value(attr_promote, sop::GeoAttrClass::Vertex, "new_attr", 0, sop::Variable(0.1f));
+        test::check_attr_value(attr_promote, sop::GeoAttrClass::Vertex, "new_attr", 0, hdiop::Variable(0.1f));
     }
 }
 
@@ -157,7 +157,7 @@ TEST_CASE("attribute transfer")
         test::check_attr_count(box_t, sop::GeoAttrClass::Point, "new_attr", 0);
 
         test::check_attr_count(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 8);
-        test::check_attr_value(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+        test::check_attr_value(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 0, hdiop::Variable(0.1f));
     }
 
     SECTION("change old")
@@ -195,10 +195,10 @@ TEST_CASE("attribute transfer")
         eval.Update();
 
         test::check_attr_count(attr_create_t, sop::GeoAttrClass::Point, "new_attr", 8);
-        test::check_attr_value(attr_create_t, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.2f));
+        test::check_attr_value(attr_create_t, sop::GeoAttrClass::Point, "new_attr", 0, hdiop::Variable(0.2f));
 
         test::check_attr_count(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 8);
-        test::check_attr_value(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 0, sop::Variable(0.1f));
+        test::check_attr_value(attr_transfer, sop::GeoAttrClass::Point, "new_attr", 0, hdiop::Variable(0.1f));
     }
 }
 
@@ -244,11 +244,11 @@ TEST_CASE("attribute wrangle")
     eval.Update();
 
     test::check_attr_count(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
-    test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 2, sop::Variable(sm::vec3(0, 1, 0)));
+    test::check_attr_value(normal, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 2, hdiop::Variable(sm::vec3(0, 1, 0)));
     test::check_attr_count(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 4);
-    test::check_attr_value(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 2, sop::Variable(sm::vec3(0, 1, 0)));
+    test::check_attr_value(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_NORM], 2, hdiop::Variable(sm::vec3(0, 1, 0)));
     test::check_attr_count(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_UP], 4);
-    test::check_attr_value(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_UP], 1, sop::Variable(sm::vec3(0, 1, 0)));
+    test::check_attr_value(attr_wrangle, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_UP], 1, hdiop::Variable(sm::vec3(0, 1, 0)));
 }
 
 TEST_CASE("measure box")
@@ -272,7 +272,7 @@ TEST_CASE("measure box")
         eval.Update();
 
         test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "perimeter", 6);
-        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "perimeter", 3, sop::Variable(4.0f));
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "perimeter", 3, hdiop::Variable(4.0f));
     }
 
     SECTION("area")
@@ -282,7 +282,7 @@ TEST_CASE("measure box")
         eval.Update();
 
         test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "area", 6);
-        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "area", 2, sop::Variable(1.0f));
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "area", 2, hdiop::Variable(1.0f));
     }
 }
 
@@ -314,7 +314,7 @@ TEST_CASE("measure polyline")
         eval.Update();
 
         test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "perimeter", 1);
-        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "perimeter", 0, sop::Variable(3.0f));
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "perimeter", 0, hdiop::Variable(3.0f));
     }
 
     SECTION("area")
@@ -324,7 +324,7 @@ TEST_CASE("measure polyline")
         eval.Update();
 
         test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "area", 1);
-        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "area", 0, sop::Variable(0.0f));
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "area", 0, hdiop::Variable(0.0f));
     }
 }
 
@@ -350,7 +350,7 @@ TEST_CASE("measure rename")
         eval.Update();
 
         test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "test0", 6);
-        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "test0", 3, sop::Variable(4.0f));
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "test0", 3, hdiop::Variable(4.0f));
     }
 
     SECTION("area")
@@ -361,7 +361,7 @@ TEST_CASE("measure rename")
         eval.Update();
 
         test::check_attr_count(measure, sop::GeoAttrClass::Primitive, "test1", 6);
-        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "test1", 2, sop::Variable(1.0f));
+        test::check_attr_value(measure, sop::GeoAttrClass::Primitive, "test1", 2, hdiop::Variable(1.0f));
     }
 }
 

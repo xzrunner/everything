@@ -32,9 +32,9 @@ TEST_CASE("uv transform")
     eval.Update();
 
     test::check_attr_value(uv_unwrap, sop::GeoAttrClass::Vertex,
-        sop::GeoAttrNames[sop::GEO_ATTR_UV], 1, sop::Variable(sm::vec3(1, 0, 0)));
+        sop::GeoAttrNames[sop::GEO_ATTR_UV], 1, hdiop::Variable(sm::vec3(1, 0, 0)));
     test::check_attr_value(uv_transform, sop::GeoAttrClass::Vertex,
-        sop::GeoAttrNames[sop::GEO_ATTR_UV], 1, sop::Variable(sm::vec3(0.5f, 0, 0)));
+        sop::GeoAttrNames[sop::GEO_ATTR_UV], 1, hdiop::Variable(sm::vec3(0.5f, 0, 0)));
 }
 
 TEST_CASE("uv unwrap")

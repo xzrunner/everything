@@ -31,14 +31,14 @@ TEST_CASE("box")
 
     test::check_aabb(box, -h_sz, h_sz);
 
-    test::check_parm(box, "sizex", sop::Variable(2.0f));
+    test::check_parm(box, "sizex", hdiop::Variable(2.0f));
 
     const sm::vec3 off(10, 11, 12);
     box->SetCenter(off);
     eval.MakeDirty(false);
     eval.Update();
     test::check_aabb(box, -h_sz + off, h_sz + off);
-    test::check_parm(box, "ty", sop::Variable(11.0f));
+    test::check_parm(box, "ty", hdiop::Variable(11.0f));
 
     const sm::vec3 scale(5, 6, 7);
     box->SetScale(scale);

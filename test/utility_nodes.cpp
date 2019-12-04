@@ -255,9 +255,9 @@ TEST_CASE("copy to points with attr")
 
     test::check_points_num(copy, 16);
     test::check_attr_count(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 16);
-    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7,  sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
-    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 13, sop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 2,  hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 7,  hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
+    test::check_attr_value(copy, sop::GeoAttrClass::Point, sop::GeoAttrNames[sop::GEO_ATTR_CD], 13, hdiop::Variable(sm::vec3(0.3f, 0.4f, 0.5f)));
 }
 
 TEST_CASE("copy to points with default attr scale")
