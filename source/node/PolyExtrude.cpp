@@ -3,7 +3,7 @@
 #include "sop/NodeHelper.h"
 
 #include <halfedge/Polyhedron.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 
 namespace sop
@@ -92,7 +92,7 @@ bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Pr
         if (!poly) {
             continue;
         }
-        auto he_poly = poly->GetGeometry();
+        auto he_poly = poly->GetHePoly();
         if (!he_poly) {
             continue;
         }
@@ -108,7 +108,7 @@ bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Pr
             }
         }
 
-        poly->BuildFromGeo();
+        poly->BuildFromPoly();
 
         dirty = true;
     }

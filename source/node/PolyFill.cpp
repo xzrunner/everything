@@ -4,7 +4,7 @@
 #include "sop/GeoAttrRebuild.h"
 
 #include <halfedge/Polyhedron.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 
 namespace sop
@@ -32,8 +32,8 @@ void PolyFill::Execute(Evaluator& eval)
     for (auto& brush : brush_model->GetBrushes())
     {
         auto poly = brush.impl;
-        poly->GetGeometry()->Fill();
-        poly->BuildFromGeo();
+        poly->GetHePoly()->Fill();
+        poly->BuildFromPoly();
     }
     m_geo_impl->UpdateByBrush(*brush_model);
 }

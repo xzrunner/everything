@@ -6,7 +6,7 @@
 
 #include <model/AssimpHelper.h>
 #include <model/BrushModel.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 
 namespace sop
 {
@@ -36,16 +36,16 @@ void File::Execute(Evaluator& eval)
         std::copy(src->normals.begin(), src->normals.end(), std::back_inserter(normals));
         std::copy(src->texcoords.begin(), src->texcoords.end(), std::back_inserter(texcoords));
 
-        std::vector<pm3::PointPtr> points;
+        std::vector<pm3::Polytope::PointPtr> points;
         points.reserve(src->vertices.size());
         for (auto& s : src->vertices) {
-            points.push_back(std::make_shared<pm3::Point>(s));
+            points.push_back(std::make_shared<pm3::Polytope::Point>(s));
         }
 
-        std::vector<pm3::FacePtr> faces;
+        std::vector<pm3::Polytope::FacePtr> faces;
         for (auto& s : src->faces)
         {
-            auto f = std::make_shared<pm3::Face>();
+            auto f = std::make_shared<pm3::Polytope::Face>();
             f->points.resize(s.size());
             for (size_t i = 0, n = s.size(); i < n; ++i) {
                 f->points[i] = s[i];

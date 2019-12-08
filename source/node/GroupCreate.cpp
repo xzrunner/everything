@@ -6,7 +6,7 @@
 
 #include <SM_Calc.h>
 #include <model/BrushModel.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <halfedge/Polyhedron.h>
 
 namespace sop
@@ -97,7 +97,7 @@ void GroupCreate::SelectByBoundings(Group& group, std::shared_ptr<GeometryImpl>&
         auto& pts = m_geo_impl->GetAttr().GetPoints();
         for (size_t i = 0, n = pts.size(); i < n; ++i) {
             for (auto& b : brushes) {
-                if (b.impl->GetGeometry()->IsContain(pts[i]->pos)) {
+                if (b.impl->GetHePoly()->IsContain(pts[i]->pos)) {
                     group.Add(i);
                     break;
                 }

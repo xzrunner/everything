@@ -6,7 +6,7 @@
 
 #include <halfedge/Polyhedron.h>
 #include <halfedge/Polyline.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 #include <SM_Calc.h>
 
@@ -65,7 +65,7 @@ void Fuse::ConsolidateBrush()
     std::vector<he::PolyhedronPtr> src;
     src.reserve(brushes.size());
     for (auto& b : brushes) {
-        src.push_back(b.impl->GetGeometry());
+        src.push_back(b.impl->GetHePoly());
     }
     auto dst = he::Polyhedron::Fuse(src, m_distance);
     model::BrushModel::Brush brush;
@@ -120,8 +120,8 @@ void Fuse::UniquePointsBrush()
     {
         auto poly = brush.impl;
         assert(poly);
-        poly->GetGeometry()->UniquePoints();
-        poly->BuildFromGeo();
+        poly->GetHePoly()->UniquePoints();
+        poly->BuildFromPoly();
     }
     m_geo_impl->UpdateByBrush(*brush_model);
 }

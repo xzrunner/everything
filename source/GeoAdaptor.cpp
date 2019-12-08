@@ -6,7 +6,7 @@
 
 #include <halfedge/Polyhedron.h>
 #include <halfedge/Polyline.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 #include <model/BrushBuilder.h>
 #include <geoshape/Point3D.h>
@@ -400,8 +400,8 @@ void GeoAdaptor::AttrToBrush(model::BrushModel& dst, const GeoAttribute& src)
 {
     struct Brush
     {
-        std::vector<pm3::PointPtr> points;
-        std::vector<pm3::FacePtr>  faces;
+        std::vector<pm3::Polytope::PointPtr> points;
+        std::vector<pm3::Polytope::FacePtr>  faces;
 
         std::map<std::shared_ptr<GeoAttribute::Point>, size_t> pt2idx;
     };
@@ -419,7 +419,7 @@ void GeoAdaptor::AttrToBrush(model::BrushModel& dst, const GeoAttribute& src)
         }
 
         b->pt2idx.insert({ p, b->points.size() });
-        b->points.push_back(std::make_shared<pm3::Point>(p->pos, p->topo_id));
+        b->points.push_back(std::make_shared<pm3::Polytope::Point>(p->pos, p->topo_id));
     }
 
     for (auto& prim : src.m_primtives)
@@ -434,7 +434,7 @@ void GeoAdaptor::AttrToBrush(model::BrushModel& dst, const GeoAttribute& src)
 
         auto b = itr->second;
 
-        auto face = std::make_shared<pm3::Face>();
+        auto face = std::make_shared<pm3::Polytope::Face>();
         face->points.reserve(prim->vertices.size());
         face->topo_id = prim->topo_id;
         for (auto& v : prim->vertices)

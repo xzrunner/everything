@@ -4,7 +4,7 @@
 #include "sop/GeoAttrRebuild.h"
 
 #include <halfedge/Polyhedron.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 
 namespace sop
@@ -37,8 +37,8 @@ void Boolean::Execute(Evaluator& eval)
     {
         for (auto& b : brushes_b)
         {
-            auto he_a = a.impl->GetGeometry();
-            auto he_b = b.impl->GetGeometry();
+            auto he_a = a.impl->GetHePoly();
+            auto he_b = b.impl->GetHePoly();
             if (!he_a || !he_b) {
                 continue;
             }

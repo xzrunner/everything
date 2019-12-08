@@ -7,7 +7,7 @@
 #include <unirender/gl/RenderContext.h>
 #include <unirender/Blackboard.h>
 #include <halfedge/Polyhedron.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushBuilder.h>
 #include <painting3/AABB.h>
 #include <renderpipeline/RenderMgr.h>

@@ -5,7 +5,7 @@
 #include "sop/GroupRebuild.h"
 
 #include <halfedge/Polyhedron.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 
 namespace sop
@@ -64,8 +64,8 @@ bool Knife::Clip(pm3::Polytope& poly) const
     }
 
     sm::Plane plane(m_dir, m_ori);
-    if (poly.GetGeometry()->Clip(plane, keep)) {
-        poly.BuildFromGeo();
+    if (poly.GetHePoly()->Clip(plane, keep)) {
+        poly.BuildFromPoly();
         return true;
     } else {
         return false;

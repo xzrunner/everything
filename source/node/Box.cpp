@@ -1,7 +1,7 @@
 #include "sop/node/Box.h"
 #include "sop/GeometryImpl.h"
 
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 
 namespace sop
@@ -38,7 +38,7 @@ Box::BuildBrush() const
     const int face_num = 6;
     brush.desc.meshes.push_back({ 0, 0, 0, face_num });
 
-    std::vector<pm3::FacePtr> faces;
+    std::vector<pm3::Polytope::FacePtr> faces;
     faces.reserve(face_num);
 
     if (fabs(m_size.x) < FLT_EPSILON ||
@@ -66,27 +66,27 @@ Box::BuildBrush() const
     const sm::vec3 btm_right_front(xmax, ymin, zmin);
     const sm::vec3 btm_right_back (xmax, ymin, zmax);
 
-    auto top = std::make_shared<pm3::Face>();
+    auto top = std::make_shared<pm3::Polytope::Face>();
     top->plane = sm::Plane(top_left_front, top_left_back, top_right_back);
     faces.push_back(top);
 
-    auto bottom = std::make_shared<pm3::Face>();
+    auto bottom = std::make_shared<pm3::Polytope::Face>();
     bottom->plane = sm::Plane(btm_left_front, btm_right_front, btm_right_back);
     faces.push_back(bottom);
 
-    auto left = std::make_shared<pm3::Face>();
+    auto left = std::make_shared<pm3::Polytope::Face>();
     left->plane = sm::Plane(top_left_back, top_left_front, btm_left_front);
     faces.push_back(left);
 
-    auto right = std::make_shared<pm3::Face>();
+    auto right = std::make_shared<pm3::Polytope::Face>();
     right->plane = sm::Plane(top_right_front, top_right_back, btm_right_back);
     faces.push_back(right);
 
-    auto front = std::make_shared<pm3::Face>();
+    auto front = std::make_shared<pm3::Polytope::Face>();
     front->plane = sm::Plane(top_left_front, top_right_front, btm_right_front);
     faces.push_back(front);
 
-    auto back = std::make_shared<pm3::Face>();
+    auto back = std::make_shared<pm3::Polytope::Face>();
     back->plane = sm::Plane(top_right_back, top_left_back, btm_left_back);
     faces.push_back(back);
 

@@ -3,7 +3,7 @@
 #include "sop/NodeHelper.h"
 #include "sop/GeometryImpl.h"
 
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 
 namespace sop
@@ -27,7 +27,7 @@ void Grid::BuildModel()
     assert(m_geo_impl);
     assert(m_rows > 0 && m_columns > 0);
 
-    std::vector<pm3::PointPtr> points;
+    std::vector<pm3::Polytope::PointPtr> points;
     points.reserve(m_columns * m_rows);
     for (int x = 0; x < m_columns; ++x)
     {
@@ -45,19 +45,19 @@ void Grid::BuildModel()
             } else {
                 pos.z = 0;
             }
-            points.push_back(std::make_shared<pm3::Point>(pos));
+            points.push_back(std::make_shared<pm3::Polytope::Point>(pos));
         }
     }
     if (points.empty()) {
         return;
     }
 
-    std::vector<pm3::FacePtr> faces;
+    std::vector<pm3::Polytope::FacePtr> faces;
     for (int x = 0; x < m_columns - 1; ++x)
     {
         for (int y = 0; y < m_rows - 1; ++y)
         {
-            auto f = std::make_shared<pm3::Face>();
+            auto f = std::make_shared<pm3::Polytope::Face>();
             f->points.push_back(x + m_columns * y);
             f->points.push_back(x + 1 + m_columns * y);
             f->points.push_back(x + 1 + m_columns * (y + 1));

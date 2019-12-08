@@ -4,7 +4,7 @@
 #include "sop/GeometryImpl.h"
 
 #include <dungeon/BaseBSPGen.h>
-#include <polymesh3/Geometry.h>
+#include <polymesh3/Polytope.h>
 #include <model/BrushModel.h>
 
 namespace sop
@@ -31,20 +31,20 @@ void Dungeon::BuildModel()
         return;
     }
 
-    std::vector<pm3::PointPtr> points;
-    std::vector<pm3::FacePtr> faces;
+    std::vector<pm3::Polytope::PointPtr> points;
+    std::vector<pm3::Polytope::FacePtr> faces;
     for (auto& r : rooms)
     {
-        auto f = std::make_shared<pm3::Face>();
+        auto f = std::make_shared<pm3::Polytope::Face>();
         for (size_t i = 0; i < 4; ++i) {
             f->points.push_back(points.size() + i);
         }
         faces.push_back(f);
 
-        points.push_back(std::make_shared<pm3::Point>(sm::vec3(r.xmin, 0, r.ymin)));
-        points.push_back(std::make_shared<pm3::Point>(sm::vec3(r.xmin, 0, r.ymax)));
-        points.push_back(std::make_shared<pm3::Point>(sm::vec3(r.xmax, 0, r.ymax)));
-        points.push_back(std::make_shared<pm3::Point>(sm::vec3(r.xmax, 0, r.ymin)));
+        points.push_back(std::make_shared<pm3::Polytope::Point>(sm::vec3(r.xmin, 0, r.ymin)));
+        points.push_back(std::make_shared<pm3::Polytope::Point>(sm::vec3(r.xmin, 0, r.ymax)));
+        points.push_back(std::make_shared<pm3::Polytope::Point>(sm::vec3(r.xmax, 0, r.ymax)));
+        points.push_back(std::make_shared<pm3::Polytope::Point>(sm::vec3(r.xmax, 0, r.ymin)));
     }
 
     model::BrushModel::Brush brush;
