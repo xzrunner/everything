@@ -32,8 +32,8 @@ void PolyFill::Execute(Evaluator& eval)
     for (auto& brush : brush_model->GetBrushes())
     {
         auto poly = brush.impl;
-        poly->GetHePoly()->Fill();
-        poly->BuildFromPoly();
+        poly->GetTopoPoly()->Fill();
+        poly->BuildFromTopo();
     }
     m_geo_impl->UpdateByBrush(*brush_model);
 }

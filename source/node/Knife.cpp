@@ -64,8 +64,8 @@ bool Knife::Clip(pm3::Polytope& poly) const
     }
 
     sm::Plane plane(m_dir, m_ori);
-    if (poly.GetHePoly()->Clip(plane, keep)) {
-        poly.BuildFromPoly();
+    if (poly.GetTopoPoly()->Clip(plane, keep)) {
+        poly.BuildFromTopo();
         return true;
     } else {
         return false;

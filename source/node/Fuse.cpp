@@ -65,7 +65,7 @@ void Fuse::ConsolidateBrush()
     std::vector<he::PolyhedronPtr> src;
     src.reserve(brushes.size());
     for (auto& b : brushes) {
-        src.push_back(b.impl->GetHePoly());
+        src.push_back(b.impl->GetTopoPoly());
     }
     auto dst = he::Polyhedron::Fuse(src, m_distance);
     model::BrushModel::Brush brush;
@@ -120,8 +120,8 @@ void Fuse::UniquePointsBrush()
     {
         auto poly = brush.impl;
         assert(poly);
-        poly->GetHePoly()->UniquePoints();
-        poly->BuildFromPoly();
+        poly->GetTopoPoly()->UniquePoints();
+        poly->BuildFromTopo();
     }
     m_geo_impl->UpdateByBrush(*brush_model);
 }

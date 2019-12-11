@@ -92,13 +92,13 @@ bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Pr
         if (!poly) {
             continue;
         }
-        auto he_poly = poly->GetHePoly();
-        if (!he_poly) {
+        auto topo_poly = poly->GetTopoPoly();
+        if (!topo_poly) {
             continue;
         }
 
         std::vector<he::face3*> faces[he::Polyhedron::ExtrudeMaxCount];
-        if (!he_poly->Extrude(m_distance, face_ids[i], create_face, faces)) {
+        if (!topo_poly->Extrude(m_distance, face_ids[i], create_face, faces)) {
             continue;
         }
 
@@ -108,7 +108,7 @@ bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Pr
             }
         }
 
-        poly->BuildFromPoly();
+        poly->BuildFromTopo();
 
         dirty = true;
     }

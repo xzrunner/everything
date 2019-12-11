@@ -37,9 +37,9 @@ void Boolean::Execute(Evaluator& eval)
     {
         for (auto& b : brushes_b)
         {
-            auto he_a = a.impl->GetHePoly();
-            auto he_b = b.impl->GetHePoly();
-            if (!he_a || !he_b) {
+            auto topo_a = a.impl->GetTopoPoly();
+            auto topo_b = b.impl->GetTopoPoly();
+            if (!topo_a || !topo_b) {
                 continue;
             }
 
@@ -49,7 +49,7 @@ void Boolean::Execute(Evaluator& eval)
                 break;
             case Operator::Intersect:
             {
-                auto poly = he_a->Intersect(*he_b);
+                auto poly = topo_a->Intersect(*topo_b);
                 if (poly && poly->GetFaces().Size() > 0)
                 {
                     model::BrushModel::Brush brush;
@@ -60,7 +60,7 @@ void Boolean::Execute(Evaluator& eval)
                 break;
             case Operator::Subtract:
             {
-                auto polys = he_a->Subtract(*he_b);
+                auto polys = topo_a->Subtract(*topo_b);
                 for (auto& poly : polys) {
                     if (poly->GetFaces().Size() > 0)
                     {
