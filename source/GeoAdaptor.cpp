@@ -478,7 +478,7 @@ void GeoAdaptor::LinesToAttr(GeoAttribute& dst, const std::vector<he::PolylinePt
         auto& vts = polyline->GetVertices();
         auto& pls = polyline->GetPolylines();
 
-        std::map<he::Vertex*, std::shared_ptr<GeoAttribute::Point>> map_pt;
+        std::map<he::vert3*, std::shared_ptr<GeoAttribute::Point>> map_pt;
 
         auto p_off = dst.m_points.size();
 

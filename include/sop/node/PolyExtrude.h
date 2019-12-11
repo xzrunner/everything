@@ -4,7 +4,7 @@
 #include "sop/GeoAttribute.h"
 #include "sop/Widgets.h"
 
-namespace he { struct Face; }
+#include <halfedge/HalfEdge.h>
 
 namespace sop
 {
@@ -35,9 +35,9 @@ public:
 
 private:
     bool ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims,
-        std::vector<he::Face*>* new_faces);
+        std::vector<he::face3*>* new_faces);
 
-    void AddToGroup(const std::string& group_name, const std::vector<he::Face*>& faces);
+    void AddToGroup(const std::string& group_name, const std::vector<he::face3*>& faces);
 
     RTTR_ENABLE(Node)
 

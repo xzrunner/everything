@@ -325,7 +325,7 @@ void GeoAttribute::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
 {
     Clear();
 
-    std::map<he::Vertex*, std::shared_ptr<GeoAttribute::Point>> map_pt;
+    std::map<he::vert3*, std::shared_ptr<GeoAttribute::Point>> map_pt;
 
     // Point
     for (auto line : lines)
