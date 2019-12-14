@@ -200,7 +200,7 @@ void check_halfedge_vertices_num(const sop::NodePtr& node, size_t num)
 
     size_t n = 0;
     for (auto& b : geo->GetBrushModel()->GetBrushes()) {
-        n += b.impl->GetGeometry()->GetVertices().Size();
+        n += b.impl->GetTopoPoly()->GetVertices().Size();
     }
     REQUIRE(num == n);
 }
@@ -212,7 +212,7 @@ void check_halfedge_edges_num(const sop::NodePtr& node, size_t num)
 
     size_t n = 0;
     for (auto& b : geo->GetBrushModel()->GetBrushes()) {
-        n += b.impl->GetGeometry()->GetEdges().Size();
+        n += b.impl->GetTopoPoly()->GetEdges().Size();
     }
     REQUIRE(num == n);
 }
@@ -224,7 +224,7 @@ void check_halfedge_faces_num(const sop::NodePtr& node, size_t num)
 
     size_t n = 0;
     for (auto& b : geo->GetBrushModel()->GetBrushes()) {
-        n += b.impl->GetGeometry()->GetFaces().Size();
+        n += b.impl->GetTopoPoly()->GetFaces().Size();
     }
     REQUIRE(num == n);
 }
