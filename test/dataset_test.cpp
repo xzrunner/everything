@@ -167,65 +167,66 @@ TEST_CASE("use other's parm")
     }
 }
 
-TEST_CASE("attr combine")
-{
-    test::init();
-
-    sop::Evaluator eval;
-
-    auto box = std::make_shared<sop::node::Box>();
-    eval.AddNode(box);
-
-    auto add = std::make_shared<sop::node::Add>();
-    add->SetPoints({
-        { 0, 0, 0 },
-        { 0, 1, 0 },
-        { 0, 1, 1 },
-        { 0, 2, 1 },
-    });
-    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
-    eval.AddNode(add);
-
-    auto measure1 = std::make_shared<sop::node::Measure>();
-    eval.Connect({ box, 0 }, { measure1, 0 });
-    eval.AddNode(measure1);
-
-    auto measure2 = std::make_shared<sop::node::Measure>();
-    eval.Connect({ add, 0 }, { measure2, 0 });
-    eval.AddNode(measure2);
-
-    auto merge = std::make_shared<sop::node::Merge>();
-    eval.AddNode(merge);
-
-    eval.Connect({ measure1, 0 }, { merge, sop::node::Merge::IDX_SRC_A });
-    eval.Connect({ measure2, 0 }, { merge, sop::node::Merge::IDX_SRC_B });
-
-    SECTION("perimeter")
-    {
-        measure1->SetMesureType(sop::node::Measure::Type::Perimeter);
-        measure2->SetMesureType(sop::node::Measure::Type::Perimeter);
-
-        eval.Update();
-
-        test::check_attr_count(merge, sop::GeoAttrClass::Primitive, "perimeter", 7);
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 3, dag::Variable(4.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 4, dag::Variable(4.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 6, dag::Variable(3.0f));
-    }
-
-    SECTION("area")
-    {
-        measure1->SetMesureType(sop::node::Measure::Type::Area);
-        measure2->SetMesureType(sop::node::Measure::Type::Area);
-
-        eval.Update();
-
-        test::check_attr_count(merge, sop::GeoAttrClass::Primitive, "area", 7);
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 2, dag::Variable(1.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 3, dag::Variable(1.0f));
-        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 6, dag::Variable(0.0f));
-    }
-}
+// todo: merge Shape and Brush
+//TEST_CASE("attr combine")
+//{
+//    test::init();
+//
+//    sop::Evaluator eval;
+//
+//    auto box = std::make_shared<sop::node::Box>();
+//    eval.AddNode(box);
+//
+//    auto add = std::make_shared<sop::node::Add>();
+//    add->SetPoints({
+//        { 0, 0, 0 },
+//        { 0, 1, 0 },
+//        { 0, 1, 1 },
+//        { 0, 2, 1 },
+//    });
+//    add->SetPointsEnable(std::vector<bool>(add->GetPoints().size(), true));
+//    eval.AddNode(add);
+//
+//    auto measure1 = std::make_shared<sop::node::Measure>();
+//    eval.Connect({ box, 0 }, { measure1, 0 });
+//    eval.AddNode(measure1);
+//
+//    auto measure2 = std::make_shared<sop::node::Measure>();
+//    eval.Connect({ add, 0 }, { measure2, 0 });
+//    eval.AddNode(measure2);
+//
+//    auto merge = std::make_shared<sop::node::Merge>();
+//    eval.AddNode(merge);
+//
+//    eval.Connect({ measure1, 0 }, { merge, sop::node::Merge::IDX_SRC_A });
+//    eval.Connect({ measure2, 0 }, { merge, sop::node::Merge::IDX_SRC_B });
+//
+//    SECTION("perimeter")
+//    {
+//        measure1->SetMesureType(sop::node::Measure::Type::Perimeter);
+//        measure2->SetMesureType(sop::node::Measure::Type::Perimeter);
+//
+//        eval.Update();
+//
+//        test::check_attr_count(merge, sop::GeoAttrClass::Primitive, "perimeter", 7);
+//        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 3, dag::Variable(4.0f));
+//        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 4, dag::Variable(4.0f));
+//        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "perimeter", 6, dag::Variable(3.0f));
+//    }
+//
+//    SECTION("area")
+//    {
+//        measure1->SetMesureType(sop::node::Measure::Type::Area);
+//        measure2->SetMesureType(sop::node::Measure::Type::Area);
+//
+//        eval.Update();
+//
+//        test::check_attr_count(merge, sop::GeoAttrClass::Primitive, "area", 7);
+//        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 2, dag::Variable(1.0f));
+//        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 3, dag::Variable(1.0f));
+//        test::check_attr_value(merge, sop::GeoAttrClass::Primitive, "area", 6, dag::Variable(0.0f));
+//    }
+//}
 
 TEST_CASE("attr combine 2")
 {
