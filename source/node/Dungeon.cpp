@@ -37,7 +37,7 @@ void Dungeon::BuildModel()
     {
         auto f = std::make_shared<pm3::Polytope::Face>();
         for (size_t i = 0; i < 4; ++i) {
-            f->points.push_back(points.size() + i);
+            f->border.push_back(points.size() + i);
         }
         faces.push_back(f);
 

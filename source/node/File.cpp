@@ -46,9 +46,9 @@ void File::Execute(Evaluator& eval)
         for (auto& s : src->faces)
         {
             auto f = std::make_shared<pm3::Polytope::Face>();
-            f->points.resize(s.size());
+            f->border.resize(s.size());
             for (size_t i = 0, n = s.size(); i < n; ++i) {
-                f->points[i] = s[i];
+                f->border[i] = s[i];
             }
             faces.push_back(f);
         }

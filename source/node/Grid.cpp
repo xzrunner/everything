@@ -58,10 +58,10 @@ void Grid::BuildModel()
         for (int y = 0; y < m_rows - 1; ++y)
         {
             auto f = std::make_shared<pm3::Polytope::Face>();
-            f->points.push_back(x + m_columns * y);
-            f->points.push_back(x + 1 + m_columns * y);
-            f->points.push_back(x + 1 + m_columns * (y + 1));
-            f->points.push_back(x + m_columns * (y + 1));
+            f->border.push_back(x + m_columns * y);
+            f->border.push_back(x + 1 + m_columns * y);
+            f->border.push_back(x + 1 + m_columns * (y + 1));
+            f->border.push_back(x + m_columns * (y + 1));
             faces.push_back(f);
         }
     }

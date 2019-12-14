@@ -378,7 +378,7 @@ void GeoAdaptor::BrushToAttr(GeoAttribute& dst, const model::BrushModel& src)
             auto prim = std::make_shared<GeoAttribute::Primitive>(GeoAttribute::Primitive::Type::PolygonFace);
             prim->topo_id = f->topo_id;
             prim->prim_id = prim_id;
-            for (auto& p : f->points)
+            for (auto& p : f->border)
             {
                 auto v = std::make_shared<GeoAttribute::Vertex>();
                 v->point = dst.m_points[p_off + p];
@@ -435,19 +435,19 @@ void GeoAdaptor::AttrToBrush(model::BrushModel& dst, const GeoAttribute& src)
         auto b = itr->second;
 
         auto face = std::make_shared<pm3::Polytope::Face>();
-        face->points.reserve(prim->vertices.size());
+        face->border.reserve(prim->vertices.size());
         face->topo_id = prim->topo_id;
         for (auto& v : prim->vertices)
         {
             assert(v->point->prim_id == prim->prim_id);
             auto itr = b->pt2idx.find(v->point);
             assert(itr != b->pt2idx.end());
-            face->points.push_back(itr->second);
+            face->border.push_back(itr->second);
         }
         face->plane = sm::Plane(
-            b->points[face->points[0]]->pos,
-            b->points[face->points[1]]->pos,
-            b->points[face->points[2]]->pos
+            b->points[face->border[0]]->pos,
+            b->points[face->border[1]]->pos,
+            b->points[face->border[2]]->pos
         );
         b->faces.push_back(face);
     }
