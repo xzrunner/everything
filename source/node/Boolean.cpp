@@ -50,7 +50,7 @@ void Boolean::Execute(Evaluator& eval)
             case Operator::Intersect:
             {
                 auto poly = topo_a->Intersect(*topo_b);
-                if (poly && poly->GetFaces().Size() > 0)
+                if (poly && poly->GetLoops().Size() > 0)
                 {
                     model::BrushModel::Brush brush;
                     brush.impl = std::make_shared<pm3::Polytope>(poly);
@@ -62,7 +62,7 @@ void Boolean::Execute(Evaluator& eval)
             {
                 auto polys = topo_a->Subtract(*topo_b);
                 for (auto& poly : polys) {
-                    if (poly->GetFaces().Size() > 0)
+                    if (poly->GetLoops().Size() > 0)
                     {
                         model::BrushModel::Brush brush;
                         brush.impl = std::make_shared<pm3::Polytope>(poly);

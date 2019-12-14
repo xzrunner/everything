@@ -330,7 +330,7 @@ void GeoAttribute::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
     // Point
     for (auto line : lines)
     {
-        auto& vts = line->GetVertices();
+        auto& vts = line->GetVerts();
         auto first_point = vts.Head();
         auto curr_point = first_point;
         do {

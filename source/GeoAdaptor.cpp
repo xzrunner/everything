@@ -239,7 +239,7 @@ void GeoAdaptor::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
     std::vector<std::shared_ptr<gs::Shape3D>> gs_shapes;
     for (auto& line : lines)
     {
-        auto& pts = line->GetVertices();
+        auto& pts = line->GetVerts();
         auto& pls = line->GetPolylines();
         if (pls.Size() == 0)
         {
@@ -475,7 +475,7 @@ void GeoAdaptor::LinesToAttr(GeoAttribute& dst, const std::vector<he::PolylinePt
     size_t prim_id = 0;
     for (auto& polyline : src)
     {
-        auto& vts = polyline->GetVertices();
+        auto& vts = polyline->GetVerts();
         auto& pls = polyline->GetPolylines();
 
         std::map<he::vert3*, std::shared_ptr<GeoAttribute::Point>> map_pt;

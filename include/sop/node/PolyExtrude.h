@@ -35,9 +35,9 @@ public:
 
 private:
     bool ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims,
-        std::vector<he::face3*>* new_faces);
+        std::vector<he::loop3*>* new_faces);
 
-    void AddToGroup(const std::string& group_name, const std::vector<he::face3*>& faces);
+    void AddToGroup(const std::string& group_name, const std::vector<he::loop3*>& faces);
 
     RTTR_ENABLE(Node)
 
