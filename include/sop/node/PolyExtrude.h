@@ -5,6 +5,7 @@
 #include "sop/Widgets.h"
 
 #include <halfedge/HalfEdge.h>
+#include <halfedge/Polyhedron.h>
 
 namespace sop
 {
@@ -35,9 +36,9 @@ public:
 
 private:
     bool ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims,
-        std::vector<he::loop3*>* new_faces);
+        std::vector<he::Polyhedron::Face>* new_faces);
 
-    void AddToGroup(const std::string& group_name, const std::vector<he::loop3*>& faces);
+    void AddToGroup(const std::string& group_name, const std::vector<he::Polyhedron::Face>& faces);
 
     RTTR_ENABLE(Node)
 

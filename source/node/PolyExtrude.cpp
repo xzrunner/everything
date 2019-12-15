@@ -42,7 +42,7 @@ void PolyExtrude::Execute(Evaluator& eval)
         edited_prims = prims;
     }
 
-    std::vector<he::loop3*> new_faces[he::Polyhedron::ExtrudeMaxCount];
+    std::vector<he::Polyhedron::Face> new_faces[he::Polyhedron::ExtrudeMaxCount];
     if (ExtrudeFace(edited_prims, new_faces))
     {
         m_geo_impl->UpdateByBrush(*brush_model);
@@ -61,7 +61,7 @@ void PolyExtrude::Execute(Evaluator& eval)
 }
 
 bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Primitive>>& prims,
-                              std::vector<he::loop3*>* new_faces)
+                              std::vector<he::Polyhedron::Face>* new_faces)
 {
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {
@@ -97,7 +97,7 @@ bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Pr
             continue;
         }
 
-        std::vector<he::loop3*> faces[he::Polyhedron::ExtrudeMaxCount];
+        std::vector<he::Polyhedron::Face> faces[he::Polyhedron::ExtrudeMaxCount];
         if (!topo_poly->Extrude(m_distance, face_ids[i], create_face, faces)) {
             continue;
         }
@@ -116,11 +116,11 @@ bool PolyExtrude::ExtrudeFace(const std::vector<std::shared_ptr<GeoAttribute::Pr
     return dirty;
 }
 
-void PolyExtrude::AddToGroup(const std::string& group_name, const std::vector<he::loop3*>& faces)
+void PolyExtrude::AddToGroup(const std::string& group_name, const std::vector<he::Polyhedron::Face>& faces)
 {
     std::set<size_t> face_ids;
     for (auto& f : faces) {
-        face_ids.insert(f->ids.UID());
+        face_ids.insert(f.border->ids.UID());
     }
 
     std::vector<size_t> items;
