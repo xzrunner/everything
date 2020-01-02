@@ -274,7 +274,7 @@ void GeoAdaptor::SetTopoLines(const std::vector<he::PolylinePtr>& lines)
     auto& ctopo = m_node->GetUniqueComp<CompTopoPolyline>();
     ctopo.SetLines(lines);
 
-    auto& cshape = m_node->GetSharedComp<n3::CompShape>();
+    auto& cshape = m_node->GetUniqueComp<n3::CompShape>();
     cshape.SetShapes(gs_shapes);
 
     pt3::AABB aabb;
@@ -308,7 +308,7 @@ void GeoAdaptor::Init(const Type& type)
     {
     case Type::Shape:
         m_node = ns::NodeFactory::Create3D();
-        m_node->AddSharedComp<n3::CompShape>();
+        m_node->AddUniqueComp<n3::CompShape>();
         m_node->AddUniqueComp<CompTopoPolyline>();
         break;
     case Type::Brush:
