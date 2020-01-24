@@ -49,10 +49,6 @@ private:
 
     void TopologicalSorting();
 
-    static void SetTreeDirty(const NodePtr& root);
-
-    static bool HasNodeConns(const NodePtr& node);
-
 private:
     std::map<std::string, NodePtr> m_nodes_map;
 
