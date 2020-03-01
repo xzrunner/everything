@@ -6,7 +6,7 @@
 #include <vexc/EvalAST.h>
 #include <vexc/Parser.h>
 #include <cpputil/StringHelper.h>
-#include <dag/Evaluator.h>
+#include <dag/Graph.h>
 
 #include <stack>
 #include <queue>
@@ -18,7 +18,7 @@ namespace sop
 
 void Evaluator::NodeChaged(const NodePtr& node)
 {
-    dag::Evaluator::SetTreeDirty<NodeVarType>(node);
+    dag::Graph<NodeVarType>::SetTreeDirty(node);
 
     m_dirty = true;
 }
@@ -54,7 +54,7 @@ void Evaluator::RemoveNode(const NodePtr& node)
         return;
     }
 
-    dag::Evaluator::SetTreeDirty<NodeVarType>(node);
+    dag::Graph<NodeVarType>::SetTreeDirty(node);
 
     assert(m_nodes_map.size() == m_nodes_sorted.size());
     m_nodes_map.erase(itr);
@@ -83,7 +83,7 @@ void Evaluator::ClearAllNodes()
 
 void Evaluator::PropChanged(const NodePtr& node)
 {
-    dag::Evaluator::SetTreeDirty<NodeVarType>(node);
+    dag::Graph<NodeVarType>::SetTreeDirty(node);
 
     m_dirty = true;
 }
@@ -94,7 +94,7 @@ void Evaluator::Connect(const dag::Node<NodeVarType>::PortAddr& from, const dag:
 
     auto node = to.node.lock();
     assert(node && node->get_type().is_derived_from<Node>());
-    dag::Evaluator::SetTreeDirty<NodeVarType>(std::static_pointer_cast<Node>(node));
+    dag::Graph<NodeVarType>::SetTreeDirty(std::static_pointer_cast<Node>(node));
 
     m_dirty = true;
 }
@@ -105,7 +105,7 @@ void Evaluator::Disconnect(const dag::Node<NodeVarType>::PortAddr& from, const d
 
     auto node = to.node.lock();
     assert(node && node->get_type().is_derived_from<Node>());
-    dag::Evaluator::SetTreeDirty<NodeVarType>(std::static_pointer_cast<Node>(node));
+    dag::Graph<NodeVarType>::SetTreeDirty(std::static_pointer_cast<Node>(node));
 
     m_dirty = true;
 }
@@ -114,8 +114,8 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<dag::Node<NodeVar
 {
     // update dirty
     for (auto itr : m_nodes_map) {
-        if (dag::Evaluator::HasNodeConns<NodeVarType>(itr.second)) {
-            dag::Evaluator::SetTreeDirty<NodeVarType>(itr.second);
+        if (dag::Graph<NodeVarType>::HasNodeConns(itr.second)) {
+            dag::Graph<NodeVarType>::SetTreeDirty(itr.second);
         }
     }
 
@@ -129,7 +129,7 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<dag::Node<NodeVar
     {
         auto node = conn.second.node.lock();
         assert(node && node->get_type().is_derived_from<Node>());
-        dag::Evaluator::SetTreeDirty<NodeVarType>(std::static_pointer_cast<Node>(node));
+        dag::Graph<NodeVarType>::SetTreeDirty(std::static_pointer_cast<Node>(node));
         dag::make_connecting<NodeVarType>(conn.first, conn.second);
     }
 
