@@ -24,9 +24,9 @@
 namespace sop
 {
 
-GeoAdaptor::GeoAdaptor(const Type& type)
+GeoAdaptor::GeoAdaptor(const ur2::Device& dev, const Type& type)
 {
-    Init(type);
+    Init(dev, type);
 }
 
 GeoAdaptor::GeoAdaptor(const GeoAdaptor& adaptor)
@@ -35,11 +35,12 @@ GeoAdaptor::GeoAdaptor(const GeoAdaptor& adaptor)
 {
 }
 
-void GeoAdaptor::UpdateByBrush(GeoAttribute& attr, const model::BrushModel& brush_model)
+void GeoAdaptor::UpdateByBrush(const ur2::Device& dev, GeoAttribute& attr,
+                               const model::BrushModel& brush_model)
 {
     assert(m_type == Type::Brush);
 
-    std::shared_ptr<model::Model> model = model::BrushBuilder::PolymeshFromBrushPN(brush_model);
+    std::shared_ptr<model::Model> model = model::BrushBuilder::PolymeshFromBrushPN(dev, brush_model);
     UpdateModel(model);
 
     BrushToAttr(attr, brush_model);
@@ -54,7 +55,7 @@ void GeoAdaptor::StoreBrush(std::unique_ptr<model::BrushModel>& brush_model)
     cmodel_inst.GetModel()->SetModelExt(model_ext);
 }
 
-void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
+void GeoAdaptor::UpdateByAttr(const ur2::Device& dev, const GeoAttribute& attr)
 {
     Type type = Type::Shape;
     for (auto& prim : attr.GetPrimtives()) {
@@ -63,7 +64,7 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
         }
     }
     if (type != m_type) {
-        Init(type);
+        Init(dev, type);
     }
 
     switch (type)
@@ -208,11 +209,11 @@ void GeoAdaptor::UpdateByAttr(const GeoAttribute& attr)
 
         std::shared_ptr<model::Model> model = nullptr;
         if (!texcoords.empty()) {
-            model = model::BrushBuilder::PolymeshFromBrushPNT(*brush_model, texcoords);
+            model = model::BrushBuilder::PolymeshFromBrushPNT(dev, *brush_model, texcoords);
         } else if (!colors.empty()) {
-            model = model::BrushBuilder::PolymeshFromBrushPNC(*brush_model, colors);
+            model = model::BrushBuilder::PolymeshFromBrushPNC(dev, *brush_model, colors);
         } else {
-            model = model::BrushBuilder::PolymeshFromBrushPN(*brush_model);
+            model = model::BrushBuilder::PolymeshFromBrushPN(dev, *brush_model);
         }
 
         UpdateModel(model);
@@ -301,7 +302,7 @@ model::BrushModel* GeoAdaptor::GetBrushModel() const
     return brush_model;
 }
 
-void GeoAdaptor::Init(const Type& type)
+void GeoAdaptor::Init(const ur2::Device& dev, const Type& type)
 {
     m_type = type;
     switch (m_type)
@@ -327,7 +328,7 @@ void GeoAdaptor::Init(const Type& type)
         mat->AddVar(UNIFORMS::shininess.name, pt0::RenderVariant(50.0f));
         cmaterial.SetMaterial(mat);
 
-        auto model = std::make_shared<model::Model>();
+        auto model = std::make_shared<model::Model>(&dev);
         UpdateModel(model);
 
         auto& cmodel_inst = m_node->GetUniqueComp<n3::CompModelInst>();

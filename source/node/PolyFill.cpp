@@ -12,7 +12,7 @@ namespace sop
 namespace node
 {
 
-void PolyFill::Execute(Evaluator& eval)
+void PolyFill::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -35,7 +35,7 @@ void PolyFill::Execute(Evaluator& eval)
         poly->GetTopoPoly()->Fill();
         poly->BuildFromTopo();
     }
-    m_geo_impl->UpdateByBrush(*brush_model);
+    m_geo_impl->UpdateByBrush(dev, *brush_model);
 }
 
 }

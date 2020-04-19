@@ -136,19 +136,19 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<dag::Node<NodeVar
     m_dirty = true;
 }
 
-void Evaluator::Update(bool force)
+void Evaluator::Update(const ur2::Device& dev, bool force)
 {
     if (!force && !m_dirty) {
         return;
     }
 
     // 1. build node connection for desc calc
-    UpdateNodes();
+    UpdateNodes(dev);
     // 2. calc prop
     UpdateProps();
     // 3. update node finally
     MakeDirty(true);    // todo: set dirty by props
-    UpdateNodes();
+    UpdateNodes(dev);
 
     m_dirty = false;
 }
@@ -357,7 +357,7 @@ void Evaluator::UpdateProps()
     }
 }
 
-void Evaluator::UpdateNodes()
+void Evaluator::UpdateNodes(const ur2::Device& dev)
 {
     if (m_nodes_sorted.empty()) {
         return;
@@ -374,7 +374,7 @@ void Evaluator::UpdateNodes()
     {
         auto& node = m_nodes_sorted[i];
         if (node->IsDirty()) {
-            node->Execute(*this);
+            node->Execute(dev, *this);
             node->SetDirty(false);
         }
     }

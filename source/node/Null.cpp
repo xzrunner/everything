@@ -7,7 +7,7 @@ namespace sop
 namespace node
 {
 
-void Null::Execute(Evaluator& eval)
+void Null::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 

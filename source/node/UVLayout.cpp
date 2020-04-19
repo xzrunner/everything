@@ -13,7 +13,7 @@ namespace sop
 namespace node
 {
 
-void UVLayout::Execute(Evaluator& eval)
+void UVLayout::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 

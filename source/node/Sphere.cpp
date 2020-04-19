@@ -6,9 +6,9 @@ namespace sop
 namespace node
 {
 
-void Sphere::Execute(Evaluator& eval)
+void Sphere::Execute(const ur2::Device& dev, Evaluator& eval)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
     BuildModel();
 }
 

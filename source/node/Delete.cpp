@@ -9,7 +9,7 @@ namespace sop
 namespace node
 {
 
-void Delete::Execute(Evaluator& eval)
+void Delete::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -63,7 +63,7 @@ void Delete::Execute(Evaluator& eval)
     }
 
     m_geo_impl->GetAttr().RemoveItems(GeoAttrClass::Point, del_flags, false);
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 }

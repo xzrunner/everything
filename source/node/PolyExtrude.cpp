@@ -11,7 +11,7 @@ namespace sop
 namespace node
 {
 
-void PolyExtrude::Execute(Evaluator& eval)
+void PolyExtrude::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -45,7 +45,7 @@ void PolyExtrude::Execute(Evaluator& eval)
     std::vector<he::Polyhedron::Face> new_faces[he::Polyhedron::ExtrudeMaxCount];
     if (ExtrudeFace(edited_prims, new_faces))
     {
-        m_geo_impl->UpdateByBrush(*brush_model);
+        m_geo_impl->UpdateByBrush(dev, *brush_model);
 
         // update group
         if (m_output_front_group) {

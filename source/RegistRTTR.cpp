@@ -48,6 +48,8 @@
 #include "sop/node/Dungeon.h"
 // rigging
 #include "sop/node/Lattice.h"
+// terrain
+#include "sop/node/HeightField.h"
 // utility
 #include "sop/node/Blast.h"
 #include "sop/node/CopyToPoints.h"
@@ -566,6 +568,16 @@ rttr::registration::class_<sop::node::Dungeon>("sop::dungeon")
 
 // rigging
 REGIST_NODE_TYPE(Lattice, lattice)
+
+// terrain
+rttr::registration::class_<sop::node::HeightField>("sop::heightfield")
+.constructor<>()
+#define PARM_FILEPATH "sop/node/HeightField.parm.h"
+#define PARM_NODE_CLASS sop::node::HeightField
+#include <dag/rttr_prop_gen.h>
+#undef PARM_NODE_CLASS
+#undef PARM_FILEPATH
+;
 
 // utility
 rttr::registration::class_<sop::node::Blast>("sop::blast")

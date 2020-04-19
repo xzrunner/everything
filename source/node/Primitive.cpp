@@ -8,7 +8,7 @@ namespace sop
 namespace node
 {
 
-void Primitive::Execute(Evaluator& eval)
+void Primitive::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -62,7 +62,7 @@ void Primitive::Execute(Evaluator& eval)
         }
     }
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 void Primitive::UpdatePrim(GeoAttribute::Primitive& prim, const sm::mat4& mat)

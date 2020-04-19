@@ -13,7 +13,7 @@ namespace sop
 namespace node
 {
 
-void Knife::Execute(Evaluator& eval)
+void Knife::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -41,7 +41,7 @@ void Knife::Execute(Evaluator& eval)
     }
 
     if (dirty) {
-        m_geo_impl->UpdateByBrush(*brush_model);
+        m_geo_impl->UpdateByBrush(dev, *brush_model);
     }
 }
 

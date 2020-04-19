@@ -70,6 +70,12 @@
     <Filter Include="tools">
       <UniqueIdentifier>{7336f7a8-4519-45c4-9358-12e620238c03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dataset\volume">
+      <UniqueIdentifier>{82bf012e-839e-4c9d-9ac7-742714ee110e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes\terrain">
+      <UniqueIdentifier>{43978f48-1128-4aec-8a49-9cdfc8ff1f77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\sop\node\Curve.h">
@@ -431,6 +437,15 @@
     <ClInclude Include="..\..\..\include\sop\node\Subnetwork.h">
       <Filter>nodes\utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\Volume.h">
+      <Filter>dataset\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\HeightField.h">
+      <Filter>nodes\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sop\node\HeightField.parm.h">
+      <Filter>nodes\terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Evaluator.cpp">
@@ -640,6 +655,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\node\Subnetwork.cpp">
       <Filter>nodes\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Volume.cpp">
+      <Filter>dataset\volume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\node\HeightField.cpp">
+      <Filter>nodes\terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

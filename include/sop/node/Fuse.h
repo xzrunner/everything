@@ -28,15 +28,15 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval) override;
+    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
 
 private:
-    void Consolidate();
-    void ConsolidateBrush();
+    void Consolidate(const ur2::Device& dev);
+    void ConsolidateBrush(const ur2::Device& dev);
     void ConsolidateShape();
 
-    void UniquePoints();
-    void UniquePointsBrush();
+    void UniquePoints(const ur2::Device& dev);
+    void UniquePointsBrush(const ur2::Device& dev);
     void UniquePointsShape();
 
     RTTR_ENABLE(Node)

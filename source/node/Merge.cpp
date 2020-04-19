@@ -7,7 +7,7 @@ namespace sop
 namespace node
 {
 
-void Merge::Execute(Evaluator& eval)
+void Merge::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     size_t n_shape = 0, n_brush = 0;
 
@@ -32,9 +32,9 @@ void Merge::Execute(Evaluator& eval)
     }
 
     if (n_shape == 0) {
-        m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+        m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
     } else if (n_brush == 0) {
-        m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
+        m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Shape);
     } else {
         assert(0);
     }
@@ -47,7 +47,7 @@ void Merge::Execute(Evaluator& eval)
         attr.Combine(c->GetAttr());
     }
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 void Merge::AddInputPorts(size_t num)

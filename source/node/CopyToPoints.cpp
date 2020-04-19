@@ -35,7 +35,7 @@ namespace sop
 namespace node
 {
 
-void CopyToPoints::Execute(Evaluator& eval)
+void CopyToPoints::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -45,7 +45,7 @@ void CopyToPoints::Execute(Evaluator& eval)
         return;
     }
 
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
 
     if (!m_trans_use_pt_dir)
     {
@@ -80,7 +80,7 @@ void CopyToPoints::Execute(Evaluator& eval)
         }
     }
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 void CopyToPoints::CopyTo(const GeometryImpl& src, const GeometryImpl& dst)

@@ -9,7 +9,7 @@ namespace sop
 namespace node
 {
 
-void Color::Execute(Evaluator& eval)
+void Color::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -27,7 +27,7 @@ void Color::Execute(Evaluator& eval)
     );
     attr.AddParmList(m_attr_add_to, list);
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 }

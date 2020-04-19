@@ -12,14 +12,14 @@ namespace sop
 namespace node
 {
 
-void Dungeon::Execute(Evaluator& eval)
+void Dungeon::Execute(const ur2::Device& dev, Evaluator& eval)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
 
-    BuildModel();
+    BuildModel(dev);
 }
 
-void Dungeon::BuildModel()
+void Dungeon::BuildModel(const ur2::Device& dev)
 {
     assert(m_geo_impl);
 
@@ -58,7 +58,7 @@ void Dungeon::BuildModel()
     brushes.push_back(brush);
     brush_model->SetBrushes(brushes);
 
-    m_geo_impl->UpdateByBrush(*brush_model);
+    m_geo_impl->UpdateByBrush(dev, *brush_model);
     m_geo_impl->StoreBrush(brush_model);
 }
 

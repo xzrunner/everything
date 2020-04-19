@@ -7,7 +7,7 @@ namespace sop
 namespace node
 {
 
-void Divide::Execute(Evaluator& eval)
+void Divide::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 

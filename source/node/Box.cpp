@@ -9,13 +9,13 @@ namespace sop
 namespace node
 {
 
-void Box::Execute(Evaluator& eval)
+void Box::Execute(const ur2::Device& dev, Evaluator& eval)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
-    BuildModel();
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
+    BuildModel(dev);
 }
 
-void Box::BuildModel()
+void Box::BuildModel(const ur2::Device& dev)
 {
     if (!m_geo_impl) {
         return;
@@ -23,7 +23,7 @@ void Box::BuildModel()
 
     auto brush_model = BuildBrush();
     if (brush_model) {
-        m_geo_impl->UpdateByBrush(*brush_model);
+        m_geo_impl->UpdateByBrush(dev, *brush_model);
         m_geo_impl->StoreBrush(brush_model);
     }
 }

@@ -10,7 +10,7 @@ namespace sop
 namespace node
 {
 
-void Add::Execute(Evaluator& eval)
+void Add::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -19,7 +19,7 @@ void Add::Execute(Evaluator& eval)
         return;
     }
 
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Shape);
 
     assert(m_points_enable.size() == m_points.size());
     for (size_t i = 0, n = m_points.size(); i < n; ++i) {

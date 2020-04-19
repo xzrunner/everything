@@ -14,7 +14,7 @@ namespace sop
 namespace node
 {
 
-void ForeachPrimEnd::Execute(Evaluator& eval)
+void ForeachPrimEnd::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     auto begin = FindForeachBegin();
     if (!begin) {
@@ -26,7 +26,7 @@ void ForeachPrimEnd::Execute(Evaluator& eval)
         return;
     }
 
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
 
     auto nodes = FindClosureNodes(begin);
 
@@ -40,15 +40,15 @@ void ForeachPrimEnd::Execute(Evaluator& eval)
     size_t n_prim = prev_geo->GetAttr().GetPrimtives().size();
     if (m_do_single_pass) {
         if (m_single_pass_offset < static_cast<int>(n_prim)) {
-            DoOnePass(sub_eval, begin, prev_geo, m_single_pass_offset);
+            DoOnePass(dev, sub_eval, begin, prev_geo, m_single_pass_offset);
         }
     } else {
         for (size_t i = 0, n = n_prim; i < n; ++i) {
-            DoOnePass(sub_eval, begin, prev_geo, i);
+            DoOnePass(dev, sub_eval, begin, prev_geo, i);
         }
     }
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 NodePtr ForeachPrimEnd::FindForeachBegin() const
@@ -151,7 +151,7 @@ std::set<NodePtr> ForeachPrimEnd::FindClosureNodes(const NodePtr& begin) const
     return nodes;
 }
 
-void ForeachPrimEnd::DoOnePass(Evaluator& sub_eval, const NodePtr& begin,
+void ForeachPrimEnd::DoOnePass(const ur2::Device& dev, Evaluator& sub_eval, const NodePtr& begin,
                                const std::shared_ptr<GeometryImpl>& prev_geo, size_t idx)
 {
     {
@@ -165,13 +165,13 @@ void ForeachPrimEnd::DoOnePass(Evaluator& sub_eval, const NodePtr& begin,
         GroupRebuild group_rebuild(*geo_impl);
 
         geo_impl->GetAttr().RemoveItems(GeoAttrClass::Primitive, del_flags, true);
-        geo_impl->UpdateByAttr();
+        geo_impl->UpdateByAttr(dev);
 
         std::static_pointer_cast<node::ForeachPrimBegin>(begin)->SetGeoImpl(geo_impl);
     }
 
     sub_eval.MakeDirty();
-    sub_eval.Update();
+    sub_eval.Update(dev);
 
     auto e_prev_geo = NodeHelper::GetInputGeo(*this, 0);
     if (e_prev_geo)

@@ -9,7 +9,7 @@ namespace sop
 namespace node
 {
 
-void Blast::Execute(Evaluator& eval)
+void Blast::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -42,7 +42,7 @@ void Blast::Execute(Evaluator& eval)
         if (SetupDelFlags(*group, attr.GetPoints().size(), del_flags))
         {
             attr.RemoveItems(GeoAttrClass::Point, del_flags, false);
-            m_geo_impl->UpdateByAttr();
+            m_geo_impl->UpdateByAttr(dev);
         }
     }
         break;
@@ -53,7 +53,7 @@ void Blast::Execute(Evaluator& eval)
         if (SetupDelFlags(*group, attr.GetVertices().size(), del_flags))
         {
             attr.RemoveItems(GeoAttrClass::Vertex, del_flags, true);
-            m_geo_impl->UpdateByAttr();
+            m_geo_impl->UpdateByAttr(dev);
         }
     }
         break;
@@ -64,7 +64,7 @@ void Blast::Execute(Evaluator& eval)
         if (SetupDelFlags(*group, attr.GetPrimtives().size(), del_flags))
         {
             attr.RemoveItems(GeoAttrClass::Primitive, del_flags, true);
-            m_geo_impl->UpdateByAttr();
+            m_geo_impl->UpdateByAttr(dev);
         }
     }
         break;

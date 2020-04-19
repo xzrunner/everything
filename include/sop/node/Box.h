@@ -24,10 +24,10 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval) override;
+    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
 
 private:
-    void BuildModel();
+    void BuildModel(const ur2::Device& dev);
 
     std::unique_ptr<model::BrushModel> BuildBrush() const;
 

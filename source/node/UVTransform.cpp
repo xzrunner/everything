@@ -9,7 +9,7 @@ namespace sop
 namespace node
 {
 
-void UVTransform::Execute(Evaluator& eval)
+void UVTransform::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -90,7 +90,7 @@ void UVTransform::Execute(Evaluator& eval)
             }
         }
     }
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 }

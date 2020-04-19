@@ -26,7 +26,7 @@ namespace sop
 namespace node
 {
 
-void Split::Execute(Evaluator& eval)
+void Split::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -55,7 +55,7 @@ void Split::Execute(Evaluator& eval)
     sub_eval.Connect({ m_children[SUB_BLAST_1], 0 }, { m_children[SUB_OUTPUT_1], 0 });
 
     sub_eval.MakeDirty();
-    sub_eval.Update();
+    sub_eval.Update(dev);
 
     if (m_children[SUB_OUTPUT_0]) {
         auto out0_geo = m_children[SUB_OUTPUT_0]->GetGeometry();

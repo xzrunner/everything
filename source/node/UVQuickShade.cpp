@@ -13,7 +13,7 @@ namespace sop
 namespace node
 {
 
-void UVQuickShade::Execute(Evaluator& eval)
+void UVQuickShade::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -38,12 +38,12 @@ void UVQuickShade::Execute(Evaluator& eval)
         return;
     }
 
-    auto tex = model::TextureLoader::LoadFromFile(m_image_file.c_str());
+    auto tex = model::TextureLoader::LoadFromFile(dev, m_image_file.c_str());
     if (!tex) {
         return;
     }
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 
     auto& model = cmodel.GetModel();
 

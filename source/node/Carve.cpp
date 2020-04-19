@@ -11,7 +11,7 @@ namespace sop
 namespace node
 {
 
-void Carve::Execute(Evaluator& eval)
+void Carve::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -136,7 +136,7 @@ void Carve::Execute(Evaluator& eval)
     }
 
     assert(!dst_vertices.empty());
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Shape);
 
     std::vector<std::pair<he::TopoID, sm::vec3>> line_vertices;
     std::vector<std::pair<he::TopoID, std::vector<size_t>>> line_polylines;

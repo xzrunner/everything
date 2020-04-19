@@ -7,7 +7,7 @@ namespace sop
 namespace node
 {
 
-void Transform::Execute(Evaluator& eval)
+void Transform::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -85,7 +85,7 @@ void Transform::Execute(Evaluator& eval)
             p->pos = mat * p->pos;
         }
     }
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 sm::mat4 Transform::CalcTransformMat(const sm::vec3& translate, const sm::vec3& rotate,

@@ -15,7 +15,7 @@ namespace sop
 namespace node
 {
 
-void Fuse::Execute(Evaluator& eval)
+void Fuse::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -28,20 +28,20 @@ void Fuse::Execute(Evaluator& eval)
     switch (m_fuse_op)
     {
     case Operator::Consolidate:
-        Consolidate();
+        Consolidate(dev);
         break;
     case Operator::UniquePoints:
-        UniquePoints();
+        UniquePoints(dev);
         break;
     }
 }
 
-void Fuse::Consolidate()
+void Fuse::Consolidate(const ur2::Device& dev)
 {
     switch (m_geo_impl->GetAdaptorType())
     {
     case GeoAdaptor::Type::Brush:
-        ConsolidateBrush();
+        ConsolidateBrush(dev);
         break;
     case GeoAdaptor::Type::Shape:
         ConsolidateShape();
@@ -51,7 +51,7 @@ void Fuse::Consolidate()
     }
 }
 
-void Fuse::ConsolidateBrush()
+void Fuse::ConsolidateBrush(const ur2::Device& dev)
 {
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {
@@ -72,7 +72,7 @@ void Fuse::ConsolidateBrush()
     brush.impl = std::make_shared<pm3::Polytope>(dst);
     brush_model->SetBrushes({ brush });
 
-    m_geo_impl->UpdateByBrush(*brush_model);
+    m_geo_impl->UpdateByBrush(dev, *brush_model);
 }
 
 void Fuse::ConsolidateShape()
@@ -91,12 +91,12 @@ void Fuse::ConsolidateShape()
     m_geo_impl->SetTopoLines(lines);
 }
 
-void Fuse::UniquePoints()
+void Fuse::UniquePoints(const ur2::Device& dev)
 {
     switch (m_geo_impl->GetAdaptorType())
     {
     case GeoAdaptor::Type::Brush:
-        UniquePointsBrush();
+        UniquePointsBrush(dev);
         break;
     case GeoAdaptor::Type::Shape:
         UniquePointsShape();
@@ -106,7 +106,7 @@ void Fuse::UniquePoints()
     }
 }
 
-void Fuse::UniquePointsBrush()
+void Fuse::UniquePointsBrush(const ur2::Device& dev)
 {
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {
@@ -123,7 +123,7 @@ void Fuse::UniquePointsBrush()
         poly->GetTopoPoly()->UniquePoints();
         poly->BuildFromTopo();
     }
-    m_geo_impl->UpdateByBrush(*brush_model);
+    m_geo_impl->UpdateByBrush(dev, *brush_model);
 }
 
 void Fuse::UniquePointsShape()

@@ -11,7 +11,7 @@ namespace sop
 namespace node
 {
 
-void AttributeWrangle::Execute(Evaluator& eval)
+void AttributeWrangle::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -33,7 +33,7 @@ void AttributeWrangle::Execute(Evaluator& eval)
         eval.RunStatement("{" + expr + "}", eval_ctx);
     }
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 std::string AttributeWrangle::FormatExprStr() const

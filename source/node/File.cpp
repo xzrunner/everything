@@ -13,9 +13,9 @@ namespace sop
 namespace node
 {
 
-void File::Execute(Evaluator& eval)
+void File::Execute(const ur2::Device& dev, Evaluator& eval)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
 
     if (m_filepath.empty()) {
         return;
@@ -66,7 +66,7 @@ void File::Execute(Evaluator& eval)
     }
     brush_model->SetBrushes(brushes);
 
-    m_geo_impl->UpdateByBrush(*brush_model);
+    m_geo_impl->UpdateByBrush(dev, *brush_model);
     m_geo_impl->StoreBrush(brush_model);
 
     // set norm and uv attr

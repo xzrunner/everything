@@ -12,7 +12,7 @@ namespace sop
 namespace node
 {
 
-void Boolean::Execute(Evaluator& eval)
+void Boolean::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -27,7 +27,7 @@ void Boolean::Execute(Evaluator& eval)
         return;
     }
 
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
 
     std::vector<model::BrushModel::Brush> brushes;
 
@@ -83,7 +83,7 @@ void Boolean::Execute(Evaluator& eval)
 
         auto brush_model = std::make_unique<model::BrushModel>();
         brush_model->SetBrushes(brushes);
-        m_geo_impl->UpdateByBrush(*brush_model);
+        m_geo_impl->UpdateByBrush(dev, *brush_model);
         m_geo_impl->StoreBrush(brush_model);
     }
 }

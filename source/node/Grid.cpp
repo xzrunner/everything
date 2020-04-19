@@ -11,18 +11,18 @@ namespace sop
 namespace node
 {
 
-void Grid::Execute(Evaluator& eval)
+void Grid::Execute(const ur2::Device& dev, Evaluator& eval)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
 
     if (m_rows == 0 || m_columns == 0) {
         return;
     }
 
-    BuildModel();
+    BuildModel(dev);
 }
 
-void Grid::BuildModel()
+void Grid::BuildModel(const ur2::Device& dev)
 {
     assert(m_geo_impl);
     assert(m_rows > 0 && m_columns > 0);
@@ -81,7 +81,7 @@ void Grid::BuildModel()
     brushes.push_back(brush);
     brush_model->SetBrushes(brushes);
 
-    m_geo_impl->UpdateByBrush(*brush_model);
+    m_geo_impl->UpdateByBrush(dev, *brush_model);
     m_geo_impl->StoreBrush(brush_model);
 }
 

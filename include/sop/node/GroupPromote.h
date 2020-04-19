@@ -21,7 +21,7 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval) override;
+    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
 
 private:
     void PrimsToPoints(Group& group);

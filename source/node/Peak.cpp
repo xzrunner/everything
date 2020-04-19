@@ -9,7 +9,7 @@ namespace sop
 namespace node
 {
 
-void Peak::Execute(Evaluator& eval)
+void Peak::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -39,13 +39,13 @@ void Peak::Execute(Evaluator& eval)
         switch (type)
         {
         case GroupType::Points:
-            TranslatePoints(m_dist, group);
+            TranslatePoints(dev, m_dist, group);
             break;
         case GroupType::Vertices:
-            TranslateVertices(m_dist, group);
+            TranslateVertices(dev, m_dist, group);
             break;
         case GroupType::Primitives:
-            TranslatePrimitives(m_dist, group);
+            TranslatePrimitives(dev, m_dist, group);
             break;
         default:
             assert(0);
@@ -57,10 +57,10 @@ void Peak::Execute(Evaluator& eval)
         switch (type)
         {
         case GeoAdaptor::Type::Shape:
-            TranslatePoints(m_dist, nullptr);
+            TranslatePoints(dev, m_dist, nullptr);
             break;
         case GeoAdaptor::Type::Brush:
-            TranslatePrimitives(m_dist, nullptr);
+            TranslatePrimitives(dev, m_dist, nullptr);
             break;
         default:
             assert(0);
@@ -68,7 +68,7 @@ void Peak::Execute(Evaluator& eval)
     }
 }
 
-void Peak::TranslatePoints(float dist, const std::shared_ptr<Group>& group)
+void Peak::TranslatePoints(const ur2::Device& dev, float dist, const std::shared_ptr<Group>& group)
 {
     assert(m_geo_impl);
     auto& attr = m_geo_impl->GetAttr();
@@ -95,7 +95,7 @@ void Peak::TranslatePoints(float dist, const std::shared_ptr<Group>& group)
             }
         }
 
-        m_geo_impl->UpdateByAttr();
+        m_geo_impl->UpdateByAttr(dev);
     }
     else
     {
@@ -114,12 +114,12 @@ void Peak::TranslatePoints(float dist, const std::shared_ptr<Group>& group)
                 }
             }
 
-            m_geo_impl->UpdateByAttr();
+            m_geo_impl->UpdateByAttr(dev);
         }
     }
 }
 
-void Peak::TranslateVertices(float dist, const std::shared_ptr<Group>& group)
+void Peak::TranslateVertices(const ur2::Device& dev, float dist, const std::shared_ptr<Group>& group)
 {
     assert(m_geo_impl);
     auto& attr = m_geo_impl->GetAttr();
@@ -146,7 +146,7 @@ void Peak::TranslateVertices(float dist, const std::shared_ptr<Group>& group)
             }
         }
 
-        m_geo_impl->UpdateByAttr();
+        m_geo_impl->UpdateByAttr(dev);
     }
     else
     {
@@ -167,12 +167,12 @@ void Peak::TranslateVertices(float dist, const std::shared_ptr<Group>& group)
                 }
             }
 
-            m_geo_impl->UpdateByAttr();
+            m_geo_impl->UpdateByAttr(dev);
         }
     }
 }
 
-void Peak::TranslatePrimitives(float dist, const std::shared_ptr<Group>& group)
+void Peak::TranslatePrimitives(const ur2::Device& dev, float dist, const std::shared_ptr<Group>& group)
 {
     assert(m_geo_impl);
     auto& attr = m_geo_impl->GetAttr();
@@ -197,7 +197,7 @@ void Peak::TranslatePrimitives(float dist, const std::shared_ptr<Group>& group)
         }
     }
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 }

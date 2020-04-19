@@ -10,9 +10,9 @@ namespace sop
 namespace node
 {
 
-void Line::Execute(Evaluator& eval)
+void Line::Execute(const ur2::Device& dev, Evaluator& eval)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Shape);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Shape);
     BuildModel();
 }
 

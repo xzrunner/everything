@@ -10,7 +10,7 @@ namespace sop
 namespace node
 {
 
-void GroupExpression::Execute(Evaluator& eval)
+void GroupExpression::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 

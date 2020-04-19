@@ -9,9 +9,9 @@ namespace sop
 namespace node
 {
 
-void ObjectMerge::Execute(Evaluator& eval)
+void ObjectMerge::Execute(const ur2::Device& dev, Evaluator& eval)
 {
-    m_geo_impl = std::make_shared<GeometryImpl>(GeoAdaptor::Type::Brush);
+    m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
     auto& attr = m_geo_impl->GetAttr();
     for (auto& path : m_obj_paths)
     {
@@ -26,7 +26,7 @@ void ObjectMerge::Execute(Evaluator& eval)
         attr.Combine(geo->GetAttr());
     }
 
-    m_geo_impl->UpdateByAttr();
+    m_geo_impl->UpdateByAttr(dev);
 }
 
 }

@@ -48,6 +48,8 @@
     <ClInclude Include="..\..\..\include\sop\node\GroupExpression.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.h" />
     <ClInclude Include="..\..\..\include\sop\node\GroupPromote.parm.h" />
+    <ClInclude Include="..\..\..\include\sop\node\HeightField.h" />
+    <ClInclude Include="..\..\..\include\sop\node\HeightField.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Knife.parm.h" />
     <ClInclude Include="..\..\..\include\sop\node\Lattice.h" />
     <ClInclude Include="..\..\..\include\sop\node\Line.parm.h" />
@@ -129,6 +131,7 @@
     <ClInclude Include="..\..\..\include\sop\node\Transform.h" />
     <ClInclude Include="..\..\..\include\sop\typedef.h" />
     <ClInclude Include="..\..\..\include\sop\NodeVarType.h" />
+    <ClInclude Include="..\..\..\include\sop\Volume.h" />
     <ClInclude Include="..\..\..\include\sop\Widgets.h" />
     <ClInclude Include="..\..\..\include\sop\VarBuffer.h" />
     <ClInclude Include="..\..\..\include\sop\VexFuncs.h" />
@@ -148,6 +151,7 @@
     <ClCompile Include="..\..\..\source\node\File.cpp" />
     <ClCompile Include="..\..\..\source\node\Grid.cpp" />
     <ClCompile Include="..\..\..\source\node\GroupPromote.cpp" />
+    <ClCompile Include="..\..\..\source\node\HeightField.cpp" />
     <ClCompile Include="..\..\..\source\node\Lattice.cpp" />
     <ClCompile Include="..\..\..\source\node\ObjectMerge.cpp" />
     <ClCompile Include="..\..\..\source\node\Output.cpp" />
@@ -207,6 +211,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\..\source\VexFuncs.cpp" />
+    <ClCompile Include="..\..\..\source\Volume.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\include\sop\node\GroupCreate.parm.h" />
@@ -254,7 +259,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\dag\include;..\..\..\..\vop\include;..\..\..\..\halfedge\include;..\..\..\..\dungeon\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;..\..\..\..\external\python27\include;..\..\..\..\external\python27\include\python27;..\..\..\..\external\eigen\include;..\..\..\..\external\geogram\src\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\dag\include;..\..\..\..\vop\include;..\..\..\..\halfedge\include;..\..\..\..\dungeon\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender2\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;..\..\..\..\external\python27\include;..\..\..\..\external\python27\include\python27;..\..\..\..\external\eigen\include;..\..\..\..\external\geogram\src\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -268,7 +273,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\dag\include;..\..\..\..\vop\include;..\..\..\..\halfedge\include;..\..\..\..\dungeon\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;..\..\..\..\external\python27\include;..\..\..\..\external\python27\include\python27;..\..\..\..\external\eigen\include;..\..\..\..\external\geogram\src\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\cu\src;..\..\..\..\sm\src\sm;..\..\..\..\guard\include;..\..\..\..\cpputil\include;..\..\..\..\geoshape\include;..\..\..\..\dag\include;..\..\..\..\vop\include;..\..\..\..\halfedge\include;..\..\..\..\dungeon\include;..\..\..\..\polymesh3\include;..\..\..\..\painting0\include;..\..\..\..\painting3\include;..\..\..\..\node0\include;..\..\..\..\node3\include;..\..\..\..\nserializer\include;..\..\..\..\model\include;..\..\..\..\unirender2\include;..\..\..\..\lexer\include;..\..\..\..\vexc\include;..\..\..\..\external\rttr\include;..\..\..\..\external\rapidjson\include;..\..\..\..\external\boost\include;..\..\..\..\external\python27\include;..\..\..\..\external\python27\include\python27;..\..\..\..\external\eigen\include;..\..\..\..\external\geogram\src\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>

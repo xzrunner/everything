@@ -12,7 +12,7 @@ namespace sop
 namespace node
 {
 
-void AttributeVOP::Execute(Evaluator& eval)
+void AttributeVOP::Execute(const ur2::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -118,7 +118,7 @@ void AttributeVOP::Execute(Evaluator& eval)
     }
 
     if (dirty) {
-        m_geo_impl->UpdateByAttr();
+        m_geo_impl->UpdateByAttr(dev);
     }
 }
 

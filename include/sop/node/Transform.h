@@ -24,7 +24,7 @@ public:
         };
     }
 
-    virtual void Execute(Evaluator& eval) override;
+    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
 
     static sm::mat4 CalcTransformMat(const sm::vec3& translate,
         const sm::vec3& rotate, const sm::vec3& scale, const sm::vec3& shear);
