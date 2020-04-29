@@ -41,13 +41,13 @@ public:
         };
     }
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) override;
 
 private:
     NodePtr FindForeachBegin() const;
     std::set<NodePtr> FindClosureNodes(const NodePtr& begin) const;
 
-    void DoOnePass(const ur2::Device& dev, Evaluator& sub_eval, const NodePtr& begin,
+    void DoOnePass(const ur::Device& dev, Evaluator& sub_eval, const NodePtr& begin,
         const std::shared_ptr<GeometryImpl>& prev_geo, size_t idx);
 
     RTTR_ENABLE(Node)

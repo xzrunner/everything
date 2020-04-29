@@ -14,7 +14,7 @@ namespace sop
 namespace node
 {
 
-void ForeachPrimEnd::Execute(const ur2::Device& dev, Evaluator& eval)
+void ForeachPrimEnd::Execute(const ur::Device& dev, Evaluator& eval)
 {
     auto begin = FindForeachBegin();
     if (!begin) {
@@ -151,7 +151,7 @@ std::set<NodePtr> ForeachPrimEnd::FindClosureNodes(const NodePtr& begin) const
     return nodes;
 }
 
-void ForeachPrimEnd::DoOnePass(const ur2::Device& dev, Evaluator& sub_eval, const NodePtr& begin,
+void ForeachPrimEnd::DoOnePass(const ur::Device& dev, Evaluator& sub_eval, const NodePtr& begin,
                                const std::shared_ptr<GeometryImpl>& prev_geo, size_t idx)
 {
     {

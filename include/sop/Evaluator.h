@@ -30,7 +30,7 @@ public:
     void Disconnect(const dag::Node<NodeVarType>::PortAddr& from, const dag::Node<NodeVarType>::PortAddr& to);
     void RebuildConnections(const std::vector<std::pair<dag::Node<NodeVarType>::PortAddr, dag::Node<NodeVarType>::PortAddr>>& conns);
 
-    void Update(const ur2::Device& dev, bool force = false);
+    void Update(const ur::Device& dev, bool force = false);
 
     void MakeDirty(bool all_nodes_dirty = true);
 
@@ -45,7 +45,7 @@ public:
 
 private:
     void UpdateProps();
-    void UpdateNodes(const ur2::Device& dev);
+    void UpdateNodes(const ur::Device& dev);
 
     void TopologicalSorting();
 

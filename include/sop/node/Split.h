@@ -33,7 +33,7 @@ public:
         InitSubNodes();
     }
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) override;
 
 private:
     void InitSubNodes();

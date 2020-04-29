@@ -13,7 +13,7 @@ namespace sop
 namespace node
 {
 
-void UVUnwrap::Execute(const ur2::Device& dev, Evaluator& eval)
+void UVUnwrap::Execute(const ur::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 

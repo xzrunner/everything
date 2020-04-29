@@ -32,7 +32,7 @@ namespace sop
 namespace node
 {
 
-void GroupPromote::Execute(const ur2::Device& dev, Evaluator& eval)
+void GroupPromote::Execute(const ur::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 

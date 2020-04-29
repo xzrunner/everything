@@ -11,7 +11,7 @@ namespace sop
 namespace node
 {
 
-void Grid::Execute(const ur2::Device& dev, Evaluator& eval)
+void Grid::Execute(const ur::Device& dev, Evaluator& eval)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
 
@@ -22,7 +22,7 @@ void Grid::Execute(const ur2::Device& dev, Evaluator& eval)
     BuildModel(dev);
 }
 
-void Grid::BuildModel(const ur2::Device& dev)
+void Grid::BuildModel(const ur::Device& dev)
 {
     assert(m_geo_impl);
     assert(m_rows > 0 && m_columns > 0);

@@ -13,7 +13,7 @@ namespace sop
 namespace node
 {
 
-void File::Execute(const ur2::Device& dev, Evaluator& eval)
+void File::Execute(const ur::Device& dev, Evaluator& eval)
 {
     m_geo_impl = std::make_shared<GeometryImpl>(dev, GeoAdaptor::Type::Brush);
 

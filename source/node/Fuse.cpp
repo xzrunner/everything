@@ -15,7 +15,7 @@ namespace sop
 namespace node
 {
 
-void Fuse::Execute(const ur2::Device& dev, Evaluator& eval)
+void Fuse::Execute(const ur::Device& dev, Evaluator& eval)
 {
     m_geo_impl.reset();
 
@@ -36,7 +36,7 @@ void Fuse::Execute(const ur2::Device& dev, Evaluator& eval)
     }
 }
 
-void Fuse::Consolidate(const ur2::Device& dev)
+void Fuse::Consolidate(const ur::Device& dev)
 {
     switch (m_geo_impl->GetAdaptorType())
     {
@@ -51,7 +51,7 @@ void Fuse::Consolidate(const ur2::Device& dev)
     }
 }
 
-void Fuse::ConsolidateBrush(const ur2::Device& dev)
+void Fuse::ConsolidateBrush(const ur::Device& dev)
 {
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {
@@ -91,7 +91,7 @@ void Fuse::ConsolidateShape()
     m_geo_impl->SetTopoLines(lines);
 }
 
-void Fuse::UniquePoints(const ur2::Device& dev)
+void Fuse::UniquePoints(const ur::Device& dev)
 {
     switch (m_geo_impl->GetAdaptorType())
     {
@@ -106,7 +106,7 @@ void Fuse::UniquePoints(const ur2::Device& dev)
     }
 }
 
-void Fuse::UniquePointsBrush(const ur2::Device& dev)
+void Fuse::UniquePointsBrush(const ur::Device& dev)
 {
     auto brush_model = m_geo_impl->GetBrushModel();
     if (!brush_model) {

@@ -7,7 +7,7 @@ namespace sop
 namespace node
 {
 
-void Merge::Execute(const ur2::Device& dev, Evaluator& eval)
+void Merge::Execute(const ur::Device& dev, Evaluator& eval)
 {
     size_t n_shape = 0, n_brush = 0;
 

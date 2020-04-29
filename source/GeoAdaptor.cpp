@@ -24,7 +24,7 @@
 namespace sop
 {
 
-GeoAdaptor::GeoAdaptor(const ur2::Device& dev, const Type& type)
+GeoAdaptor::GeoAdaptor(const ur::Device& dev, const Type& type)
 {
     Init(dev, type);
 }
@@ -35,7 +35,7 @@ GeoAdaptor::GeoAdaptor(const GeoAdaptor& adaptor)
 {
 }
 
-void GeoAdaptor::UpdateByBrush(const ur2::Device& dev, GeoAttribute& attr,
+void GeoAdaptor::UpdateByBrush(const ur::Device& dev, GeoAttribute& attr,
                                const model::BrushModel& brush_model)
 {
     assert(m_type == Type::Brush);
@@ -55,7 +55,7 @@ void GeoAdaptor::StoreBrush(std::unique_ptr<model::BrushModel>& brush_model)
     cmodel_inst.GetModel()->SetModelExt(model_ext);
 }
 
-void GeoAdaptor::UpdateByAttr(const ur2::Device& dev, const GeoAttribute& attr)
+void GeoAdaptor::UpdateByAttr(const ur::Device& dev, const GeoAttribute& attr)
 {
     Type type = Type::Shape;
     for (auto& prim : attr.GetPrimtives()) {
@@ -302,7 +302,7 @@ model::BrushModel* GeoAdaptor::GetBrushModel() const
     return brush_model;
 }
 
-void GeoAdaptor::Init(const ur2::Device& dev, const Type& type)
+void GeoAdaptor::Init(const ur::Device& dev, const Type& type)
 {
     m_type = type;
     switch (m_type)

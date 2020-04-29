@@ -30,7 +30,7 @@ public:
         };
     }
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) override;
 
 private:
     void CalcPerimeter(std::string& name, std::vector<float>& val) const;

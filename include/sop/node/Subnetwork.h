@@ -22,7 +22,7 @@ public:
         };
     }
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) override;
 
     auto& GetAllChildren() const { return m_children; }
 

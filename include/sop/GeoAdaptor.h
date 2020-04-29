@@ -9,7 +9,7 @@
 
 namespace model { class BrushModel; struct Model; }
 namespace gs { class Shape3D; }
-namespace ur2 { class Device; }
+namespace ur { class Device; }
 
 namespace sop
 {
@@ -28,18 +28,18 @@ public:
     };
 
 public:
-    GeoAdaptor(const ur2::Device& dev, const Type& type);
+    GeoAdaptor(const ur::Device& dev, const Type& type);
     GeoAdaptor(const GeoAdaptor& adaptor);
     GeoAdaptor& operator = (const GeoAdaptor& adaptor) = delete;
 
     auto GetType() const { return m_type; }
     auto GetNode() const { return m_node; }
 
-    void UpdateByBrush(const ur2::Device& dev, GeoAttribute& attr,
+    void UpdateByBrush(const ur::Device& dev, GeoAttribute& attr,
         const model::BrushModel& brush_model);
     void StoreBrush(std::unique_ptr<model::BrushModel>& brush_model);
 
-    void UpdateByAttr(const ur2::Device& dev, const GeoAttribute& attr);
+    void UpdateByAttr(const ur::Device& dev, const GeoAttribute& attr);
 
     const std::vector<he::PolylinePtr>& GetTopoLines() const;
     void SetTopoLines(const std::vector<he::PolylinePtr>& lines);
@@ -49,7 +49,7 @@ public:
     model::BrushModel* GetBrushModel() const;
 
 private:
-    void Init(const ur2::Device& dev, const Type& type);
+    void Init(const ur::Device& dev, const Type& type);
 
     void UpdateModel(const std::shared_ptr<model::Model>& model);
 

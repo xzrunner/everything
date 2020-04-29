@@ -32,7 +32,7 @@ public:
         };
     }
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) override;
 
 private:
     bool Clip(pm3::Polytope& poly) const;

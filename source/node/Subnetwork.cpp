@@ -7,7 +7,7 @@ namespace sop
 namespace node
 {
 
-void Subnetwork::Execute(const ur2::Device& dev, Evaluator& eval)
+void Subnetwork::Execute(const ur::Device& dev, Evaluator& eval)
 {
     for (auto& c : m_children) {
         if (NodeHelper::IsRoot(*c)) {

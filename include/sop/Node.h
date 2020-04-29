@@ -6,7 +6,7 @@
 #include <dag/Node.h>
 #include <node0/typedef.h>
 
-namespace ur2 { class Device; }
+namespace ur { class Device; }
 
 namespace sop
 {
@@ -19,7 +19,7 @@ class Node : public dag::Node<NodeVarType>
 public:
     Node();
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) = 0;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) = 0;
 
     virtual void AddInputPorts(size_t num) {}
 

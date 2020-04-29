@@ -136,7 +136,7 @@ void Evaluator::RebuildConnections(const std::vector<std::pair<dag::Node<NodeVar
     m_dirty = true;
 }
 
-void Evaluator::Update(const ur2::Device& dev, bool force)
+void Evaluator::Update(const ur::Device& dev, bool force)
 {
     if (!force && !m_dirty) {
         return;
@@ -357,7 +357,7 @@ void Evaluator::UpdateProps()
     }
 }
 
-void Evaluator::UpdateNodes(const ur2::Device& dev)
+void Evaluator::UpdateNodes(const ur::Device& dev)
 {
     if (m_nodes_sorted.empty()) {
         return;

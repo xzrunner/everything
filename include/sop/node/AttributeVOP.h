@@ -24,7 +24,7 @@ public:
         InitEval();
     }
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) override;
 
     void SetEval(const std::shared_ptr<vop::Evaluator>& eval);
     auto GetEval() const { return m_eval; }

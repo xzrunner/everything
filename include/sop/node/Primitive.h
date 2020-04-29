@@ -24,7 +24,7 @@ public:
         };
     }
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) override;
 
 private:
     void UpdatePrim(GeoAttribute::Primitive& prim, const sm::mat4& mat);

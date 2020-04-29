@@ -21,14 +21,14 @@ public:
         };
     }
 
-    virtual void Execute(const ur2::Device& dev, Evaluator& eval) override;
+    virtual void Execute(const ur::Device& dev, Evaluator& eval) override;
 
 private:
-    void TranslatePoints(const ur2::Device& dev, float dist,
+    void TranslatePoints(const ur::Device& dev, float dist,
         const std::shared_ptr<Group>& group);
-    void TranslateVertices(const ur2::Device& dev, float dist,
+    void TranslateVertices(const ur::Device& dev, float dist,
         const std::shared_ptr<Group>& group);
-    void TranslatePrimitives(const ur2::Device& dev, float dist,
+    void TranslatePrimitives(const ur::Device& dev, float dist,
         const std::shared_ptr<Group>& group);
 
     RTTR_ENABLE(Node)
