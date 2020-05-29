@@ -1,8 +1,8 @@
 #include "sop/SOP.h"
 #include "sop/VexFuncs.h"
 
-#include <vexc/Type.h>
-#include <vexc/BuildInFuncs.h>
+#include <cslang/Type.h>
+#include <cslang/BuildInFuncs.h>
 
 namespace sop
 {
@@ -15,9 +15,9 @@ SOP::SOP()
 {
 	regist_rttr();
 
-    // vexc
-    vexc::SetupTypeSystem();
-    vexc::SetupBuildInFuncs();
+    // cslang
+    cslang::SetupTypeSystem();
+    cslang::SetupBuildInFuncs();
     SetupVexFuncs();
 }
 

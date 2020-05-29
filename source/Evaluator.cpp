@@ -3,8 +3,8 @@
 #include "sop/node/Subnetwork.h"
 #include "sop/node/ObjectMerge.h"
 
-#include <vexc/EvalAST.h>
-#include <vexc/Parser.h>
+#include <cslang/EvalAST.h>
+#include <cslang/Parser.h>
 #include <cpputil/StringHelper.h>
 #include <dag/Graph.h>
 
@@ -171,28 +171,28 @@ dag::Variable Evaluator::CalcExpr(const std::string& str, const EvalContext& ctx
         return dag::Variable();
     }
 
-    vexc::Parser parser(str.c_str());
-    auto expr = vexc::ast::ExpressionParser::ParseExpression(parser);
-    auto val = vexc::EvalExpression(expr, &ctx);
+    cslang::Parser parser(str.c_str());
+    auto expr = cslang::ast::ExpressionParser::ParseExpression(parser);
+    auto val = cslang::EvalExpression(expr, &ctx);
     switch (val.type)
     {
-    case vexc::VarType::Invalid:
+    case cslang::VarType::Invalid:
         return dag::Variable();
-    case vexc::VarType::Bool:
+    case cslang::VarType::Bool:
         return dag::Variable(val.b);
-    case vexc::VarType::Int:
+    case cslang::VarType::Int:
         return dag::Variable(val.i);
-    case vexc::VarType::Float:
+    case cslang::VarType::Float:
         return dag::Variable(val.f);
-    case vexc::VarType::Float3:
+    case cslang::VarType::Float3:
     {
         auto f3 = static_cast<const float*>(val.p);
         return dag::Variable(sm::vec3(f3[0], f3[1], f3[2]));
     }
-    case vexc::VarType::Double:
+    case cslang::VarType::Double:
         return dag::Variable(static_cast<float>(val.d));
-    case vexc::VarType::String:
-        return dag::Variable(vexc::StringPool::VoidToString(val.p));
+    case cslang::VarType::String:
+        return dag::Variable(cslang::StringPool::VoidToString(val.p));
     default:
         assert(0);
         return dag::Variable();
@@ -205,9 +205,9 @@ void Evaluator::RunStatement(const std::string& str, const EvalContext& ctx) con
         return;
     }
 
-    vexc::Parser parser(str.c_str());
-    auto ast = vexc::ast::StatementParser::ParseCompoundStatement(parser);
-    vexc::RunStatement(ast, &ctx);
+    cslang::Parser parser(str.c_str());
+    auto ast = cslang::ast::StatementParser::ParseCompoundStatement(parser);
+    cslang::RunStatement(ast, &ctx);
 }
 
 void Evaluator::Rename(const std::string& from, const std::string& to)

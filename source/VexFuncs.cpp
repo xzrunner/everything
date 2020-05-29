@@ -6,69 +6,69 @@
 #include "sop/node/Subnetwork.h"
 
 #include <dag/Variable.h>
-#include <vexc/EvalAST.h>
-#include <vexc/StringPool.h>
+#include <cslang/EvalAST.h>
+#include <cslang/StringPool.h>
 #include <cpputil/StringHelper.h>
 
 namespace
 {
 
-vexc::Variant ToVexcVar(const sop::EvalContext& ctx, const dag::Variable& var, int component = -1)
+cslang::Variant ToVexcVar(const sop::EvalContext& ctx, const dag::Variable& var, int component = -1)
 {
     switch (var.type)
     {
     case dag::VarType::Invalid:
-        return vexc::Variant();
+        return cslang::Variant();
     case dag::VarType::Bool:
-        return vexc::Variant(var.b);
+        return cslang::Variant(var.b);
     case dag::VarType::Int:
-        return vexc::Variant(var.i);
+        return cslang::Variant(var.i);
     case dag::VarType::Float:
-        return vexc::Variant(var.f);
+        return cslang::Variant(var.f);
     case dag::VarType::Float3:
     {
         if (component != -1)
         {
             assert(component >= 0 && component < 3);
             auto v3 = static_cast<const sm::vec3*>(var.p);
-            return vexc::Variant(v3->xyz[component]);
+            return cslang::Variant(v3->xyz[component]);
         }
         else
         {
             auto v3 = static_cast<const sm::vec3*>(var.p);
             auto new_v3 = ctx.var_buf.Clone(*v3);
-            return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
+            return cslang::Variant(cslang::VarType::Float3, (void*)(new_v3->xyz));
         }
     }
     case dag::VarType::Double:
-        return vexc::Variant(var.d);
+        return cslang::Variant(var.d);
     //case dag::VarType::String:
     //{
     //    auto str = static_cast<const char*>(v.p);
-    //    auto buf = vexc::StringPool::InsertAndQuery(str, strlen(str));
-    //    return vexc::Variant(vexc::VarType::String, buf);
+    //    auto buf = cslang::StringPool::InsertAndQuery(str, strlen(str));
+    //    return cslang::Variant(cslang::VarType::String, buf);
     //}
     default:
         assert(0);
-        return vexc::Variant();
+        return cslang::Variant();
     }
 }
 
 // ch* funcs
-vexc::Variant eval_channel(const std::vector<vexc::Variant>& params, const void* ud)
+cslang::Variant eval_channel(const std::vector<cslang::Variant>& params, const void* ud)
 {
     if (params.empty()) {
-        return vexc::Variant();
+        return cslang::Variant();
     }
 
     auto& p = params[0];
-    if (p.type != vexc::VarType::String) {
-        return vexc::Variant();
+    if (p.type != cslang::VarType::String) {
+        return cslang::Variant();
     }
 
     auto ctx = static_cast<const sop::EvalContext*>(ud);
 
-    std::string path(vexc::StringPool::VoidToString(p.p));
+    std::string path(cslang::StringPool::VoidToString(p.p));
     std::vector<std::string> tokens;
     cpputil::StringHelper::Split(path, "/", tokens);
     auto curr_node = const_cast<sop::Node*>(ctx->node);
@@ -114,7 +114,7 @@ vexc::Variant eval_channel(const std::vector<vexc::Variant>& params, const void*
         return ToVexcVar(*ctx, var);
     }
 
-    return vexc::Variant();
+    return cslang::Variant();
 }
 
 }
@@ -126,93 +126,93 @@ void SetupVexFuncs()
 {
     // ATTRIBUTES AND INTRINSICS
 
-    vexc::RegistBuildInFunc("point", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    cslang::RegistBuildInFunc("point", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant
     {
         if (params.size() < 4) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
         for (int i = 0; i < 4; ++i) {
-            if (params[i].type == vexc::VarType::Invalid) {
-                return vexc::Variant();
+            if (params[i].type == cslang::VarType::Invalid) {
+                return cslang::Variant();
             }
         }
 
         auto ctx = static_cast<const EvalContext*>(ud);
         Node* base_node = const_cast<Node*>(ctx->node);
 
-        assert(params[0].type == vexc::VarType::String);
-        std::string path(vexc::StringPool::VoidToString(params[0].p));
+        assert(params[0].type == cslang::VarType::String);
+        std::string path(cslang::StringPool::VoidToString(params[0].p));
         auto surface_node = ctx->eval->QueryNodeByPath(base_node, path);
         if (!surface_node) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         auto geo = surface_node->GetGeometry();
         if (!geo) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
-        assert(params[1].type == vexc::VarType::Int);
+        assert(params[1].type == cslang::VarType::Int);
         int point_num = params[1].i;
 
-        assert(params[2].type == vexc::VarType::String);
-        std::string attrib_name = vexc::StringPool::VoidToString(params[2].p);
+        assert(params[2].type == cslang::VarType::String);
+        std::string attrib_name = cslang::StringPool::VoidToString(params[2].p);
 
-        assert(params[3].type == vexc::VarType::Int);
+        assert(params[3].type == cslang::VarType::Int);
         int component = params[3].i;
 
         auto var = geo->GetAttr().QueryParm(GeoAttrClass::Point, attrib_name, point_num);
         return ToVexcVar(*ctx, var, component);
     });
 
-    vexc::RegistBuildInFunc("prim", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    cslang::RegistBuildInFunc("prim", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant
     {
         if (params.size() < 4) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
         for (int i = 0; i < 4; ++i) {
-            if (params[i].type == vexc::VarType::Invalid) {
-                return vexc::Variant();
+            if (params[i].type == cslang::VarType::Invalid) {
+                return cslang::Variant();
             }
         }
 
         auto ctx = static_cast<const EvalContext*>(ud);
         Node* base_node = const_cast<Node*>(ctx->node);
 
-        assert(params[0].type == vexc::VarType::String);
-        std::string path(vexc::StringPool::VoidToString(params[0].p));
+        assert(params[0].type == cslang::VarType::String);
+        std::string path(cslang::StringPool::VoidToString(params[0].p));
         auto surface_node = ctx->eval->QueryNodeByPath(base_node, path);
         if (!surface_node) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         auto geo = surface_node->GetGeometry();
         if (!geo) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
-        assert(params[1].type == vexc::VarType::Int);
+        assert(params[1].type == cslang::VarType::Int);
         int prim_num = params[1].i;
 
-        assert(params[2].type == vexc::VarType::String);
-        std::string attrib_name = vexc::StringPool::VoidToString(params[2].p);
+        assert(params[2].type == cslang::VarType::String);
+        std::string attrib_name = cslang::StringPool::VoidToString(params[2].p);
 
-        assert(params[3].type == vexc::VarType::Int);
+        assert(params[3].type == cslang::VarType::Int);
         int component = params[3].i;
 
         auto var = geo->GetAttr().QueryParm(GeoAttrClass::Primitive, attrib_name, prim_num);
         return ToVexcVar(*ctx, var, component);
     });
 
-    vexc::RegistBuildInFunc("setattrib", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    cslang::RegistBuildInFunc("setattrib", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant
     {
         if (params.size() < 6) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         auto geohandle   = params[0].ToInt(ud);
-        auto attr_class  = vexc::StringPool::VoidToString(params[1].p);
-        auto attr_name   = vexc::StringPool::VoidToString(params[2].p);
+        auto attr_class  = cslang::StringPool::VoidToString(params[1].p);
+        auto attr_name   = cslang::StringPool::VoidToString(params[2].p);
         auto element_num = params[3].ToInt(ud);
         auto vertex_num  = params[4].ToInt(ud);
         auto value       = params[5].ToFloat(ud);
@@ -222,11 +222,11 @@ void SetupVexFuncs()
         assert(geohandle == 0);
         auto ctx = static_cast<const EvalContext*>(ud);
         if (!ctx->node) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
         auto geo = ctx->node->GetGeometry();
         if (!geo) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         GeoAttrClass cls;
@@ -237,7 +237,7 @@ void SetupVexFuncs()
         } else if (attr_class == "detail" || attr_class == "global") {
             cls = GeoAttrClass::Detail;
         } else {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         auto& attr = geo->GetAttr();
@@ -260,19 +260,19 @@ void SetupVexFuncs()
             );
         }
 
-        return vexc::Variant();
+        return cslang::Variant();
     });
 
     // INTERPOLATION
 
-    vexc::RegistBuildInFunc("fit", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    cslang::RegistBuildInFunc("fit", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant
     {
         if (params.size() < 5) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
         for (int i = 0; i < 5; ++i) {
-            if (params[i].type == vexc::VarType::Invalid) {
-                return vexc::Variant();
+            if (params[i].type == cslang::VarType::Invalid) {
+                return cslang::Variant();
             }
         }
 
@@ -285,116 +285,116 @@ void SetupVexFuncs()
         if (old_min == old_max) {
             return params[0];
         } else {
-            return vexc::Variant(new_min + (num - old_min) / (old_max - old_min) * (new_max - new_min));
+            return cslang::Variant(new_min + (num - old_min) / (old_max - old_min) * (new_max - new_min));
         }
     });
 
     // MEASURE
 
-    vexc::RegistBuildInFunc("getbbox_center", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    cslang::RegistBuildInFunc("getbbox_center", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant
     {
         if (params.empty()) {
             auto& p = params[0];
-            if (p.type != vexc::VarType::Int || p.i != 0) {
-                return vexc::Variant();
+            if (p.type != cslang::VarType::Int || p.i != 0) {
+                return cslang::Variant();
             }
         }
 
         auto ctx = static_cast<const EvalContext*>(ud);
         if (!ctx->node) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
         auto geo = ctx->node->GetGeometry();
         if (!geo) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         auto& aabb = geo->GetAttr().GetAABB();
         auto v = ctx->var_buf.Clone(aabb.Center());
-        return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
+        return cslang::Variant(cslang::VarType::Float3, (void*)(v->xyz));
     });
 
-    vexc::RegistBuildInFunc("getbbox_max", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    cslang::RegistBuildInFunc("getbbox_max", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant
     {
         if (params.empty()) {
             auto& p = params[0];
-            if (p.type != vexc::VarType::Int || p.i != 0) {
-                return vexc::Variant();
+            if (p.type != cslang::VarType::Int || p.i != 0) {
+                return cslang::Variant();
             }
         }
 
         auto ctx = static_cast<const EvalContext*>(ud);
         if (!ctx->node) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
         auto geo = ctx->node->GetGeometry();
         if (!geo) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         auto& aabb = geo->GetAttr().GetAABB();
         auto v = ctx->var_buf.Clone(sm::vec3(aabb.max));
-        return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
+        return cslang::Variant(cslang::VarType::Float3, (void*)(v->xyz));
     });
 
-    vexc::RegistBuildInFunc("getbbox_min", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    cslang::RegistBuildInFunc("getbbox_min", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant
     {
         if (params.empty()) {
             auto& p = params[0];
-            if (p.type != vexc::VarType::Int || p.i != 0) {
-                return vexc::Variant();
+            if (p.type != cslang::VarType::Int || p.i != 0) {
+                return cslang::Variant();
             }
         }
 
         auto ctx = static_cast<const EvalContext*>(ud);
         if (!ctx->node) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
         auto geo = ctx->node->GetGeometry();
         if (!geo) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         auto& aabb = geo->GetAttr().GetAABB();
         auto v = ctx->var_buf.Clone(sm::vec3(aabb.min));
-        return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
+        return cslang::Variant(cslang::VarType::Float3, (void*)(v->xyz));
     });
 
-    vexc::RegistBuildInFunc("getbbox_size", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant
+    cslang::RegistBuildInFunc("getbbox_size", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant
     {
         if (params.empty()) {
             auto& p = params[0];
-            if (p.type != vexc::VarType::Int || p.i != 0) {
-                return vexc::Variant();
+            if (p.type != cslang::VarType::Int || p.i != 0) {
+                return cslang::Variant();
             }
         }
 
         auto ctx = static_cast<const EvalContext*>(ud);
         if (!ctx->node) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
         auto geo = ctx->node->GetGeometry();
         if (!geo) {
-            return vexc::Variant();
+            return cslang::Variant();
         }
 
         auto& aabb = geo->GetAttr().GetAABB();
         auto v = ctx->var_buf.Clone(aabb.Size());
-        return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
+        return cslang::Variant(cslang::VarType::Float3, (void*)(v->xyz));
     });
 
     // NODES
 
-    vexc::RegistBuildInFunc("ch", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant {
+    cslang::RegistBuildInFunc("ch", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant {
         return eval_channel(params, ud);
     });
 
-    vexc::RegistBuildInFunc("chs", [](const std::vector<vexc::Variant>& params, const void* ud)->vexc::Variant {
+    cslang::RegistBuildInFunc("chs", [](const std::vector<cslang::Variant>& params, const void* ud)->cslang::Variant {
         return eval_channel(params, ud);
     });
 
     // GETTER
-    vexc::RegistGetter([](const char* sym, const void* ud)->vexc::Variant
+    cslang::RegistGetter([](const char* sym, const void* ud)->cslang::Variant
     {
         assert(strlen(sym) > 0);
 
@@ -402,47 +402,47 @@ void SetupVexFuncs()
         {
             auto ctx = static_cast<const EvalContext*>(ud);
             if (!ctx->node) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
             auto geo = ctx->node->GetGeometry();
             if (!geo) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
             if (ctx->attr_type != GeoAttrClass::Point) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
 
             const auto& points = geo->GetAttr().GetPoints();
             if (ctx->attr_idx < 0 || ctx->attr_idx >= static_cast<int>(points.size())) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
 
             auto v = ctx->var_buf.Clone(points[ctx->attr_idx]->pos);
-            return vexc::Variant(vexc::VarType::Float3, (void*)(v->xyz));
+            return cslang::Variant(cslang::VarType::Float3, (void*)(v->xyz));
         }
         else if (strcmp(sym, "@N") == 0 || strcmp(sym, "v@N") == 0)
         {
             auto ctx = static_cast<const EvalContext*>(ud);
             if (!ctx->node) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
             auto geo = ctx->node->GetGeometry();
             if (!geo) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
             if (ctx->attr_type != GeoAttrClass::Point) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
 
             auto& attr = geo->GetAttr();
             const auto& points = attr.GetPoints();
             if (ctx->attr_idx < 0 || ctx->attr_idx >= static_cast<int>(points.size())) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
 
             auto norm_list = attr.QueryParmList(GeoAttrClass::Point, GEO_ATTR_NORM);
             if (!norm_list) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
 
             assert(norm_list->GetType() == ParmType::Vector);
@@ -450,26 +450,26 @@ void SetupVexFuncs()
             assert(ctx->attr_idx < static_cast<int>(norm_data.size()));
             auto& v3 = norm_data[ctx->attr_idx];
             auto new_v3 = ctx->var_buf.Clone(v3);
-            return vexc::Variant(vexc::VarType::Float3, (void*)(new_v3->xyz));
+            return cslang::Variant(cslang::VarType::Float3, (void*)(new_v3->xyz));
         }
         else if (strcmp(sym, "@ptnum") == 0)
         {
             auto ctx = static_cast<const EvalContext*>(ud);
             if (ctx->attr_type != GeoAttrClass::Point) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
-            return vexc::Variant(ctx->attr_idx);
+            return cslang::Variant(ctx->attr_idx);
         }
         // find from attrs
         else if (sym[0] == '@')
         {
             auto ctx = static_cast<const EvalContext*>(ud);
             if (!ctx->node) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
             auto geo = ctx->node->GetGeometry();
             if (!geo) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
 
             auto attr_name = std::string(&sym[1]);
@@ -480,39 +480,39 @@ void SetupVexFuncs()
         {
             auto ctx = static_cast<const EvalContext*>(ud);
             if (!ctx->node) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
             auto geo = ctx->node->GetGeometry();
             if (geo) {
-                return vexc::Variant(geo->GetAttr().GetAABB().Width());
+                return cslang::Variant(geo->GetAttr().GetAABB().Width());
             } else {
-                return vexc::Variant();
+                return cslang::Variant();
             }
         }
         else if (strcmp(sym, "$SIZEY") == 0)
         {
             auto ctx = static_cast<const EvalContext*>(ud);
             if (!ctx->node) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
             auto geo = ctx->node->GetGeometry();
             if (geo) {
-                return vexc::Variant(geo->GetAttr().GetAABB().Height());
+                return cslang::Variant(geo->GetAttr().GetAABB().Height());
             } else {
-                return vexc::Variant();
+                return cslang::Variant();
             }
         }
         else if (strcmp(sym, "$SIZEZ") == 0)
         {
             auto ctx = static_cast<const EvalContext*>(ud);
             if (!ctx->node) {
-                return vexc::Variant();
+                return cslang::Variant();
             }
             auto geo = ctx->node->GetGeometry();
             if (geo) {
-                return vexc::Variant(geo->GetAttr().GetAABB().Depth());
+                return cslang::Variant(geo->GetAttr().GetAABB().Depth());
             } else {
-                return vexc::Variant();
+                return cslang::Variant();
             }
         }
         else
@@ -520,28 +520,28 @@ void SetupVexFuncs()
             assert(0);
         }
 
-        return vexc::Variant();
+        return cslang::Variant();
     });
 
     // SETTER
-    vexc::RegistSetter([](const char* sym, const char* member, vexc::Variant var, const void* ud)
+    cslang::RegistSetter([](const char* sym, const char* member, cslang::Variant var, const void* ud)
     {
-        auto set_pt_flt3 = [](sop::GeoAttr attr_type, vexc::Variant var, const void* ud, const char* member)
+        auto set_pt_flt3 = [](sop::GeoAttr attr_type, cslang::Variant var, const void* ud, const char* member)
         {
             sm::vec3 v3;
-            if (var.type != vexc::VarType::Float3) 
+            if (var.type != cslang::VarType::Float3) 
             {
                 switch (var.type)
                 {
-                case vexc::VarType::Float:
+                case cslang::VarType::Float:
                     v3.Set(var.f, var.f, var.f);
-                    var = vexc::Variant(vexc::VarType::Float3, (void*)(v3.xyz));
+                    var = cslang::Variant(cslang::VarType::Float3, (void*)(v3.xyz));
                     break;
-                case vexc::VarType::Double:
+                case cslang::VarType::Double:
                 {
                     const float f = static_cast<float>(var.d);
                     v3.Set(f, f, f);
-                    var = vexc::Variant(vexc::VarType::Float3, (void*)(v3.xyz));
+                    var = cslang::Variant(cslang::VarType::Float3, (void*)(v3.xyz));
                 }
                     break;
                 default:

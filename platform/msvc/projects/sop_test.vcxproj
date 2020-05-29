@@ -116,7 +116,7 @@
     <ProjectReference Include="..\..\..\..\tessellation\platform\msvc\projects\tessellation.vcxproj">
       <Project>{ab13923f-a55d-4366-8587-677733707c60}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\vexc\platform\msvc\projects\vexc.vcxproj">
+    <ProjectReference Include="..\..\..\..\cslang\platform\msvc\projects\cslang.vcxproj">
       <Project>{7bad2f78-e25a-481e-87bd-d10ce3fc7586}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\volume\platform\msvc\projects\volume.vcxproj">
