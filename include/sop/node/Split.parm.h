@@ -2,4 +2,4 @@
 #error "You must define PARAM_INFO macro before include this file"
 #endif
 
-PARAM_INFO(GroupName, String, group, m_group_name, (""))
+PARAM_INFO(GroupName, std::string, group, m_group_name, (""))

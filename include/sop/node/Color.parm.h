@@ -3,5 +3,5 @@
 #endif
 
 PARAM_INFO(AttrAddTo, GeoAttrClass,     class, m_attr_add_to, (GeoAttrClass::Point))
-PARAM_INFO(Color,     Float3,           color, m_color,       (1.0f, 1.0f, 1.0f))
-PARAM_INFO(Ramp,      Array<RampColor>, ramp,  m_ramp,        ())
+PARAM_INFO(Color,     sm::vec3,           color, m_color,       (1.0f, 1.0f, 1.0f))
+PARAM_INFO(Ramp,      std::vector<RampColor>, ramp,  m_ramp,        ())

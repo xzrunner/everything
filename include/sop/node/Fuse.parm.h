@@ -4,7 +4,7 @@
 
 PARAM_INFO(FuseOP, Fuse::Operator, switcher1, m_fuse_op, (Fuse::Operator::Consolidate))
 
-PARAM_INFO(Distance,      Float, dist,             m_distance,        (0.001f))
-PARAM_INFO(KeepUnusedPts, Bool,  keepunusedpoints, m_keep_unused_pts, (false))
+PARAM_INFO(Distance,      float, dist,             m_distance,        (0.001f))
+PARAM_INFO(KeepUnusedPts, bool,  keepunusedpoints, m_keep_unused_pts, (false))
 
-PARAM_INFO(UpdatePtNormals, Bool, updatenml, m_update_pt_norm, (true))
+PARAM_INFO(UpdatePtNormals, bool, updatenml, m_update_pt_norm, (true))

@@ -2,4 +2,4 @@
 #error "You must define PARAM_INFO macro before include this file"
 #endif
 
-PARAM_INFO(ObjectPaths, Array<String>, objpath, m_obj_paths, ())
+PARAM_INFO(ObjectPaths, std::vector<std::string>, objpath, m_obj_paths, ())

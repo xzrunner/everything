@@ -2,4 +2,4 @@
 #error "You must define PARAM_INFO macro before include this file"
 #endif
 
-PARAM_INFO(Code, String, python, m_code, (""))
+PARAM_INFO(Code, std::string, python, m_code, (""))
